@@ -5,22 +5,23 @@ Source is preserved in Git history. Review required; never auto-approve.
 from pathlib import Path
 from PIL import Image,ImageDraw
 from collections import Counter
-import hashlib,json,re
+import hashlib,json,re,subprocess,io
 ROOT=Path(__file__).resolve().parents[1]
 R=ROOT/"phaser/assets-review"
 SRC=R/"assets/equipamentos/historico/cat6030_conceito_original.png"
 asset_id="equipamentos_historico_cat6030_conceito_original_png"
 def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def main():
- source=Image.open(SRC).convert("RGBA")
+ baseline_bytes=subprocess.check_output(["git","show","72e8a54ae909828fb27eca0edbfb40ffe8856570:phaser/assets-review/assets/equipamentos/historico/cat6030_conceito_original.png"],cwd=ROOT)
+ source=Image.open(io.BytesIO(baseline_bytes)).convert("RGBA")
  width,height=source.size
  if width<512 or height<512:raise ValueError("Resolution smaller than expected")
  original=source.copy()
  # Geometric reference: 800 x 800 screenshot reviewed for the issue.
  # Two disconnected pointed flanges outside bucket's main tooth line.
  poly=[
- [(30,697),(32,681),(47,670),(59,654),(60,674),(45,699)],
- [(291,647),(309,650),(332,671),(338,687),(320,699),(293,687)],
+ [(32,698),(32,690),(42,677),(52,671),(50,690),(39,702)],
+ [(315,670),(332,676),(338,684),(336,691),(316,696)],
  ]
  dr=ImageDraw.Draw(source)
  for coords in poly:
@@ -31,7 +32,7 @@ def main():
  removed_alpha=sum(a>0 and b==0 for a,b in zip(original.getchannel("A").tobytes(),source.getchannel("A").tobytes()))
  if removed_alpha<20 or removed_alpha>7000:raise ValueError(f"unsafe pixel removal count: {removed_alpha}")
  if any(b>0 and a==0 for a,b in zip(original.getchannel("A").tobytes(),source.getchannel("A").tobytes())):raise ValueError("Unexpected creation of pixels")
- sh_before=digest(SRC);source.save(SRC,optimize=True);sh_after=digest(SRC)
+ sh_before=hashlib.sha256(baseline_bytes).hexdigest();source.save(SRC,optimize=True);sh_after=digest(SRC)
  def crop(im):
   thumb=im.copy()
   thumb.thumbnail((800,800),Image.Resampling.LANCZOS)
