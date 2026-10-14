@@ -432,7 +432,7 @@
       "name": "Davi — extinguisher",
       "category": "elenco",
       "path": "phaser/assets-review/assets/personagens/elenco/ele_davi/extinguisher.png",
-      "state": "needs-revision",
+      "state": "ready-for-review",
       "issue": 13,
       "github_binary_status": "uploaded"
     },
@@ -450,7 +450,7 @@
       "name": "Davi — inspect",
       "category": "elenco",
       "path": "phaser/assets-review/assets/personagens/elenco/ele_davi/inspect.png",
-      "state": "needs-revision",
+      "state": "ready-for-review",
       "issue": 13,
       "github_binary_status": "uploaded"
     },
@@ -468,7 +468,7 @@
       "name": "Davi — positive",
       "category": "elenco",
       "path": "phaser/assets-review/assets/personagens/elenco/ele_davi/positive.png",
-      "state": "needs-revision",
+      "state": "ready-for-review",
       "issue": 13,
       "github_binary_status": "uploaded"
     },
@@ -486,7 +486,7 @@
       "name": "Davi — spritesheet",
       "category": "elenco",
       "path": "phaser/assets-review/assets/personagens/elenco/ele_davi/spritesheet.png",
-      "state": "needs-revision",
+      "state": "ready-for-review",
       "issue": 13,
       "github_binary_status": "uploaded"
     },

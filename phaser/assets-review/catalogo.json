@@ -887,7 +887,16 @@
       "user_comment": "tá bugada a cor do capacete, era pra ser todo amarelo",
       "user_reviewed_at": "2026-10-14T19:44:04.536Z",
       "review_issue_number": 13,
-      "workflow_state": "needs-revision"
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 13,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "594e305006772dc85b909464a0c7e20b291e8b2d9130aa86e23491c1ae3c2ff6",
+        "corrected_sha256": "4003e7733e1c926ab43e5661508021949e443a71c8dfb45a49afd41f1f468d23",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_ele_davi.png",
+        "changed_pixels": 1700
+      }
     },
     {
       "id": "personagens_elenco_ele_davi_idle_png",
@@ -921,7 +930,16 @@
       "user_comment": "tá bugada a cor do capacete, era pra ser todo amarelo",
       "user_reviewed_at": "2026-10-14T19:43:35.946Z",
       "review_issue_number": 13,
-      "workflow_state": "needs-revision"
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 13,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "29129f8ac996b5644fde61c19488c66b2dd3cc9051ba5b1a1b1ca4c72e20f5ee",
+        "corrected_sha256": "a89902562b5cb2a9ed774e338df64d6bfb0416d866ed5c75f3f65cf0ae5bfd5f",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_ele_davi.png",
+        "changed_pixels": 1324
+      }
     },
     {
       "id": "personagens_elenco_ele_davi_point_png",
@@ -955,7 +973,16 @@
       "user_comment": "testa ficou amarela",
       "user_reviewed_at": "2026-10-14T19:43:51.647Z",
       "review_issue_number": 13,
-      "workflow_state": "needs-revision"
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 13,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "cfe0b6a4aedcacfc5521bb366b476859baba80308d9420467f40a215f968dc49",
+        "corrected_sha256": "ad91150aa08544b7d2b1581ed53149d35a4cf201ab5c980075b88837a4f1d9f8",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_ele_davi.png",
+        "changed_pixels": 122
+      }
     },
     {
       "id": "personagens_elenco_ele_davi_radio_png",
@@ -989,7 +1016,15 @@
       "user_comment": "refazer após os assets abaixo serem corrigidos:\nDavi — positive\nDavi — inspect\nDavi — extinguisher",
       "user_reviewed_at": "2026-10-14T19:44:46.395Z",
       "review_issue_number": 13,
-      "workflow_state": "needs-revision"
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 13,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "30d51b6bd5d4b20d4b84dc444a660b972da26eeef89c0b3ac8045b454dc978fe",
+        "corrected_sha256": "55634771c3e4df4e84027c79e5d41febb7c351e121bea327f5c97c3ee6a65338",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_ele_davi.png"
+      }
     },
     {
       "id": "personagens_elenco_ele_bia_alert_png",
@@ -1993,8 +2028,8 @@
   "workflow_counts": {
     "approved": 42,
     "archived": 14,
-    "needs-revision": 58,
+    "needs-revision": 54,
     "awaiting-clarification": 1,
-    "ready-for-review": 0
+    "ready-for-review": 4
   }
 }

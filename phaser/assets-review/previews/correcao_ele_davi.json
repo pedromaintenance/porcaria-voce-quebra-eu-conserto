@@ -1,0 +1,58 @@
+{
+  "character": "ele_davi",
+  "issue": 13,
+  "poses": [
+    {
+      "pose": "extinguisher",
+      "changed_pixels": 1700,
+      "bbox": [
+        87,
+        121,
+        175,
+        147
+      ],
+      "source_sha256": "594e305006772dc85b909464a0c7e20b291e8b2d9130aa86e23491c1ae3c2ff6",
+      "corrected_sha256": "4003e7733e1c926ab43e5661508021949e443a71c8dfb45a49afd41f1f468d23"
+    },
+    {
+      "pose": "inspect",
+      "changed_pixels": 1324,
+      "bbox": [
+        90,
+        121,
+        192,
+        147
+      ],
+      "source_sha256": "29129f8ac996b5644fde61c19488c66b2dd3cc9051ba5b1a1b1ca4c72e20f5ee",
+      "corrected_sha256": "a89902562b5cb2a9ed774e338df64d6bfb0416d866ed5c75f3f65cf0ae5bfd5f"
+    },
+    {
+      "pose": "positive",
+      "changed_pixels": 122,
+      "bbox": [
+        133,
+        82,
+        183,
+        84
+      ],
+      "source_sha256": "cfe0b6a4aedcacfc5521bb366b476859baba80308d9420467f40a215f968dc49",
+      "corrected_sha256": "ad91150aa08544b7d2b1581ed53149d35a4cf201ab5c980075b88837a4f1d9f8"
+    }
+  ],
+  "spritesheet": {
+    "source_sha256": "30d51b6bd5d4b20d4b84dc444a660b972da26eeef89c0b3ac8045b454dc978fe",
+    "corrected_sha256": "55634771c3e4df4e84027c79e5d41febb7c351e121bea327f5c97c3ee6a65338",
+    "frame_order": [
+      "idle",
+      "positive",
+      "point",
+      "clipboard",
+      "radio",
+      "alert",
+      "inspect",
+      "extinguisher"
+    ]
+  },
+  "preview": "phaser/assets-review/previews/correcao_ele_davi.png",
+  "status": "ready-for-review-not-approved"
+}
