@@ -1,0 +1,35 @@
+name: Repair reviewed sprite colors
+on:
+  push:
+    branches: [fix/assets-review-20261014]
+    paths:
+      - scripts/repair_character_colors.py
+      - .github/workflows/repair-character-colors.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/assets-review-20261014
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check pillow
+      - name: Repair Davi (#13)
+        run: python scripts/repair_character_colors.py --character ele_davi
+      - name: Commit corrected sprites and review report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add phaser/assets-review/catalogo.json phaser/assets-review/ativos.json phaser/assets-review/avaliar-sprites-rodada02.html
+          git add phaser/assets-review/assets/personagens/elenco/ phaser/assets-review/previews/
+          if ! git diff --cached --quiet; then
+            git commit -m "fix(assets): correct Davi helmet/forehead and recompose sheet (#13)"
+            git push origin HEAD:fix/assets-review-20261014
+          fi
