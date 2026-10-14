@@ -6,7 +6,7 @@ Avaliação recebida de 14/10/2026: **41 OK, 74 Não OK**, 9 sem comentário. Ca
 | Issue | Escopo | Estado |
 |---|---|---|
 | [#3](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/3) | CAT 395 — transparência | Concluída tecnicamente; aguarda aprovação visual |
-| [#4](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/4) | 6030 histórico — caçamba | Pendente: redesenho |
+| [#4](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/4) | 6030 histórico — caçamba | Correção de silhueta publicada; aguardando aprovação visual |
 | [#5](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/5) | CAT 777 — cabine/frente e roda | Pendente: redesenho |
 | [#6](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/6) | Escavadeira inicial — cilindro | Pendente: desenho mecânico |
 | [#7](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/7) | Escavadeira isométrica histórica | Pendente: detalhamento |
@@ -15,9 +15,9 @@ Avaliação recebida de 14/10/2026: **41 OK, 74 Não OK**, 9 sem comentário. Ca
 | [#10](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/10) | Clara — 8 poses + spritesheet | Pendente: reconstrução |
 | [#11](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/11) | Lia — 8 poses + spritesheet | Pendente: reconstrução |
 | [#12](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/12) | Nina — 8 poses + spritesheet | Pendente: reconstrução |
-| [#13](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/13) | Davi — 3 poses + spritesheet | Pendente: correções locais |
-| [#14](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/14) | João — 3 poses + spritesheet | Pendente: correções locais |
-| [#15](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/15) | Rafael — 1 pose + spritesheet | Pendente: correção local |
+| [#13](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/13) | Davi — 3 poses + spritesheet | 3 poses + spritesheet corrigidos; aguardando aprovação visual |
+| [#14](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/14) | João — 3 poses + spritesheet | 3 poses + spritesheet corrigidos (2 passagens); aguardando aprovação visual |
+| [#15](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/15) | Rafael — 1 pose + spritesheet | 1 pose + spritesheet corrigidos; aguardando aprovação visual |
 | [#16](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/16) | Duplicados e perfuratriz descartada | Concluída: arquivamento lógico |
 | [#17](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/17) | Estudos conceituais reprovados | Concluída: arquivamento lógico |
 | [#18](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/18) | Mocks UI antigos | Concluída: arquivamento lógico |
@@ -33,3 +33,12 @@ Avaliação recebida de 14/10/2026: **41 OK, 74 Não OK**, 9 sem comentário. Ca
 - A `main` permanece intacta.
 
 Branch: `fix/assets-review-20261014`. PR de acompanhamento: https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/20.
+
+## Revisão técnica atualizada — 14/10/2026
+
+A galeria **avaliar-sprites-rodada02.html** abre com 90 sprites. Neste estado, CAT 395 tem reaprovação explícita; #4, #13, #14 e #15 estão **ready-for-review** com binários PNG realmente alterados, spritesheets recompostos e comparativos publicados na pasta `previews/`. Não encerrar essas issues sem validação visual do usuário.
+
+- Catálogo total: **42 approved, 11 ready-for-review, 47 needs-revision, 1 awaiting-clarification, 14 archived**.
+- As 16 pranchas conceituais não transferidas à branch continuam pendentes em #19.
+- Auditoria automatizada validou checksum de todos os 99 PNGs presentes, 64 quadros de elenco e o JSON embutido no HTML.
+- **Próxima execução artística:** #5, #6, depois #8–#12; #7 depende da orientação do usuário.
