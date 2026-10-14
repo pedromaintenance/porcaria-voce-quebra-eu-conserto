@@ -54,7 +54,7 @@
       "name": "CAT 6030 — conceito anterior",
       "category": "equipamentos",
       "path": "phaser/assets-review/assets/equipamentos/historico/cat6030_conceito_original.png",
-      "state": "needs-revision",
+      "state": "ready-for-review",
       "issue": 4,
       "github_binary_status": "uploaded"
     },

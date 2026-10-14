@@ -156,7 +156,16 @@
       "user_comment": "Há espinhos na parte externa da caçamba, corrigir com base na máquina real.",
       "user_reviewed_at": "2026-10-14T19:38:53.195Z",
       "review_issue_number": 4,
-      "workflow_state": "needs-revision"
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 4,
+        "status": "technical-silhouette-fix-awaiting-user-review",
+        "source_sha256": "45757086761428f3c92f02a0f5ece5ab761559c05cc9a4235b911e1739aca294",
+        "corrected_sha256": "78be7b3d75c8b852cad31315eac33b0ed497b98b6cbafe5a6ec0c8c940bab73d",
+        "removed_alpha_pixels": 5161,
+        "validation": "alpha only removed inside two user-rejected outer spurs; rest of machine unchanged",
+        "preview": "phaser/assets-review/previews/issue04_cat6030_before_after.png"
+      }
     },
     {
       "id": "equipamentos_historico_caminhao_pixel_art_original_png",
@@ -2080,8 +2089,8 @@
   "workflow_counts": {
     "approved": 42,
     "archived": 14,
-    "needs-revision": 48,
-    "awaiting-clarification": 1,
-    "ready-for-review": 10
+    "ready-for-review": 11,
+    "needs-revision": 47,
+    "awaiting-clarification": 1
   }
 }
