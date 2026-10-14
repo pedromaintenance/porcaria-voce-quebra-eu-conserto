@@ -675,7 +675,7 @@
       "name": "João — extinguisher",
       "category": "elenco",
       "path": "phaser/assets-review/assets/personagens/elenco/pcm_joao/extinguisher.png",
-      "state": "needs-revision",
+      "state": "ready-for-review",
       "issue": 14,
       "github_binary_status": "uploaded"
     },
@@ -693,7 +693,7 @@
       "name": "João — inspect",
       "category": "elenco",
       "path": "phaser/assets-review/assets/personagens/elenco/pcm_joao/inspect.png",
-      "state": "needs-revision",
+      "state": "ready-for-review",
       "issue": 14,
       "github_binary_status": "uploaded"
     },
@@ -711,7 +711,7 @@
       "name": "João — positive",
       "category": "elenco",
       "path": "phaser/assets-review/assets/personagens/elenco/pcm_joao/positive.png",
-      "state": "needs-revision",
+      "state": "ready-for-review",
       "issue": 14,
       "github_binary_status": "uploaded"
     },
@@ -729,7 +729,7 @@
       "name": "João — spritesheet",
       "category": "elenco",
       "path": "phaser/assets-review/assets/personagens/elenco/pcm_joao/spritesheet.png",
-      "state": "needs-revision",
+      "state": "ready-for-review",
       "issue": 14,
       "github_binary_status": "uploaded"
     },

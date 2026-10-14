@@ -1,0 +1,58 @@
+{
+  "character": "pcm_joao",
+  "issue": 14,
+  "poses": [
+    {
+      "pose": "extinguisher",
+      "changed_pixels": 1296,
+      "bbox": [
+        87,
+        123,
+        184,
+        147
+      ],
+      "source_sha256": "038037768b4eb9c1ec3d4887383f4ed6c0bd6c3096b4fbac8cdccbca5cfb2bce",
+      "corrected_sha256": "6568f5589acc665dd955aa5573e4ceff1542ff86ff043c29444880c563afcdf6"
+    },
+    {
+      "pose": "inspect",
+      "changed_pixels": 1035,
+      "bbox": [
+        97,
+        123,
+        191,
+        147
+      ],
+      "source_sha256": "1a55a894bc54adc21a7be2b80dfb78f7d3345fcbe6c9f26d3098f65fc8e47c1e",
+      "corrected_sha256": "8b4aba581ed2727bf9c5ef0cca20b9435c2c15d768567ab14be5473836222284"
+    },
+    {
+      "pose": "positive",
+      "changed_pixels": 207,
+      "bbox": [
+        133,
+        82,
+        183,
+        86
+      ],
+      "source_sha256": "79c27a875160d66e7eb5281bdd51b4b24b194e372bf488cb3b282940f74b553a",
+      "corrected_sha256": "330fc9a5d064432a294ed509695e9d92d8d46c10354358adf32db24236702c39"
+    }
+  ],
+  "spritesheet": {
+    "source_sha256": "6c3cc34e9d8246c95198f5eadc02357bd0f2798b9f25fccbf23490a903214e73",
+    "corrected_sha256": "9a3fc4563f8a058908b8c63726e8ce664942bfa7fc746b8e7568095a0d72ad27",
+    "frame_order": [
+      "idle",
+      "positive",
+      "point",
+      "clipboard",
+      "radio",
+      "alert",
+      "inspect",
+      "extinguisher"
+    ]
+  },
+  "preview": "phaser/assets-review/previews/correcao_pcm_joao.png",
+  "status": "ready-for-review-not-approved"
+}

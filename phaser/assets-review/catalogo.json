@@ -1381,7 +1381,16 @@
       "user_comment": "tá bugada a cor do capacete, era pra ser todo branco",
       "user_reviewed_at": "2026-10-14T19:45:02.216Z",
       "review_issue_number": 14,
-      "workflow_state": "needs-revision"
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 14,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "038037768b4eb9c1ec3d4887383f4ed6c0bd6c3096b4fbac8cdccbca5cfb2bce",
+        "corrected_sha256": "6568f5589acc665dd955aa5573e4ceff1542ff86ff043c29444880c563afcdf6",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_pcm_joao.png",
+        "changed_pixels": 1296
+      }
     },
     {
       "id": "personagens_elenco_pcm_joao_idle_png",
@@ -1415,7 +1424,16 @@
       "user_comment": "tá bugada a cor do capacete, era pra ser todo branco",
       "user_reviewed_at": "2026-10-14T19:45:05.339Z",
       "review_issue_number": 14,
-      "workflow_state": "needs-revision"
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 14,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "1a55a894bc54adc21a7be2b80dfb78f7d3345fcbe6c9f26d3098f65fc8e47c1e",
+        "corrected_sha256": "8b4aba581ed2727bf9c5ef0cca20b9435c2c15d768567ab14be5473836222284",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_pcm_joao.png",
+        "changed_pixels": 1035
+      }
     },
     {
       "id": "personagens_elenco_pcm_joao_point_png",
@@ -1449,7 +1467,16 @@
       "user_comment": "a testa tá branca",
       "user_reviewed_at": "2026-10-14T19:45:14.416Z",
       "review_issue_number": 14,
-      "workflow_state": "needs-revision"
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 14,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "79c27a875160d66e7eb5281bdd51b4b24b194e372bf488cb3b282940f74b553a",
+        "corrected_sha256": "330fc9a5d064432a294ed509695e9d92d8d46c10354358adf32db24236702c39",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_pcm_joao.png",
+        "changed_pixels": 207
+      }
     },
     {
       "id": "personagens_elenco_pcm_joao_radio_png",
@@ -1483,7 +1510,15 @@
       "user_comment": "refazer após os assets abaixo serem corrigidos:\nJoão — positive\nJoão — inspect\nJoão — extinguisher",
       "user_reviewed_at": "2026-10-14T19:45:39.777Z",
       "review_issue_number": 14,
-      "workflow_state": "needs-revision"
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 14,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "6c3cc34e9d8246c95198f5eadc02357bd0f2798b9f25fccbf23490a903214e73",
+        "corrected_sha256": "9a3fc4563f8a058908b8c63726e8ce664942bfa7fc746b8e7568095a0d72ad27",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_pcm_joao.png"
+      }
     },
     {
       "id": "personagens_elenco_brig_nina_alert_png",
@@ -2028,8 +2063,8 @@
   "workflow_counts": {
     "approved": 42,
     "archived": 14,
-    "needs-revision": 54,
+    "needs-revision": 50,
     "awaiting-clarification": 1,
-    "ready-for-review": 4
+    "ready-for-review": 8
   }
 }
