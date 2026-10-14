@@ -161,8 +161,8 @@
         "issue": 4,
         "status": "technical-silhouette-fix-awaiting-user-review",
         "source_sha256": "45757086761428f3c92f02a0f5ece5ab761559c05cc9a4235b911e1739aca294",
-        "corrected_sha256": "78be7b3d75c8b852cad31315eac33b0ed497b98b6cbafe5a6ec0c8c940bab73d",
-        "removed_alpha_pixels": 5161,
+        "corrected_sha256": "b206a1ab34bd6935fcf8b562fbe6ee56bed4ef09c70c57a915864919aace30b9",
+        "removed_alpha_pixels": 1763,
         "validation": "alpha only removed inside two user-rejected outer spurs; rest of machine unchanged",
         "preview": "phaser/assets-review/previews/issue04_cat6030_before_after.png"
       }
