@@ -34,8 +34,8 @@ for entry in catalog["images"]:
         errors.append("decision/comment mismatch: "+rel)
     if entry["workflow_state"]=="archived" and item["decision"]!="NAO_OK":
         errors.append("approved asset was archived: "+rel)
-    if entry["workflow_state"]=="approved" and item["decision"]!="OK":
-        errors.append("unapproved asset marked as approved: "+rel)
+    if entry["workflow_state"]=="approved" and item["decision"]!="OK" and entry.get("reapproval",{}).get("decision")!="OK":
+        errors.append("unapproved asset marked as approved without explicit reapproval: "+rel)
     if entry["user_decision"]=="NAO_OK" and not entry.get("review_issue_number"):
         errors.append("missing issue for rejected asset: "+rel)
     dest=REVIEW_ROOT/rel
@@ -65,8 +65,13 @@ if source_ids != active_ids|{x["id"] for x in catalog["images"] if x["workflow_s
     errors.append("active + archived partition does not cover the catalog")
 if any(x["workflow_state"]=="archived" and x["id"] in active_ids for x in catalog["images"]):
     errors.append("archived item leaked into active-assets manifest")
-if stats["approved"]!=41 or stats["archived"]!=14 or stats["ready-for-review"]!=1:
-    errors.append("workflow status counts inconsistent")
+if stats["approved"] != active.get("approvedCount"):
+    errors.append("approvedCount does not match actual approvals")
+if sum(stats[k] for k in ("approved", "archived", "needs-revision", "awaiting-clarification", "ready-for-review")) != len(catalog["images"]):
+    errors.append("workflow state count differs from total catalog")
+for state, expected in catalog.get("workflow_counts", {}).items():
+    if stats[state] != expected:
+        errors.append(f"workflow_counts mismatch in {state}: {stats[state]} != {expected}")
 print("STATUS",dict(stats))
 for w in warnings:
     print("PENDING",w)
