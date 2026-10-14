@@ -53,6 +53,19 @@ for i,(name,im) in enumerate(thumbs):
  x=(i%3)*520; y=(i//3)*450
  grid.paste(im,(x,y+40));d.text((x+10,y+10),name,fill="white")
 grid.save(Path(__file__).resolve().parent/"pose-palette-crops.png")
+# Preview of four equipment issues for non-destructive geometry inspection.
+equip_dir=ROOT/"phaser/assets-review/assets/equipamentos/historico"
+targets={
+ "issue04_cat6030":"cat6030_conceito_original.png",
+ "issue05_cat777":"caminhao_pixel_art_original.png",
+ "issue06_escavadeira":"escavadeira_conceito_inicial.png",
+ "issue07_isometrica":"escavadeira_isometrica_original.png",
+}
+for slug,filename in targets.items():
+ source=Image.open(equip_dir/filename).convert("RGBA")
+ source.thumbnail((920,800),Image.Resampling.LANCZOS)
+ bg=Image.new("RGBA",source.size,(196,204,209,255));bg.alpha_composite(source)
+ bg.convert("RGB").save(ROOT/"phaser/assets-review/previews"/(slug+".png"),optimize=True)
 records={}
 for character,poses in cases.items():
  records[character]={}
