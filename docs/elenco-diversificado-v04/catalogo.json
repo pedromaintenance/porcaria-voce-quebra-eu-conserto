@@ -1,0 +1,95 @@
+{
+  "version": "0.4",
+  "frameWidth": 260,
+  "frameHeight": 300,
+  "columns": 4,
+  "rows": 2,
+  "frameOrder": [
+    "idle",
+    "walk_1",
+    "walk_2",
+    "walk_3",
+    "walk_4",
+    "inspect",
+    "work",
+    "point"
+  ],
+  "animations": {
+    "idle": [
+      0
+    ],
+    "walk": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "inspect": [
+      5
+    ],
+    "work": [
+      6
+    ],
+    "point": [
+      7
+    ]
+  },
+  "characters": [
+    {
+      "id": "mec_ana",
+      "nome": "Ana",
+      "cargo": "mecanica",
+      "expectedSheet": "assets/workers/mec_ana/spritesheet.png",
+      "publicationStatus": "pending"
+    },
+    {
+      "id": "mec_rafael",
+      "nome": "Rafael",
+      "cargo": "mecanico",
+      "expectedSheet": "assets/workers/mec_rafael/spritesheet.png",
+      "publicationStatus": "pending"
+    },
+    {
+      "id": "mec_lia",
+      "nome": "Lia",
+      "cargo": "mecanica",
+      "expectedSheet": "assets/workers/mec_lia/spritesheet.png",
+      "publicationStatus": "pending"
+    },
+    {
+      "id": "ele_davi",
+      "nome": "Davi",
+      "cargo": "eletricista",
+      "expectedSheet": "assets/workers/ele_davi/spritesheet.png",
+      "publicationStatus": "pending"
+    },
+    {
+      "id": "ele_bia",
+      "nome": "Bia",
+      "cargo": "eletricista",
+      "expectedSheet": "assets/workers/ele_bia/spritesheet.png",
+      "publicationStatus": "pending"
+    },
+    {
+      "id": "pcm_clara",
+      "nome": "Clara",
+      "cargo": "pcm",
+      "expectedSheet": "assets/workers/pcm_clara/spritesheet.png",
+      "publicationStatus": "pending"
+    },
+    {
+      "id": "pcm_joao",
+      "nome": "João",
+      "cargo": "pcm",
+      "expectedSheet": "assets/workers/pcm_joao/spritesheet.png",
+      "publicationStatus": "pending"
+    },
+    {
+      "id": "brig_nina",
+      "nome": "Nina",
+      "cargo": "brigadista",
+      "expectedSheet": "assets/workers/brig_nina/spritesheet.png",
+      "publicationStatus": "pending"
+    }
+  ]
+}
