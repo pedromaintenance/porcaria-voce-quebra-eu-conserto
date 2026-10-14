@@ -306,7 +306,7 @@
       "name": "Rafael — positive",
       "category": "elenco",
       "path": "phaser/assets-review/assets/personagens/elenco/mec_rafael/positive.png",
-      "state": "needs-revision",
+      "state": "ready-for-review",
       "issue": 15,
       "github_binary_status": "uploaded"
     },
@@ -324,7 +324,7 @@
       "name": "Rafael — spritesheet",
       "category": "elenco",
       "path": "phaser/assets-review/assets/personagens/elenco/mec_rafael/spritesheet.png",
-      "state": "needs-revision",
+      "state": "ready-for-review",
       "issue": 15,
       "github_binary_status": "uploaded"
     },

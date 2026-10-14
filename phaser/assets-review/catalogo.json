@@ -649,7 +649,16 @@
       "user_comment": "a testa tá amarela",
       "user_reviewed_at": "2026-10-14T19:46:43.180Z",
       "review_issue_number": 15,
-      "workflow_state": "needs-revision"
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 15,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "bf90be3a8f75e2a7861f2fb76a7695df28766a301a09e8c7b28e688542db5f6b",
+        "corrected_sha256": "8c0b21f8ac4ffd4ef77a4fd2f9c7257820d9951e4227f758ee277bb609f8f6b8",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_mec_rafael.png",
+        "changed_pixels": 139
+      }
     },
     {
       "id": "personagens_elenco_mec_rafael_radio_png",
@@ -683,7 +692,15 @@
       "user_comment": "refazer após os assets abaixo serem corrigidos:\nRafael — positive",
       "user_reviewed_at": "2026-10-14T19:47:13.060Z",
       "review_issue_number": 15,
-      "workflow_state": "needs-revision"
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 15,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "332930dc4357078a222e03285448c8ec39b91edc9728ee49828688f0caed3439",
+        "corrected_sha256": "e1b9018fc47a5d8b9612637b7ad4594df1b82c5fca8521958184f207cbf738d6",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_mec_rafael.png"
+      }
     },
     {
       "id": "personagens_elenco_mec_lia_alert_png",
@@ -2063,8 +2080,8 @@
   "workflow_counts": {
     "approved": 42,
     "archived": 14,
-    "needs-revision": 50,
+    "needs-revision": 48,
     "awaiting-clarification": 1,
-    "ready-for-review": 8
+    "ready-for-review": 10
   }
 }
