@@ -24,9 +24,11 @@
       "fix": {
         "issue": 3,
         "source_sha256": "627cc13abc3755d33eaa810fa546d2f04af13ee86d16163c9cf27f91bf41ff66",
-        "corrected_sha256": "ca5cfe56e3e77c71e08d98d2daa9fdcd5174c451afefb4e0c5f30f830b149dfe",
+        "corrected_sha256": "90cbbad305064b9bc76d92c5a5c070ae1fda1c5e6a6a65451b12e58ca936e9fb",
         "validated_git_blob": "e612469b7596a3ec38a7320fd8479d5802a2b450",
-        "status": "technical-fix-complete-awaiting-user-visual-approval"
+        "status": "technical-fix-complete-awaiting-user-visual-approval",
+        "previous_expected_sha256": "ca5cfe56e3e77c71e08d98d2daa9fdcd5174c451afefb4e0c5f30f830b149dfe",
+        "sha_reconciled_from": "SHA-256 recorded by GitHub Actions audit on the actual branch PNG; reapproval retained"
       },
       "reapproval": {
         "round": 2,
