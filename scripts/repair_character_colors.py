@@ -18,11 +18,11 @@ CASES={
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def fix_pixel(r,g,b,a,pose,character,x,y):
  if a==0:return None
- if pose in ("extinguisher","inspect") and 85<=x<201 and 115<=y<148:
+ if pose in ("extinguisher","inspect") and 80<=x<208 and 110<=y<165:
   if character=="ele_davi" and 49<=r<=160 and g>=r+6 and b>=g+4 and b<185:
    t=max(0,min(1,(r-55)/95))
    return (round(170+73*t),round(130+80*t),round(13+17*t),a)
-  if character=="pcm_joao" and r>=218 and 80<=g<=174 and b<=75:
+  if character=="pcm_joao" and r>=206 and 65<=g<=185 and b<=110 and r>g*1.4:
    shade=max(190,min(251,190+round((g-80)*.68)))
    return (shade,min(255,shade+3),min(255,shade+7),a)
  if pose=="positive" and 130<=x<184 and 82<=y<90:
@@ -48,7 +48,7 @@ def edit_pose(path,pose,character):
    if new is not None and new!=old:
     pixels[x,y]=new;edited+=1
     bbox=[min(bbox[0],x),min(bbox[1],y),max(bbox[2],x),max(bbox[3],y)]
- if edited==0: raise ValueError(f"no color defects matched: {character}/{pose}. Investigate source before continuing.")
+ if edited==0: return None
  if edited>3000:raise ValueError(f"unsafe oversized edit {character}/{pose}: {edited}")
  if im.getchannel("A").tobytes()!=source.getchannel("A").tobytes():raise ValueError("alpha changed")
  beforehash=sha(path)
@@ -87,7 +87,8 @@ def review_image(character,changes):
 def main(character):
  c=CASES[character]
  paths=DIR/character
- changes=[edit_pose(paths/(pose+".png"),pose,character) for pose in c["poses"]]
+ changes=[e for pose in c["poses"] if (e:=edit_pose(paths/(pose+".png"),pose,character)) is not None]
+ if not changes:raise ValueError(f"No residual correction found in {character}")
  sh=update_sheet(character,changes)
  preview=review_image(character,changes)
  catalogpath=R/"catalogo.json"
