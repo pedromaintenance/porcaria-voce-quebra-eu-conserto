@@ -29,7 +29,7 @@ def fix_pixel(r,g,b,a,pose,character,x,y):
   # Banda artificial na testa sob a aba; preservar contornos escuros
   if character in ("ele_davi","mec_rafael") and r>185 and g>142 and b<105 and r>g*1.05:
    base=CASES[character]["skin"]
-   shift=max(-8,min(9,round((r+g+b)/3-156)/3))
+   shift=max(-8,min(9,round(((r+g+b)/3-156)/3)))
    return tuple(max(0,min(255,q+shift)) for q in base)+(a,)
   if character=="pcm_joao" and min(r,g,b)>170 and max(r,g,b)-min(r,g,b)<39:
    base=CASES[character]["skin"]
