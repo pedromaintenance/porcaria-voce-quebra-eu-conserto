@@ -38,6 +38,21 @@ def analyze(image):
    grid.append(f"{yy:03d} "+"".join(type_pixel(im.getpixel((x,yy))) for x in range(x1,x2,5)))
   block["zones"][name]={"hist":dict(hist),"colors":palettes.most_common(12),"map":grid}
  return block
+# Contact sheet of existing face crops for visual QA. These are diagnostics, not edited sprites.
+from PIL import ImageDraw
+thumbs=[]
+for char in cases:
+ for pose in (["positive"] if char=="mec_rafael" else ["positive","inspect","extinguisher"]):
+  source=Image.open(DIR/char/(pose+".png")).convert("RGBA")
+  crop=source.crop((80,70,210,172))
+  preview=Image.new("RGBA",crop.size,(190,200,205,255));preview.alpha_composite(crop)
+  thumbs.append((char+"/"+pose,preview.convert("RGB").resize((520,408),Image.Resampling.NEAREST)))
+grid=Image.new("RGB",(520*3,450*((len(thumbs)+2)//3)),(18,26,38))
+d=ImageDraw.Draw(grid)
+for i,(name,im) in enumerate(thumbs):
+ x=(i%3)*520; y=(i//3)*450
+ grid.paste(im,(x,y+40));d.text((x+10,y+10),name,fill="white")
+grid.save(Path(__file__).resolve().parent/"pose-palette-crops.png")
 records={}
 for character,poses in cases.items():
  records[character]={}
