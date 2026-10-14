@@ -2,6 +2,23 @@
 
 > **Branch de trabalho:** `fix/assets-review-20261014` | **PR:** [#20](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/20) | **Não mesclar na `main` até a validação.**
 
+## Revisão em andamento — após as correções de 14/10/2026
+
+**[Abrir o HTML atualizado para avaliação dos sprites (90 imagens)](./avaliar-sprites-rodada02.html)**
+
+- **CAT395:** reaprovação visual registrada (issue #3).
+- **CAT6030 histórica (issue #4):** silhueta da caçamba revisada; [antes/depois](./previews/issue04_cat6030_before_after.png).
+- **Davi (issue #13):** [3 poses + spritesheet corrigidos](./previews/correcao_ele_davi.png).
+- **João (issue #14):** [3 poses + spritesheet corrigidos](./previews/correcao_pcm_joao.png).
+- **Rafael (issue #15):** [1 pose + spritesheet corrigidos](./previews/correcao_mec_rafael.png).
+
+**Estados atuais dos 115 arquivos:** 42 aprovados, 11 corrigidos aguardando aceite visual, 47 pendentes de correção, 1 aguardando esclarecimento, 14 arquivados.
+
+São números posteriores à primeira avaliação histórica de 41 OK / 74 Não OK, preservada para rastreabilidade.
+Há ainda 16 PNGs originais ausentes no GitHub (#19); o HTML v1.1 possui apenas prévias desses itens.
+
+O HTML atualizado usa os arquivos da branch de trabalho. Não mesclar na main enquanto houver itens reprovados.
+
 ## Abrir a galeria
 
 **[Baixar `avaliar-v11.html` — revisão visual dos 115 assets](./avaliar-v11.html)**
