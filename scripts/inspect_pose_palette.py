@@ -45,5 +45,18 @@ for character,poses in cases.items():
   path=DIR/character/(pose+".png")
   with Image.open(path) as source:
    records[character][pose]=analyze(source)
+for character in cases:
+ sheet=Image.open(DIR/character/"spritesheet.png").convert("RGBA")
+ poses=["alert","clipboard","extinguisher","idle","inspect","point","positive","radio"]
+ comparison={}
+ for i in range(8):
+  cell=sheet.crop(((i%4)*260,(i//4)*300,(i%4+1)*260,(i//4+1)*300))
+  differences={}
+  for pose in poses:
+   candidate=Image.open(DIR/character/(pose+".png")).convert("RGBA")
+   if candidate.size==cell.size:
+    differences[pose]=sum(a!=b for a,b in zip(candidate.tobytes(),cell.tobytes()))
+  comparison[str(i)]=sorted(differences.items(),key=lambda x:x[1])[:3]
+ records[character]["spritesheet"]["frameMatches"]=comparison
 (Path(__file__).resolve().parent/"pose-palette-diagnostics.json").write_text(json.dumps(records,ensure_ascii=False,indent=2),encoding="utf-8")
 print("Generated pose palette diagnostics",list(records))
