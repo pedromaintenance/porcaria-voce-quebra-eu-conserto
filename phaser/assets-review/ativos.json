@@ -1,0 +1,917 @@
+{
+  "version": "v0.9-reviewed",
+  "purpose": "Only candidate game assets, excluding deprecated studies; 'needs-revision' is NOT release-ready.",
+  "archivedCount": 14,
+  "approvedCount": 41,
+  "assets": [
+    {
+      "id": "equipamentos_cat395_png",
+      "name": "CAT 395 — escavadeira",
+      "category": "equipamentos",
+      "path": "phaser/assets-review/assets/equipamentos/cat395.png",
+      "state": "needs-revision",
+      "issue": 3,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "equipamentos_cat6030_backhoe_estudo_png",
+      "name": "CAT 6030 — Backhoe (estudo)",
+      "category": "equipamentos",
+      "path": "phaser/assets-review/assets/equipamentos/cat6030_backhoe_estudo.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "equipamentos_cat6030_frontshovel_estudo_png",
+      "name": "CAT 6030 — Front Shovel (estudo)",
+      "category": "equipamentos",
+      "path": "phaser/assets-review/assets/equipamentos/cat6030_frontshovel_estudo.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "equipamentos_sandvik_dr410i_torre_erguida_png",
+      "name": "Sandvik DR410i — mastro erguido",
+      "category": "equipamentos",
+      "path": "phaser/assets-review/assets/equipamentos/sandvik_dr410i_torre_erguida.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "equipamentos_sandvik_dr410i_torre_abaixada_png",
+      "name": "Sandvik DR410i — mastro abaixado",
+      "category": "equipamentos",
+      "path": "phaser/assets-review/assets/equipamentos/sandvik_dr410i_torre_abaixada.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "equipamentos_historico_cat6030_conceito_original_png",
+      "name": "CAT 6030 — conceito anterior",
+      "category": "equipamentos",
+      "path": "phaser/assets-review/assets/equipamentos/historico/cat6030_conceito_original.png",
+      "state": "needs-revision",
+      "issue": 4,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "equipamentos_historico_caminhao_pixel_art_original_png",
+      "name": "Caminhão de mina — conceito inicial",
+      "category": "equipamentos",
+      "path": "phaser/assets-review/assets/equipamentos/historico/caminhao_pixel_art_original.png",
+      "state": "needs-revision",
+      "issue": 5,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "equipamentos_historico_escavadeira_isometrica_original_png",
+      "name": "Escavadeira amarela isométrica — conceito",
+      "category": "equipamentos",
+      "path": "phaser/assets-review/assets/equipamentos/historico/escavadeira_isometrica_original.png",
+      "state": "awaiting-clarification",
+      "issue": 7,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "equipamentos_historico_escavadeira_conceito_inicial_png",
+      "name": "Escavadeira — conceito inicial",
+      "category": "equipamentos",
+      "path": "phaser/assets-review/assets/equipamentos/historico/escavadeira_conceito_inicial.png",
+      "state": "needs-revision",
+      "issue": 6,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "equipamentos_historico_perfuratriz_conceito_inicial_png",
+      "name": "Perfuratriz — conceito inicial",
+      "category": "equipamentos",
+      "path": "phaser/assets-review/assets/equipamentos/historico/perfuratriz_conceito_inicial.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_pedro_pedro_alerta_png",
+      "name": "Pedro — alerta",
+      "category": "pedro",
+      "path": "phaser/assets-review/assets/personagens/pedro/pedro_alerta.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_pedro_pedro_apontando_png",
+      "name": "Pedro — apontando",
+      "category": "pedro",
+      "path": "phaser/assets-review/assets/personagens/pedro/pedro_apontando.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_pedro_pedro_extintor_png",
+      "name": "Pedro — extintor",
+      "category": "pedro",
+      "path": "phaser/assets-review/assets/personagens/pedro/pedro_extintor.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_pedro_pedro_inspecionando_png",
+      "name": "Pedro — inspecionando",
+      "category": "pedro",
+      "path": "phaser/assets-review/assets/personagens/pedro/pedro_inspecionando.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_pedro_pedro_neutro_png",
+      "name": "Pedro — neutro",
+      "category": "pedro",
+      "path": "phaser/assets-review/assets/personagens/pedro/pedro_neutro.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_pedro_pedro_positivo_png",
+      "name": "Pedro — positivo",
+      "category": "pedro",
+      "path": "phaser/assets-review/assets/personagens/pedro/pedro_positivo.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_pedro_pedro_prancheta_png",
+      "name": "Pedro — prancheta",
+      "category": "pedro",
+      "path": "phaser/assets-review/assets/personagens/pedro/pedro_prancheta.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_pedro_pedro_radio_png",
+      "name": "Pedro — radio",
+      "category": "pedro",
+      "path": "phaser/assets-review/assets/personagens/pedro/pedro_radio.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_ana_alert_png",
+      "name": "Ana — alert",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_ana/alert.png",
+      "state": "needs-revision",
+      "issue": 8,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_ana_clipboard_png",
+      "name": "Ana — clipboard",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_ana/clipboard.png",
+      "state": "needs-revision",
+      "issue": 8,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_ana_extinguisher_png",
+      "name": "Ana — extinguisher",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_ana/extinguisher.png",
+      "state": "needs-revision",
+      "issue": 8,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_ana_idle_png",
+      "name": "Ana — idle",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_ana/idle.png",
+      "state": "needs-revision",
+      "issue": 8,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_ana_inspect_png",
+      "name": "Ana — inspect",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_ana/inspect.png",
+      "state": "needs-revision",
+      "issue": 8,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_ana_point_png",
+      "name": "Ana — point",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_ana/point.png",
+      "state": "needs-revision",
+      "issue": 8,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_ana_positive_png",
+      "name": "Ana — positive",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_ana/positive.png",
+      "state": "needs-revision",
+      "issue": 8,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_ana_radio_png",
+      "name": "Ana — radio",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_ana/radio.png",
+      "state": "needs-revision",
+      "issue": 8,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_ana_spritesheet_png",
+      "name": "Ana — spritesheet",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_ana/spritesheet.png",
+      "state": "needs-revision",
+      "issue": 8,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_rafael_alert_png",
+      "name": "Rafael — alert",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_rafael/alert.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_rafael_clipboard_png",
+      "name": "Rafael — clipboard",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_rafael/clipboard.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_rafael_extinguisher_png",
+      "name": "Rafael — extinguisher",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_rafael/extinguisher.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_rafael_idle_png",
+      "name": "Rafael — idle",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_rafael/idle.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_rafael_inspect_png",
+      "name": "Rafael — inspect",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_rafael/inspect.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_rafael_point_png",
+      "name": "Rafael — point",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_rafael/point.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_rafael_positive_png",
+      "name": "Rafael — positive",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_rafael/positive.png",
+      "state": "needs-revision",
+      "issue": 15,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_rafael_radio_png",
+      "name": "Rafael — radio",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_rafael/radio.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_rafael_spritesheet_png",
+      "name": "Rafael — spritesheet",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_rafael/spritesheet.png",
+      "state": "needs-revision",
+      "issue": 15,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_lia_alert_png",
+      "name": "Lia — alert",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_lia/alert.png",
+      "state": "needs-revision",
+      "issue": 11,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_lia_clipboard_png",
+      "name": "Lia — clipboard",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_lia/clipboard.png",
+      "state": "needs-revision",
+      "issue": 11,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_lia_extinguisher_png",
+      "name": "Lia — extinguisher",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_lia/extinguisher.png",
+      "state": "needs-revision",
+      "issue": 11,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_lia_idle_png",
+      "name": "Lia — idle",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_lia/idle.png",
+      "state": "needs-revision",
+      "issue": 11,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_lia_inspect_png",
+      "name": "Lia — inspect",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_lia/inspect.png",
+      "state": "needs-revision",
+      "issue": 11,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_lia_point_png",
+      "name": "Lia — point",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_lia/point.png",
+      "state": "needs-revision",
+      "issue": 11,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_lia_positive_png",
+      "name": "Lia — positive",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_lia/positive.png",
+      "state": "needs-revision",
+      "issue": 11,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_lia_radio_png",
+      "name": "Lia — radio",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_lia/radio.png",
+      "state": "needs-revision",
+      "issue": 11,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_mec_lia_spritesheet_png",
+      "name": "Lia — spritesheet",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/mec_lia/spritesheet.png",
+      "state": "needs-revision",
+      "issue": 11,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_ele_davi_alert_png",
+      "name": "Davi — alert",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/ele_davi/alert.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_ele_davi_clipboard_png",
+      "name": "Davi — clipboard",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/ele_davi/clipboard.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_ele_davi_extinguisher_png",
+      "name": "Davi — extinguisher",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/ele_davi/extinguisher.png",
+      "state": "needs-revision",
+      "issue": 13,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_ele_davi_idle_png",
+      "name": "Davi — idle",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/ele_davi/idle.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_ele_davi_inspect_png",
+      "name": "Davi — inspect",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/ele_davi/inspect.png",
+      "state": "needs-revision",
+      "issue": 13,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_ele_davi_point_png",
+      "name": "Davi — point",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/ele_davi/point.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_ele_davi_positive_png",
+      "name": "Davi — positive",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/ele_davi/positive.png",
+      "state": "needs-revision",
+      "issue": 13,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_ele_davi_radio_png",
+      "name": "Davi — radio",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/ele_davi/radio.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_ele_davi_spritesheet_png",
+      "name": "Davi — spritesheet",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/ele_davi/spritesheet.png",
+      "state": "needs-revision",
+      "issue": 13,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_ele_bia_alert_png",
+      "name": "Bia — alert",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/ele_bia/alert.png",
+      "state": "needs-revision",
+      "issue": 9,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_ele_bia_clipboard_png",
+      "name": "Bia — clipboard",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/ele_bia/clipboard.png",
+      "state": "needs-revision",
+      "issue": 9,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_ele_bia_extinguisher_png",
+      "name": "Bia — extinguisher",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/ele_bia/extinguisher.png",
+      "state": "needs-revision",
+      "issue": 9,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_ele_bia_idle_png",
+      "name": "Bia — idle",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/ele_bia/idle.png",
+      "state": "needs-revision",
+      "issue": 9,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_ele_bia_inspect_png",
+      "name": "Bia — inspect",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/ele_bia/inspect.png",
+      "state": "needs-revision",
+      "issue": 9,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_ele_bia_point_png",
+      "name": "Bia — point",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/ele_bia/point.png",
+      "state": "needs-revision",
+      "issue": 9,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_ele_bia_positive_png",
+      "name": "Bia — positive",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/ele_bia/positive.png",
+      "state": "needs-revision",
+      "issue": 9,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_ele_bia_radio_png",
+      "name": "Bia — radio",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/ele_bia/radio.png",
+      "state": "needs-revision",
+      "issue": 9,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_ele_bia_spritesheet_png",
+      "name": "Bia — spritesheet",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/ele_bia/spritesheet.png",
+      "state": "needs-revision",
+      "issue": 9,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_pcm_clara_alert_png",
+      "name": "Clara — alert",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/pcm_clara/alert.png",
+      "state": "needs-revision",
+      "issue": 10,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_pcm_clara_clipboard_png",
+      "name": "Clara — clipboard",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/pcm_clara/clipboard.png",
+      "state": "needs-revision",
+      "issue": 10,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_pcm_clara_extinguisher_png",
+      "name": "Clara — extinguisher",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/pcm_clara/extinguisher.png",
+      "state": "needs-revision",
+      "issue": 10,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_pcm_clara_idle_png",
+      "name": "Clara — idle",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/pcm_clara/idle.png",
+      "state": "needs-revision",
+      "issue": 10,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_pcm_clara_inspect_png",
+      "name": "Clara — inspect",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/pcm_clara/inspect.png",
+      "state": "needs-revision",
+      "issue": 10,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_pcm_clara_point_png",
+      "name": "Clara — point",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/pcm_clara/point.png",
+      "state": "needs-revision",
+      "issue": 10,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_pcm_clara_positive_png",
+      "name": "Clara — positive",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/pcm_clara/positive.png",
+      "state": "needs-revision",
+      "issue": 10,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_pcm_clara_radio_png",
+      "name": "Clara — radio",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/pcm_clara/radio.png",
+      "state": "needs-revision",
+      "issue": 10,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_pcm_clara_spritesheet_png",
+      "name": "Clara — spritesheet",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/pcm_clara/spritesheet.png",
+      "state": "needs-revision",
+      "issue": 10,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_pcm_joao_alert_png",
+      "name": "João — alert",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/pcm_joao/alert.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_pcm_joao_clipboard_png",
+      "name": "João — clipboard",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/pcm_joao/clipboard.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_pcm_joao_extinguisher_png",
+      "name": "João — extinguisher",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/pcm_joao/extinguisher.png",
+      "state": "needs-revision",
+      "issue": 14,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_pcm_joao_idle_png",
+      "name": "João — idle",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/pcm_joao/idle.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_pcm_joao_inspect_png",
+      "name": "João — inspect",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/pcm_joao/inspect.png",
+      "state": "needs-revision",
+      "issue": 14,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_pcm_joao_point_png",
+      "name": "João — point",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/pcm_joao/point.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_pcm_joao_positive_png",
+      "name": "João — positive",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/pcm_joao/positive.png",
+      "state": "needs-revision",
+      "issue": 14,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_pcm_joao_radio_png",
+      "name": "João — radio",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/pcm_joao/radio.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_pcm_joao_spritesheet_png",
+      "name": "João — spritesheet",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/pcm_joao/spritesheet.png",
+      "state": "needs-revision",
+      "issue": 14,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_brig_nina_alert_png",
+      "name": "Nina — alert",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/brig_nina/alert.png",
+      "state": "needs-revision",
+      "issue": 12,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_brig_nina_clipboard_png",
+      "name": "Nina — clipboard",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/brig_nina/clipboard.png",
+      "state": "needs-revision",
+      "issue": 12,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_brig_nina_extinguisher_png",
+      "name": "Nina — extinguisher",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/brig_nina/extinguisher.png",
+      "state": "needs-revision",
+      "issue": 12,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_brig_nina_idle_png",
+      "name": "Nina — idle",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/brig_nina/idle.png",
+      "state": "needs-revision",
+      "issue": 12,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_brig_nina_inspect_png",
+      "name": "Nina — inspect",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/brig_nina/inspect.png",
+      "state": "needs-revision",
+      "issue": 12,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_brig_nina_point_png",
+      "name": "Nina — point",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/brig_nina/point.png",
+      "state": "needs-revision",
+      "issue": 12,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_brig_nina_positive_png",
+      "name": "Nina — positive",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/brig_nina/positive.png",
+      "state": "needs-revision",
+      "issue": 12,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_brig_nina_radio_png",
+      "name": "Nina — radio",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/brig_nina/radio.png",
+      "state": "needs-revision",
+      "issue": 12,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "personagens_elenco_brig_nina_spritesheet_png",
+      "name": "Nina — spritesheet",
+      "category": "elenco",
+      "path": "phaser/assets-review/assets/personagens/elenco/brig_nina/spritesheet.png",
+      "state": "needs-revision",
+      "issue": 12,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "conceituais_oficina_p_o_r_c_a_r_i_a__em_a__o_png",
+      "name": "Oficina P.O.R.C.A.R.I.A. — mockup",
+      "category": "conceituais",
+      "path": "phaser/assets-review/assets/conceituais/oficina_p.o.r.c.a.r.i.a._em_ação.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "pending-upload"
+    },
+    {
+      "id": "conceituais_sprite_sheet_de_brigadista_em_pixel_art_png",
+      "name": "Brigadista — atlas inicial",
+      "category": "conceituais",
+      "path": "phaser/assets-review/assets/conceituais/sprite_sheet_de_brigadista_em_pixel_art.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "pending-upload"
+    },
+    {
+      "id": "conceituais_folha_de_sprites_do_eletricista_mineiro_png",
+      "name": "Eletricista — atlas inicial",
+      "category": "conceituais",
+      "path": "phaser/assets-review/assets/conceituais/folha_de_sprites_do_eletricista_mineiro.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "uploaded"
+    },
+    {
+      "id": "conceituais_supervisor_de_obra_em_pixel_art_png",
+      "name": "Supervisor — atlas inicial",
+      "category": "conceituais",
+      "path": "phaser/assets-review/assets/conceituais/supervisor_de_obra_em_pixel_art.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "pending-upload"
+    },
+    {
+      "id": "conceituais_mec_nico_pixelando_com_chave_inglesa_png",
+      "name": "Mecânico — sprite inicial",
+      "category": "conceituais",
+      "path": "phaser/assets-review/assets/conceituais/mecânico_pixelando_com_chave_inglesa.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "pending-upload"
+    },
+    {
+      "id": "conceituais_a_large_clean_organized_pixel_art_sprite_sheet_i_png",
+      "name": "Atlas de direção de arte — catálogo v0.4",
+      "category": "conceituais",
+      "path": "phaser/assets-review/assets/conceituais/a_large_clean_organized_pixel_art_sprite_sheet_i.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "pending-upload"
+    },
+    {
+      "id": "conceituais_a_detailed_pixel_art_sprite_sheet_infographic_on_a_png",
+      "name": "Atlas conceitual geral — v0.1",
+      "category": "conceituais",
+      "path": "phaser/assets-review/assets/conceituais/a_detailed_pixel_art_sprite_sheet_infographic_on_a.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "pending-upload"
+    },
+    {
+      "id": "conceituais_a_detailed_pixel_art_sprite_sheet_asset_atlas_illu_png",
+      "name": "Atlas visual de referência",
+      "category": "conceituais",
+      "path": "phaser/assets-review/assets/conceituais/a_detailed_pixel_art_sprite_sheet_asset_atlas_illu.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "pending-upload"
+    },
+    {
+      "id": "conceituais_a_detailed_pixel_art_sprite_sheet_composite_image_png",
+      "name": "Atlas — elenco e equipamentos",
+      "category": "conceituais",
+      "path": "phaser/assets-review/assets/conceituais/a_detailed_pixel_art_sprite_sheet_composite_image.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "pending-upload"
+    },
+    {
+      "id": "conceituais_a_wide_high_resolution_sprite_sheet_style_poster_png",
+      "name": "Prancha de cenários e máquinas",
+      "category": "conceituais",
+      "path": "phaser/assets-review/assets/conceituais/a_wide_high_resolution_sprite_sheet_style_poster.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "pending-upload"
+    },
+    {
+      "id": "conceituais_a_wide_high_resolution_pixel_art_sprite_sheet_a_png",
+      "name": "Prancha industrial de sprites",
+      "category": "conceituais",
+      "path": "phaser/assets-review/assets/conceituais/a_wide_high_resolution_pixel_art_sprite_sheet_a.png",
+      "state": "approved",
+      "issue": null,
+      "github_binary_status": "pending-upload"
+    }
+  ]
+}
