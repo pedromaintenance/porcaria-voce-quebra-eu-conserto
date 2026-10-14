@@ -72,6 +72,48 @@ if sum(stats[k] for k in ("approved", "archived", "needs-revision", "awaiting-cl
 for state, expected in catalog.get("workflow_counts", {}).items():
     if stats[state] != expected:
         errors.append(f"workflow_counts mismatch in {state}: {stats[state]} != {expected}")
+# Full spritesheet frame equivalence for every actor. Asset-review image files are source of truth.
+frame_order=["idle","positive","point","clipboard","radio","alert","inspect","extinguisher"]
+for actor in ["ele_davi","pcm_joao","mec_rafael","mec_ana","ele_bia","pcm_clara","mec_lia","brig_nina"]:
+    folder=REVIEW_ROOT/"assets/personagens/elenco"/actor
+    sheet=folder/"spritesheet.png"
+    if not sheet.exists():
+        errors.append("missing spritesheet: "+actor)
+        continue
+    with Image.open(sheet) as im:
+        atlas=im.convert("RGBA")
+    if atlas.size!=(1040,600):
+        errors.append(f"invalid spritesheet size: {actor} {atlas.size}")
+        continue
+    for i,pose in enumerate(frame_order):
+        p=folder/(pose+".png")
+        if not p.exists():
+            errors.append(f"missing pose: {actor}/{pose}")
+            continue
+        with Image.open(p) as src:
+            frame=src.convert("RGBA")
+        if frame.size!=(260,300):
+            errors.append(f"wrong pose size: {actor}/{pose}")
+            continue
+        x=(i%4)*260; y=(i//4)*300
+        if atlas.crop((x,y,x+260,y+300)).tobytes()!=frame.tobytes():
+            errors.append(f"spritesheet frame mismatch: {actor}/{pose}")
+# Ensure gallery's embedded manifest is valid JSON and remains consistent with catalog.
+import re
+gallery=(REVIEW_ROOT/"avaliar-sprites-rodada02.html").read_text("utf-8")
+match=re.search(r'<script id="data" type="application/json">([\s\S]*?)</script>',gallery)
+if not match:
+    errors.append("review HTML lacks embedded asset data")
+else:
+    try:
+        shown=json.loads(match.group(1))
+        if len(shown)!=90:errors.append(f"gallery has {len(shown)} images instead of 90")
+        byid={x["id"]:x for x in catalog["images"]}
+        for x in shown:
+            if x["state"]!=byid[x["id"]]["workflow_state"]:
+                errors.append("stale HTML state: "+x["id"])
+    except (ValueError,KeyError) as exc:
+        errors.append("invalid HTML gallery data: "+str(exc))
 print("STATUS",dict(stats))
 for w in warnings:
     print("PENDING",w)
