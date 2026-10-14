@@ -9,7 +9,7 @@
       "name": "CAT 395 — escavadeira",
       "category": "equipamentos",
       "path": "phaser/assets-review/assets/equipamentos/cat395.png",
-      "state": "needs-revision",
+      "state": "ready-for-review",
       "issue": 3,
       "github_binary_status": "uploaded"
     },
