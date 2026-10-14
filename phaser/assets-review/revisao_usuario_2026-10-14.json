@@ -1,0 +1,2140 @@
+{
+  "schema": "porcaria.asset-review.v2",
+  "game": "P.O.R.C.A.R.I.A.",
+  "catalog_version": "v0.8",
+  "reviewer_version": "v1.0",
+  "exportedAt": "2026-10-14T20:00:14.171Z",
+  "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+  "summary": {
+    "yes": 41,
+    "no": 74,
+    "unfinished": 0,
+    "notesMissing": 9,
+    "total": 115,
+    "reviewed": 115
+  },
+  "items": [
+    {
+      "id": "equipamentos-cat395",
+      "name": "CAT 395 — escavadeira",
+      "category": "equipamentos",
+      "asset": "assets/equipamentos/cat395.png",
+      "sha256": "627cc13abc3755d33eaa810fa546d2f04af13ee86d16163c9cf27f91bf41ff66",
+      "source": "PORCARIA_Equipamentos_Integracao_v07",
+      "status_artistic": "aprovado-visual",
+      "decision": "NAO_OK",
+      "comment": "não está com fundo transparente, corrigir removendo fundo branco",
+      "updatedAt": "2026-10-14T19:38:02.723Z"
+    },
+    {
+      "id": "equipamentos-cat6030_backhoe_estudo",
+      "name": "CAT 6030 — backhoe (estudo)",
+      "category": "equipamentos",
+      "asset": "assets/equipamentos/cat6030_backhoe_estudo.png",
+      "sha256": "b64721a8d2ee7131af0b6740d4ec893e3b92356eeb39a07cb79d507e45690811",
+      "source": "PORCARIA_Equipamentos_Integracao_v07",
+      "status_artistic": "revisao-tecnica",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:38:10.889Z"
+    },
+    {
+      "id": "equipamentos-historico-cat6030_conceito_original",
+      "name": "CAT 6030 — estudo anterior",
+      "category": "equipamentos",
+      "asset": "assets/equipamentos/historico/cat6030_conceito_original.png",
+      "sha256": "45757086761428f3c92f02a0f5ece5ab761559c05cc9a4235b911e1739aca294",
+      "source": "arquivo da conversa",
+      "status_artistic": "arquivo-historico",
+      "decision": "NAO_OK",
+      "comment": "Há espinhos na parte externa da caçamba, corrigir com base na máquina real.",
+      "updatedAt": "2026-10-14T19:38:53.195Z"
+    },
+    {
+      "id": "equipamentos-cat6030_frontshovel_estudo",
+      "name": "CAT 6030 — front shovel (estudo)",
+      "category": "equipamentos",
+      "asset": "assets/equipamentos/cat6030_frontshovel_estudo.png",
+      "sha256": "1111a1a709d7ad6dfef22aeb744e7637cd09052770c32c04584bc188e932ec1f",
+      "source": "PORCARIA_Equipamentos_Integracao_v07",
+      "status_artistic": "revisao-tecnica",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:39:01.857Z"
+    },
+    {
+      "id": "equipamentos-historico-caminhao_pixel_art_original",
+      "name": "Caminhão de mina — conceito isolado",
+      "category": "equipamentos",
+      "asset": "assets/equipamentos/historico/caminhao_pixel_art_original.png",
+      "sha256": "78d1dece26602e7779d2a8daec6a91d992b523ca316137839a5c260ecf969620",
+      "source": "arquivo da conversa",
+      "status_artistic": "arquivo-historico",
+      "decision": "NAO_OK",
+      "comment": "A parte da frente do caminhão não está coerente com o Caterpillar 777, isso pode ser refinado. A roda dianteira parece duplicada, corrigir.",
+      "updatedAt": "2026-10-14T19:37:11.153Z"
+    },
+    {
+      "id": "equipamentos-caminhao_mineracao_estudo",
+      "name": "Caminhão de mineração (estudo)",
+      "category": "equipamentos",
+      "asset": "assets/equipamentos/caminhao_mineracao_estudo.png",
+      "sha256": "24bf17e83f34815c935d0cbf73c67848be627af85ccfe3a340770526d9e20c47",
+      "source": "PORCARIA_Equipamentos_Integracao_v07",
+      "status_artistic": "provisorio",
+      "decision": "NAO_OK",
+      "comment": "Duplicada, manter somente Caminhão de mina — conceito isolado",
+      "updatedAt": "2026-10-14T19:37:29.834Z"
+    },
+    {
+      "id": "equipamentos-historico-escavadeira_isometrica_original",
+      "name": "Escavadeira amarela isométrica — conceito",
+      "category": "equipamentos",
+      "asset": "assets/equipamentos/historico/escavadeira_isometrica_original.png",
+      "sha256": "7349b90118ea5b88bf47cbb3e94b95364ce0b86014cc5dbfb45537a9ef7d0de4",
+      "source": "arquivo da conversa",
+      "status_artistic": "arquivo-historico",
+      "decision": "NAO_OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:39:40.571Z"
+    },
+    {
+      "id": "equipamentos-historico-escavadeira_conceito_inicial",
+      "name": "Escavadeira — conceito inicial",
+      "category": "equipamentos",
+      "asset": "assets/equipamentos/historico/escavadeira_conceito_inicial.png",
+      "sha256": "417703f86b00a2b6c7c6772ceb1cb5270f8281ca62a0027e2e36e18dc24f649f",
+      "source": "arquivo da conversa",
+      "status_artistic": "arquivo-historico",
+      "decision": "NAO_OK",
+      "comment": "tem um cilindro faltando, refaça comparando com a original",
+      "updatedAt": "2026-10-14T19:59:51.397Z"
+    },
+    {
+      "id": "equipamentos-perfuratriz_a_estudo",
+      "name": "Perfuratriz A (estudo)",
+      "category": "equipamentos",
+      "asset": "assets/equipamentos/perfuratriz_a_estudo.png",
+      "sha256": "36ba6c060f4a46e2b40df133dbf0d94af2c1383633622f406359514d71c13e37",
+      "source": "PORCARIA_Equipamentos_Integracao_v07",
+      "status_artistic": "provisorio",
+      "decision": "NAO_OK",
+      "comment": "duplicada, use somente Perfuratriz — conceito inicial",
+      "updatedAt": "2026-10-14T20:00:06.931Z"
+    },
+    {
+      "id": "equipamentos-historico-perfuratriz_crawler_original",
+      "name": "Perfuratriz crawler — conceito",
+      "category": "equipamentos",
+      "asset": "assets/equipamentos/historico/perfuratriz_crawler_original.png",
+      "sha256": "6973de7e008732188d90c92bcd62539b4c49a54567fc75595fcf8c3b476651cd",
+      "source": "arquivo da conversa",
+      "status_artistic": "arquivo-historico",
+      "decision": "NAO_OK",
+      "comment": "remover",
+      "updatedAt": "2026-10-14T19:39:55.316Z"
+    },
+    {
+      "id": "equipamentos-historico-perfuratriz_conceito_inicial",
+      "name": "Perfuratriz — conceito inicial",
+      "category": "equipamentos",
+      "asset": "assets/equipamentos/historico/perfuratriz_conceito_inicial.png",
+      "sha256": "a3a7f732d5b7811ab63400ffcbc63efc8a291fb55af96bfc0fa80c7510c1d8ae",
+      "source": "arquivo da conversa",
+      "status_artistic": "arquivo-historico",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:59:54.817Z"
+    },
+    {
+      "id": "equipamentos-sandvik_dr410i_torre_abaixada",
+      "name": "Sandvik DR410i — mastro abaixado",
+      "category": "equipamentos",
+      "asset": "assets/equipamentos/sandvik_dr410i_torre_abaixada.png",
+      "sha256": "0d36809d2cf51a8bcd8876941b774522f9b9de5b895fb75237c68167bad124b1",
+      "source": "PORCARIA_Equipamentos_Integracao_v07",
+      "status_artistic": "aprovado-visual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:39:57.459Z"
+    },
+    {
+      "id": "equipamentos-sandvik_dr410i_torre_erguida",
+      "name": "Sandvik DR410i — mastro erguido",
+      "category": "equipamentos",
+      "asset": "assets/equipamentos/sandvik_dr410i_torre_erguida.png",
+      "sha256": "013ac0a61dc22595732da2d6f44dfac44eb0017d4f0d65bdbb5eb9679da2cc9f",
+      "source": "PORCARIA_Equipamentos_Integracao_v07",
+      "status_artistic": "aprovado-visual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:39:59.043Z"
+    },
+    {
+      "id": "personagens-pedro-pedro_alerta",
+      "name": "Pedro — Alerta",
+      "category": "pedro",
+      "asset": "assets/personagens/pedro/pedro_alerta.png",
+      "sha256": "ef88052b4dc2b1692e44dfb910a21df91c1ca88732d2edb2c1bf26739749b349",
+      "source": "PORCARIA_Assets_Jogaveis_v03.zip",
+      "status_artistic": "aprovado-visual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:42:00.577Z"
+    },
+    {
+      "id": "personagens-pedro-pedro_apontando",
+      "name": "Pedro — Apontando",
+      "category": "pedro",
+      "asset": "assets/personagens/pedro/pedro_apontando.png",
+      "sha256": "914a365a0df8f9421764b95072ba0d86c5ae3537386f7dc1a7d12d75e7639a62",
+      "source": "PORCARIA_Assets_Jogaveis_v03.zip",
+      "status_artistic": "aprovado-visual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:42:01.265Z"
+    },
+    {
+      "id": "personagens-pedro-pedro_extintor",
+      "name": "Pedro — Extintor",
+      "category": "pedro",
+      "asset": "assets/personagens/pedro/pedro_extintor.png",
+      "sha256": "96fa935355cd032baba28c64e899d02997b686cd6de7d5b4a1e8698fe78f1f79",
+      "source": "PORCARIA_Assets_Jogaveis_v03.zip",
+      "status_artistic": "aprovado-visual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:42:02.610Z"
+    },
+    {
+      "id": "personagens-pedro-pedro_inspecionando",
+      "name": "Pedro — Inspecionando",
+      "category": "pedro",
+      "asset": "assets/personagens/pedro/pedro_inspecionando.png",
+      "sha256": "bbf056e63688e22d212fcadd15bf2123259cf654eaed97c8506a63053c9acfd4",
+      "source": "PORCARIA_Assets_Jogaveis_v03.zip",
+      "status_artistic": "aprovado-visual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:42:03.401Z"
+    },
+    {
+      "id": "personagens-pedro-pedro_neutro",
+      "name": "Pedro — Neutro",
+      "category": "pedro",
+      "asset": "assets/personagens/pedro/pedro_neutro.png",
+      "sha256": "233c0119b7409dfd807c26f82d8cfdcb498b6b438595d2871648f41053c55cf9",
+      "source": "PORCARIA_Assets_Jogaveis_v03.zip",
+      "status_artistic": "aprovado-visual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:42:04.345Z"
+    },
+    {
+      "id": "personagens-pedro-pedro_positivo",
+      "name": "Pedro — Positivo",
+      "category": "pedro",
+      "asset": "assets/personagens/pedro/pedro_positivo.png",
+      "sha256": "b2839a8ada137b6c4ad0e07a25250bbd43cdf797ce2468e7545a9fd78a79d402",
+      "source": "PORCARIA_Assets_Jogaveis_v03.zip",
+      "status_artistic": "aprovado-visual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:42:04.889Z"
+    },
+    {
+      "id": "personagens-pedro-pedro_prancheta",
+      "name": "Pedro — Prancheta",
+      "category": "pedro",
+      "asset": "assets/personagens/pedro/pedro_prancheta.png",
+      "sha256": "cd7b3f9b131d187cf854b425740d8a9d8dae85b5123c2c352d7a31594dc2aa68",
+      "source": "PORCARIA_Assets_Jogaveis_v03.zip",
+      "status_artistic": "aprovado-visual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:42:05.904Z"
+    },
+    {
+      "id": "personagens-pedro-pedro_radio",
+      "name": "Pedro — Radio",
+      "category": "pedro",
+      "asset": "assets/personagens/pedro/pedro_radio.png",
+      "sha256": "1f294e50109fb62652917a6328c95428cbe874847a6d48dd903b97fb5f107f87",
+      "source": "PORCARIA_Assets_Jogaveis_v03.zip",
+      "status_artistic": "aprovado-visual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:42:06.873Z"
+    },
+    {
+      "id": "personagens-elenco-mec_ana-alert",
+      "name": "Ana — alert",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_ana/alert.png",
+      "sha256": "61d5bcfc4f7ad8a88784b5958d23673cce093f967bbcaf2b96a8f21e45757380",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:17.031Z"
+    },
+    {
+      "id": "personagens-elenco-mec_ana-clipboard",
+      "name": "Ana — clipboard",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_ana/clipboard.png",
+      "sha256": "8c3ecdf8f634896a2bd541ce25252da5f01fb8712707114d36a8fca4820ad525",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:20.893Z"
+    },
+    {
+      "id": "personagens-elenco-mec_ana-extinguisher",
+      "name": "Ana — extinguisher",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_ana/extinguisher.png",
+      "sha256": "d91b1df96d14922cd000110b08a00c12efb731a374c264a53c2515d8c2eb3a5b",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:22.182Z"
+    },
+    {
+      "id": "personagens-elenco-mec_ana-idle",
+      "name": "Ana — idle",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_ana/idle.png",
+      "sha256": "649333603632186f465fdce94d0b093c090668b3debb84d9e8344173365cae24",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:24.024Z"
+    },
+    {
+      "id": "personagens-elenco-mec_ana-inspect",
+      "name": "Ana — inspect",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_ana/inspect.png",
+      "sha256": "ce78e0d278e576b9f060eb04de66a4525a659f324438245e71017ba2ab753ef2",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:25.724Z"
+    },
+    {
+      "id": "personagens-elenco-mec_ana-point",
+      "name": "Ana — point",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_ana/point.png",
+      "sha256": "565c0b17c004debc7ce066d977104291c7c2d7402358e4099304b68665610e32",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:27.265Z"
+    },
+    {
+      "id": "personagens-elenco-mec_ana-positive",
+      "name": "Ana — positive",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_ana/positive.png",
+      "sha256": "365bcaed9a19f932900b3a63a2fedc79e1e66ad2971244deb04263759f227b2a",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:29.484Z"
+    },
+    {
+      "id": "personagens-elenco-mec_ana-radio",
+      "name": "Ana — radio",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_ana/radio.png",
+      "sha256": "ae21bb96bcd5a8c5b0c4822f04ba7b8d66519b29701b766a33c8e1fa475fd199",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:31.094Z"
+    },
+    {
+      "id": "personagens-elenco-mec_ana-spritesheet",
+      "name": "Ana — spritesheet 8 quadros",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_ana/spritesheet.png",
+      "sha256": "26812dcb2e208d2d299fa20fa69f662a2f1f7fea42f7f39c229258ff0b28426d",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:33.504Z"
+    },
+    {
+      "id": "personagens-elenco-ele_bia-alert",
+      "name": "Bia — alert",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/ele_bia/alert.png",
+      "sha256": "4f4da6a332ddab78e94758fe759bf9ceaa64cc8d9a47dabf13197e8343592a41",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:35.776Z"
+    },
+    {
+      "id": "personagens-elenco-ele_bia-clipboard",
+      "name": "Bia — clipboard",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/ele_bia/clipboard.png",
+      "sha256": "6606a0dba47ac85557258fbc1e3ed30f4050fb2075b1095376d9873bc39e0a3d",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:37.106Z"
+    },
+    {
+      "id": "personagens-elenco-ele_bia-extinguisher",
+      "name": "Bia — extinguisher",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/ele_bia/extinguisher.png",
+      "sha256": "f2f643b5902f8fea8aa9b81e7a7814d0b0d0c78a76da86e7033d45ed374c0203",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:38.821Z"
+    },
+    {
+      "id": "personagens-elenco-ele_bia-idle",
+      "name": "Bia — idle",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/ele_bia/idle.png",
+      "sha256": "9425105d6d99267c31143a39a19d7f15bb9e3c8dbd71a427767d484bc6b82866",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:40.226Z"
+    },
+    {
+      "id": "personagens-elenco-ele_bia-inspect",
+      "name": "Bia — inspect",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/ele_bia/inspect.png",
+      "sha256": "b23622fc90e04964cd1472d3063b12a978bfbaa4a92e68c21a690ccb84eea356",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:41.543Z"
+    },
+    {
+      "id": "personagens-elenco-ele_bia-point",
+      "name": "Bia — point",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/ele_bia/point.png",
+      "sha256": "b5e1b4e59b4b4e8d4db525d1f977bcd49ef977d7d2d0b3584a26d0b66172959c",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:42.753Z"
+    },
+    {
+      "id": "personagens-elenco-ele_bia-positive",
+      "name": "Bia — positive",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/ele_bia/positive.png",
+      "sha256": "59fd0ad811048343638bde2eff0ab48f5c1570c7658553311c2af2ad315e9df3",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:44.272Z"
+    },
+    {
+      "id": "personagens-elenco-ele_bia-radio",
+      "name": "Bia — radio",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/ele_bia/radio.png",
+      "sha256": "7f0e7477982dd83ed73f309c2b2d607eebf848ccedbe1280bfb083262a794839",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:45.866Z"
+    },
+    {
+      "id": "personagens-elenco-ele_bia-spritesheet",
+      "name": "Bia — spritesheet 8 quadros",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/ele_bia/spritesheet.png",
+      "sha256": "e9010b8f77f88a9364944e0648b79693383f4847b5b5842ac1feccb36a650434",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:49.002Z"
+    },
+    {
+      "id": "personagens-elenco-pcm_clara-alert",
+      "name": "Clara — alert",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/pcm_clara/alert.png",
+      "sha256": "33cb3596bd874a88aa32b1f503f5eb4c39aa946be06a3c00915bf9e4144b46da",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:51.192Z"
+    },
+    {
+      "id": "personagens-elenco-pcm_clara-clipboard",
+      "name": "Clara — clipboard",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/pcm_clara/clipboard.png",
+      "sha256": "5c3a3030e35589de30128705c98b4fe273036e04e8b93f3d1a94ac767b64bf67",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:52.624Z"
+    },
+    {
+      "id": "personagens-elenco-pcm_clara-extinguisher",
+      "name": "Clara — extinguisher",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/pcm_clara/extinguisher.png",
+      "sha256": "86547c72273c8998dd73b27f034a84d4800cc60d898aa3d62c1a0b42901ff53e",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:53.853Z"
+    },
+    {
+      "id": "personagens-elenco-pcm_clara-idle",
+      "name": "Clara — idle",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/pcm_clara/idle.png",
+      "sha256": "99d819a55b5efa8677adbf2696f435530c4067555b38fae70276436bf40fe91e",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:55.364Z"
+    },
+    {
+      "id": "personagens-elenco-pcm_clara-inspect",
+      "name": "Clara — inspect",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/pcm_clara/inspect.png",
+      "sha256": "92fc3399efdf0dbed54ef3017fd8d7b86a033675ca239b735843890bb0e7c80e",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:56.677Z"
+    },
+    {
+      "id": "personagens-elenco-pcm_clara-point",
+      "name": "Clara — point",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/pcm_clara/point.png",
+      "sha256": "ede4d89011db5988b1defc4e8f89e8a7afb1a3bd1447b0c4a15d56dcbbd83571",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:42:58.194Z"
+    },
+    {
+      "id": "personagens-elenco-pcm_clara-positive",
+      "name": "Clara — positive",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/pcm_clara/positive.png",
+      "sha256": "48f8d609e78aabee7061cde2553d5b7793ce17890bb3733d0debc638f7b5df9d",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:43:00.099Z"
+    },
+    {
+      "id": "personagens-elenco-pcm_clara-radio",
+      "name": "Clara — radio",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/pcm_clara/radio.png",
+      "sha256": "2418ef32741cecdecc496cb8fc31dc96c652da002723f06cead8ce88db3b7588",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:43:01.336Z"
+    },
+    {
+      "id": "personagens-elenco-pcm_clara-spritesheet",
+      "name": "Clara — spritesheet 8 quadros",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/pcm_clara/spritesheet.png",
+      "sha256": "ab9209a49e19952ff40fd8789043e01423ac89d32bf279c3fd19e54e78077671",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:43:02.528Z"
+    },
+    {
+      "id": "personagens-elenco-ele_davi-alert",
+      "name": "Davi — alert",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/ele_davi/alert.png",
+      "sha256": "f9058c290fb2fad7a2fb7f147b5594732c5515a44bc13e289dee24feb85b769d",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:43:09.451Z"
+    },
+    {
+      "id": "personagens-elenco-ele_davi-clipboard",
+      "name": "Davi — clipboard",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/ele_davi/clipboard.png",
+      "sha256": "932c170c3fcb4d692a4a498784dd893d13d9c9812fe0e8329a408e264617d0d7",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:43:10.595Z"
+    },
+    {
+      "id": "personagens-elenco-ele_davi-extinguisher",
+      "name": "Davi — extinguisher",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/ele_davi/extinguisher.png",
+      "sha256": "594e305006772dc85b909464a0c7e20b291e8b2d9130aa86e23491c1ae3c2ff6",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "NAO_OK",
+      "comment": "tá bugada a cor do capacete, era pra ser todo amarelo",
+      "updatedAt": "2026-10-14T19:44:04.536Z"
+    },
+    {
+      "id": "personagens-elenco-ele_davi-idle",
+      "name": "Davi — idle",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/ele_davi/idle.png",
+      "sha256": "9fb86c40fe6aa7c42fe4abd4424385aaa99d75460e81e0796a2752acad174eec",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:43:13.875Z"
+    },
+    {
+      "id": "personagens-elenco-ele_davi-inspect",
+      "name": "Davi — inspect",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/ele_davi/inspect.png",
+      "sha256": "29129f8ac996b5644fde61c19488c66b2dd3cc9051ba5b1a1b1ca4c72e20f5ee",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "NAO_OK",
+      "comment": "tá bugada a cor do capacete, era pra ser todo amarelo",
+      "updatedAt": "2026-10-14T19:43:35.946Z"
+    },
+    {
+      "id": "personagens-elenco-ele_davi-point",
+      "name": "Davi — point",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/ele_davi/point.png",
+      "sha256": "a92a0c7d6be9693e6dd2ebaa9f950e420734c5df94b55b817970b5db3d7d3c3a",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:43:42.987Z"
+    },
+    {
+      "id": "personagens-elenco-ele_davi-positive",
+      "name": "Davi — positive",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/ele_davi/positive.png",
+      "sha256": "cfe0b6a4aedcacfc5521bb366b476859baba80308d9420467f40a215f968dc49",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "NAO_OK",
+      "comment": "testa ficou amarela",
+      "updatedAt": "2026-10-14T19:43:51.647Z"
+    },
+    {
+      "id": "personagens-elenco-ele_davi-radio",
+      "name": "Davi — radio",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/ele_davi/radio.png",
+      "sha256": "70ee7de9fa6a6465a408ff5b74a8f90a2648c9209a8a70003dff7249e74ca18d",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:43:53.540Z"
+    },
+    {
+      "id": "personagens-elenco-ele_davi-spritesheet",
+      "name": "Davi — spritesheet 8 quadros",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/ele_davi/spritesheet.png",
+      "sha256": "30d51b6bd5d4b20d4b84dc444a660b972da26eeef89c0b3ac8045b454dc978fe",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "NAO_OK",
+      "comment": "refazer após os assets abaixo serem corrigidos:\nDavi — positive\nDavi — inspect\nDavi — extinguisher",
+      "updatedAt": "2026-10-14T19:44:46.395Z"
+    },
+    {
+      "id": "personagens-elenco-pcm_joao-alert",
+      "name": "João — alert",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/pcm_joao/alert.png",
+      "sha256": "76f985668510eff306fe89423a40247bce89fd7c3b99876410791ffac08353e8",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:44:49.030Z"
+    },
+    {
+      "id": "personagens-elenco-pcm_joao-clipboard",
+      "name": "João — clipboard",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/pcm_joao/clipboard.png",
+      "sha256": "4530c6ab3865fcff402867f5b8f374cdd5e3efc60c54ea49cec45bcdcdd2dd6c",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:44:49.708Z"
+    },
+    {
+      "id": "personagens-elenco-pcm_joao-extinguisher",
+      "name": "João — extinguisher",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/pcm_joao/extinguisher.png",
+      "sha256": "038037768b4eb9c1ec3d4887383f4ed6c0bd6c3096b4fbac8cdccbca5cfb2bce",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "NAO_OK",
+      "comment": "tá bugada a cor do capacete, era pra ser todo branco",
+      "updatedAt": "2026-10-14T19:45:02.216Z"
+    },
+    {
+      "id": "personagens-elenco-pcm_joao-idle",
+      "name": "João — idle",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/pcm_joao/idle.png",
+      "sha256": "79a5f7bbaef0d8a80d9ab3413c165b7dcb6dd1501dd2d92bd0ac782cbeb48c61",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:45:06.085Z"
+    },
+    {
+      "id": "personagens-elenco-pcm_joao-inspect",
+      "name": "João — inspect",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/pcm_joao/inspect.png",
+      "sha256": "1a55a894bc54adc21a7be2b80dfb78f7d3345fcbe6c9f26d3098f65fc8e47c1e",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "NAO_OK",
+      "comment": "tá bugada a cor do capacete, era pra ser todo branco",
+      "updatedAt": "2026-10-14T19:45:05.339Z"
+    },
+    {
+      "id": "personagens-elenco-pcm_joao-point",
+      "name": "João — point",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/pcm_joao/point.png",
+      "sha256": "d420b6255ae4ee5862dcd6056788cd0153290dd5ad7e23d2e1fbdfeaadaba8a2",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:45:09.772Z"
+    },
+    {
+      "id": "personagens-elenco-pcm_joao-positive",
+      "name": "João — positive",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/pcm_joao/positive.png",
+      "sha256": "79c27a875160d66e7eb5281bdd51b4b24b194e372bf488cb3b282940f74b553a",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "NAO_OK",
+      "comment": "a testa tá branca",
+      "updatedAt": "2026-10-14T19:45:14.416Z"
+    },
+    {
+      "id": "personagens-elenco-pcm_joao-radio",
+      "name": "João — radio",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/pcm_joao/radio.png",
+      "sha256": "a6f0384a56bb91eacaeefad3910eb37ba482d7dc85b079d38a4a05544238a84a",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:45:17.805Z"
+    },
+    {
+      "id": "personagens-elenco-pcm_joao-spritesheet",
+      "name": "João — spritesheet 8 quadros",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/pcm_joao/spritesheet.png",
+      "sha256": "6c3cc34e9d8246c95198f5eadc02357bd0f2798b9f25fccbf23490a903214e73",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "NAO_OK",
+      "comment": "refazer após os assets abaixo serem corrigidos:\nJoão — positive\nJoão — inspect\nJoão — extinguisher",
+      "updatedAt": "2026-10-14T19:45:39.777Z"
+    },
+    {
+      "id": "personagens-elenco-mec_lia-alert",
+      "name": "Lia — alert",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_lia/alert.png",
+      "sha256": "85b22e66599ae848156b404cb93dc5aed335f7a74f7f7b8e965b2c4315c487e3",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:45:48.402Z"
+    },
+    {
+      "id": "personagens-elenco-mec_lia-clipboard",
+      "name": "Lia — clipboard",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_lia/clipboard.png",
+      "sha256": "68a5905440136c218ea7776fce0b1e90e87b6ecb4ef15f23ac4b0b53d15b3207",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:45:50.861Z"
+    },
+    {
+      "id": "personagens-elenco-mec_lia-extinguisher",
+      "name": "Lia — extinguisher",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_lia/extinguisher.png",
+      "sha256": "c5dec7af05419cea504bee8e9d28a4ca821d8b03f8c1b46abfe6a26abe93e633",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:45:52.792Z"
+    },
+    {
+      "id": "personagens-elenco-mec_lia-idle",
+      "name": "Lia — idle",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_lia/idle.png",
+      "sha256": "eee44fa52b085748e44e66fd84355ab131304ece8825a760ce63a9f328eff319",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:45:54.913Z"
+    },
+    {
+      "id": "personagens-elenco-mec_lia-inspect",
+      "name": "Lia — inspect",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_lia/inspect.png",
+      "sha256": "74326ca2c059411fcc80ee70559b12bf2a402f737d0cdf51256d5bd6de313462",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:45:56.515Z"
+    },
+    {
+      "id": "personagens-elenco-mec_lia-point",
+      "name": "Lia — point",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_lia/point.png",
+      "sha256": "dd05e5963d053b08ac9f5201e440f313abba80d8042dd847f850ef67a62ba410",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:45:58.304Z"
+    },
+    {
+      "id": "personagens-elenco-mec_lia-positive",
+      "name": "Lia — positive",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_lia/positive.png",
+      "sha256": "cdbd5121d3f57a60b167c2c582af9a885739df31b30ed30c02d4d9e15167b262",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:46:00.028Z"
+    },
+    {
+      "id": "personagens-elenco-mec_lia-radio",
+      "name": "Lia — radio",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_lia/radio.png",
+      "sha256": "76073a41193e8d933deda6ad091a0fce95087a1d4500e19ad5df099c4b20b5d3",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:46:01.539Z"
+    },
+    {
+      "id": "personagens-elenco-mec_lia-spritesheet",
+      "name": "Lia — spritesheet 8 quadros",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_lia/spritesheet.png",
+      "sha256": "aea7becd0c766400fe30815da25062dc64c71202398ed44e60ca44252243bb8f",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:46:04.438Z"
+    },
+    {
+      "id": "personagens-elenco-brig_nina-alert",
+      "name": "Nina — alert",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/brig_nina/alert.png",
+      "sha256": "edf316ee6ac406f4aaad5cd177ab2f74d448c832f88dd33cb946f7e6c15b3d0c",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:46:07.182Z"
+    },
+    {
+      "id": "personagens-elenco-brig_nina-clipboard",
+      "name": "Nina — clipboard",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/brig_nina/clipboard.png",
+      "sha256": "4e9b8aa9592af27eb0c94244cf6061c5e858f54aecf7ab12154061f9d4b8a0bd",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:46:08.430Z"
+    },
+    {
+      "id": "personagens-elenco-brig_nina-extinguisher",
+      "name": "Nina — extinguisher",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/brig_nina/extinguisher.png",
+      "sha256": "eb50dbe2f43abb99cff332add74d5512c464ff7d5ddafcf9f5b41bedc8c69dfb",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:46:09.963Z"
+    },
+    {
+      "id": "personagens-elenco-brig_nina-idle",
+      "name": "Nina — idle",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/brig_nina/idle.png",
+      "sha256": "f333c7583416522e2ea220fe4a3da78b30cf30063146045fdf3e05840f123f26",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:46:11.252Z"
+    },
+    {
+      "id": "personagens-elenco-brig_nina-inspect",
+      "name": "Nina — inspect",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/brig_nina/inspect.png",
+      "sha256": "64f035a2a7ae76c908ca3b6b12ee20a453abdd2441acf7288b91bc0ab6e2d03b",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:46:13.058Z"
+    },
+    {
+      "id": "personagens-elenco-brig_nina-point",
+      "name": "Nina — point",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/brig_nina/point.png",
+      "sha256": "b601d76281fc8bb4bf3edbb0c117727293a4089ec0b2f5f9441ae0389d91dd53",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:46:14.527Z"
+    },
+    {
+      "id": "personagens-elenco-brig_nina-positive",
+      "name": "Nina — positive",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/brig_nina/positive.png",
+      "sha256": "f6dc89161c3265fc09c7ae61d4c2c2b96e479aaf5d40a6be655c35040f2a0412",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:46:15.720Z"
+    },
+    {
+      "id": "personagens-elenco-brig_nina-radio",
+      "name": "Nina — radio",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/brig_nina/radio.png",
+      "sha256": "c51da2534df798aa38b02d394cd35b7dc7ee3ccda223609b3612834b0ccf9e97",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:46:18.315Z"
+    },
+    {
+      "id": "personagens-elenco-brig_nina-spritesheet",
+      "name": "Nina — spritesheet 8 quadros",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/brig_nina/spritesheet.png",
+      "sha256": "cee3b8efddab99fb8ce56ed6072c879e9e46b0ede5431bba9594af6a95daf0a8",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "revisao-visual",
+      "decision": "NAO_OK",
+      "comment": "tá bugado, refazer",
+      "updatedAt": "2026-10-14T19:46:20.628Z"
+    },
+    {
+      "id": "personagens-elenco-mec_rafael-alert",
+      "name": "Rafael — alert",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_rafael/alert.png",
+      "sha256": "82ad010da76a4341c937e9223e5ad3984dd39cd6822628238ae341121ca46d0f",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:46:22.927Z"
+    },
+    {
+      "id": "personagens-elenco-mec_rafael-clipboard",
+      "name": "Rafael — clipboard",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_rafael/clipboard.png",
+      "sha256": "fab0c115f1fc562e515ec052478e958096db7b16473c525642c8061c4d3d9bff",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:46:23.582Z"
+    },
+    {
+      "id": "personagens-elenco-mec_rafael-extinguisher",
+      "name": "Rafael — extinguisher",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_rafael/extinguisher.png",
+      "sha256": "e1d0a3623b20c494d92ce8207b8b331ded637f1b2bfd9bafec2e6631d40b8d0d",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:46:24.670Z"
+    },
+    {
+      "id": "personagens-elenco-mec_rafael-idle",
+      "name": "Rafael — idle",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_rafael/idle.png",
+      "sha256": "290771908d4286028241e225cc51eb68275e975e1736ee254831131315e55fc2",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:46:33.037Z"
+    },
+    {
+      "id": "personagens-elenco-mec_rafael-inspect",
+      "name": "Rafael — inspect",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_rafael/inspect.png",
+      "sha256": "ce1c100cc61eafd36a42bc605ceed4727c27b369e589ec08a65bba77410fd767",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:46:34.741Z"
+    },
+    {
+      "id": "personagens-elenco-mec_rafael-point",
+      "name": "Rafael — point",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_rafael/point.png",
+      "sha256": "296e73eecca0943d9409bd9f4e8debd16a9e8fcd50d2ce3e3adcd0d0b05708e8",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:46:36.414Z"
+    },
+    {
+      "id": "personagens-elenco-mec_rafael-positive",
+      "name": "Rafael — positive",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_rafael/positive.png",
+      "sha256": "bf90be3a8f75e2a7861f2fb76a7695df28766a301a09e8c7b28e688542db5f6b",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "NAO_OK",
+      "comment": "a testa tá amarela",
+      "updatedAt": "2026-10-14T19:46:43.180Z"
+    },
+    {
+      "id": "personagens-elenco-mec_rafael-radio",
+      "name": "Rafael — radio",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_rafael/radio.png",
+      "sha256": "a166dace245e3275ceac2851e86412ad55d954db6b9ebc4a68bbd732fecb117d",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:46:46.119Z"
+    },
+    {
+      "id": "personagens-elenco-mec_rafael-spritesheet",
+      "name": "Rafael — spritesheet 8 quadros",
+      "category": "elenco",
+      "asset": "assets/personagens/elenco/mec_rafael/spritesheet.png",
+      "sha256": "332930dc4357078a222e03285448c8ec39b91edc9728ee49828688f0caed3439",
+      "source": "PORCARIA_Elenco_Hotfix_v051.zip",
+      "status_artistic": "preview-validado",
+      "decision": "NAO_OK",
+      "comment": "refazer após os assets abaixo serem corrigidos:\nRafael — positive",
+      "updatedAt": "2026-10-14T19:47:13.060Z"
+    },
+    {
+      "id": "conceituais-a_detailed_pixel_art_sprite_sheet_infographic_on_a",
+      "name": "Atlas conceitual geral — v0.1",
+      "category": "conceituais",
+      "asset": "assets/conceituais/a_detailed_pixel_art_sprite_sheet_infographic_on_a.png",
+      "sha256": "7e348551de5b65ad3a859084813a2d50cdc406ddebbb802ab1e200659a179efc",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:47:44.751Z"
+    },
+    {
+      "id": "conceituais-a_large_clean_organized_pixel_art_sprite_sheet_i",
+      "name": "Atlas de direção de arte — catálogo v0.4",
+      "category": "conceituais",
+      "asset": "assets/conceituais/a_large_clean_organized_pixel_art_sprite_sheet_i.png",
+      "sha256": "8a83d31ed9a212581b56edaa0f1706e91669b95e688ddd48a745b78e5b34dc1f",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:47:46.416Z"
+    },
+    {
+      "id": "conceituais-a_pixel_art_sprite_sheet_displays_maintenance_and",
+      "name": "Atlas de personagens e máquinas",
+      "category": "conceituais",
+      "asset": "assets/conceituais/a_pixel_art_sprite_sheet_displays_maintenance_and.png",
+      "sha256": "0c982889ca83609769bc9e06d54f14d1220b4ab3803d9086b2d101aa8064edec",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "NAO_OK",
+      "comment": "tudo bugado, ignorar",
+      "updatedAt": "2026-10-14T19:47:57.517Z"
+    },
+    {
+      "id": "conceituais-a_detailed_pixel_art_sprite_sheet_asset_atlas_illu",
+      "name": "Atlas visual de referência",
+      "category": "conceituais",
+      "asset": "assets/conceituais/a_detailed_pixel_art_sprite_sheet_asset_atlas_illu.png",
+      "sha256": "73d05d313b1360250cef5b441ad1215ad7795ac6dc4556f5dd0f96b32a963c60",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:48:00.632Z"
+    },
+    {
+      "id": "conceituais-a_detailed_pixel_art_sprite_sheet_composite_image",
+      "name": "Atlas — elenco e equipamentos",
+      "category": "conceituais",
+      "asset": "assets/conceituais/a_detailed_pixel_art_sprite_sheet_composite_image.png",
+      "sha256": "c09f18ad8694d5306ff6d5c6bef6a9f225a5a07923a8fdc544822e10d6c7c2bb",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:47:43.295Z"
+    },
+    {
+      "id": "conceituais-sprite_sheet_de_brigadista_em_pixel_art",
+      "name": "Brigadista — atlas inicial",
+      "category": "conceituais",
+      "asset": "assets/conceituais/sprite_sheet_de_brigadista_em_pixel_art.png",
+      "sha256": "5e3ea9b5e67228e761f66f24b251b473c63d546abf40b22469b9cc2c818c6e47",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:48:07.216Z"
+    },
+    {
+      "id": "conceituais-a_wide_high_resolution_game_asset_style_sprite_s",
+      "name": "Catálogo visual anterior",
+      "category": "conceituais",
+      "asset": "assets/conceituais/a_wide_high_resolution_game_asset_style_sprite_s.png",
+      "sha256": "3831f677e2af606c754c626cf3d348ea02b9579920755802b59587c6e2921f5f",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "NAO_OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:48:20.480Z"
+    },
+    {
+      "id": "conceituais-folha_de_sprites_do_eletricista_mineiro",
+      "name": "Eletricista — atlas inicial",
+      "category": "conceituais",
+      "asset": "assets/conceituais/folha_de_sprites_do_eletricista_mineiro.png",
+      "sha256": "ba81b0e4d82e1692d678fa0c5750eaaeb265f73bdfb9c3bcbb9f66a73081d6bc",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:48:27.064Z"
+    },
+    {
+      "id": "conceituais-a_wide_poster_like_pixel_art_sprite_sheet_and_ass",
+      "name": "Estudo da frota v0.6",
+      "category": "conceituais",
+      "asset": "assets/conceituais/a_wide_poster_like_pixel_art_sprite_sheet_and_ass.png",
+      "sha256": "fcc98d5a50b331faaad0f463f10939cce163f208a829e2ac7136cb7e730889bd",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "NAO_OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:48:45.167Z"
+    },
+    {
+      "id": "conceituais-wide_infographic_pixel_art_concept_sheet_split_int",
+      "name": "Estudo de CAT 395 e DR410i",
+      "category": "conceituais",
+      "asset": "assets/conceituais/wide_infographic_pixel_art_concept_sheet_split_int.png",
+      "sha256": "d63fa89bb7c3abdfc82b8b35e48b88cc40b6523222100170050c3986c368be41",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "NAO_OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:48:46.832Z"
+    },
+    {
+      "id": "conceituais-a_clean_high_resolution_pixel_art_sprite_sheet_st",
+      "name": "Estudo de componentes animáveis",
+      "category": "conceituais",
+      "asset": "assets/conceituais/a_clean_high_resolution_pixel_art_sprite_sheet_st.png",
+      "sha256": "87010245c92b96873c0ca446375052dafe02ac3b68c1859ea7ecc48006d2f4de",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "NAO_OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:48:50.711Z"
+    },
+    {
+      "id": "conceituais-a_clean_high_resolution_pixel_art_industrial_eng",
+      "name": "Estudo de engenharia visual",
+      "category": "conceituais",
+      "asset": "assets/conceituais/a_clean_high_resolution_pixel_art_industrial_eng.png",
+      "sha256": "46021b1af9ee16398ab2e464748782eed6968cc26f98ac754ab4b36989819987",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "NAO_OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:48:52.663Z"
+    },
+    {
+      "id": "conceituais-wide_high_resolution_pixel_art_sprite_sheet_poste",
+      "name": "Estudo de máquina e oficina",
+      "category": "conceituais",
+      "asset": "assets/conceituais/wide_high_resolution_pixel_art_sprite_sheet_poste.png",
+      "sha256": "b178582f21610c79712599ca3d82cf7ed3c45f3d9ef23e4acd175203c635c5a5",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "NAO_OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:48:54.815Z"
+    },
+    {
+      "id": "conceituais-a_detailed_comparison_and_upgrade_style_illustrati",
+      "name": "Estudo técnico comparativo da 395 e DR410i",
+      "category": "conceituais",
+      "asset": "assets/conceituais/a_detailed_comparison_and_upgrade_style_illustrati.png",
+      "sha256": "abb0ebe37ea3aea42f27f2cc81d9da14b52f40aa681e6f466acf3ba8485765e8",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "NAO_OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:48:59.144Z"
+    },
+    {
+      "id": "conceituais-mec-nico_pixelando_com_chave_inglesa",
+      "name": "Mecânico — sprite inicial",
+      "category": "conceituais",
+      "asset": "assets/conceituais/mecânico_pixelando_com_chave_inglesa.png",
+      "sha256": "bb96d1b81f807f0ee62b4dadd83ac6a80e778bd96ad074ac197cf22bfd9c809d",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:49:02.352Z"
+    },
+    {
+      "id": "conceituais-oficina_p-o-r-c-a-r-i-a-_em_a--o",
+      "name": "Oficina P.O.R.C.A.R.I.A. — mockup",
+      "category": "conceituais",
+      "asset": "assets/conceituais/oficina_p.o.r.c.a.r.i.a._em_ação.png",
+      "sha256": "6998d6b843cd99c1e1743c1fadc03502bcb145cccb5a1f849a393f5ad42556d4",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:49:04.664Z"
+    },
+    {
+      "id": "conceituais-a_wide_infographic_style_comparison_image_in_a_pi",
+      "name": "Prancha atualizada dos dois equipamentos",
+      "category": "conceituais",
+      "asset": "assets/conceituais/a_wide_infographic_style_comparison_image_in_a_pi.png",
+      "sha256": "52dd6adebb210b97e76e27c7cc782e8a3d48771723b96f5092596b99838c68a8",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "NAO_OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:49:07.727Z"
+    },
+    {
+      "id": "conceituais-a_wide_high_resolution_sprite_sheet_style_poster",
+      "name": "Prancha de cenários e máquinas",
+      "category": "conceituais",
+      "asset": "assets/conceituais/a_wide_high_resolution_sprite_sheet_style_poster.png",
+      "sha256": "8f57224fc8957f2336f64bad8a548a1ffda773aee8f25adb7be4d6c54bf2b007",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:49:17.255Z"
+    },
+    {
+      "id": "conceituais-a_wide_high_resolution_pixel_art_sprite_sheet_a",
+      "name": "Prancha industrial de sprites",
+      "category": "conceituais",
+      "asset": "assets/conceituais/a_wide_high_resolution_pixel_art_sprite_sheet_a.png",
+      "sha256": "5b21fbb502c764135d0f10ac69732ef47a2f3e4873ce798202b6d0c9f817494d",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:49:21.104Z"
+    },
+    {
+      "id": "conceituais-supervisor_de_obra_em_pixel_art",
+      "name": "Supervisor — atlas inicial",
+      "category": "conceituais",
+      "asset": "assets/conceituais/supervisor_de_obra_em_pixel_art.png",
+      "sha256": "2edf897b19dd24eb02928adb74ca1ef9fd3ed268b443a1aac598a823bbd1dbb0",
+      "source": "pranchas produzidas na conversa",
+      "status_artistic": "conceitual",
+      "decision": "OK",
+      "comment": "",
+      "updatedAt": "2026-10-14T19:49:24.072Z"
+    },
+    {
+      "id": "interface-porcaria_fault_instructor",
+      "name": "Interface anterior — instrutor",
+      "category": "interface",
+      "asset": "assets/interface/porcaria_fault_instructor.png",
+      "sha256": "27b5abcc3fdeaa6d8d605c500b524bfe503375e5964ef2daddac922b2723ac0f",
+      "source": "arte produzida na conversa",
+      "status_artistic": "provisorio",
+      "decision": "NAO_OK",
+      "comment": "pode ignorar, faremos uma interface melhor",
+      "updatedAt": "2026-10-14T19:47:32.689Z"
+    },
+    {
+      "id": "interface-porcaria_fault_mobile",
+      "name": "Interface anterior — mobile",
+      "category": "interface",
+      "asset": "assets/interface/porcaria_fault_mobile.png",
+      "sha256": "f55154abe34247215454378cd69967ef5bac8921930b1f23a51a3abbdf749641",
+      "source": "arte produzida na conversa",
+      "status_artistic": "provisorio",
+      "decision": "NAO_OK",
+      "comment": "pode ignorar, faremos uma interface melhor",
+      "updatedAt": "2026-10-14T19:47:35.524Z"
+    }
+  ],
+  "issues": [
+    {
+      "asset_id": "equipamentos-cat395",
+      "title": "[Asset] Revisar CAT 395 — escavadeira",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:equipamentos"
+      ],
+      "body": "## Asset\n- ID: equipamentos-cat395\n- Arquivo: `assets/equipamentos/cat395.png`\n- SHA-256: `627cc13abc3755d33eaa810fa546d2f04af13ee86d16163c9cf27f91bf41ff66`\n\n## Problema observado\nnão está com fundo transparente, corrigir removendo fundo branco\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "equipamentos-historico-cat6030_conceito_original",
+      "title": "[Asset] Revisar CAT 6030 — estudo anterior",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:equipamentos"
+      ],
+      "body": "## Asset\n- ID: equipamentos-historico-cat6030_conceito_original\n- Arquivo: `assets/equipamentos/historico/cat6030_conceito_original.png`\n- SHA-256: `45757086761428f3c92f02a0f5ece5ab761559c05cc9a4235b911e1739aca294`\n\n## Problema observado\nHá espinhos na parte externa da caçamba, corrigir com base na máquina real.\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "equipamentos-historico-caminhao_pixel_art_original",
+      "title": "[Asset] Revisar Caminhão de mina — conceito isolado",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:equipamentos"
+      ],
+      "body": "## Asset\n- ID: equipamentos-historico-caminhao_pixel_art_original\n- Arquivo: `assets/equipamentos/historico/caminhao_pixel_art_original.png`\n- SHA-256: `78d1dece26602e7779d2a8daec6a91d992b523ca316137839a5c260ecf969620`\n\n## Problema observado\nA parte da frente do caminhão não está coerente com o Caterpillar 777, isso pode ser refinado. A roda dianteira parece duplicada, corrigir.\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "equipamentos-caminhao_mineracao_estudo",
+      "title": "[Asset] Revisar Caminhão de mineração (estudo)",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:equipamentos"
+      ],
+      "body": "## Asset\n- ID: equipamentos-caminhao_mineracao_estudo\n- Arquivo: `assets/equipamentos/caminhao_mineracao_estudo.png`\n- SHA-256: `24bf17e83f34815c935d0cbf73c67848be627af85ccfe3a340770526d9e20c47`\n\n## Problema observado\nDuplicada, manter somente Caminhão de mina — conceito isolado\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "equipamentos-historico-escavadeira_isometrica_original",
+      "title": "[Asset] Revisar Escavadeira amarela isométrica — conceito",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:equipamentos"
+      ],
+      "body": "## Asset\n- ID: equipamentos-historico-escavadeira_isometrica_original\n- Arquivo: `assets/equipamentos/historico/escavadeira_isometrica_original.png`\n- SHA-256: `7349b90118ea5b88bf47cbb3e94b95364ce0b86014cc5dbfb45537a9ef7d0de4`\n\n## Problema observado\n(Sem comentário — detalhar antes de executar)\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "equipamentos-historico-escavadeira_conceito_inicial",
+      "title": "[Asset] Revisar Escavadeira — conceito inicial",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:equipamentos"
+      ],
+      "body": "## Asset\n- ID: equipamentos-historico-escavadeira_conceito_inicial\n- Arquivo: `assets/equipamentos/historico/escavadeira_conceito_inicial.png`\n- SHA-256: `417703f86b00a2b6c7c6772ceb1cb5270f8281ca62a0027e2e36e18dc24f649f`\n\n## Problema observado\ntem um cilindro faltando, refaça comparando com a original\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "equipamentos-perfuratriz_a_estudo",
+      "title": "[Asset] Revisar Perfuratriz A (estudo)",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:equipamentos"
+      ],
+      "body": "## Asset\n- ID: equipamentos-perfuratriz_a_estudo\n- Arquivo: `assets/equipamentos/perfuratriz_a_estudo.png`\n- SHA-256: `36ba6c060f4a46e2b40df133dbf0d94af2c1383633622f406359514d71c13e37`\n\n## Problema observado\nduplicada, use somente Perfuratriz — conceito inicial\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "equipamentos-historico-perfuratriz_crawler_original",
+      "title": "[Asset] Revisar Perfuratriz crawler — conceito",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:equipamentos"
+      ],
+      "body": "## Asset\n- ID: equipamentos-historico-perfuratriz_crawler_original\n- Arquivo: `assets/equipamentos/historico/perfuratriz_crawler_original.png`\n- SHA-256: `6973de7e008732188d90c92bcd62539b4c49a54567fc75595fcf8c3b476651cd`\n\n## Problema observado\nremover\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_ana-alert",
+      "title": "[Asset] Revisar Ana — alert",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_ana-alert\n- Arquivo: `assets/personagens/elenco/mec_ana/alert.png`\n- SHA-256: `61d5bcfc4f7ad8a88784b5958d23673cce093f967bbcaf2b96a8f21e45757380`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_ana-clipboard",
+      "title": "[Asset] Revisar Ana — clipboard",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_ana-clipboard\n- Arquivo: `assets/personagens/elenco/mec_ana/clipboard.png`\n- SHA-256: `8c3ecdf8f634896a2bd541ce25252da5f01fb8712707114d36a8fca4820ad525`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_ana-extinguisher",
+      "title": "[Asset] Revisar Ana — extinguisher",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_ana-extinguisher\n- Arquivo: `assets/personagens/elenco/mec_ana/extinguisher.png`\n- SHA-256: `d91b1df96d14922cd000110b08a00c12efb731a374c264a53c2515d8c2eb3a5b`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_ana-idle",
+      "title": "[Asset] Revisar Ana — idle",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_ana-idle\n- Arquivo: `assets/personagens/elenco/mec_ana/idle.png`\n- SHA-256: `649333603632186f465fdce94d0b093c090668b3debb84d9e8344173365cae24`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_ana-inspect",
+      "title": "[Asset] Revisar Ana — inspect",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_ana-inspect\n- Arquivo: `assets/personagens/elenco/mec_ana/inspect.png`\n- SHA-256: `ce78e0d278e576b9f060eb04de66a4525a659f324438245e71017ba2ab753ef2`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_ana-point",
+      "title": "[Asset] Revisar Ana — point",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_ana-point\n- Arquivo: `assets/personagens/elenco/mec_ana/point.png`\n- SHA-256: `565c0b17c004debc7ce066d977104291c7c2d7402358e4099304b68665610e32`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_ana-positive",
+      "title": "[Asset] Revisar Ana — positive",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_ana-positive\n- Arquivo: `assets/personagens/elenco/mec_ana/positive.png`\n- SHA-256: `365bcaed9a19f932900b3a63a2fedc79e1e66ad2971244deb04263759f227b2a`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_ana-radio",
+      "title": "[Asset] Revisar Ana — radio",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_ana-radio\n- Arquivo: `assets/personagens/elenco/mec_ana/radio.png`\n- SHA-256: `ae21bb96bcd5a8c5b0c4822f04ba7b8d66519b29701b766a33c8e1fa475fd199`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_ana-spritesheet",
+      "title": "[Asset] Revisar Ana — spritesheet 8 quadros",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_ana-spritesheet\n- Arquivo: `assets/personagens/elenco/mec_ana/spritesheet.png`\n- SHA-256: `26812dcb2e208d2d299fa20fa69f662a2f1f7fea42f7f39c229258ff0b28426d`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-ele_bia-alert",
+      "title": "[Asset] Revisar Bia — alert",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-ele_bia-alert\n- Arquivo: `assets/personagens/elenco/ele_bia/alert.png`\n- SHA-256: `4f4da6a332ddab78e94758fe759bf9ceaa64cc8d9a47dabf13197e8343592a41`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-ele_bia-clipboard",
+      "title": "[Asset] Revisar Bia — clipboard",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-ele_bia-clipboard\n- Arquivo: `assets/personagens/elenco/ele_bia/clipboard.png`\n- SHA-256: `6606a0dba47ac85557258fbc1e3ed30f4050fb2075b1095376d9873bc39e0a3d`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-ele_bia-extinguisher",
+      "title": "[Asset] Revisar Bia — extinguisher",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-ele_bia-extinguisher\n- Arquivo: `assets/personagens/elenco/ele_bia/extinguisher.png`\n- SHA-256: `f2f643b5902f8fea8aa9b81e7a7814d0b0d0c78a76da86e7033d45ed374c0203`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-ele_bia-idle",
+      "title": "[Asset] Revisar Bia — idle",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-ele_bia-idle\n- Arquivo: `assets/personagens/elenco/ele_bia/idle.png`\n- SHA-256: `9425105d6d99267c31143a39a19d7f15bb9e3c8dbd71a427767d484bc6b82866`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-ele_bia-inspect",
+      "title": "[Asset] Revisar Bia — inspect",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-ele_bia-inspect\n- Arquivo: `assets/personagens/elenco/ele_bia/inspect.png`\n- SHA-256: `b23622fc90e04964cd1472d3063b12a978bfbaa4a92e68c21a690ccb84eea356`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-ele_bia-point",
+      "title": "[Asset] Revisar Bia — point",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-ele_bia-point\n- Arquivo: `assets/personagens/elenco/ele_bia/point.png`\n- SHA-256: `b5e1b4e59b4b4e8d4db525d1f977bcd49ef977d7d2d0b3584a26d0b66172959c`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-ele_bia-positive",
+      "title": "[Asset] Revisar Bia — positive",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-ele_bia-positive\n- Arquivo: `assets/personagens/elenco/ele_bia/positive.png`\n- SHA-256: `59fd0ad811048343638bde2eff0ab48f5c1570c7658553311c2af2ad315e9df3`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-ele_bia-radio",
+      "title": "[Asset] Revisar Bia — radio",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-ele_bia-radio\n- Arquivo: `assets/personagens/elenco/ele_bia/radio.png`\n- SHA-256: `7f0e7477982dd83ed73f309c2b2d607eebf848ccedbe1280bfb083262a794839`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-ele_bia-spritesheet",
+      "title": "[Asset] Revisar Bia — spritesheet 8 quadros",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-ele_bia-spritesheet\n- Arquivo: `assets/personagens/elenco/ele_bia/spritesheet.png`\n- SHA-256: `e9010b8f77f88a9364944e0648b79693383f4847b5b5842ac1feccb36a650434`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-pcm_clara-alert",
+      "title": "[Asset] Revisar Clara — alert",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-pcm_clara-alert\n- Arquivo: `assets/personagens/elenco/pcm_clara/alert.png`\n- SHA-256: `33cb3596bd874a88aa32b1f503f5eb4c39aa946be06a3c00915bf9e4144b46da`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-pcm_clara-clipboard",
+      "title": "[Asset] Revisar Clara — clipboard",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-pcm_clara-clipboard\n- Arquivo: `assets/personagens/elenco/pcm_clara/clipboard.png`\n- SHA-256: `5c3a3030e35589de30128705c98b4fe273036e04e8b93f3d1a94ac767b64bf67`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-pcm_clara-extinguisher",
+      "title": "[Asset] Revisar Clara — extinguisher",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-pcm_clara-extinguisher\n- Arquivo: `assets/personagens/elenco/pcm_clara/extinguisher.png`\n- SHA-256: `86547c72273c8998dd73b27f034a84d4800cc60d898aa3d62c1a0b42901ff53e`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-pcm_clara-idle",
+      "title": "[Asset] Revisar Clara — idle",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-pcm_clara-idle\n- Arquivo: `assets/personagens/elenco/pcm_clara/idle.png`\n- SHA-256: `99d819a55b5efa8677adbf2696f435530c4067555b38fae70276436bf40fe91e`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-pcm_clara-inspect",
+      "title": "[Asset] Revisar Clara — inspect",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-pcm_clara-inspect\n- Arquivo: `assets/personagens/elenco/pcm_clara/inspect.png`\n- SHA-256: `92fc3399efdf0dbed54ef3017fd8d7b86a033675ca239b735843890bb0e7c80e`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-pcm_clara-point",
+      "title": "[Asset] Revisar Clara — point",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-pcm_clara-point\n- Arquivo: `assets/personagens/elenco/pcm_clara/point.png`\n- SHA-256: `ede4d89011db5988b1defc4e8f89e8a7afb1a3bd1447b0c4a15d56dcbbd83571`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-pcm_clara-positive",
+      "title": "[Asset] Revisar Clara — positive",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-pcm_clara-positive\n- Arquivo: `assets/personagens/elenco/pcm_clara/positive.png`\n- SHA-256: `48f8d609e78aabee7061cde2553d5b7793ce17890bb3733d0debc638f7b5df9d`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-pcm_clara-radio",
+      "title": "[Asset] Revisar Clara — radio",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-pcm_clara-radio\n- Arquivo: `assets/personagens/elenco/pcm_clara/radio.png`\n- SHA-256: `2418ef32741cecdecc496cb8fc31dc96c652da002723f06cead8ce88db3b7588`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-pcm_clara-spritesheet",
+      "title": "[Asset] Revisar Clara — spritesheet 8 quadros",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-pcm_clara-spritesheet\n- Arquivo: `assets/personagens/elenco/pcm_clara/spritesheet.png`\n- SHA-256: `ab9209a49e19952ff40fd8789043e01423ac89d32bf279c3fd19e54e78077671`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-ele_davi-extinguisher",
+      "title": "[Asset] Revisar Davi — extinguisher",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-ele_davi-extinguisher\n- Arquivo: `assets/personagens/elenco/ele_davi/extinguisher.png`\n- SHA-256: `594e305006772dc85b909464a0c7e20b291e8b2d9130aa86e23491c1ae3c2ff6`\n\n## Problema observado\ntá bugada a cor do capacete, era pra ser todo amarelo\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-ele_davi-inspect",
+      "title": "[Asset] Revisar Davi — inspect",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-ele_davi-inspect\n- Arquivo: `assets/personagens/elenco/ele_davi/inspect.png`\n- SHA-256: `29129f8ac996b5644fde61c19488c66b2dd3cc9051ba5b1a1b1ca4c72e20f5ee`\n\n## Problema observado\ntá bugada a cor do capacete, era pra ser todo amarelo\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-ele_davi-positive",
+      "title": "[Asset] Revisar Davi — positive",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-ele_davi-positive\n- Arquivo: `assets/personagens/elenco/ele_davi/positive.png`\n- SHA-256: `cfe0b6a4aedcacfc5521bb366b476859baba80308d9420467f40a215f968dc49`\n\n## Problema observado\ntesta ficou amarela\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-ele_davi-spritesheet",
+      "title": "[Asset] Revisar Davi — spritesheet 8 quadros",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-ele_davi-spritesheet\n- Arquivo: `assets/personagens/elenco/ele_davi/spritesheet.png`\n- SHA-256: `30d51b6bd5d4b20d4b84dc444a660b972da26eeef89c0b3ac8045b454dc978fe`\n\n## Problema observado\nrefazer após os assets abaixo serem corrigidos:\nDavi — positive\nDavi — inspect\nDavi — extinguisher\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-pcm_joao-extinguisher",
+      "title": "[Asset] Revisar João — extinguisher",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-pcm_joao-extinguisher\n- Arquivo: `assets/personagens/elenco/pcm_joao/extinguisher.png`\n- SHA-256: `038037768b4eb9c1ec3d4887383f4ed6c0bd6c3096b4fbac8cdccbca5cfb2bce`\n\n## Problema observado\ntá bugada a cor do capacete, era pra ser todo branco\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-pcm_joao-inspect",
+      "title": "[Asset] Revisar João — inspect",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-pcm_joao-inspect\n- Arquivo: `assets/personagens/elenco/pcm_joao/inspect.png`\n- SHA-256: `1a55a894bc54adc21a7be2b80dfb78f7d3345fcbe6c9f26d3098f65fc8e47c1e`\n\n## Problema observado\ntá bugada a cor do capacete, era pra ser todo branco\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-pcm_joao-positive",
+      "title": "[Asset] Revisar João — positive",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-pcm_joao-positive\n- Arquivo: `assets/personagens/elenco/pcm_joao/positive.png`\n- SHA-256: `79c27a875160d66e7eb5281bdd51b4b24b194e372bf488cb3b282940f74b553a`\n\n## Problema observado\na testa tá branca\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-pcm_joao-spritesheet",
+      "title": "[Asset] Revisar João — spritesheet 8 quadros",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-pcm_joao-spritesheet\n- Arquivo: `assets/personagens/elenco/pcm_joao/spritesheet.png`\n- SHA-256: `6c3cc34e9d8246c95198f5eadc02357bd0f2798b9f25fccbf23490a903214e73`\n\n## Problema observado\nrefazer após os assets abaixo serem corrigidos:\nJoão — positive\nJoão — inspect\nJoão — extinguisher\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_lia-alert",
+      "title": "[Asset] Revisar Lia — alert",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_lia-alert\n- Arquivo: `assets/personagens/elenco/mec_lia/alert.png`\n- SHA-256: `85b22e66599ae848156b404cb93dc5aed335f7a74f7f7b8e965b2c4315c487e3`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_lia-clipboard",
+      "title": "[Asset] Revisar Lia — clipboard",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_lia-clipboard\n- Arquivo: `assets/personagens/elenco/mec_lia/clipboard.png`\n- SHA-256: `68a5905440136c218ea7776fce0b1e90e87b6ecb4ef15f23ac4b0b53d15b3207`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_lia-extinguisher",
+      "title": "[Asset] Revisar Lia — extinguisher",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_lia-extinguisher\n- Arquivo: `assets/personagens/elenco/mec_lia/extinguisher.png`\n- SHA-256: `c5dec7af05419cea504bee8e9d28a4ca821d8b03f8c1b46abfe6a26abe93e633`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_lia-idle",
+      "title": "[Asset] Revisar Lia — idle",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_lia-idle\n- Arquivo: `assets/personagens/elenco/mec_lia/idle.png`\n- SHA-256: `eee44fa52b085748e44e66fd84355ab131304ece8825a760ce63a9f328eff319`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_lia-inspect",
+      "title": "[Asset] Revisar Lia — inspect",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_lia-inspect\n- Arquivo: `assets/personagens/elenco/mec_lia/inspect.png`\n- SHA-256: `74326ca2c059411fcc80ee70559b12bf2a402f737d0cdf51256d5bd6de313462`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_lia-point",
+      "title": "[Asset] Revisar Lia — point",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_lia-point\n- Arquivo: `assets/personagens/elenco/mec_lia/point.png`\n- SHA-256: `dd05e5963d053b08ac9f5201e440f313abba80d8042dd847f850ef67a62ba410`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_lia-positive",
+      "title": "[Asset] Revisar Lia — positive",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_lia-positive\n- Arquivo: `assets/personagens/elenco/mec_lia/positive.png`\n- SHA-256: `cdbd5121d3f57a60b167c2c582af9a885739df31b30ed30c02d4d9e15167b262`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_lia-radio",
+      "title": "[Asset] Revisar Lia — radio",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_lia-radio\n- Arquivo: `assets/personagens/elenco/mec_lia/radio.png`\n- SHA-256: `76073a41193e8d933deda6ad091a0fce95087a1d4500e19ad5df099c4b20b5d3`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_lia-spritesheet",
+      "title": "[Asset] Revisar Lia — spritesheet 8 quadros",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_lia-spritesheet\n- Arquivo: `assets/personagens/elenco/mec_lia/spritesheet.png`\n- SHA-256: `aea7becd0c766400fe30815da25062dc64c71202398ed44e60ca44252243bb8f`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-brig_nina-alert",
+      "title": "[Asset] Revisar Nina — alert",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-brig_nina-alert\n- Arquivo: `assets/personagens/elenco/brig_nina/alert.png`\n- SHA-256: `edf316ee6ac406f4aaad5cd177ab2f74d448c832f88dd33cb946f7e6c15b3d0c`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-brig_nina-clipboard",
+      "title": "[Asset] Revisar Nina — clipboard",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-brig_nina-clipboard\n- Arquivo: `assets/personagens/elenco/brig_nina/clipboard.png`\n- SHA-256: `4e9b8aa9592af27eb0c94244cf6061c5e858f54aecf7ab12154061f9d4b8a0bd`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-brig_nina-extinguisher",
+      "title": "[Asset] Revisar Nina — extinguisher",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-brig_nina-extinguisher\n- Arquivo: `assets/personagens/elenco/brig_nina/extinguisher.png`\n- SHA-256: `eb50dbe2f43abb99cff332add74d5512c464ff7d5ddafcf9f5b41bedc8c69dfb`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-brig_nina-idle",
+      "title": "[Asset] Revisar Nina — idle",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-brig_nina-idle\n- Arquivo: `assets/personagens/elenco/brig_nina/idle.png`\n- SHA-256: `f333c7583416522e2ea220fe4a3da78b30cf30063146045fdf3e05840f123f26`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-brig_nina-inspect",
+      "title": "[Asset] Revisar Nina — inspect",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-brig_nina-inspect\n- Arquivo: `assets/personagens/elenco/brig_nina/inspect.png`\n- SHA-256: `64f035a2a7ae76c908ca3b6b12ee20a453abdd2441acf7288b91bc0ab6e2d03b`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-brig_nina-point",
+      "title": "[Asset] Revisar Nina — point",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-brig_nina-point\n- Arquivo: `assets/personagens/elenco/brig_nina/point.png`\n- SHA-256: `b601d76281fc8bb4bf3edbb0c117727293a4089ec0b2f5f9441ae0389d91dd53`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-brig_nina-positive",
+      "title": "[Asset] Revisar Nina — positive",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-brig_nina-positive\n- Arquivo: `assets/personagens/elenco/brig_nina/positive.png`\n- SHA-256: `f6dc89161c3265fc09c7ae61d4c2c2b96e479aaf5d40a6be655c35040f2a0412`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-brig_nina-radio",
+      "title": "[Asset] Revisar Nina — radio",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-brig_nina-radio\n- Arquivo: `assets/personagens/elenco/brig_nina/radio.png`\n- SHA-256: `c51da2534df798aa38b02d394cd35b7dc7ee3ccda223609b3612834b0ccf9e97`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-brig_nina-spritesheet",
+      "title": "[Asset] Revisar Nina — spritesheet 8 quadros",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-brig_nina-spritesheet\n- Arquivo: `assets/personagens/elenco/brig_nina/spritesheet.png`\n- SHA-256: `cee3b8efddab99fb8ce56ed6072c879e9e46b0ede5431bba9594af6a95daf0a8`\n\n## Problema observado\ntá bugado, refazer\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_rafael-positive",
+      "title": "[Asset] Revisar Rafael — positive",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_rafael-positive\n- Arquivo: `assets/personagens/elenco/mec_rafael/positive.png`\n- SHA-256: `bf90be3a8f75e2a7861f2fb76a7695df28766a301a09e8c7b28e688542db5f6b`\n\n## Problema observado\na testa tá amarela\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "personagens-elenco-mec_rafael-spritesheet",
+      "title": "[Asset] Revisar Rafael — spritesheet 8 quadros",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:elenco"
+      ],
+      "body": "## Asset\n- ID: personagens-elenco-mec_rafael-spritesheet\n- Arquivo: `assets/personagens/elenco/mec_rafael/spritesheet.png`\n- SHA-256: `332930dc4357078a222e03285448c8ec39b91edc9728ee49828688f0caed3439`\n\n## Problema observado\nrefazer após os assets abaixo serem corrigidos:\nRafael — positive\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "conceituais-a_pixel_art_sprite_sheet_displays_maintenance_and",
+      "title": "[Asset] Revisar Atlas de personagens e máquinas",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:conceituais"
+      ],
+      "body": "## Asset\n- ID: conceituais-a_pixel_art_sprite_sheet_displays_maintenance_and\n- Arquivo: `assets/conceituais/a_pixel_art_sprite_sheet_displays_maintenance_and.png`\n- SHA-256: `0c982889ca83609769bc9e06d54f14d1220b4ab3803d9086b2d101aa8064edec`\n\n## Problema observado\ntudo bugado, ignorar\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "conceituais-a_wide_high_resolution_game_asset_style_sprite_s",
+      "title": "[Asset] Revisar Catálogo visual anterior",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:conceituais"
+      ],
+      "body": "## Asset\n- ID: conceituais-a_wide_high_resolution_game_asset_style_sprite_s\n- Arquivo: `assets/conceituais/a_wide_high_resolution_game_asset_style_sprite_s.png`\n- SHA-256: `3831f677e2af606c754c626cf3d348ea02b9579920755802b59587c6e2921f5f`\n\n## Problema observado\n(Sem comentário — detalhar antes de executar)\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "conceituais-a_wide_poster_like_pixel_art_sprite_sheet_and_ass",
+      "title": "[Asset] Revisar Estudo da frota v0.6",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:conceituais"
+      ],
+      "body": "## Asset\n- ID: conceituais-a_wide_poster_like_pixel_art_sprite_sheet_and_ass\n- Arquivo: `assets/conceituais/a_wide_poster_like_pixel_art_sprite_sheet_and_ass.png`\n- SHA-256: `fcc98d5a50b331faaad0f463f10939cce163f208a829e2ac7136cb7e730889bd`\n\n## Problema observado\n(Sem comentário — detalhar antes de executar)\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "conceituais-wide_infographic_pixel_art_concept_sheet_split_int",
+      "title": "[Asset] Revisar Estudo de CAT 395 e DR410i",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:conceituais"
+      ],
+      "body": "## Asset\n- ID: conceituais-wide_infographic_pixel_art_concept_sheet_split_int\n- Arquivo: `assets/conceituais/wide_infographic_pixel_art_concept_sheet_split_int.png`\n- SHA-256: `d63fa89bb7c3abdfc82b8b35e48b88cc40b6523222100170050c3986c368be41`\n\n## Problema observado\n(Sem comentário — detalhar antes de executar)\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "conceituais-a_clean_high_resolution_pixel_art_sprite_sheet_st",
+      "title": "[Asset] Revisar Estudo de componentes animáveis",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:conceituais"
+      ],
+      "body": "## Asset\n- ID: conceituais-a_clean_high_resolution_pixel_art_sprite_sheet_st\n- Arquivo: `assets/conceituais/a_clean_high_resolution_pixel_art_sprite_sheet_st.png`\n- SHA-256: `87010245c92b96873c0ca446375052dafe02ac3b68c1859ea7ecc48006d2f4de`\n\n## Problema observado\n(Sem comentário — detalhar antes de executar)\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "conceituais-a_clean_high_resolution_pixel_art_industrial_eng",
+      "title": "[Asset] Revisar Estudo de engenharia visual",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:conceituais"
+      ],
+      "body": "## Asset\n- ID: conceituais-a_clean_high_resolution_pixel_art_industrial_eng\n- Arquivo: `assets/conceituais/a_clean_high_resolution_pixel_art_industrial_eng.png`\n- SHA-256: `46021b1af9ee16398ab2e464748782eed6968cc26f98ac754ab4b36989819987`\n\n## Problema observado\n(Sem comentário — detalhar antes de executar)\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "conceituais-wide_high_resolution_pixel_art_sprite_sheet_poste",
+      "title": "[Asset] Revisar Estudo de máquina e oficina",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:conceituais"
+      ],
+      "body": "## Asset\n- ID: conceituais-wide_high_resolution_pixel_art_sprite_sheet_poste\n- Arquivo: `assets/conceituais/wide_high_resolution_pixel_art_sprite_sheet_poste.png`\n- SHA-256: `b178582f21610c79712599ca3d82cf7ed3c45f3d9ef23e4acd175203c635c5a5`\n\n## Problema observado\n(Sem comentário — detalhar antes de executar)\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "conceituais-a_detailed_comparison_and_upgrade_style_illustrati",
+      "title": "[Asset] Revisar Estudo técnico comparativo da 395 e DR410i",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:conceituais"
+      ],
+      "body": "## Asset\n- ID: conceituais-a_detailed_comparison_and_upgrade_style_illustrati\n- Arquivo: `assets/conceituais/a_detailed_comparison_and_upgrade_style_illustrati.png`\n- SHA-256: `abb0ebe37ea3aea42f27f2cc81d9da14b52f40aa681e6f466acf3ba8485765e8`\n\n## Problema observado\n(Sem comentário — detalhar antes de executar)\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "conceituais-a_wide_infographic_style_comparison_image_in_a_pi",
+      "title": "[Asset] Revisar Prancha atualizada dos dois equipamentos",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:conceituais"
+      ],
+      "body": "## Asset\n- ID: conceituais-a_wide_infographic_style_comparison_image_in_a_pi\n- Arquivo: `assets/conceituais/a_wide_infographic_style_comparison_image_in_a_pi.png`\n- SHA-256: `52dd6adebb210b97e76e27c7cc782e8a3d48771723b96f5092596b99838c68a8`\n\n## Problema observado\n(Sem comentário — detalhar antes de executar)\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "interface-porcaria_fault_instructor",
+      "title": "[Asset] Revisar Interface anterior — instrutor",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:interface"
+      ],
+      "body": "## Asset\n- ID: interface-porcaria_fault_instructor\n- Arquivo: `assets/interface/porcaria_fault_instructor.png`\n- SHA-256: `27b5abcc3fdeaa6d8d605c500b524bfe503375e5964ef2daddac922b2723ac0f`\n\n## Problema observado\npode ignorar, faremos uma interface melhor\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    },
+    {
+      "asset_id": "interface-porcaria_fault_mobile",
+      "title": "[Asset] Revisar Interface anterior — mobile",
+      "labels": [
+        "assets",
+        "revisao-visual",
+        "categoria:interface"
+      ],
+      "body": "## Asset\n- ID: interface-porcaria_fault_mobile\n- Arquivo: `assets/interface/porcaria_fault_mobile.png`\n- SHA-256: `f55154abe34247215454378cd69967ef5bac8921930b1f23a51a3abbdf749641`\n\n## Problema observado\npode ignorar, faremos uma interface melhor\n\n## Critério de aceite\nCorrigir o problema descrito mantendo o estilo e validando o asset antes de aprovação.\n\n_Origem: exportação do revisor P.O.R.C.A.R.I.A._"
+    }
+  ]
+}
