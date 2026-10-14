@@ -1,0 +1,37 @@
+name: Repair CAT6030 historical bucket (#4)
+on:
+  push:
+    branches: [fix/assets-review-20261014]
+    paths:
+      - scripts/repair_cat6030_bucket.py
+      - .github/workflows/repair-cat6030-bucket.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/assets-review-20261014
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check pillow
+      - name: Remove anomalous bucket extensions
+        run: python scripts/repair_cat6030_bucket.py
+      - name: Commit versioned geometry fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add phaser/assets-review/assets/equipamentos/historico/cat6030_conceito_original.png
+          git add phaser/assets-review/catalogo.json phaser/assets-review/ativos.json phaser/assets-review/avaliar-sprites-rodada02.html
+          git add phaser/assets-review/previews/issue04_cat6030_before_after.png phaser/assets-review/previews/issue04_cat6030_report.json
+          if ! git diff --cached --quiet; then
+            git commit -m "fix(assets): remove CAT6030 bucket external spurs (#4)"
+            git push origin HEAD:fix/assets-review-20261014
+          fi
