@@ -2,14 +2,14 @@
   "version": "v0.9-reviewed",
   "purpose": "Only candidate game assets, excluding deprecated studies; 'needs-revision' is NOT release-ready.",
   "archivedCount": 14,
-  "approvedCount": 41,
+  "approvedCount": 42,
   "assets": [
     {
       "id": "equipamentos_cat395_png",
       "name": "CAT 395 — escavadeira",
       "category": "equipamentos",
       "path": "phaser/assets-review/assets/equipamentos/cat395.png",
-      "state": "ready-for-review",
+      "state": "approved",
       "issue": 3,
       "github_binary_status": "uploaded"
     },
