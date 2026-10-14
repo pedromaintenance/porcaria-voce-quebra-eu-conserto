@@ -20,7 +20,14 @@
       "user_comment": "não está com fundo transparente, corrigir removendo fundo branco",
       "user_reviewed_at": "2026-10-14T19:38:02.723Z",
       "review_issue_number": 3,
-      "workflow_state": "needs-revision"
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 3,
+        "source_sha256": "627cc13abc3755d33eaa810fa546d2f04af13ee86d16163c9cf27f91bf41ff66",
+        "corrected_sha256": "ca5cfe56e3e77c71e08d98d2daa9fdcd5174c451afefb4e0c5f30f830b149dfe",
+        "validated_git_blob": "e612469b7596a3ec38a7320fd8479d5802a2b450",
+        "status": "technical-fix-complete-awaiting-user-visual-approval"
+      }
     },
     {
       "id": "equipamentos_cat6030_backhoe_estudo_png",
@@ -1976,7 +1983,8 @@
   "workflow_counts": {
     "approved": 41,
     "archived": 14,
-    "needs-revision": 59,
-    "awaiting-clarification": 1
+    "needs-revision": 58,
+    "awaiting-clarification": 1,
+    "ready-for-review": 1
   }
 }
