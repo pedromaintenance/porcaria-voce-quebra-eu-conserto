@@ -21,8 +21,8 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install --disable-pip-version-check pillow
-      - name: Repair Joao (#14)
-        run: python scripts/repair_character_colors.py --character pcm_joao
+      - name: Repair Rafael (#15)
+        run: python scripts/repair_character_colors.py --character mec_rafael
       - name: Commit corrected sprites and review report
         run: |
           git config user.name "github-actions[bot]"
@@ -30,6 +30,6 @@ jobs:
           git add phaser/assets-review/catalogo.json phaser/assets-review/ativos.json phaser/assets-review/avaliar-sprites-rodada02.html
           git add phaser/assets-review/assets/personagens/elenco/ phaser/assets-review/previews/
           if ! git diff --cached --quiet; then
-            git commit -m "fix(assets): correct Joao helmet/forehead and recompose sheet (#14)"
+            git commit -m "fix(assets): correct Rafael forehead and recompose sheet (#15)"
             git push origin HEAD:fix/assets-review-20261014
           fi
