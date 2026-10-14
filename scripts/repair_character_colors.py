@@ -130,7 +130,7 @@ def main(character):
   a["changed"]=bool(source.get("fix"))
   a["userApprovedThisRound"]=bool(source.get("reapproval",{}).get("decision")=="OK")
   a["issue"]=source.get("review_issue_number")
- text=re.sub(r'<script id="data" type="application/json">[\s\S]*?</script>','<script id="data" type="application/json">'+json.dumps(items,ensure_ascii=False).replace("<",r"\u003c")+'</script>',text,count=1)
+ text=re.sub(r'<script id="data" type="application/json">[\s\S]*?</script>',lambda m:'<script id="data" type="application/json">'+json.dumps(items,ensure_ascii=False).replace("<",r"\u003c")+'</script>',text,count=1)
  text=re.sub(r"const sha='[^']+';", "const sha='fix/assets-review-20261014';",text,count=1)
  gallery.write_text(text,"utf-8")
  print(json.dumps(report,ensure_ascii=False,indent=2))
