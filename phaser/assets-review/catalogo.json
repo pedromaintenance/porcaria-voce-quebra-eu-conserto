@@ -1793,7 +1793,7 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
+      "github_binary_status": "uploaded",
       "review": "pending",
       "user_decision": "OK",
       "user_comment": "",
@@ -1827,7 +1827,7 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
+      "github_binary_status": "uploaded",
       "review": "pending",
       "user_decision": "OK",
       "user_comment": "",
@@ -2092,5 +2092,13 @@
     "ready-for-review": 11,
     "needs-revision": 47,
     "awaiting-clarification": 1
+  },
+  "binary_transfer_2026_10_14": {
+    "newly_uploaded_paths": [
+      "conceituais/a_detailed_pixel_art_sprite_sheet_infographic_on_a.png",
+      "conceituais/a_large_clean_organized_pixel_art_sprite_sheet_i.png"
+    ],
+    "verified_source": "original PNG base64 stored in user Library; first PNG source SHA256 cross-checked",
+    "remaining_missing_originals": 14
   }
 }
