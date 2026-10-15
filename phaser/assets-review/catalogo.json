@@ -1864,13 +1864,14 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
+      "github_binary_status": "uploaded",
       "review": "pending",
       "user_decision": "OK",
       "user_comment": "",
       "user_reviewed_at": "2026-10-14T19:47:43.295Z",
       "review_issue_number": null,
-      "workflow_state": "approved"
+      "workflow_state": "approved",
+      "github_blob_sha": "d5a36e2df9384f07af9f663c837774182e8b800a"
     },
     {
       "id": "conceituais_a_wide_high_resolution_sprite_sheet_style_poster_png",
@@ -1915,13 +1916,14 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
+      "github_binary_status": "uploaded",
       "review": "pending",
       "user_decision": "NAO_OK",
       "user_comment": "",
       "user_reviewed_at": "2026-10-14T19:48:20.480Z",
       "review_issue_number": 17,
-      "workflow_state": "archived"
+      "workflow_state": "archived",
+      "github_blob_sha": "8b11ad1ffacc59f9df8fec011418cdc85f430b41"
     },
     {
       "id": "conceituais_a_clean_high_resolution_pixel_art_sprite_sheet_st_png",
@@ -1966,13 +1968,14 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
+      "github_binary_status": "uploaded",
       "review": "pending",
       "user_decision": "NAO_OK",
       "user_comment": "",
       "user_reviewed_at": "2026-10-14T19:48:45.167Z",
       "review_issue_number": 17,
-      "workflow_state": "archived"
+      "workflow_state": "archived",
+      "github_blob_sha": "40f6dbec964c8e2a4c54b8412ad0f6b7e08a6a65"
     },
     {
       "id": "conceituais_wide_high_resolution_pixel_art_sprite_sheet_poste_png",
@@ -2000,13 +2003,14 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
+      "github_binary_status": "uploaded",
       "review": "pending",
       "user_decision": "NAO_OK",
       "user_comment": "",
       "user_reviewed_at": "2026-10-14T19:48:46.832Z",
       "review_issue_number": 17,
-      "workflow_state": "archived"
+      "workflow_state": "archived",
+      "github_blob_sha": "ca4f85edb3e2ed1279e977958eae99a69fda762e"
     },
     {
       "id": "conceituais_a_detailed_comparison_and_upgrade_style_illustrati_png",
