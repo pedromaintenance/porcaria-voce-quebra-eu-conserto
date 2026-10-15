@@ -1725,13 +1725,14 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
+      "github_binary_status": "uploaded",
       "review": "pending",
       "user_decision": "OK",
       "user_comment": "",
       "user_reviewed_at": "2026-10-14T19:48:07.216Z",
       "review_issue_number": null,
-      "workflow_state": "approved"
+      "workflow_state": "approved",
+      "github_blob_sha": "4201314a737691e67ab6416e2e8fbda946f3f95d"
     },
     {
       "id": "conceituais_folha_de_sprites_do_eletricista_mineiro_png",
@@ -1759,13 +1760,14 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
+      "github_binary_status": "uploaded",
       "review": "pending",
       "user_decision": "OK",
       "user_comment": "",
       "user_reviewed_at": "2026-10-14T19:49:24.072Z",
       "review_issue_number": null,
-      "workflow_state": "approved"
+      "workflow_state": "approved",
+      "github_blob_sha": "f636ff0d075c118fca71f358e8ef81bb6bf04efc"
     },
     {
       "id": "conceituais_mec_nico_pixelando_com_chave_inglesa_png",
@@ -1776,13 +1778,14 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
+      "github_binary_status": "uploaded",
       "review": "pending",
       "user_decision": "OK",
       "user_comment": "",
       "user_reviewed_at": "2026-10-14T19:49:02.352Z",
       "review_issue_number": null,
-      "workflow_state": "approved"
+      "workflow_state": "approved",
+      "github_blob_sha": "79b5be24b586ecf070769f4c66fb76ae11b0ddc6"
     },
     {
       "id": "conceituais_a_large_clean_organized_pixel_art_sprite_sheet_i_png",
