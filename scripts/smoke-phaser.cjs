@@ -41,8 +41,8 @@ assert.ok(phaserHtml.includes('overflow-x:auto'),'navegação responsiva roláve
 assert.ok(phaserScript.includes('function closeSceneMenu()'),'menu de cenário pode ser fechado');
 assert.ok(phaserScript.includes("sceneMenuBtn').addEventListener('click'"),'controle de abertura do menu presente');
 assert.ok(phaserScript.includes("if(!$('sceneMenu').hidden)"),'Escape fecha o dropdown antes do modal');
-assert.ok(phaserHtml.includes('game.js?v=0.7.5'),'script principal tem cache versionado');
-assert.ok(phaserHtml.includes('layout-math.js?v=0.7.5'),'funções de geometria carregam antes da oficina');
+assert.ok(phaserHtml.includes('game.js?v=0.7.6'),'script principal tem cache versionado');
+assert.ok(phaserHtml.includes('layout-math.js?v=0.7.6'),'funções de geometria carregam antes da oficina');
 
 const state=engine.create(data,()=>0.42);
 assert.ok(engine.validate(state),'save inicial válido');
@@ -77,11 +77,11 @@ for(const bay of map.bays){
  assert.ok(bay.progressWorld.x>=z.x&&bay.progressWorld.x+bay.progressWorld.width<=z.x+z.width,'barra de progresso dentro do box');
 }
 // v0.7.4 — escala específica por modelo com limites reais do espaço visual.
-assert.equal(map.version,'0.7.5','mapeamento da revisão atual');
+assert.equal(map.version,'0.7.6','mapeamento da revisão atual');
 assert.equal(map.modelPresentation.EQ02.scaleMultiplier,2,'CAT 6030 com proporção alvo 2x');
 assert.equal(map.modelPresentation.EQ05.scaleMultiplier,3,'DR410i com proporção alvo 3x');
-const expectedX=[407,848,1223];
-const expectedWorkers=[[310,539],[725,977],[1102,1345]];
+const expectedX=[427,842,1223];
+const expectedWorkers=[[330,559],[719,971],[1102,1345]];
 const expectedProgress=[402,695,1006];
 const expectedHits=[379,660,980];
 for(let i=0;i<3;i++){
@@ -91,14 +91,21 @@ for(let i=0;i<3;i++){
  assert.equal(b.hitWorld.x,expectedHits[i],`BOX ${i+1}: hotspot preservado`);
  assert.equal(b.progressWorld.x,expectedProgress[i],`BOX ${i+1}: progresso não se desloca do letreiro`);
 }
-assert.deepEqual(map.bays.map(b=>b.compositionOffsetX),[-94,40,104],'deslocamentos acumulados a partir das versões anteriores');
-assert.equal(layoutMath.visibleCenter(310,54,map.viewport,8),354,'mecânico do box 1 protegido contra corte na borda esquerda');
-assert.equal(layoutMath.visibleCenter(407,272,map.viewport,8),463,'equipamento largo fica inteiramente visível');
-assert.equal(layoutMath.visibleCenter(1345,54,map.viewport,8),1345,'mecânico do box 3 não é alterado quando está visível');
+assert.deepEqual(map.bays.map(b=>b.compositionOffsetX),[-74,34,104],'deslocamentos acumulados apos ajuste fino');
+assert.deepEqual(map.bays.map(b=>b.visualCalibrationX),[20,-6,0],'calibração visual apenas nos BOXES 1 e 2');
+assert.equal(layoutMath.calibratedCenter(330,54,map.viewport,20,8),374,'mecânico do box 1 se move efetivamente 20px mesmo quando limitado pela borda');
+assert.equal(layoutMath.calibratedCenter(427,265,map.viewport,20,8),480,'CAT 777E no BOX 1 efetivamente 20px mais à direita');
+assert.equal(layoutMath.calibratedCenter(842,265,map.viewport,-6,8),842,'BOX 2 move a máquina 6px para a esquerda');
+assert.equal(layoutMath.calibratedCenter(719,54,map.viewport,-6,8),719,'mecânico do BOX 2 segue translação');
+assert.equal(layoutMath.calibratedCenter(1223,230,map.viewport,0,8),1223,'BOX 3 mantém centro visual anterior');
+assert.equal(layoutMath.calibratedCenter(427,272,map.viewport,20,8),483,'equipamento largo do BOX 1 mantém novo deslocamento e enquadramento');
+assert.equal(layoutMath.calibratedCenter(1345,54,map.viewport,0,8),1345,'mecânico do BOX 3 permanece inalterado');
 assert.ok(phaserScript.includes("machineNode.on('pointerdown'"),'clique na máquina seleciona a própria OS');
 assert.ok(phaserScript.includes("actor.on('pointerdown'"),'clique no mecânico seleciona a própria OS mesmo sobre região vizinha');
 assert.ok(phaserScript.includes('fillEllipse(machineX,ground'),'sombra acompanha centro efetivamente renderizado da máquina');
-assert.ok(phaserScript.includes('visibleCenter(x,54,SCENE_REFERENCE'),'mecânicos respeitam o enquadramento');
+assert.ok(phaserScript.includes('calibratedCenter(x,54,SCENE_REFERENCE,visualCalibrationX'),'mecânicos usam deslocamento posterior ao clamp');
+assert.ok(phaserScript.includes('calibratedCenter(x,plan.width,SCENE_REFERENCE,bay?.visualCalibrationX'),'equipamentos usam deslocamento posterior ao clamp');
+assert.ok(phaserScript.includes('calibratedCenter(cx,220*'),'sombra de equipamento vetorial segue calibração');
 const bay=map.bays[1];
 const oldDrill=layoutMath.equipmentSize(1086,1448,bay.spriteWorld.scale,{scaleMultiplier:1},bay);
 const newDrill=layoutMath.equipmentSize(1086,1448,bay.spriteWorld.scale,map.modelPresentation.EQ05,bay);
