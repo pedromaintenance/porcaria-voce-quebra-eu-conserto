@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.1 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.5 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -189,7 +189,18 @@ function events(){
   const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
   const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='porcaria-phaser-save.json';link.click();setTimeout(()=>URL.revokeObjectURL(link.href),700);
  });
- $('reset').addEventListener('click',()=>{if(!confirm('Reiniciar a campanha Phaser?'))return;state=E.create(data);selected=state.jobs[0]?.id;action(null)});
+ $('importSave').addEventListener('change',async ev=>{
+  const file=ev.target.files?.[0];ev.target.value='';if(!file)return;
+  try{
+   if(file.size>5_000_000)throw Error('O arquivo ultrapassa 5 MB.');
+   const candidate=JSON.parse(await file.text());
+   if(!E.validate(candidate))throw Error('Save incompatível com a simulação atual.');
+   if(!confirm('Importar save e substituir o progresso desta oficina? Exporte o save atual antes de continuar.'))return;
+   state=candidate;selected=state.jobs[0]?.id||null;
+   action(null);notify('Save importado com sucesso.');
+  }catch(error){notify('Falha ao importar: '+error.message)}
+ });
+  $('reset').addEventListener('click',()=>{if(!confirm('Reiniciar a campanha Phaser?'))return;state=E.create(data);selected=state.jobs[0]?.id;action(null)});
 }
 class Workshop extends Phaser.Scene{
  constructor(){super('Workshop');this.machineObjs=[]}
