@@ -17,24 +17,44 @@ const MACHINES={EQ01:'truck',EQ02:'shovel',EQ03:'excavator',EQ04:'excavator',EQ0
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const brl=n=>Math.round(n).toLocaleString('pt-BR');
 let data,state,selected,scene;
-const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO ATUAL',stats:'📊 INDICADORES E RECURSOS',team:'👷 EQUIPE DA OFICINA',store:'📦 ALMOXARIFADO E FERRAMENTAL'};
+const FILTER={queue:'all',query:'',store:'all',stockQuery:''};
+let toastTimeout;
+const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO ATUAL',stats:'📊 INDICADORES E RECURSOS',team:'👷 EQUIPE DA OFICINA',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA'};
 function openPanel(name){const overlay=$('menuOverlay');if(!overlay)return;overlay.hidden=false;$('modalHeading').textContent=PANEL_TITLES[name]||'MENU DA OFICINA';document.querySelectorAll('[data-panel]').forEach(el=>el.classList.toggle('is-open',el.dataset.panel===name));document.body.style.overflow='hidden';$('closePanel')?.focus()}
 function closePanel(){const overlay=$('menuOverlay');if(overlay)overlay.hidden=true;document.body.style.overflow='';}
 function save(){try{localStorage.setItem(SAVE,JSON.stringify(state))}catch(e){console.warn('Save',e)}}
 function action(error){if(error)notify(error);else{save();drawUI();if(scene)scene.refresh()}}
-function notify(t){const overlay=$('menuOverlay');const area=$('notice');if(area&&overlay&&!overlay.hidden&&document.querySelector('[data-panel="detail"].is-open')){area.textContent=t;area.style.display='block'}else alert(t)}
+function notify(t){const area=$('toast');if(!area)return;area.textContent=t;area.hidden=false;clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>{area.hidden=true},4400)}
 function job(){return E.job(state,selected)||state.jobs[0]}
 function pick(id){selected=id;drawUI();if(scene)scene.refresh();openPanel('detail')}
+function statusFor(j){
+ if(!j)return {label:'LIVRE',css:'free'};
+ if(j.status==='material')return {label:'AGUARDANDO PEÇA',css:'blocked'};
+ if(j.status==='ferramenta')return {label:'FALTA FERRAMENTA',css:'blocked'};
+ if(j.status==='reparo')return {label:'EM REPARO',css:'work'};
+ if(j.stage>=6)return {label:'PRONTO PARA REPARO',css:'work'};
+ return {label:'DIAGNÓSTICO '+j.stage+'/6',css:'work'};
+}
+function drawBays(){
+ $('bayHUD').innerHTML=[0,1,2].map(i=>{const j=state.jobs.find(x=>x.bay===i),st=statusFor(j);
+ return `<div class="bayBadge ${st.css}"><b>BOX ${i+1}</b><span>${j?esc(E.model(data,j.modelId)?.title)+' · '+esc(j.id):'Disponível'}</span><b>${st.label}</b></div>`}).join('');
+}
 function drawUI(){
  if(!state||!data)return;
  const k=E.kpis(state);
  $('day').textContent='DIA '+state.day+' · TURNO '+(state.shift?'B':'A');
  $('cash').textContent='R$ '+brl(state.cash);$('team').textContent=state.team.length;
  $('backlog').textContent=k.backlog;$('energy').textContent=Math.round(state.player.mental)+'/100';
- $('queue').innerHTML=[...state.jobs].sort((a,b)=>b.priority-a.priority).slice(0,15).map(j=>{
+ drawBays();
+ $('queue').innerHTML=[...state.jobs].filter(j=>{
+ const m=E.model(data,j.modelId);
+ const q=FILTER.query.toLowerCase();
+ const matched=!q||[j.id,j.report,m?.title,j.asset].some(x=>String(x||'').toLowerCase().includes(q));
+ return matched&&(FILTER.queue==='all'||FILTER.queue==='critical'&&j.priority===3||FILTER.queue==='waiting'&&!j.assigned||FILTER.queue==='assigned'&&!!j.assigned);
+ }).sort((a,b)=>b.priority-a.priority||a.tickOpen-b.tickOpen).map(j=>{
  const m=E.model(data,j.modelId);
  return `<button class="job ${j.id===selected?'active':''}" data-pick="${j.id}"><span class="severity">${j.priority===3?'CRÍTICA':j.priority===2?'ALTA':'MODERADA'}</span><strong>${esc(m?.title)} · ${esc(j.id)}</strong><small>${esc(j.report)}</small><small>${esc(j.status)} · ${j.stage}/6 etapas · ${Math.ceil(j.repairRemaining)}h reparo</small></button>`;
- }).join('')||'<p>Nenhuma OS aberta.</p>';
+ }).join('')||'<p class="muted">Nenhuma OS corresponde ao filtro.</p>';
  const j=job(), d=$('detail');
  if(!j){d.innerHTML='<p>Sem ordens de serviço abertas.</p>';drawTeam();drawStore();$('stats').innerHTML='<p class="muted">Nenhuma OS pendente.</p>';$('logs').innerHTML=state.logs.slice(0,5).map(l=>`<div class="log">D${l.day}: ${esc(l.text)}</div>`).join('');return}
  selected=j.id;
@@ -82,8 +102,9 @@ function drawTeam(){
  }).join('')+'</div>';
 }
 function drawStore(){
- const materials=Object.entries(data.items);
- const tools=Object.entries(data.tools);
+ const q=FILTER.stockQuery.toLowerCase();
+ const materials=Object.entries(data.items).filter(([id,it])=>FILTER.store!=='tools'&&(!q||(id+' '+it.name).toLowerCase().includes(q))&&(FILTER.store!=='shortage'||!(state.stock[id]>0)));
+ const tools=Object.entries(data.tools).filter(([id,it])=>(FILTER.store!=='shortage'||!state.tools[id])&&(!q||(id+' '+it.name).toLowerCase().includes(q)));
  const inTransit=state.orders||[];
  $('storePanel').innerHTML=`<p class="muted">Caixa: R$ ${brl(state.cash)}. Compra normal tem prazo maior; pedido urgente custa 65% a mais. Recebimento ocorre ao avançar turnos.</p>
  <h3 class="resourceSection">MATERIAIS · ${materials.length} ITENS</h3>`+
@@ -99,9 +120,19 @@ function drawStore(){
 
 function events(){
  document.querySelectorAll('[data-open-panel]').forEach(b=>b.addEventListener('click',()=>openPanel(b.dataset.openPanel)));
+ $('helpBtn').addEventListener('click',()=>openPanel('help'));
+ $('queueSearch').addEventListener('input',ev=>{FILTER.query=ev.target.value;drawUI();$('queueSearch').value=FILTER.query});
+ $('queueFilter').addEventListener('change',ev=>{FILTER.queue=ev.target.value;drawUI()});
+ $('storeSearch').addEventListener('input',ev=>{FILTER.stockQuery=ev.target.value;drawStore()});
+ $('storeFilter').addEventListener('change',ev=>{FILTER.store=ev.target.value;drawStore()});
  $('closePanel').addEventListener('click',closePanel);
  $('menuOverlay').addEventListener('click',ev=>{if(ev.target===$('menuOverlay'))closePanel()});
- document.addEventListener('keydown',ev=>{if(ev.key==='Escape')closePanel()});
+ document.addEventListener('keydown',ev=>{
+ if(ev.key==='Escape'){closePanel();return}
+ if(ev.altKey||ev.ctrlKey||ev.metaKey||['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName))return;
+ const panels={'1':'queue','2':'detail','3':'team','4':'store','5':'stats'};
+ if(panels[ev.key]){ev.preventDefault();openPanel(panels[ev.key])}
+ });
  document.addEventListener('click',ev=>{
   const p=ev.target.closest('[data-pick]');if(p){pick(p.dataset.pick);return}
   const ans=ev.target.closest('[data-answer]');if(ans){
@@ -123,7 +154,13 @@ function events(){
   if(b.dataset.do==='order')action(E.orderMaterial(state,data,c.material,1,true));
  });
  $('advance').addEventListener('click',()=>{
-  const r=E.advance(state,data);selected=E.job(state,selected)?.id||state.jobs[0]?.id;action(null);
+  const active=state.jobs.filter(j=>j.assigned).length;
+  const blocked=state.jobs.filter(j=>j.assigned&&['material','ferramenta'].includes(j.status)).length;
+  const msg='Avançar 8 horas? '+active+' OS alocada(s) e '+blocked+' bloqueada(s). A equipe consumirá energia e poderão chegar peças ou novas ocorrências.';
+  if(!confirm(msg))return;
+  const oldDone=state.done.length;
+  const result=E.advance(state,data);selected=E.job(state,selected)?.id||state.jobs[0]?.id;action(null);
+  notify((state.done.length-oldDone)+' OS concluída(s), '+result.blocks+' bloqueio(s) neste turno.');
  });
  $('save').addEventListener('click',()=>{
   const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
