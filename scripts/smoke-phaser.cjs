@@ -14,7 +14,9 @@ const pwa=JSON.parse(fs.readFileSync(path.join(root,'manifest.webmanifest'),'utf
 assert.ok(home.includes("location.replace('./phaser-play/'"),'raiz redireciona para a oficina 2D');
 assert.ok(phaserHtml.includes('data-open-panel="management"'),'gestão abre pop-up em vez de navegar para interface legada');
 assert.ok(phaserHtml.includes('data-panel="management"'),'painel de gestão integrado ao Phaser');
+assert.ok(phaserHtml.includes('data-panel="shift"'),'briefing pré-turno usa o mesmo overlay sem alterar os boxes');
 assert.ok(phaserScript.includes('function drawManagement(k)'),'métricas da gestão vêm da simulação');
+assert.ok(phaserScript.includes('function drawShiftBrief()'),'briefing é renderizado com dados atuais');
 assert.equal(pwa.start_url,'./phaser-play/','PWA inicia no Phaser');
 
 const headerStart=phaserHtml.indexOf('<header class="top"');
@@ -41,7 +43,8 @@ assert.ok(phaserHtml.includes('overflow-x:auto'),'navegação responsiva roláve
 assert.ok(phaserScript.includes('function closeSceneMenu()'),'menu de cenário pode ser fechado');
 assert.ok(phaserScript.includes("sceneMenuBtn').addEventListener('click'"),'controle de abertura do menu presente');
 assert.ok(phaserScript.includes("if(!$('sceneMenu').hidden)"),'Escape fecha o dropdown antes do modal');
-assert.ok(phaserHtml.includes('game.js?v=0.7.6'),'script principal tem cache versionado');
+assert.ok(phaserHtml.includes('game.js?v=0.7.7'),'script principal tem cache versionado');
+assert.ok(phaserHtml.includes('shift-brief.js?v=0.7.7'),'módulo de briefing carregado junto ao jogo');
 assert.ok(phaserHtml.includes('layout-math.js?v=0.7.6'),'funções de geometria carregam antes da oficina');
 
 const state=engine.create(data,()=>0.42);
