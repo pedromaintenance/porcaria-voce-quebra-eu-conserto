@@ -1,5 +1,5 @@
 {
-  "version": "0.7.5",
+  "version": "0.7.6",
   "reference": {
     "file": "Oficina Industrial ao Entardecer.png",
     "width": 1976,
@@ -48,19 +48,19 @@
         "height": 356
       },
       "spriteWorld": {
-        "x": 407,
+        "x": 427,
         "y": 448,
         "scale": 0.7,
         "groundY": 448
       },
       "workerWorld": [
         {
-          "x": 310,
+          "x": 330,
           "y": 448,
           "facing": "right"
         },
         {
-          "x": 539,
+          "x": 559,
           "y": 448,
           "facing": "left"
         }
@@ -74,8 +74,9 @@
         "y": 217,
         "width": 220
       },
-      "compositionOffsetX": -94,
-      "assetsNote": "Composição dos assets deslocada em -72 px na v0.7.5; hotspot, seleção e indicadores permanecem vinculados à arquitetura do BOX 1. Limites visuais da câmera são aplicados apenas na renderização."
+      "compositionOffsetX": -74,
+      "assetsNote": "Ajuste visual v0.7.6: +20 px à direita. Aplicar calibração após proteção de borda para que o CAT 777E não fique imóvel devido ao clamp. Mecânicos acompanham a máquina; demais HUD/hitboxes continuam fixos.",
+      "visualCalibrationX": 20
     },
     {
       "id": 1,
@@ -87,19 +88,19 @@
         "height": 356
       },
       "spriteWorld": {
-        "x": 848,
+        "x": 842,
         "y": 448,
         "scale": 0.7,
         "groundY": 448
       },
       "workerWorld": [
         {
-          "x": 725,
+          "x": 719,
           "y": 448,
           "facing": "right"
         },
         {
-          "x": 977,
+          "x": 971,
           "y": 448,
           "facing": "left"
         }
@@ -113,8 +114,9 @@
         "y": 217,
         "width": 230
       },
-      "compositionOffsetX": 40,
-      "assetsNote": "Composição dos assets deslocada em +40 px na v0.7.5; hotspot, seleção e indicadores permanecem vinculados à arquitetura do BOX 2. Limites visuais da câmera são aplicados apenas na renderização."
+      "compositionOffsetX": 34,
+      "assetsNote": "Ajuste visual v0.7.6: -6 px à esquerda. Máquina e mecânicos movem juntos sem alterar hitbox e barra de progresso.",
+      "visualCalibrationX": -6
     },
     {
       "id": 2,
@@ -153,7 +155,8 @@
         "width": 225
       },
       "compositionOffsetX": 104,
-      "assetsNote": "Composição dos assets deslocada em +82 px na v0.7.5; hotspot, seleção e indicadores permanecem vinculados à arquitetura do BOX 3. Limites visuais da câmera são aplicados apenas na renderização."
+      "assetsNote": "BOX 3 aprovado em v0.7.5: nenhum deslocamento adicional em v0.7.6.",
+      "visualCalibrationX": 0
     }
   ],
   "controls": {
@@ -161,10 +164,11 @@
     "pointer": "Phaser input disabled while modal is open",
     "clickAreas": "Rectangles in world coordinates, no DOM click-through",
     "visualAnchoring": "Os deslocamentos afetam apenas spriteWorld, workerWorld e a sombra; hitWorld, progressWorld e labelWorld permanecem imóveis para manter a interação e a identificação dos boxes.",
-    "cameraClipProtection": "O renderer limita o centro dos sprites e mecânicos aos limites da câmera sem alterar as posições nominais no JSON."
+    "cameraClipProtection": "O renderer limita o centro dos sprites e mecânicos aos limites da câmera sem alterar as posições nominais no JSON.",
+    "visualCalibration": "visualCalibrationX corrige deslocamento desejado mesmo em sprites anteriormente travados no limite do viewport: aplicar clamp sobre posição anterior (spriteWorld.x - visualCalibrationX), somar delta e reaplicar clamp; não deslocar hitWorld, progressWorld ou labelWorld."
   },
   "assets": {
-    "notes": "v0.7.5: deslocamentos adicionais sobre v0.7.4: BOX 1 -72px, BOX 2 +40px, BOX 3 +82px. Sombra segue posição renderizada da máquina; mecânicos permanecem laterais orientados ao equipamento. Áreas clicáveis e HUD continuam alinhados ao cenário original."
+    "notes": "v0.7.6: BOX 1 +20 px (x427; mecânicos 330/559), BOX 2 -6 px (x842; mecânicos 719/971), BOX 3 preservado (x1223; mecânicos 1102/1345). A calibração de borda garante movimento visível no BOX 1 sem cortar sprites. HUD, hotspots e posição vertical preservados."
   },
   "rendering": {
     "backgroundFilter": "LINEAR",
