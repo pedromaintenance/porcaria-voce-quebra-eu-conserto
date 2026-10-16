@@ -26,5 +26,15 @@
    fitFactor:factor
   };
  }
- return {equipmentSize};
+ // Keep rendered images inside the visible viewport, without mutating layout JSON or hit zones.
+ function visibleCenter(requestedX,renderWidth,viewport,padding=8){
+  const x=Number(requestedX),w=Math.max(0,Number(renderWidth)||0);
+  const left=Number(viewport?.worldScrollX??viewport?.worldX??viewport?.left??0);
+  const span=Number(viewport?.width)||1080;
+  const pad=Math.max(0,Number(padding)||0);
+  if(!Number.isFinite(x)||!Number.isFinite(left)||!(span>0))throw new Error('Invalid viewport placement');
+  const half=w/2,minimum=left+half+pad,maximum=left+span-half-pad;
+  return Math.round(minimum>maximum?left+span/2:Math.min(Math.max(x,minimum),maximum));
+ }
+ return {equipmentSize,visibleCenter};
 });
