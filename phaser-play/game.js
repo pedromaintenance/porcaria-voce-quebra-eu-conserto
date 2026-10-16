@@ -421,6 +421,7 @@ class Workshop extends Phaser.Scene{
    }
    this.machineObjs.forEach(x=>x.destroy());this.machineObjs=[];
    this.textObjects?.forEach(x=>x.destroy());this.textObjects=[];
+   this.progressObjects?.forEach(x=>x.destroy());this.progressObjects=[];
    BAY_LAYOUT.forEach(({id:i,spriteWorld,workerWorld,labelWorld,progressWorld})=>{
      const j=state.jobs.find(z=>z.bay===i),cx=spriteWorld.x;
      if(j){
@@ -428,6 +429,23 @@ class Workshop extends Phaser.Scene{
        this.worker(workerWorld[0].x,workerWorld[0].y,i);this.worker(workerWorld[1].x,workerWorld[1].y,i+1);
        let label=this.text(labelWorld?.x??cx-95,labelWorld?.y??430,E.model(data,j.modelId)?.title+' · '+j.id,12,'#ffffff',true);
        label.setBackgroundColor('#0c2539').setPadding(5);this.textObjects.push(label);
+       // Progresso visual da OS; diagnóstico e reparo são fases distintas.
+       if(progressWorld){
+        const p=progressWorld;
+        const diagnosing=j.stage<6;
+        const blocked=j.status==='material'||j.status==='ferramenta';
+        const pct=diagnosing?j.stage/6:Math.max(0,Math.min(1,1-j.repairRemaining/Math.max(0.1,j.repairTarget||1)));
+        const color=blocked?0xeb7666:diagnosing?0x68c5e7:0xf6b544;
+        const title=blocked?(j.status==='material'?'AGUARDANDO PEÇA':'FALTA FERRAMENTA'):diagnosing?'DIAGNÓSTICO':'REPARO';
+        const bar=this.add.graphics();
+        bar.fillStyle(0x091c2b,0.87);bar.fillRoundedRect(p.x-6,p.y-31,p.width+12,48,6);
+        bar.lineStyle(1,color,0.9);bar.strokeRoundedRect(p.x-6,p.y-31,p.width+12,48,6);
+        bar.fillStyle(0x344756,1);bar.fillRoundedRect(p.x,p.y-7,p.width,10,4);
+        bar.fillStyle(color,1);bar.fillRoundedRect(p.x,p.y-7,Math.max(1,p.width*pct),10,4);
+        this.progressObjects.push(bar);
+        const caption=this.text(p.x,p.y-28,title+' · '+Math.round(pct*100)+'%',12,blocked?'#ffb0a1':'#f9e4ae',true);
+        this.progressObjects.push(caption);
+       }
      }else{
        let label=this.text(cx-68,(labelWorld?.y??430),'BOX DISPONÍVEL',12,'#d1dccd',true);label.setAlpha(.75);this.textObjects.push(label);
      }
