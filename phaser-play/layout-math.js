@@ -36,5 +36,13 @@
   const half=w/2,minimum=left+half+pad,maximum=left+span-half-pad;
   return Math.round(minimum>maximum?left+span/2:Math.min(Math.max(x,minimum),maximum));
  }
- return {equipmentSize,visibleCenter};
+ // Honor a small new requested translation even when the previous version was already
+ // clamped to the camera edge. Prevents a nominal offset from having no visible effect.
+ // requestedX is the UPDATED world position; deltaX is the increment since previous layout.
+ function calibratedCenter(requestedX,renderWidth,viewport,deltaX=0,padding=8){
+  const delta=Number(deltaX)||0;
+  const previous=visibleCenter(Number(requestedX)-delta,renderWidth,viewport,padding);
+  return visibleCenter(previous+delta,renderWidth,viewport,padding);
+ }
+ return {equipmentSize,visibleCenter,calibratedCenter};
 });
