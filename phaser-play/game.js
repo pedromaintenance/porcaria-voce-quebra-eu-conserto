@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.5 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.7.1 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -54,7 +54,7 @@ async function useBackground(blob){
  scene.setBackdrop(img);
 }
 
-const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO ATUAL',stats:'📊 INDICADORES E RECURSOS',team:'👷 EQUIPE DA OFICINA',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA'};
+const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO ATUAL',stats:'📊 INDICADORES E RECURSOS',team:'👷 EQUIPE DA OFICINA',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA',management:'📋 GESTÃO DA OFICINA'};
 // Modal tem exclusividade de entrada; nunca permitir selecao de box atraves do overlay.
 function modalOpen(){return !!$('menuOverlay')&&!$('menuOverlay').hidden}
 function openPanel(name){
@@ -119,9 +119,31 @@ function renderQueue(){
  return `<button class="job ${j.id===selected?'active':''}" data-pick="${j.id}"><span class="severity">${j.priority===3?'CRÍTICA':j.priority===2?'ALTA':'MODERADA'}</span><strong>${esc(m?.title)} · ${esc(j.id)}</strong><small>${esc(j.report)}</small><small>${esc(j.status)} · ${j.stage}/6 etapas · ${Math.ceil(j.repairRemaining)}h reparo · ${aged}h na carteira</small>${flags.length?'<small class="queueWarning">⚠ '+esc(flags.join(' · '))+'</small>':''}</button>`;
  }).join('')||'<p class="muted">Nenhuma OS corresponde ao filtro.</p>';
 }
+function drawManagement(k){
+ const assigned=state.jobs.filter(j=>j.assigned);
+ const blocked=assigned.filter(j=>j.status==='material'||j.status==='ferramenta').length;
+ const available=state.team.filter(m=>!state.jobs.some(j=>j.assigned===m.id)).length;
+ const metrics=[
+  ['Caixa','R$ '+brl(state.cash)],
+  ['Reputação',k.reputation+'/100'],
+  ['OS na carteira',k.backlog],
+  ['Em execução',assigned.length],
+  ['Bloqueadas',blocked],
+  ['Equipe livre',available],
+  ['Utilização',k.utilization+'%'],
+  ['Concluídas',k.done],
+  ['Energia supervisor',Math.round(state.player.mental)+'/100']
+ ];
+ $('management').innerHTML='<p class="muted">Controle da oficina no mesmo ambiente Phaser. Dados e decisões vêm da campanha ativa.</p>'
+   +'<div class="managementGrid">'+metrics.map(([name,value])=>'<div class="managementMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong></div>').join('')+'</div>'
+   +'<div class="managementActions"><button class="act" data-open-panel="queue">📻 ABRIR CARTEIRA</button><button class="act secondary" data-open-panel="team">👷 EQUIPE</button><button class="act secondary" data-open-panel="store">📦 ESTOQUE</button><button class="act secondary" data-open-panel="stats">📊 INDICADORES</button></div>'
+   +'<h3 class="resourceSection">Últimos acontecimentos</h3>'
+   +(state.logs.slice(0,6).map(l=>'<div class="managementRecent">D'+l.day+': '+esc(l.text)+'</div>').join('')||'<p class="muted">Nenhum evento registrado.</p>');
+}
 function drawUI(){
  if(!state||!data)return;
  const k=E.kpis(state);
+ drawManagement(k);
  $('day').textContent='DIA '+state.day+' · TURNO '+(state.shift?'B':'A');
  $('cash').textContent='R$ '+brl(state.cash);$('team').textContent=state.team.length;
  $('backlog').textContent=k.backlog;$('energy').textContent=Math.round(state.player.mental)+'/100';
@@ -208,10 +230,12 @@ function events(){
  document.addEventListener('keydown',ev=>{
  if(ev.key==='Escape'){closePanel();return}
  if(ev.altKey||ev.ctrlKey||ev.metaKey||['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName))return;
- const panels={'1':'queue','2':'detail','3':'team','4':'store','5':'stats'};
+ const panels={'0':'management','1':'queue','2':'detail','3':'team','4':'store','5':'stats'};
  if(panels[ev.key]){ev.preventDefault();openPanel(panels[ev.key])}
  });
  document.addEventListener('click',ev=>{
+  const submenu=ev.target.closest('[data-open-panel]');
+  if(submenu){openPanel(submenu.dataset.openPanel);return}
   const p=ev.target.closest('[data-pick]');if(p){pick(p.dataset.pick);return}
   const ans=ev.target.closest('[data-answer]');if(ans){
    const result=E.answer(state,data,selected,ans.dataset.answer);
@@ -380,7 +404,7 @@ class Workshop extends Phaser.Scene{
    ctx.drawImage(img,359*sx,246*sy,1045*sx,407*sy,0,0,canvas.width,canvas.height);
   }
   if(this.textures.exists('dynamicWorkshopBG'))this.textures.remove('dynamicWorkshopBG');
-  this.textures.addCanvas('dynamicWorkshopBG',canvas);
+  this.textures.addCanvas('dynamicWorkshopBG',canvas).setFilter(Phaser.Textures.FilterMode.LINEAR);
   this.backdrop=this.add.image(SCENE_REFERENCE.worldX,SCENE_REFERENCE.worldY,'dynamicWorkshopBG').setOrigin(0).setDepth(-1);
   this.refresh();
  }
@@ -388,6 +412,7 @@ class Workshop extends Phaser.Scene{
  machine(x,y,modelId,scale=1){
    const key=MACHINES[modelId];
    if(key&&this.textures.exists(key)){
+     this.textures.get(key).setFilter(Phaser.Textures.FilterMode.NEAREST);
      const im=this.add.image(x,y,key).setOrigin(.5,1);const maxW=310*scale,maxH=220*scale;
      const t=this.textures.get(key).getSourceImage();const factor=Math.min(maxW/t.width,maxH/t.height);
      im.setScale(factor);
@@ -404,6 +429,7 @@ class Workshop extends Phaser.Scene{
  }
  worker(x,y,n){
    if(this.textures.exists('worker')){
+     this.textures.get('worker').setFilter(Phaser.Textures.FilterMode.NEAREST);
      const im=this.add.image(x,y,'worker').setOrigin(.5,1);const t=this.textures.get('worker').getSourceImage();im.setScale(Math.min(50/t.width,70/t.height));this.machineObjs.push(im);
    }else{
      const g=this.add.graphics();g.fillStyle(0x243b57);g.fillRoundedRect(x-11,y-43,22,34,4);g.fillStyle(0xf0b57a);g.fillCircle(x,y-51,11);g.fillStyle(0xf5b522);g.fillEllipse(x,y-61,25,12);g.fillStyle(0x192638);g.fillRect(x-11,y-9,9,15);g.fillRect(x+3,y-9,9,15);this.machineObjs.push(g);
@@ -425,6 +451,14 @@ class Workshop extends Phaser.Scene{
    BAY_LAYOUT.forEach(({id:i,spriteWorld,workerWorld,labelWorld,progressWorld})=>{
      const j=state.jobs.find(z=>z.bay===i),cx=spriteWorld.x;
      if(j){
+       // Sombra de contato independente para assentar visualmente as rodas/esteiras no piso.
+       const ground=spriteWorld.groundY??(workerWorld[0].y-2);
+       const shadow=this.add.graphics();
+       shadow.fillStyle(0x04090b,0.31);
+       shadow.fillEllipse(cx,ground,Math.min(205,(progressWorld?.width||225)*0.87),22);
+       shadow.fillStyle(0x02070a,0.13);
+       shadow.fillEllipse(cx,ground+3,245,30);
+       this.machineObjs.push(shadow);
        this.machine(cx,spriteWorld.y,j.modelId,spriteWorld.scale||.72);
        this.worker(workerWorld[0].x,workerWorld[0].y,i);this.worker(workerWorld[1].x,workerWorld[1].y,i+1);
        let label=this.text(labelWorld?.x??cx-95,labelWorld?.y??430,E.model(data,j.modelId)?.title+' · '+j.id,12,'#ffffff',true);
@@ -470,7 +504,7 @@ async function boot(){
   if(!state)state=E.create(data);
   selected=state.jobs[0]?.id;events();drawUI();
   if(!window.Phaser)throw Error('Phaser CDN não carregou. Verifique conexão.');
-  new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1080,height:450,backgroundColor:'#182838',render:{pixelArt:true,antialias:false},scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_HORIZONTALLY},scene:[Workshop]});
+  new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1080,height:450,backgroundColor:'#182838',render:{pixelArt:false,antialias:true},scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_HORIZONTALLY},scene:[Workshop]});
  }catch(e){console.error(e);$('game').innerHTML='<div style="padding:60px;color:#ffc86a">Não foi possível iniciar a cena Phaser: '+esc(e.message)+'</div>'}
 }
 boot();
