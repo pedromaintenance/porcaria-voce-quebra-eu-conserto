@@ -1,0 +1,31 @@
+{
+  "version": "0.7-plan",
+  "publishedAssets": false,
+  "assetRoot": "assets/equipamentos",
+  "models": [
+    {
+      "id": "EQ03",
+      "name": "CAT 395",
+      "sprite": "escavadeira_generica.png",
+      "status": "pending-binary-upload"
+    },
+    {
+      "id": "EQ05",
+      "name": "Sandvik DR410i",
+      "sprites": {
+        "operation": "perfuratriz_b_mastro_erguido.png",
+        "transport": "perfuratriz_b_mastro_abaixado.png",
+        "legacy": "perfuratriz_b.png"
+      },
+      "status": "pending-binary-upload"
+    }
+  ],
+  "scenes": [
+    "BootScene",
+    "WorkshopScene",
+    "DiagnosticScene",
+    "TutorialScene"
+  ],
+  "engine": "engine.js",
+  "data": "game-data.json"
+}

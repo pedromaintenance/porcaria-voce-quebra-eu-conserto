@@ -1,0 +1,46 @@
+{
+  "character": "pcm_joao",
+  "issue": 14,
+  "poses": [
+    {
+      "pose": "extinguisher",
+      "changed_pixels": 285,
+      "bbox": [
+        92,
+        123,
+        184,
+        150
+      ],
+      "source_sha256": "6568f5589acc665dd955aa5573e4ceff1542ff86ff043c29444880c563afcdf6",
+      "corrected_sha256": "36b314dcbbbc038f87e6cffbebd3ef2bc640b67682d592e3c1a49cbb21de3072"
+    },
+    {
+      "pose": "inspect",
+      "changed_pixels": 293,
+      "bbox": [
+        80,
+        123,
+        198,
+        154
+      ],
+      "source_sha256": "8b4aba581ed2727bf9c5ef0cca20b9435c2c15d768567ab14be5473836222284",
+      "corrected_sha256": "1de1cc1bdba5e13452ce9ff820699ffb7b81eb59a66143008c67c7fcf771b21c"
+    }
+  ],
+  "spritesheet": {
+    "source_sha256": "9a3fc4563f8a058908b8c63726e8ce664942bfa7fc746b8e7568095a0d72ad27",
+    "corrected_sha256": "10dbdda51c831dd0aa132bdab40c4dcda94332627a72760fe0e1cf41595be175",
+    "frame_order": [
+      "idle",
+      "positive",
+      "point",
+      "clipboard",
+      "radio",
+      "alert",
+      "inspect",
+      "extinguisher"
+    ]
+  },
+  "preview": "phaser/assets-review/previews/correcao_pcm_joao.png",
+  "status": "ready-for-review-not-approved"
+}

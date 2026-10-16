@@ -1,0 +1,26 @@
+name: Audit asset-review catalog
+on:
+  push:
+    branches:
+      - fix/assets-review-20261014
+    paths:
+      - scripts/audit_asset_review.py
+      - .github/workflows/audit-asset-review.yml
+      - phaser/assets-review/catalogo.json
+      - phaser/assets-review/ativos.json
+      - phaser/assets-review/revisao_usuario_2026-10-14.json
+      - phaser/assets-review/assets/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check Pillow
+      - run: python scripts/audit_asset_review.py

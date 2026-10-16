@@ -1,0 +1,34 @@
+{
+  "character": "mec_rafael",
+  "issue": 15,
+  "poses": [
+    {
+      "pose": "positive",
+      "changed_pixels": 139,
+      "bbox": [
+        133,
+        82,
+        183,
+        89
+      ],
+      "source_sha256": "bf90be3a8f75e2a7861f2fb76a7695df28766a301a09e8c7b28e688542db5f6b",
+      "corrected_sha256": "8c0b21f8ac4ffd4ef77a4fd2f9c7257820d9951e4227f758ee277bb609f8f6b8"
+    }
+  ],
+  "spritesheet": {
+    "source_sha256": "332930dc4357078a222e03285448c8ec39b91edc9728ee49828688f0caed3439",
+    "corrected_sha256": "e1b9018fc47a5d8b9612637b7ad4594df1b82c5fca8521958184f207cbf738d6",
+    "frame_order": [
+      "idle",
+      "positive",
+      "point",
+      "clipboard",
+      "radio",
+      "alert",
+      "inspect",
+      "extinguisher"
+    ]
+  },
+  "preview": "phaser/assets-review/previews/correcao_mec_rafael.png",
+  "status": "ready-for-review-not-approved"
+}
