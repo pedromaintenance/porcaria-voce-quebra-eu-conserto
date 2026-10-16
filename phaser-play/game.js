@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.7.6 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.7.7 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -61,7 +61,7 @@ async function useBackground(blob){
  scene.setBackdrop(img);
 }
 
-const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO ATUAL',stats:'📊 INDICADORES E RECURSOS',team:'👷 EQUIPE DA OFICINA',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA',management:'📋 GESTÃO DA OFICINA'};
+const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO ATUAL',stats:'📊 INDICADORES E RECURSOS',shift:'📋 BRIEFING DE TURNO',team:'👷 EQUIPE DA OFICINA',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA',management:'📋 GESTÃO DA OFICINA'};
 function closeSceneMenu(){
  const menu=$('sceneMenu'),trigger=$('sceneMenuBtn');
  if(menu)menu.hidden=true;
@@ -71,6 +71,7 @@ function closeSceneMenu(){
 function modalOpen(){return !!$('menuOverlay')&&!$('menuOverlay').hidden}
 function openPanel(name){
  const overlay=$('menuOverlay');if(!overlay)return;
+ if(name==='shift')drawShiftBrief();
  if(scene?.input)scene.input.enabled=false;
  closeSceneMenu();
  overlay.hidden=false;
@@ -109,14 +110,62 @@ function jobBlockers(j){
  if(j.assigned){const m=E.employee(state,j.assigned);if(m&&(m.mental<25||m.physical<25))reasons.push('Equipe fatigada')}
  return reasons;
 }
-function shiftPreview(){
- const jobs=state.jobs.filter(j=>j.assigned);
- const blocked=jobs.filter(j=>jobBlockers(j).some(r=>r==='Ferramenta indisponível'||r==='Material indisponível'));
- const diagnostic=jobs.filter(j=>j.stage<6&&!jobBlockers(j).includes('Ferramenta indisponível'));
- const repair=jobs.filter(j=>j.stage>=6&&!blocked.includes(j));
- const low=state.team.filter(m=>m.assigned&&(m.mental<25||m.physical<25));
- const orders=state.orders.filter(p=>p.eta<=state.tick+1);
- return {jobs,blocked,diagnostic,repair,low,orders};
+function drawShiftBrief(){
+ const report=window.PORCARIA_SHIFT_BRIEF.compute(state,data);
+ const metric=(title,value,tone)=>'<div class="shiftMetric '+(tone||'')+'"><small>'+esc(title)+'</small><strong>'+esc(value)+'</strong></div>';
+ let out='<p class="shiftBriefIntro">DIA '+report.day+' · TURNO '+report.shift+' → '+report.nextShift
+   +' · Janela de 8 horas. Revise bloqueios antes de comprometer a próxima escala.</p>';
+ out+='<div class="shiftBriefMetrics">'
+   +metric('Boxes ocupados',report.counts.assigned+'/'+report.bays.length)
+   +metric('Diagnósticos',report.counts.diagnosis)
+   +metric('Aptas ao reparo',report.counts.repair)
+   +metric('Bloqueios',report.counts.blocked,report.counts.blocked?'critical':'')
+   +'</div>';
+ out+='<h3 class="resourceSection">STATUS DOS TRÊS BOXES</h3><div class="shiftBoxGrid">';
+ out+=report.bays.map(b=>{
+  if(b.kind==='free')return '<article class="shiftBox"><div class="shiftBoxTitle"><span>BOX '+(b.bay+1)+'</span><span class="shiftBoxStatus">LIVRE</span></div><p>Box disponível para nova alocação.</p><div class="shiftBoxActions"><button class="act secondary" data-open-panel="queue">ABRIR FILA</button></div></article>';
+  const reason=b.kind==='tool'?'Ferramenta: '+b.toolName:b.kind==='material'?'Peça: '+b.materialName
+    :b.kind==='diagnose'?b.stage+'/6 etapas de diagnóstico':'Diagnóstico concluído, sujeito à capacidade e à energia.';
+  const tag=b.fatigued?'<small>⚠ Profissional com energia física ou mental reduzida.</small>':'';
+  const store=b.neededMaterial||b.neededTool;
+  return '<article class="shiftBox '+(b.kind==='tool'||b.kind==='material'?'blocked':b.kind==='repair'?'ready':'')+'">'
+    +'<div class="shiftBoxTitle"><span>BOX '+(b.bay+1)+'</span><span class="shiftBoxStatus">'+esc(b.label)+'</span></div>'
+    +'<p><strong>'+esc(b.model)+'</strong> · '+esc(b.id)+'</p>'
+    +'<small>'+esc(b.assigned)+' · '+b.ageHours+'h na carteira</small>'
+    +'<small>'+esc(reason)+'</small>'+tag
+    +'<div class="shiftBoxActions"><button class="act secondary" data-pick="'+esc(b.id)+'">VER OS</button>'
+    +(store?'<button class="act" data-shift-stock="'+esc(store)+'">ALMOXARIFADO</button>':'')
+    +'</div></article>';
+ }).join('');
+ out+='</div><div class="shiftBriefWarnings">';
+ out+='<section class="shiftBriefSection"><h3>Riscos de programação</h3>';
+ const alerts=[];
+ if(report.counts.blocked)alerts.push(report.counts.blocked+' box(es) com falta de material ou ferramental');
+ if(report.fatigue.length)alerts.push(report.fatigue.length+' profissional(is) em fadiga (produção pode cair)');
+ if(report.unattendedCritical.length)alerts.push(report.unattendedCritical.length+' OS crítica(s) sem equipe alocada');
+ if(report.counts.free)alerts.push(report.counts.free+' box(es) livre(s) para programação');
+ out+=alerts.length?'<ul>'+alerts.map(a=>'<li>'+esc(a)+'</li>').join('')+'</ul>'
+   :'<p>Sem bloqueios críticos identificados nos boxes ocupados.</p>';
+ if(report.unattendedCritical.length){
+  out+='<p><strong>OS críticas aguardando:</strong></p>';
+  out+=report.unattendedCritical.slice(0,3).map(j=>
+   '<button class="act secondary" data-pick="'+esc(j.id)+'">'+esc(j.id)+' · '+esc(j.model)+' · '+j.ageHours+'h</button>'
+  ).join(' ');
+ }
+ out+='</section>';
+ out+='<section class="shiftBriefSection"><h3>Logística e custos conhecidos</h3>';
+ if(report.deliveries.length){
+  out+='<ul>'+report.deliveries.slice(0,6).map(o=>
+   '<li>'+esc(o.id)+': '+esc(o.qty)+' × '+esc(o.name)+'</li>'
+  ).join('')+'</ul>';
+  if(report.deliveries.length>6)out+='<p>+'+(report.deliveries.length-6)+' pedido(s) adicionais com chegada prevista.</p>';
+ }else out+='<p>Não há pedidos com ETA até o encerramento do próximo turno.</p>';
+ if(report.payroll)out+='<p>Virada do dia: folha fixa estimada em <strong>R$ '+brl(report.payroll)+'</strong> (exclui custos variáveis).</p>';
+ out+='<p>'+esc(report.deliveryNote)+'</p></section></div>';
+ out+='<div class="shiftBriefFoot"><p>Os resultados de diagnóstico, reparo, falhas e custos variáveis continuam sujeitos ao motor da simulação. Este briefing não é uma previsão de OS concluídas.</p>'
+   +'<div class="actions"><button class="act secondary" data-shift-action="cancel">VOLTAR À OFICINA</button>'
+   +'<button class="act" data-shift-action="confirm" data-turn-tick="'+report.tick+'">▶ CONFIRMAR +8H</button></div></div>';
+ $('shiftBrief').innerHTML=out;
 }
 function drawBays(){
  $('bayHUD').innerHTML=[0,1,2].map(i=>{const j=state.jobs.find(x=>x.bay===i),st=statusFor(j);
@@ -151,7 +200,7 @@ function drawManagement(k){
  ];
  $('management').innerHTML='<p class="muted">Controle da oficina no mesmo ambiente Phaser. Dados e decisões vêm da campanha ativa.</p>'
    +'<div class="managementGrid">'+metrics.map(([name,value])=>'<div class="managementMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong></div>').join('')+'</div>'
-   +'<div class="managementActions"><button class="act" data-open-panel="queue">📻 ABRIR CARTEIRA</button><button class="act secondary" data-open-panel="team">👷 EQUIPE</button><button class="act secondary" data-open-panel="store">📦 ESTOQUE</button><button class="act secondary" data-open-panel="stats">📊 INDICADORES</button></div>'
+   +'<div class="managementActions"><button class="act" data-open-panel="shift">📋 REVISAR PRÓXIMO TURNO</button><button class="act secondary" data-open-panel="queue">📻 ABRIR CARTEIRA</button><button class="act secondary" data-open-panel="team">👷 EQUIPE</button><button class="act secondary" data-open-panel="store">📦 ESTOQUE</button><button class="act secondary" data-open-panel="stats">📊 INDICADORES</button></div>'
    +'<h3 class="resourceSection">Últimos acontecimentos</h3>'
    +(state.logs.slice(0,6).map(l=>'<div class="managementRecent">D'+l.day+': '+esc(l.text)+'</div>').join('')||'<p class="muted">Nenhum evento registrado.</p>');
 }
@@ -261,6 +310,27 @@ function events(){
   if(!ev.target.closest('.scene-tools'))closeSceneMenu();
   const submenu=ev.target.closest('[data-open-panel]');
   if(submenu){openPanel(submenu.dataset.openPanel);return}
+  const shiftAction=ev.target.closest('[data-shift-action]');
+  if(shiftAction){
+   if(shiftAction.dataset.shiftAction==='cancel'){closePanel();$('advance').focus();return}
+   if(shiftAction.dataset.shiftAction==='confirm'){
+    if(Number(shiftAction.dataset.turnTick)!==state.tick){drawShiftBrief();notify('O turno mudou. Revise os dados atualizados antes de confirmar.');return}
+    shiftAction.disabled=true;
+    const beforeDone=state.done.length;
+    const result=E.advance(state,data);
+    selected=E.job(state,selected)?.id||state.jobs[0]?.id;
+    closePanel();action(null);$('advance').focus();
+    notify((state.done.length-beforeDone)+' OS concluída(s), '+result.blocks+' bloqueio(s) no turno.');
+    return;
+   }
+  }
+  const stockShortcut=ev.target.closest('[data-shift-stock]');
+  if(stockShortcut){
+   FILTER.store='all';$('storeFilter').value='all';
+   FILTER.stockQuery=stockShortcut.dataset.shiftStock;
+   $('storeSearch').value=FILTER.stockQuery;
+   drawStore();openPanel('store');return;
+  }
   const p=ev.target.closest('[data-pick]');if(p){pick(p.dataset.pick);return}
   const ans=ev.target.closest('[data-answer]');if(ans){
    const result=E.answer(state,data,selected,ans.dataset.answer);
@@ -281,25 +351,7 @@ function events(){
   if(b.dataset.do==='tool')action(E.buyTool(state,data,c.tool));
   if(b.dataset.do==='order')action(E.orderMaterial(state,data,c.material,1,true));
  });
- $('advance').addEventListener('click',()=>{
-  const preview=shiftPreview();
-  const msg=[
-    'AVANÇAR 8 HORAS?',
-    '',
-    'Ordens alocadas: '+preview.jobs.length,
-    'Em diagnóstico: '+preview.diagnostic.length,
-    'Aptas ao reparo: '+preview.repair.length,
-    'Bloqueadas por peça/ferramenta: '+preview.blocked.length,
-    'Profissionais com energia baixa: '+preview.low.length,
-    'Pedidos com chegada prevista: '+preview.orders.length,
-    '',
-    'Os resultados reais dependem da simulação de trabalho, falhas e logística. Confirmar?'
-  ].join(String.fromCharCode(10));
-  if(!confirm(msg))return;
-  const oldDone=state.done.length;
-  const result=E.advance(state,data);selected=E.job(state,selected)?.id||state.jobs[0]?.id;action(null);
-  notify((state.done.length-oldDone)+' OS concluída(s), '+result.blocks+' bloqueio(s) neste turno.');
- });
+ $('advance').addEventListener('click',()=>openPanel('shift'));
  $('save').addEventListener('click',()=>{
   const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
   const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='porcaria-phaser-save.json';link.click();setTimeout(()=>URL.revokeObjectURL(link.href),700);
