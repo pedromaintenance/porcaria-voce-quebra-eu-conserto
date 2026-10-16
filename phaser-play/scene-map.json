@@ -35,7 +35,7 @@
     "height": 363,
     "originalSource": "Oficina Industrial ao Entardecer.png",
     "publishedCommit": "b85015559a06474bc5cd64298646cc0c9c4b9ef1",
-    "notes": "Fundo oficial em alta definição; carregamento em Phaser com filtragem LINEAR, sprites com filtro NEAREST."
+    "notes": "O fundo é arte pintada: filtragem LINEAR no Phaser, sprites usam filtragem NEAREST. Corrigir textura para crop pré-renderizado em maior resolução (v0.7.1)."
   },
   "bays": [
     {
@@ -45,13 +45,13 @@
         "x": 379,
         "y": 130,
         "width": 280,
-        "height": 288
+        "height": 322
       },
       "spriteWorld": {
         "x": 501,
         "y": 430,
         "scale": 0.72,
-        "groundY": 412
+        "groundY": 414
       },
       "workerWorld": [
         {
@@ -80,13 +80,13 @@
         "x": 660,
         "y": 130,
         "width": 295,
-        "height": 288
+        "height": 322
       },
       "spriteWorld": {
         "x": 808,
         "y": 430,
         "scale": 0.72,
-        "groundY": 412
+        "groundY": 414
       },
       "workerWorld": [
         {
@@ -115,13 +115,13 @@
         "x": 980,
         "y": 130,
         "width": 285,
-        "height": 288
+        "height": 322
       },
       "spriteWorld": {
         "x": 1119,
         "y": 430,
         "scale": 0.72,
-        "groundY": 412
+        "groundY": 414
       },
       "workerWorld": [
         {
