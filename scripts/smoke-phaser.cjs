@@ -45,6 +45,40 @@ for(const bay of map.bays){
  }
  assert.ok(bay.progressWorld.x>=z.x&&bay.progressWorld.x+bay.progressWorld.width<=z.x+z.width,'barra de progresso dentro do box');
 }
+// v0.7.2 — sprites versionados e nenhuma flutuação do maquinário.
+const pngHeader=Buffer.from('89504e470d0a1a0a','hex');
+const equipment=['cat777e.png','cat6030.png','cat395.png','sandvik_dr410i.png'];
+const poses=['idle','inspect','point','clipboard'];
+for(const sprite of equipment){
+ const asset=path.join(root,'phaser-play','assets','equipment',sprite);
+ assert.ok(fs.existsSync(asset),'equipamento local ausente: '+sprite);
+ const bytes=fs.readFileSync(asset);
+ assert.ok(bytes.length>10000&&bytes.subarray(0,8).equals(pngHeader),'PNG de equipamento inválido: '+sprite);
+ assert.ok(phaserScript.includes('./assets/equipment/'+sprite),'sprite de equipamento não referenciado: '+sprite);
+}
+for(const person of ['mec_lia','mec_rafael']){
+ const dimensions=new Set();
+ for(const pose of poses){
+  const file=path.join(root,'phaser-play','assets','characters',person,pose+'.png');
+  assert.ok(fs.existsSync(file),'pose ausente: '+person+'/'+pose);
+  const bytes=fs.readFileSync(file);
+  assert.ok(bytes.subarray(0,8).equals(pngHeader),'PNG da pose inválido: '+person+'/'+pose);
+  dimensions.add(bytes.readUInt32BE(16)+'x'+bytes.readUInt32BE(20));
+ }
+ assert.equal(dimensions.size,1,'poses do mesmo personagem devem ter as mesmas dimensões');
+}
+assert.ok(!phaserScript.includes('this.tweens.add('),'máquinas não podem flutuar via tween');
+assert.ok(phaserScript.includes('actor.sprite.setTexture(actor.frames[actor.index])'),'somente sprites dos mecânicos trocam textura');
+for(const bay of map.bays){
+ const b=bay.hitWorld,m=bay.spriteWorld,w=bay.workerWorld;
+ assert.equal(w.length,2,'dois profissionais em cada box');
+ assert.ok(m.y>m.groundY,'ancoragem da imagem compensa margem transparente');
+ assert.ok(m.y<=b.y+b.height,'imagem ainda está dentro da zona clicável');
+ assert.ok(w.every(p=>p.y===m.groundY),'mecânicos e equipamento compartilham o mesmo plano do piso');
+ assert.ok(w[0].x<m.x&&w[1].x>m.x,'mecânicos devem ficar nas laterais');
+ assert.equal(w[0].facing,'right','personagem à esquerda aponta para o equipamento');
+ assert.equal(w[1].facing,'left','personagem à direita aponta para o equipamento');
+}
 const first=state.jobs[0],person=state.team[0];
 assert.equal(engine.attach(state,first.id,person.id,0,true),null,'alocar OS');
 assert.equal(first.bay,0,'OS no box 1');
@@ -60,4 +94,4 @@ const result=engine.advance(state,data,()=>0.42);
 assert.equal(state.tick,before+1,'turno avança');
 assert.ok(Number.isFinite(result.hours),'horas calculadas');
 assert.ok(engine.validate(JSON.parse(JSON.stringify(state))),'save serializado íntegro');
-console.log('OK: fundo oficial, geometria, alocação, bloqueios, equipe, turnos e save.');
+console.log('OK: sprites locais, poses, imobilidade do maquinário, piso, geometria e motor de manutenção.');
