@@ -166,7 +166,7 @@ O método antigo `machine()` renderizava TODOS os PNGs dentro da mesma caixa má
 - [x] **Multiplicadores nominais por modelo:** CAT 6030 `2×`, Sandvik DR410i `3×`, DI650i `2,4×`; CAT 777E e CAT 395 `1×`, CAT 336GC `0,95×`; demais configurações disponíveis em `scene-map.json > modelPresentation`.
 - [x] **Respeito às áreas físicas dos boxes:** o tamanho desejado é limitado por largura máxima, altura máxima e espaço vertical até o piso. Portanto, os multiplicadores são alvos de apresentação, **não uma afirmação de escala física 1:1 ou aumento visual literal em todos os casos**. Um equipamento 3× não cabe integralmente no mesmo box lógico se sua altura ultrapassar o teto.
 - [x] **Recorte das margens transparentes:** geração dinâmica de textura após análise do canal alfa dos PNGs; mantém os pixels úteis e aplica a origem inferior ao solo. Se o recorte falhar, o jogo utiliza o PNG original.
-- [x] **Renderização mais nítida:** resolução interna proporcional à largura de exibição e ao `devicePixelRatio` (limite 2×), posições arredondadas (`roundPixels`), sem suavização global de sprites, filtro `NEAREST` para máquinas e personagens. O fundo ilustrado permanece com filtro `LINEAR`.
+- [x] **Renderização mais nítida:** a textura do fundo preserva o detalhe nativo (1350 px, sem reduzir para 1080 px antes da apresentação), com filtro `LINEAR`; máquinas e personagens usam `NEAREST`, recorte alfa e coordenadas inteiras (`roundPixels`). O canvas do Phaser continua em 1080 × 450 coordenadas lógicas para não prejudicar cliques/boxes. A opção legada `GameConfig.resolution` não é usada na versão 3.90.
 - [x] **Fórmula de escala isolada:** `phaser-play/layout-math.js` contém função pura `equipmentSize()` com limites e permite testes Node sem inicializar o Phaser.
 - [x] **Versão e cache:** `phaser-play/index.html` inclui `layout-math.js?v=0.7.4` antes de `game.js?v=0.7.4`.
 - [x] **Regressão automatizada:** testes de multiplicadores 6030/DR410i, proporção relativa, enquadramento por box, scripts de renderização e posições laterais executados antes do deploy.
@@ -179,7 +179,7 @@ O método antigo `machine()` renderizava TODOS os PNGs dentro da mesma caixa má
 - [ ] Revisar enquadramento específico do Box 1 e Box 3; manter os mecânicos visíveis nas laterais ao longo da animação de poses.
 - [ ] Comparar nitidez a 1366×768, 1600×900 e 1920×1080 e em celular (principalmente contornos e partes finas da torre de perfuração).
 - [ ] Se for insuficiente, substituir apenas os PNGs originais cuja resolução seja baixa; ampliar por nearest-neighbor não cria detalhe novo. Investigar atlas 2× redesenhados especificamente para o estilo visual.
-- [ ] Medir uso de GPU/memória em mobile para o fator de resolução de até 2×; rebaixar dinamicamente em dispositivos limitados se necessário.
+- [ ] Medir uso de GPU/memória em mobile com texturas de fundo nativas e recorte alfa; se necessário, usar texturas menores nos dispositivos limitados.
 
 **Critério de aceite:** a DR410i e a 6030 comunicam porte muito superior, os três boxes mantêm leitura operacional e o canvas apresenta contornos nítidos sem movimento artificial das máquinas.
 
@@ -251,7 +251,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.7.1:** interface bege aposentada da rota principal, Gestão reimplementada como modal escuro, PWA iniciando no Phaser, fundo oficial atualizado de 900×363 para 1350×563 com filtragem independente dos sprites, veículos rebaixados, sombra de contato, progresso reposicionado e smoke-test ampliado.
 - **0.7.2:** sprites de equipamentos e oito poses de dois mecânicos incorporados à `main`; veículos estáticos e rebaixados, profissionais laterais orientados ao equipamento, animação contextual de poses dos mecânicos, fallback D9 aprimorado, redução de movimento e testes estáticos de asset/posicionamento. **Implementado — homologação visual pendente.**
 - **0.7.3:** navegação reorganizada em duas faixas, indicadores separados, botão principal de turno no header, menu Visual para personalização do cenário, realce dos menus ativos, rolagem horizontal em telas estreitas, foco e comportamento de teclado aprimorados; testes CI e QA visual pendente.
-- **0.7.4:** composição deslocada 22 px nas laterais, escala configurável por modelo (CAT 6030 2×, DR410i 3× nominal), recorte alfa dos sprites, renderização interna HD e separação de filtros, módulo de geometria testável e regressões de tamanho/posição. **Código implementado; testes e homologação visual devem ser verificados no Pages.**
+- **0.7.4:** composição deslocada 22 px nas laterais, escala configurável por modelo (CAT 6030 2×, DR410i 3× nominal), recorte alfa dos sprites, preservação da textura de fundo em 1350 px e separação de filtros, módulo de geometria testável e regressões de tamanho/posição. **Código implementado; testes e homologação visual devem ser verificados no Pages.**
 
 ### Organização recomendada
 
