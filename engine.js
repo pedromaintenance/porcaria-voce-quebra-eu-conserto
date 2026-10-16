@@ -226,7 +226,7 @@
   function complete(s,j,d,m){
     const c=scenario(d,j.scene);
     j.status='concluida';j.finishedTick=s.tick+1;
-    const elapsed=(j.finishedTick-j.tickOpen)*8;
+    const elapsed=(j.finishedTick-j.tickOpen)*SHIFT_HOURS;
     const firstTime=j.wrong===0 && !j.rework;
     const base= c.priority===3?2350:c.priority===2?1480:920;
     const income=Math.round(base*(firstTime?1:0.82));s.cash+=income;
