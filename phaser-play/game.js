@@ -17,11 +17,14 @@ const MACHINES={EQ01:'truck',EQ02:'shovel',EQ03:'excavator',EQ04:'excavator',EQ0
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const brl=n=>Math.round(n).toLocaleString('pt-BR');
 let data,state,selected,scene;
+const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO ATUAL',stats:'📊 INDICADORES E RECURSOS'};
+function openPanel(name){const overlay=$('menuOverlay');if(!overlay)return;overlay.hidden=false;$('modalHeading').textContent=PANEL_TITLES[name]||'MENU DA OFICINA';document.querySelectorAll('[data-panel]').forEach(el=>el.classList.toggle('is-open',el.dataset.panel===name));document.body.style.overflow='hidden';$('closePanel')?.focus()}
+function closePanel(){const overlay=$('menuOverlay');if(overlay)overlay.hidden=true;document.body.style.overflow='';}
 function save(){try{localStorage.setItem(SAVE,JSON.stringify(state))}catch(e){console.warn('Save',e)}}
 function action(error){if(error)notify(error);else{save();drawUI();if(scene)scene.refresh()}}
 function notify(t){const area=$('notice');if(area){area.textContent=t;area.style.display='block'}else alert(t)}
 function job(){return E.job(state,selected)||state.jobs[0]}
-function pick(id){selected=id;drawUI();if(scene)scene.refresh()}
+function pick(id){selected=id;drawUI();if(scene)scene.refresh();openPanel('detail')}
 function drawUI(){
  if(!state||!data)return;
  const k=E.kpis(state);
@@ -66,6 +69,10 @@ function drawUI(){
  $('logs').innerHTML=state.logs.slice(0,5).map(l=>`<div class="log">D${l.day}: ${esc(l.text)}</div>`).join('');
 }
 function events(){
+ document.querySelectorAll('[data-open-panel]').forEach(b=>b.addEventListener('click',()=>openPanel(b.dataset.openPanel)));
+ $('closePanel').addEventListener('click',closePanel);
+ $('menuOverlay').addEventListener('click',ev=>{if(ev.target===$('menuOverlay'))closePanel()});
+ document.addEventListener('keydown',ev=>{if(ev.key==='Escape')closePanel()});
  document.addEventListener('click',ev=>{
   const p=ev.target.closest('[data-pick]');if(p){pick(p.dataset.pick);return}
   const ans=ev.target.closest('[data-answer]');if(ans){
@@ -99,6 +106,8 @@ class Workshop extends Phaser.Scene{
  }
  create(){
   scene=this;this.cameras.main.setBackgroundColor('#182838');
+  // Enquadramento solicitado: camera recorta o mundo, sem redimensionar sprites nem as zonas de clique.
+  this.cameras.main.setScroll(319,45);
   const g=this.add.graphics();const box=(x,y,w,h,fill,stroke)=>{g.fillStyle(fill);g.fillRect(x,y,w,h);if(stroke){g.lineStyle(2,stroke);g.strokeRect(x,y,w,h)}};
   // Camadas de oficina: fundo montanhoso, galpao, guindastes, pátio, ferramental.
   box(0,0,1440,650,0x293541);
@@ -208,7 +217,7 @@ async function boot(){
   if(!state)state=E.create(data);
   selected=state.jobs[0]?.id;events();drawUI();
   if(!window.Phaser)throw Error('Phaser CDN não carregou. Verifique conexão.');
-  new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1440,height:650,backgroundColor:'#182838',render:{pixelArt:true,antialias:false},scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_HORIZONTALLY},scene:[Workshop]});
+  new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1080,height:450,backgroundColor:'#182838',render:{pixelArt:true,antialias:false},scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_HORIZONTALLY},scene:[Workshop]});
  }catch(e){console.error(e);$('game').innerHTML='<div style="padding:60px;color:#ffc86a">Não foi possível iniciar a cena Phaser: '+esc(e.message)+'</div>'}
 }
 boot();
