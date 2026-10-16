@@ -15,7 +15,6 @@
   "background": {
     "file": "./assets/oficina-base.avif",
     "available": true,
-    "encodedSource": "./assets/packed/part*.b64",
     "checksumSHA256": "ce99d2a9b3fe47988a3f60d4b3634715fffa5e5b69af7b525ebe8b39dbf75704",
     "sourceWidth": 1976,
     "sourceHeight": 796,
@@ -30,7 +29,13 @@
       "y": 0,
       "width": 1080,
       "height": 450
-    }
+    },
+    "format": "AVIF",
+    "width": 900,
+    "height": 363,
+    "originalSource": "Oficina Industrial ao Entardecer.png",
+    "publishedCommit": "b85015559a06474bc5cd64298646cc0c9c4b9ef1",
+    "notes": "Imagem limpa enviada pelo usuário; foi convertida em AVIF otimizado. Os hotspots permanecem em coordenadas do mundo Phaser."
   },
   "bays": [
     {
