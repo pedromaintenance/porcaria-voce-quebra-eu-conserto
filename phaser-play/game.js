@@ -219,7 +219,6 @@ function drawStore(){
 }
 
 function events(){
- document.querySelectorAll('[data-open-panel]').forEach(b=>b.addEventListener('click',()=>openPanel(b.dataset.openPanel)));
  $('helpBtn').addEventListener('click',()=>openPanel('help'));
  $('queueSearch').addEventListener('input',ev=>{FILTER.query=ev.target.value;renderQueue()});
  $('queueFilter').addEventListener('change',ev=>{FILTER.queue=ev.target.value;renderQueue()});
