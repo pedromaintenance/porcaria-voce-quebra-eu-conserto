@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 16/10/2026 · versão de trabalho **Phaser 0.7.1** (integração de gestão, novo asset HQ e correção de piso implementados; homologação visual pendente).
+**Estado de referência:** 16/10/2026 · versão de trabalho **Phaser 0.7.2** (sprites e poses locais, mecânicos animados, máquinas estáticas; homologação visual pendente).
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -102,16 +102,32 @@
 - [ ] Confirmar o contato das rodas do CAT 777 com o piso nos boxes 1, 2 e 3, em desktop e mobile; ajustar por PNG de modelo se necessário.
 - [ ] Confirmar que não existe clique vazando por trás de modal e que o gesto Esc fecha o painel.
 
-## Entrega 0.7.2 — Oficina viva (P1)
+## Entrega 0.7.2 — Organização e movimento dos assets (implementada, QA visual pendente)
 
-- [ ] Sprites de mecânicos em estados *idle*, caminhada, diagnóstico, reparo e descanso.
-- [ ] Indicadores visuais sincronizados ao motor: progresso da OS, bloqueio, liberação de equipamento.
-- [ ] Animações simples de ferramentas, iluminação, circulação e transição entre turnos.
-- [ ] Padronizar resolução, origem, transparência, orientação e escala dos sprites.
-- [ ] Introduzir camadas de cenário, sombras e *occlusion* sem prejudicar legibilidade.
-- [ ] Modo reduzido de movimento para acessibilidade e desempenho.
+### Implementado no código
 
-**Critério de aceite:** os boxes deixam de parecer estáticos e representam de maneira inteligível os estados de execução.
+- [x] **Imobilidade física das máquinas:** removido o tween vertical periódico de todos os assets. Nenhum equipamento é deslocado pelo relógio de animação.
+- [x] **Apoio no piso:** equipamentos movidos para `spriteWorld.y=469`, sombra em `groundY=448`; coordenadas independentes no `scene-map.json` para os três boxes.
+- [x] **Mecânicos nas laterais:** dois personagens visuais por box ocupado, um de cada lado, sobre o plano de piso `y=448`; `facing=right` no lado esquerdo e `facing=left` no direito.
+- [x] **Poses reais versionadas:** `idle.png`, `inspect.png`, `point.png` e `clipboard.png` dos personagens `mec_lia` e `mec_rafael` armazenadas em `phaser-play/assets/characters/`.
+- [x] **Animação sem locomoção:** apenas as imagens dos mecânicos alternam a pose a cada 560 ms. Em diagnóstico alternam `idle/inspect/point`; em reparo `idle/inspect/clipboard`; se bloqueados, permanecem em `idle`.
+- [x] **Sem assets de caminhada inventados:** a biblioteca de revisão contém poses e spritesheets, mas não arquivos `walk_1.png`/`walk_2.png`. Alternância de poses não é animação de deslocamento.
+- [x] **Redução de movimento:** preferência `prefers-reduced-motion` desliga as trocas de frames.
+- [x] **Catálogo local de equipamentos:** quatro PNGs antes carregados da branch `fix/assets-review-20261014` agora estão em `phaser-play/assets/equipment/`, versionados na `main`.
+- [x] **CAT D9 provisório melhorado:** fallback vetorial passou a representar trator de esteiras com cabine, esteira e lâmina, em vez de retângulo genérico; ainda não é sprite final homologado.
+- [x] **Smoke-test:** verifica a assinatura PNG e dimensões dos frames, presença de arquivos, ausência de `this.tweens.add`, disposição no plano do piso e orientação dos personagens.
+
+### Pendências de homologação (P0/P1)
+
+- [ ] Confirmar visualmente que as rodas/esteiras dos modelos CAT 777E, 6030, 395, 336GC, Sandvik e D9 encostam no piso sem flutuar.
+- [ ] Confirmar se espelhamento horizontal dos PNGs frontais comunica a direção correta de olhar. Se não, produzir sprites direcionais reais.
+- [ ] Validar o alcance dos mecânicos e a sobreposição de sprites com máquinas de diferentes portes; ajustar separadamente por `modelId` se necessário.
+- [ ] Confirmar que as poses `inspect/point/clipboard` alternam sem tremulação ou saltos de escala no desktop e celular.
+- [ ] Revisar a representação de mão de obra: o motor aloca um profissional à OS, mas atualmente dois personagens visuais são desenhados por box ocupado. Não considerar o segundo como HH operacional até implementar múltiplas alocações.
+- [ ] Substituir o D9 vetorial por PNG aprovado e criar sprites próprios para CAT 966 e CAT 16; não rotular fallbacks como assets definitivos.
+- [ ] Introduzir caminhada somente quando houver sequência de locomoção apropriada e estados no motor; preservar máquinas estacionárias.
+
+**Critério de aceite:** maquinário permanece imóvel e apoiado no chão; mecânicos, posicionados lateralmente, executam poses de trabalho reconhecíveis sem flutuação, e os menus e saves existentes continuam funcionais.
 
 ## Entrega 0.8 — Gestão avançada de manutenção (P1)
 
@@ -144,7 +160,7 @@
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.7.1
+## Plano de validação para a versão 0.7.2
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -179,6 +195,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.6-dev:** idade de OS e bloqueios na fila, previsão de turno por categoria, coordenadas dos boxes em JSON, fundo personalizado armazenado no navegador, smoke-test automatizado e roadmap atualizado.
 - **0.7-dev:** fundo limpo oficial enviado ao GitHub em AVIF com integridade verificada, recorte e hotspots calibrados para três boxes, sprites posicionados pelo JSON, progressos por fase, restauração do fundo padrão e testes geométricos ampliados.
 - **0.7.1:** interface bege aposentada da rota principal, Gestão reimplementada como modal escuro, PWA iniciando no Phaser, fundo oficial atualizado de 900×363 para 1350×563 com filtragem independente dos sprites, veículos rebaixados, sombra de contato, progresso reposicionado e smoke-test ampliado.
+- **0.7.2:** sprites de equipamentos e oito poses de dois mecânicos incorporados à `main`; veículos estáticos e rebaixados, profissionais laterais orientados ao equipamento, animação contextual de poses dos mecânicos, fallback D9 aprimorado, redução de movimento e testes estáticos de asset/posicionamento. **Implementado — homologação visual pendente.**
 
 ### Organização recomendada
 
