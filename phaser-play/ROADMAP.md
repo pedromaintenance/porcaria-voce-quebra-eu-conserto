@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 16/10/2026 · versão de trabalho **Phaser 0.7.2** (sprites e poses locais, mecânicos animados, máquinas estáticas; homologação visual pendente).
+**Estado de referência:** 16/10/2026 · versão de trabalho **Phaser 0.7.3** (navegação reorganizada e botões de comando separados da oficina; homologação visual desktop/mobile pendente).
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -129,6 +129,31 @@
 
 **Critério de aceite:** maquinário permanece imóvel e apoiado no chão; mecânicos, posicionados lateralmente, executam poses de trabalho reconhecíveis sem flutuação, e os menus e saves existentes continuam funcionais.
 
+## Entrega 0.7.3 — Layout e usabilidade dos botões (implementada, QA visual pendente)
+
+### Implementado no código
+
+- [x] **Barra superior em duas faixas planejadas**: marca e navegação na faixa principal; indicadores de turno e ações na faixa secundária. Elimina quebras acidentais por `flex-wrap`.
+- [x] **Navegação responsiva**: botões com dimensões consistentes, realces ao passar o mouse e selecionar menus, e faixa horizontal rolável quando a largura da tela é insuficiente.
+- [x] **Hierarquia visual**: Oficina destacada como seção ativa; comandos de Gestão, Fila, Ordem, Equipe, Almoxarifado e Indicadores organizados no mesmo grupo; indicadores de caixa, equipe, backlog e energia separados das ações.
+- [x] **Avançar turno promovido a ação principal**: botão amarelo `+8H` na barra de comandos; não cobre mais OS, mecânicos ou piso do BOX 3.
+- [x] **Cenário como menu de opções**: botão `VISUAL` abre painel com `Trocar imagem` e `Restaurar padrão`, sem botões flutuando em cima do galpão.
+- [x] **Acessibilidade**: botões nativos, estado `aria-expanded` no menu Visual e nos menus do painel, controle por teclado, Escape para fechar o menu Visual e foco visível.
+- [x] **Cache de atualização**: URL do script da oficina usa `game.js?v=0.7.3` para evitar carregar JavaScript antigo após o deploy.
+- [x] **Ajuda contextual**: documentação dentro do jogo atualizada para explicar controles e atalho `0` para Gestão.
+- [x] **Testes de regressão**: CI verifica sete opções de navegação, presença única de botões, localização da ação de turno no header e existência das operações de cenário.
+
+### QA visual e funcional ainda necessário
+
+- [ ] Desktop 1366 × 768, 1600 × 900 e 1920 × 1080: garantir que a marca e todos os menus apareçam sem cortes indesejados ou quebra da barra.
+- [ ] Tablet e celular: garantir que a navegação role horizontalmente e que o botão de avançar turno permaneça acessível sem obscurecer o cenário.
+- [ ] Abrir cada pop-up, observar o realce do respectivo botão e verificar que os boxes não recebem cliques por trás do modal.
+- [ ] Abrir o menu `VISUAL`, alterar o cenário, restaurar o fundo padrão e testar fechamento por Escape e clique fora.
+- [ ] Avançar turno com o novo botão, confirmar mensagens de impacto e persistência do save.
+- [ ] Verificar contraste, alvo de toque e acessibilidade por teclado em dispositivos móveis.
+
+**Critério de aceite:** a tela principal apresenta navegação e operações legíveis, consistentes e separadas do canvas; nenhum botão crítico encobre os boxes; a interação com o motor de manutenção continua íntegra.
+
 ## Entrega 0.8 — Gestão avançada de manutenção (P1)
 
 - [ ] Priorização por criticidade, idade da nota, risco e impacto operacional.
@@ -160,7 +185,7 @@
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.7.2
+## Plano de validação para a versão 0.7.3
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -196,6 +221,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.7-dev:** fundo limpo oficial enviado ao GitHub em AVIF com integridade verificada, recorte e hotspots calibrados para três boxes, sprites posicionados pelo JSON, progressos por fase, restauração do fundo padrão e testes geométricos ampliados.
 - **0.7.1:** interface bege aposentada da rota principal, Gestão reimplementada como modal escuro, PWA iniciando no Phaser, fundo oficial atualizado de 900×363 para 1350×563 com filtragem independente dos sprites, veículos rebaixados, sombra de contato, progresso reposicionado e smoke-test ampliado.
 - **0.7.2:** sprites de equipamentos e oito poses de dois mecânicos incorporados à `main`; veículos estáticos e rebaixados, profissionais laterais orientados ao equipamento, animação contextual de poses dos mecânicos, fallback D9 aprimorado, redução de movimento e testes estáticos de asset/posicionamento. **Implementado — homologação visual pendente.**
+- **0.7.3:** navegação reorganizada em duas faixas, indicadores separados, botão principal de turno no header, menu Visual para personalização do cenário, realce dos menus ativos, rolagem horizontal em telas estreitas, foco e comportamento de teclado aprimorados; testes CI e QA visual pendente.
 
 ### Organização recomendada
 
