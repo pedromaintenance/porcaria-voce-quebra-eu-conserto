@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.7.7 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.7.8 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -61,7 +61,7 @@ async function useBackground(blob){
  scene.setBackdrop(img);
 }
 
-const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO ATUAL',stats:'📊 INDICADORES E RECURSOS',shift:'📋 BRIEFING DE TURNO',team:'👷 EQUIPE DA OFICINA',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA',management:'📋 GESTÃO DA OFICINA'};
+const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO ATUAL',stats:'📊 INDICADORES E RECURSOS',planning:'🗓️ PLANEJAMENTO PCM',shift:'📋 BRIEFING DE TURNO',team:'👷 EQUIPE DA OFICINA',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA',management:'📋 GESTÃO DA OFICINA'};
 function closeSceneMenu(){
  const menu=$('sceneMenu'),trigger=$('sceneMenuBtn');
  if(menu)menu.hidden=true;
@@ -72,6 +72,7 @@ function modalOpen(){return !!$('menuOverlay')&&!$('menuOverlay').hidden}
 function openPanel(name){
  const overlay=$('menuOverlay');if(!overlay)return;
  if(name==='shift')drawShiftBrief();
+ if(name==='planning')drawPlanning();
  if(scene?.input)scene.input.enabled=false;
  closeSceneMenu();
  overlay.hidden=false;
@@ -167,6 +168,52 @@ function drawShiftBrief(){
    +'<button class="act" data-shift-action="confirm" data-turn-tick="'+report.tick+'">▶ CONFIRMAR +8H</button></div></div>';
  $('shiftBrief').innerHTML=out;
 }
+function drawPlanning(){
+ const plan=window.PORCARIA_PLANNING.compute(state,data);
+ const metric=(title,value)=>'<div class="planningMetric"><small>'+esc(title)+'</small><strong>'+esc(value)+'</strong></div>';
+ let out='<p class="planningIntro">DIA '+plan.day+' · TURNO '+plan.shift+' · Compare as OS não alocadas e programe um serviço por vez. '
+   +'A sugestão não substitui seu julgamento; a decisão fica registrada no motor da oficina.</p>';
+ out+='<div class="planningMetrics">'
+   +metric('OS aguardando',plan.countWaiting)
+   +metric('Críticas sem equipe',plan.countCriticalWaiting)
+   +metric('Mecânicos livres',plan.freeMechanics.length)
+   +metric('HH brutas restantes',plan.remainingGrossHours+'h')+'</div>';
+ out+='<div class="planningExplanation">'+esc(plan.method)+'<p>'+esc(plan.capacityNote)+'</p><p>'+esc(plan.etaNote)+'</p></div>';
+ if(!plan.ranked.length){
+  out+='<div class="planningOrder"><strong>Todas as OS estão alocadas ou a carteira está vazia.</strong><p>Verifique os bloqueios e o progresso no briefing de turno.</p><div class="actions"><button class="act secondary" data-open-panel="shift">ABRIR BRIEFING</button></div></div>';
+ }else{
+  out+='<h3 class="resourceSection">CARTEIRA PRIORIZADA · '+plan.ranked.length+' OS</h3><div class="planningList">';
+  out+=plan.ranked.map((j,index)=>{
+   const status=j.readiness;
+   const score='<span class="planningScore" title="Índice heurístico de ordenação">ORDEM '+(index+1)+' · '+j.score+' pts</span>';
+   let html='<article class="planningOrder '+(status.kind!=='ready'?'is-blocked':'')+'">'
+    +'<div class="planningOrderHeader"><div><strong>'+esc(j.model)+' · '+esc(j.id)+'</strong><small>'+esc(j.report)+'</small></div>'+score+'</div>';
+   html+='<div class="planningMeta">'
+     +'<span class="planningTag '+(j.priority===3?'critical':'')+'">'+esc(j.priorityLabel)+'</span>'
+     +'<span class="planningTag">'+j.ageHours+'h na carteira</span>'
+     +'<span class="planningTag '+(status.kind==='ready'?'ready':'blocked')+'">'+esc(status.label)+'</span>'
+     +'<span class="planningTag">'+esc(j.category)+'</span></div>';
+   if(j.recommended){
+    const m=j.mechanics.find(x=>x.id===j.recommended.mechanicId);
+    html+='<p><strong>Sugestão:</strong> '+esc(j.recommended.mechanicName)
+     +' · BOX '+(j.recommended.bay+1)
+     +' · habilidade '+Math.round(m?.skill||0)
+     +(j.recommended.roleMatch?' · especialidade compatível':m?.general?' · multidisciplinar':' · especialidade diferente')
+     +(j.recommended.fatigued?' · ⚠ fadiga':'')+'</p>';
+   }else{
+    const reason=[j.blockers,...j.inbound.map(o=>o.id+' chega em '+o.turnsRemaining+' turno(s) (ao final)')].filter(Boolean).join(' · ');
+    html+='<p class="planningNoResource">'+esc(reason||'Sem recurso de execução disponível para alocação assistida.')+'</p>';
+   }
+   html+='<div class="actions"><button class="act secondary" data-pick="'+esc(j.id)+'">VER / ALOCAR MANUALMENTE</button>';
+   if(j.recommended)html+='<button class="act" data-plan-assign="'+esc(j.id)+'" data-plan-tick="'+plan.tick+'">✓ ALOCAR SUGESTÃO</button>';
+   if(status.resource)html+='<button class="act secondary" data-plan-stock="'+esc(status.resource)+'">CONSULTAR RECURSO</button>';
+   html+='</div></article>';
+   return html;
+  }).join('')+'</div>';
+ }
+ out+='<div class="actions"><button class="act secondary" data-open-panel="queue">📻 VOLTAR À FILA</button><button class="act secondary" data-open-panel="shift">📋 BRIEFING DO TURNO</button></div>';
+ $('planning').innerHTML=out;
+}
 function drawBays(){
  $('bayHUD').innerHTML=[0,1,2].map(i=>{const j=state.jobs.find(x=>x.bay===i),st=statusFor(j);
  return `<div class="bayBadge ${st.css}"><b>BOX ${i+1}</b><span>${j?esc(E.model(data,j.modelId)?.title)+' · '+esc(j.id):'Disponível'}</span><b>${st.label}</b></div>`}).join('');
@@ -200,7 +247,7 @@ function drawManagement(k){
  ];
  $('management').innerHTML='<p class="muted">Controle da oficina no mesmo ambiente Phaser. Dados e decisões vêm da campanha ativa.</p>'
    +'<div class="managementGrid">'+metrics.map(([name,value])=>'<div class="managementMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong></div>').join('')+'</div>'
-   +'<div class="managementActions"><button class="act" data-open-panel="shift">📋 REVISAR PRÓXIMO TURNO</button><button class="act secondary" data-open-panel="queue">📻 ABRIR CARTEIRA</button><button class="act secondary" data-open-panel="team">👷 EQUIPE</button><button class="act secondary" data-open-panel="store">📦 ESTOQUE</button><button class="act secondary" data-open-panel="stats">📊 INDICADORES</button></div>'
+   +'<div class="managementActions"><button class="act" data-open-panel="planning">🗓️ PLANEJAR OS</button><button class="act secondary" data-open-panel="shift">📋 REVISAR PRÓXIMO TURNO</button><button class="act secondary" data-open-panel="queue">📻 ABRIR CARTEIRA</button><button class="act secondary" data-open-panel="team">👷 EQUIPE</button><button class="act secondary" data-open-panel="store">📦 ESTOQUE</button><button class="act secondary" data-open-panel="stats">📊 INDICADORES</button></div>'
    +'<h3 class="resourceSection">Últimos acontecimentos</h3>'
    +(state.logs.slice(0,6).map(l=>'<div class="managementRecent">D'+l.day+': '+esc(l.text)+'</div>').join('')||'<p class="muted">Nenhum evento registrado.</p>');
 }
@@ -310,6 +357,26 @@ function events(){
   if(!ev.target.closest('.scene-tools'))closeSceneMenu();
   const submenu=ev.target.closest('[data-open-panel]');
   if(submenu){openPanel(submenu.dataset.openPanel);return}
+  const planAssignment=ev.target.closest('[data-plan-assign]');
+  if(planAssignment){
+   if(Number(planAssignment.dataset.planTick)!==state.tick){
+    drawPlanning();notify('O turno mudou. Revise a programação antes de alocar.');return;
+   }
+   const fresh=window.PORCARIA_PLANNING.compute(state,data);
+   const suggestion=fresh.ranked.find(j=>j.id===planAssignment.dataset.planAssign)?.recommended;
+   if(!suggestion){drawPlanning();notify('Esta alocação não está mais disponível. Confira os recursos.');return}
+   // Engine validates double assignment, bay occupation, resting crew and job availability.
+   const err=E.attach(state,planAssignment.dataset.planAssign,suggestion.mechanicId,suggestion.bay,true);
+   action(err);
+   if(!err){drawPlanning();notify('OS '+planAssignment.dataset.planAssign+' programada no BOX '+(suggestion.bay+1)+' com '+suggestion.mechanicName+'.')}
+   return;
+  }
+  const planStock=ev.target.closest('[data-plan-stock]');
+  if(planStock){
+   FILTER.store='all';$('storeFilter').value='all';
+   FILTER.stockQuery=planStock.dataset.planStock;$('storeSearch').value=FILTER.stockQuery;
+   drawStore();openPanel('store');return;
+  }
   const shiftAction=ev.target.closest('[data-shift-action]');
   if(shiftAction){
    if(shiftAction.dataset.shiftAction==='cancel'){closePanel();$('advance').focus();return}
@@ -675,7 +742,7 @@ async function boot(){
   try{const raw=localStorage.getItem(SAVE);if(raw){const s=JSON.parse(raw);if(E.validate(s))state=s}}catch(e){console.warn(e)}
   if(!state)state=E.create(data);
   selected=state.jobs[0]?.id;events();drawUI();
-  if(!window.Phaser||!window.PORCARIA_LAYOUT)throw Error('Phaser ou módulo de proporções não carregou. Verifique conexão.');
+  if(!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_SHIFT_BRIEF)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
   new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1080,height:450,
    backgroundColor:'#182838',render:{pixelArt:false,antialias:false,roundPixels:true},
    scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_HORIZONTALLY},scene:[Workshop]});
