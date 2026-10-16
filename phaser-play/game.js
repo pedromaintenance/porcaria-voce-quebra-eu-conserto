@@ -22,7 +22,7 @@ function openPanel(name){const overlay=$('menuOverlay');if(!overlay)return;overl
 function closePanel(){const overlay=$('menuOverlay');if(overlay)overlay.hidden=true;document.body.style.overflow='';}
 function save(){try{localStorage.setItem(SAVE,JSON.stringify(state))}catch(e){console.warn('Save',e)}}
 function action(error){if(error)notify(error);else{save();drawUI();if(scene)scene.refresh()}}
-function notify(t){const area=$('notice');if(area){area.textContent=t;area.style.display='block'}else alert(t)}
+function notify(t){const overlay=$('menuOverlay');const area=$('notice');if(area&&overlay&&!overlay.hidden&&document.querySelector('[data-panel="detail"].is-open')){area.textContent=t;area.style.display='block'}else alert(t)}
 function job(){return E.job(state,selected)||state.jobs[0]}
 function pick(id){selected=id;drawUI();if(scene)scene.refresh();openPanel('detail')}
 function drawUI(){
@@ -36,7 +36,7 @@ function drawUI(){
  return `<button class="job ${j.id===selected?'active':''}" data-pick="${j.id}"><span class="severity">${j.priority===3?'CRÍTICA':j.priority===2?'ALTA':'MODERADA'}</span><strong>${esc(m?.title)} · ${esc(j.id)}</strong><small>${esc(j.report)}</small><small>${esc(j.status)} · ${j.stage}/6 etapas · ${Math.ceil(j.repairRemaining)}h reparo</small></button>`;
  }).join('')||'<p>Nenhuma OS aberta.</p>';
  const j=job(), d=$('detail');
- if(!j){d.innerHTML='<p>Sem ordens de serviço abertas.</p>';return}
+ if(!j){d.innerHTML='<p>Sem ordens de serviço abertas.</p>';drawTeam();drawStore();$('stats').innerHTML='<p class="muted">Nenhuma OS pendente.</p>';$('logs').innerHTML=state.logs.slice(0,5).map(l=>`<div class="log">D${l.day}: ${esc(l.text)}</div>`).join('');return}
  selected=j.id;
  const c=E.scenario(data,j.scene),m=E.model(data,j.modelId);
  let out=`<div style="font-size:20px;font-weight:900;color:#ffca6b">${esc(m?.title)} · ${esc(j.id)}</div><p class="muted">${esc(j.report)}</p><div class="progress"><i style="width:${Math.round(j.stage/6*100)}%"></i></div><p class="status">${j.stage}/6 etapas de diagnóstico · ${esc(j.status)}</p><div id="notice" style="display:none;background:#764b23;padding:9px;border-radius:8px;margin:8px 0"></div>`;
