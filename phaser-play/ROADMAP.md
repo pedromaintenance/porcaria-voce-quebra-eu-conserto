@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 16/10/2026 · versão de trabalho **Phaser 0.7.7** (briefing operacional pré-turno implementado, três boxes preservados; testes automatizados, QA no navegador pendente).
+**Estado de referência:** 16/10/2026 · versão de trabalho **Phaser 0.7.8** (planejamento PCM com priorização e alocação assistida; boxes e arte preservados, homologação no navegador pendente).
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -268,10 +268,41 @@ O método antigo `machine()` renderizava TODOS os PNGs dentro da mesma caixa má
 
 **Critério de conclusão:** jogador consegue decidir o próximo turno com informações rastreáveis ao motor, e somente a confirmação executa a passagem de 8 horas. Não são inferidas durações, entregas ou probabilidades inexistentes no estado.
 
+## Entrega 0.7.8 — Planejamento PCM e alocação assistida (implementada, QA funcional pendente)
+
+**Problema:** as OS já possuíam prioridade, data de abertura, recursos e equipe, mas não havia uma visualização integrada que recomendasse **o que programar primeiro, com qual mecânico e em qual box**, sem comprometer a autonomia do jogador. A fila anterior classificava apenas por prioridade e data, sem indicar capacidade ou justificativa da recomendação.
+
+### Implementado
+
+- [x] **Painel Planejamento PCM** acessível pela **Gestão** e pela **Fila de OS**, sem inserir botões na barra superior e sem modificar o cenário Phaser.
+- [x] **Priorização heurística transparente:** criticidade `×100`; mais `3 pontos por turno` na carteira (máximo 90); `+22` quando o serviço está apto; `−26` quando faltam ferramentas ou peças necessárias. Os pontos são critério de ordenação **fictício**, não uma avaliação quantitativa de risco conforme norma.
+- [x] **Capacidade livre operacional:** contagem de mecânicos disponíveis (não alocados e sem descanso), boxes livres, inícios simultâneos possíveis e `8 HH brutas × min(mecânicos livres, boxes livres)`. O número **não** desconta fadiga, rendimentos individuais nem as tarefas já executadas; não é previsão de horas produtivas.
+- [x] **Recomendação explicável de mão de obra:** comparar especialidade da OS e profissional, habilidade cadastrada, energia física e mental; fadiga reduz a preferência mas não elimina a disponibilidade pelo motor. Atribuição automática só pode sugerir **um mecânico livre e um box realmente vago**.
+- [x] **Prontidão de serviço derivada de `engine.js`:** sem ferramenta não inicia diagnóstico; após os 6 níveis do diagnóstico, sem saldo de peça o reparo fica bloqueado. Item já baixado da reserva (`materialUsed`) não é requisitado novamente.
+- [x] **Materiais em trânsito não são saldo:** exibir número de turnos para o ETA; o recebimento ocorre após o trabalho do turno, exatamente como no `engine.advance()`.
+- [x] **Ação deliberada do jogador:** `ALOCAR SUGESTÃO` recalcula a recomendação, valida o turno e chama `E.attach()`, que verifica ocupação, descanso e regras de alocação. `VER / ALOCAR MANUALMENTE` preserva a escolha manual dentro da OS. Nenhum pedido de material é criado automaticamente.
+- [x] **Atalhos contextuais:** `CONSULTAR RECURSO` abre o almoxarifado com filtro na ferramenta ou peça faltante; `BRIEFING DO TURNO` acessa o resumo implantado na v0.7.7.
+- [x] **Código isolado e sem side effects:** módulo puro `phaser-play/planning.js` calcula a lista sem tocar no save. A interface está concentrada no `game.js` e no modal HTML existente.
+- [x] **Regressões automatizadas:** testes `scripts/test-planning.cjs` verificam score, HH brutas, especialistas, boxes, peças, ferramentas, fadiga, descanso, alocação explícita, ETA e ausência de mutação; integrados à CI antes do deploy no Pages.
+- [x] **Versão dos scripts:** `planning.js?v=0.7.8` e `game.js?v=0.7.8`. O módulo de briefing 0.7.7 e o layout de boxes 0.7.6 continuam intactos.
+
+### QA ainda necessária
+
+- [ ] Acessar Planejar OS a partir de Gestão e Fila sem perder o menu aberto, e navegar pelos atalhos com mouse e teclado.
+- [ ] Conferir ordenação de críticas, altas e moderadas, incluindo serviço antigo bloqueado por material e serviço apto mais recente.
+- [ ] Alocar a sugestão, confirmar escolha da **OS correta**, ocupação do box e alteração da disponibilidade do mecânico. Repetir até acabar a capacidade.
+- [ ] Conferir que a recomendação seguinte não reutiliza box/mecânico já ocupado e que nenhum serviço avança o turno durante alocação.
+- [ ] Conferir que a OS bloqueada não oferece `ALOCAR SUGESTÃO` e que a compra de peça/ferramenta continua sendo decisão do jogador.
+- [ ] Testar abertura do almoxarifado já filtrado com necessidade de material e com falta de ferramental; voltar para a Fila e Gestão.
+- [ ] Validar a leitura dos cartões de OS no celular (rolagem sem clique atravessar o overlay).
+- [ ] Confirmar que os três boxes mantiveram **as posições homologadas na v0.7.6**, sem alteração de tamanho de equipamentos, cenário ou personagens.
+
+**Critério de aceite:** a recomendação é rastreável aos dados simulados, respeita os recursos realmente livres, não altera o estado sem consentimento e pode ser executada em poucos cliques.
+
 ## Entrega 0.8 — Gestão avançada de manutenção (P1)
 
-- [ ] Priorização por criticidade, idade da nota, risco e impacto operacional.
-- [ ] Planejamento semanal de serviços versus capacidade de HH, ferramentas e sobressalentes.
+- [x] **Etapa inicial (v0.7.8):** priorização por criticidade, idade da OS e bloqueio de insumos, com pontuação de jogo explícita. **Pendente:** modelagem calibrável de risco e impacto operacional.
+- [ ] Planejamento **semanal** de serviços versus capacidade de HH, ferramentas e sobressalentes. *A v0.7.8 implementou apenas planejamento de oportunidades no próximo turno (8h), não programação semanal.*
 - [ ] Preventiva versus corretiva com efeito sobre falhas futuras **simulado e calibrável**, sem prometer comportamento real.
 - [ ] Especialidades técnicas, curva de experiência e fadiga com limites auditáveis.
 - [ ] KPIs de backlog, tempo médio de reparo, primeira execução correta, utilização e custo.
@@ -299,7 +330,7 @@ O método antigo `machine()` renderizava TODOS os PNGs dentro da mesma caixa má
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.7.7
+## Plano de validação para a versão 0.7.8
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -340,6 +371,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.7.5:** offsets adicionais de −72/+40/+82 px nos três boxes, mantendo hotspots/indicadores arquitetônicos fixos; clamp visual para evitar cortes, sombras alinhadas ao centro renderizado, clique direto nas imagens para selecionar a OS correta e testes específicos de geometria. **Código implementado; QA visual pendente.**
 - **0.7.6:** ajustes incrementais BOX 1 +20 px, BOX 2 −6 px, BOX 3 sem modificação; função `calibratedCenter()` garante que o movimento se manifeste mesmo quando sprites estavam limitados pela câmera; testes de posição e regressão; QA visual pendente.
 - **0.7.7:** briefing pré-turno dentro do modal Phaser, com três boxes, bloqueios específicos, ETA ao fim do turno, fadiga, folha, OS crítica sem equipe e atalhos de OS/almoxarifado; fluxo confirmar/cancelar; testes puros de leitura do estado e CI. **Implementado; QA funcional/visual pendente.**
+- **0.7.8:** planejamento PCM de curto prazo, índice heurístico transparente, comparação de especialidades/capacidade de HH brutas, recomendações com alocação explicitamente autorizada, bloqueios por insumos e atalhos contextuais. Módulo puro e testes adicionados; **homologação funcional pendente**.
 
 ### Organização recomendada
 
