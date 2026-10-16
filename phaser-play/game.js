@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.7.8 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.7.9 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -26,6 +26,7 @@ const brl=n=>Math.round(n).toLocaleString('pt-BR');
 let data,state,selected,scene;
 const FILTER={queue:'all',query:'',store:'all',stockQuery:''};
 let toastTimeout;
+let planningHorizon='turn';
 
 const SCENE_REFERENCE={crop:{x:320,y:130,width:1350,height:563},sourceWidth:1976,sourceHeight:796,worldX:319,worldY:45,width:1080,height:450};
 const CUSTOM_BACKGROUND_KEY='porcaria.phaser.customBackdrop.official20261016';
@@ -168,10 +169,70 @@ function drawShiftBrief(){
    +'<button class="act" data-shift-action="confirm" data-turn-tick="'+report.tick+'">▶ CONFIRMAR +8H</button></div></div>';
  $('shiftBrief').innerHTML=out;
 }
+function planningTabs(){
+ return '<div class="planningTabs" role="group" aria-label="Horizonte de planejamento">'
+  +'<button type="button" data-planning-horizon="turn" class="'+(planningHorizon==='turn'?'selected':'')+'" aria-pressed="'+(planningHorizon==='turn')+'">PRÓXIMO TURNO · 8H</button>'
+  +'<button type="button" data-planning-horizon="week" class="'+(planningHorizon==='week'?'selected':'')+'" aria-pressed="'+(planningHorizon==='week')+'">JANELA SEMANAL · 14 TURNOS</button></div>';
+}
+function drawWeekly(){
+ const w=window.PORCARIA_WEEKLY.calculate(state,data);
+ const metric=(name,value)=>'<div class="planningMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong></div>';
+ let out=planningTabs();
+ out+='<p class="planningIntro">Janela deslizante de 14 turnos de 8h (112h corridas), a partir do turno atual. '
+  +'É uma leitura de capacidade e dos recursos hoje conhecidos, <strong>não um cronograma de conclusão automática</strong>.</p>';
+ out+='<div class="planningMetrics">'
+  +metric('Capacidade nominal',w.capacityHH+' HH')
+  +metric('Esforço de reparo',w.repairEquivalentHours.toLocaleString('pt-BR')+' h*')
+  +metric('Diagnósticos abertos',w.awaitingDiagnosis+' OS')
+  +metric('Etapas pendentes',w.pendingDiagnosticStages)
+  +'</div>';
+ out+='<div class="planningExplanation">* O valor de reparo são horas-equivalentes de esforço no motor. '
+  +'Não inclui diagnóstico, retrabalho, produtividade, fadiga ou novas ocorrências; não deve ser subtraído diretamente das HH nominais.'
+  +'<p>'+w.backlog+' OS abertas · '+w.critical+' críticas · '+w.assigned+' alocadas · '+w.unassigned+' aguardando. '
+  +w.receiptCount+' pedido(s) com entrega prevista dentro da janela.</p></div>';
+ out+='<h3 class="resourceSection">CAPACIDADE POR TURNO · 14 TURNOS</h3>';
+ out+='<div class="weeklyScroll" role="region" aria-label="Capacidade e entregas por turno" tabindex="0"><div class="weeklySlots">';
+ out+=w.ticks.map(t=>{
+  const frac=w.capacitySlots?Math.min(100,100*t.slots/w.capacitySlots):0;
+  return '<div class="weeklySlot'+(t.current?' isCurrent':'')+'" title="Dia '+t.day+' · Turno '+t.shift+' · '+t.grossHH+' HH">'
+   +'<strong>D'+t.day+' · '+t.shift+'</strong>'
+   +'<div class="weeklyTrack"><div style="height:'+frac+'%"></div></div>'
+   +'<b>'+t.grossHH+' HH</b>'
+   +(t.receiptCount?'<small class="weeklyDelivery" title="Pedidos recebidos ao final deste turno">📦 '+t.receiptCount+'</small>':'<small>—</small>')
+   +(t.payrollAtEnd?'<small title="Referência de folha fixa na virada do dia">R$ '+brl(t.payrollAtEnd)+'</small>':'<small> </small>')
+   +'</div>';
+ }).join('');
+ out+='</div></div>';
+ out+='<div class="weeklyLegend"><span>▰ HH nominais por turno</span><span>📦 Entregas ao final do turno</span><span>R$ Folha fixa de referência</span></div>';
+ out+='<h3 class="resourceSection">MATERIAIS DE DIAGNÓSTICOS CONCLUÍDOS</h3>';
+ if(!w.materials.length){
+  out+='<p class="planningIntro">Não há requisitos de peças confirmados por diagnósticos concluídos. Peças de OS ainda em diagnóstico não são reveladas.</p>';
+ }else{
+  out+='<div class="weeklyResources">';
+  out+=w.materials.map(m=>{
+   const status=m.gapNow?'blocked':'ready';
+   const arrivals=m.incoming.length?m.incoming.map(o=>esc(o.id)+' ('+o.qty+' un. no fim do turno +'+o.turnsRemaining+')').join(' · '):'Sem pedidos conhecidos nesta janela';
+   return '<article class="weeklyResource '+status+'"><div class="planningOrderHeader"><strong>'+esc(m.name)+'</strong>'
+    +'<span class="planningTag '+status+'">'+(m.gapNow?'DÉFICIT ATUAL '+m.gapNow:'SALDO ATUAL SUFICIENTE')+'</span></div>'
+    +'<p>Necessidade: '+m.demand+' · Em estoque: '+m.onHand+' · Pedidos na janela: '+m.ordered
+    +' · OS: '+m.jobs.map(esc).join(', ')+'</p>'
+    +'<small>'+arrivals+'</small>'
+    +(m.gapAfterKnownReceipts?'<p class="planningNoResource">Déficit residual após recebimentos conhecidos: '+m.gapAfterKnownReceipts+'</p>':'')
+    +'<div class="actions"><button class="act secondary" data-plan-stock="'+esc(m.id)+'">CONSULTAR PEÇA</button></div></article>';
+  }).join('');
+  out+='</div>';
+ }
+ out+='<div class="weeklyAssumptions"><strong>LIMITES DO PLANEJAMENTO</strong><ul>'
+  +w.assumptions.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div>'
+  +'<div class="actions"><button class="act secondary" data-planning-horizon="turn">← VOLTAR ÀS SUGESTÕES DE OS</button>'
+  +'<button class="act secondary" data-open-panel="shift">BRIEFING DO PRÓXIMO TURNO</button></div>';
+ $('planning').innerHTML=out;
+}
 function drawPlanning(){
+ if(planningHorizon==='week'){drawWeekly();return}
  const plan=window.PORCARIA_PLANNING.compute(state,data);
  const metric=(title,value)=>'<div class="planningMetric"><small>'+esc(title)+'</small><strong>'+esc(value)+'</strong></div>';
- let out='<p class="planningIntro">DIA '+plan.day+' · TURNO '+plan.shift+' · Compare as OS não alocadas e programe um serviço por vez. '
+ let out=planningTabs()+'<p class="planningIntro">DIA '+plan.day+' · TURNO '+plan.shift+' · Compare as OS não alocadas e programe um serviço por vez. '
    +'A sugestão não substitui seu julgamento; a decisão fica registrada no motor da oficina.</p>';
  out+='<div class="planningMetrics">'
    +metric('OS aguardando',plan.countWaiting)
@@ -357,6 +418,11 @@ function events(){
   if(!ev.target.closest('.scene-tools'))closeSceneMenu();
   const submenu=ev.target.closest('[data-open-panel]');
   if(submenu){openPanel(submenu.dataset.openPanel);return}
+  const planHorizon=ev.target.closest('[data-planning-horizon]');
+  if(planHorizon){
+   planningHorizon=planHorizon.dataset.planningHorizon==='week'?'week':'turn';
+   drawPlanning();return;
+  }
   const planAssignment=ev.target.closest('[data-plan-assign]');
   if(planAssignment){
    if(Number(planAssignment.dataset.planTick)!==state.tick){
@@ -742,7 +808,7 @@ async function boot(){
   try{const raw=localStorage.getItem(SAVE);if(raw){const s=JSON.parse(raw);if(E.validate(s))state=s}}catch(e){console.warn(e)}
   if(!state)state=E.create(data);
   selected=state.jobs[0]?.id;events();drawUI();
-  if(!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_SHIFT_BRIEF)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
+  if(!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
   new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1080,height:450,
    backgroundColor:'#182838',render:{pixelArt:false,antialias:false,roundPixels:true},
    scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_HORIZONTALLY},scene:[Workshop]});
