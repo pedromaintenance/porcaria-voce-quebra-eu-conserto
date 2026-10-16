@@ -1,0 +1,39 @@
+name: Fix reviewed CAT395 image
+on:
+  push:
+    branches:
+      - fix/assets-review-20261014
+    paths:
+      - scripts/fix_cat395_background.py
+      - .github/workflows/fix-reviewed-assets.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  transparency:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/assets-review-20261014
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PNG processing requirements
+        run: pip install --disable-pip-version-check pillow numpy opencv-python-headless
+      - name: Remove white background from CAT395
+        run: python scripts/fix_cat395_background.py
+      - name: Commit corrected PNG
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add phaser/assets-review/assets/equipamentos/cat395.png
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "fix(assets): CAT 395 transparent background (#3)"
+            git push origin HEAD:fix/assets-review-20261014
+          fi

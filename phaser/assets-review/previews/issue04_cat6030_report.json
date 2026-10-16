@@ -1,0 +1,9 @@
+{
+  "issue": 4,
+  "changed_pixels_rgba": 1603,
+  "removed_alpha_pixels": 1763,
+  "source": "45757086761428f3c92f02a0f5ece5ab761559c05cc9a4235b911e1739aca294",
+  "fixed": "b206a1ab34bd6935fcf8b562fbe6ee56bed4ef09c70c57a915864919aace30b9",
+  "preview": "phaser/assets-review/previews/issue04_cat6030_before_after.png",
+  "state": "ready-for-review"
+}

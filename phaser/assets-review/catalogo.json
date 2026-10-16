@@ -1,9 +1,9 @@
 {
-  "version": "0.8",
+  "version": "v0.9-reviewed",
   "count": 115,
-  "status": "catalogado-no-github-binarios-pendentes",
+  "status": "catalogado-no-github-binarios-3-pendentes",
   "privacy": "Imagens reais de colegas e arquivos corporativos não foram incluídos",
-  "asset_note": "Caminhos correspondem ao pacote ZIP completo, não necessariamente a arquivos publicados no GitHub.",
+  "asset_note": "PNG originais de 112 itens publicados; 3 pendentes com SHA-256 conhecido e backup na Biblioteca. As versões corrigidas possuem hash próprio em fix.corrected_sha256.",
   "images": [
     {
       "id": "equipamentos_cat395_png",
@@ -14,8 +14,30 @@
       "source": "PORCARIA_Equipamentos_Integracao_v07",
       "notes": "v0.7 imagem aprovada",
       "kind": "png",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "não está com fundo transparente, corrigir removendo fundo branco",
+      "user_reviewed_at": "2026-10-14T19:38:02.723Z",
+      "review_issue_number": 3,
+      "workflow_state": "approved",
+      "fix": {
+        "issue": 3,
+        "source_sha256": "627cc13abc3755d33eaa810fa546d2f04af13ee86d16163c9cf27f91bf41ff66",
+        "corrected_sha256": "90cbbad305064b9bc76d92c5a5c070ae1fda1c5e6a6a65451b12e58ca936e9fb",
+        "validated_git_blob": "e612469b7596a3ec38a7320fd8479d5802a2b450",
+        "status": "technical-fix-complete-awaiting-user-visual-approval",
+        "previous_expected_sha256": "ca5cfe56e3e77c71e08d98d2daa9fdcd5174c451afefb4e0c5f30f830b149dfe",
+        "sha_reconciled_from": "SHA-256 recorded by GitHub Actions audit on the actual branch PNG; reapproval retained"
+      },
+      "reapproval": {
+        "round": 2,
+        "decision": "OK",
+        "source": "explicit-user-confirmation-in-chat",
+        "note": "A correção da 395 ficou boa",
+        "validated_visual_correction": "transparência do fundo da CAT 395",
+        "recorded_on": "2026-10-14"
+      }
     },
     {
       "id": "equipamentos_cat6030_backhoe_estudo_png",
@@ -26,8 +48,13 @@
       "source": "PORCARIA_Equipamentos_Integracao_v07",
       "notes": "v0.7 estudo não homologado",
       "kind": "png",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:38:10.889Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "equipamentos_cat6030_frontshovel_estudo_png",
@@ -38,8 +65,13 @@
       "source": "PORCARIA_Equipamentos_Integracao_v07",
       "notes": "v0.7 estudo não homologado",
       "kind": "png",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:39:01.857Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "equipamentos_sandvik_dr410i_torre_erguida_png",
@@ -50,8 +82,13 @@
       "source": "PORCARIA_Equipamentos_Integracao_v07",
       "notes": "v0.7 operação",
       "kind": "png",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:39:59.043Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "equipamentos_sandvik_dr410i_torre_abaixada_png",
@@ -62,8 +99,13 @@
       "source": "PORCARIA_Equipamentos_Integracao_v07",
       "notes": "v0.7 transporte",
       "kind": "png",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:39:57.459Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "equipamentos_perfuratriz_a_estudo_png",
@@ -74,8 +116,13 @@
       "source": "PORCARIA_Equipamentos_Integracao_v07",
       "notes": "v0.7 sem modelo confirmado",
       "kind": "png",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "duplicada, use somente Perfuratriz — conceito inicial",
+      "user_reviewed_at": "2026-10-14T20:00:06.931Z",
+      "review_issue_number": 16,
+      "workflow_state": "archived"
     },
     {
       "id": "equipamentos_caminhao_mineracao_estudo_png",
@@ -86,8 +133,13 @@
       "source": "PORCARIA_Equipamentos_Integracao_v07",
       "notes": "v0.7 sem modelo confirmado",
       "kind": "png",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "Duplicada, manter somente Caminhão de mina — conceito isolado",
+      "user_reviewed_at": "2026-10-14T19:37:29.834Z",
+      "review_issue_number": 16,
+      "workflow_state": "archived"
     },
     {
       "id": "equipamentos_historico_cat6030_conceito_original_png",
@@ -98,8 +150,22 @@
       "source": "PORCARIA_Equipamentos_Integracao_v07",
       "notes": "geração inicial",
       "kind": "png",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "Há espinhos na parte externa da caçamba, corrigir com base na máquina real.",
+      "user_reviewed_at": "2026-10-14T19:38:53.195Z",
+      "review_issue_number": 4,
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 4,
+        "status": "technical-silhouette-fix-awaiting-user-review",
+        "source_sha256": "45757086761428f3c92f02a0f5ece5ab761559c05cc9a4235b911e1739aca294",
+        "corrected_sha256": "b206a1ab34bd6935fcf8b562fbe6ee56bed4ef09c70c57a915864919aace30b9",
+        "removed_alpha_pixels": 1763,
+        "validation": "alpha only removed inside two user-rejected outer spurs; rest of machine unchanged",
+        "preview": "phaser/assets-review/previews/issue04_cat6030_before_after.png"
+      }
     },
     {
       "id": "equipamentos_historico_caminhao_pixel_art_original_png",
@@ -110,8 +176,13 @@
       "source": "PORCARIA_Equipamentos_Integracao_v07",
       "notes": "geração inicial",
       "kind": "png",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "A parte da frente do caminhão não está coerente com o Caterpillar 777, isso pode ser refinado. A roda dianteira parece duplicada, corrigir.",
+      "user_reviewed_at": "2026-10-14T19:37:11.153Z",
+      "review_issue_number": 5,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "equipamentos_historico_escavadeira_isometrica_original_png",
@@ -122,8 +193,13 @@
       "source": "PORCARIA_Equipamentos_Integracao_v07",
       "notes": "geração inicial",
       "kind": "png",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:39:40.571Z",
+      "review_issue_number": 7,
+      "workflow_state": "awaiting-clarification"
     },
     {
       "id": "equipamentos_historico_escavadeira_conceito_inicial_png",
@@ -134,8 +210,13 @@
       "source": "PORCARIA_Equipamentos_Integracao_v07",
       "notes": "geração inicial",
       "kind": "png",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tem um cilindro faltando, refaça comparando com a original",
+      "user_reviewed_at": "2026-10-14T19:59:51.397Z",
+      "review_issue_number": 6,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "equipamentos_historico_perfuratriz_crawler_original_png",
@@ -146,8 +227,13 @@
       "source": "PORCARIA_Equipamentos_Integracao_v07",
       "notes": "geração inicial",
       "kind": "png",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "remover",
+      "user_reviewed_at": "2026-10-14T19:39:55.316Z",
+      "review_issue_number": 16,
+      "workflow_state": "archived"
     },
     {
       "id": "equipamentos_historico_perfuratriz_conceito_inicial_png",
@@ -158,8 +244,13 @@
       "source": "PORCARIA_Equipamentos_Integracao_v07",
       "notes": "geração inicial",
       "kind": "png",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:59:54.817Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_pedro_pedro_alerta_png",
@@ -170,8 +261,13 @@
       "source": "PORCARIA_Assets_Jogaveis_v03",
       "notes": "Tutorial: extintor apenas na pausa cômica",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:42:00.577Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_pedro_pedro_apontando_png",
@@ -182,8 +278,13 @@
       "source": "PORCARIA_Assets_Jogaveis_v03",
       "notes": "Tutorial: extintor apenas na pausa cômica",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:42:01.265Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_pedro_pedro_extintor_png",
@@ -194,8 +295,13 @@
       "source": "PORCARIA_Assets_Jogaveis_v03",
       "notes": "Tutorial: extintor apenas na pausa cômica",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:42:02.610Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_pedro_pedro_inspecionando_png",
@@ -206,8 +312,13 @@
       "source": "PORCARIA_Assets_Jogaveis_v03",
       "notes": "Tutorial: extintor apenas na pausa cômica",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:42:03.401Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_pedro_pedro_neutro_png",
@@ -218,8 +329,13 @@
       "source": "PORCARIA_Assets_Jogaveis_v03",
       "notes": "Tutorial: extintor apenas na pausa cômica",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:42:04.345Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_pedro_pedro_positivo_png",
@@ -230,8 +346,13 @@
       "source": "PORCARIA_Assets_Jogaveis_v03",
       "notes": "Tutorial: extintor apenas na pausa cômica",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:42:04.889Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_pedro_pedro_prancheta_png",
@@ -242,8 +363,13 @@
       "source": "PORCARIA_Assets_Jogaveis_v03",
       "notes": "Tutorial: extintor apenas na pausa cômica",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:42:05.904Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_pedro_pedro_radio_png",
@@ -254,8 +380,13 @@
       "source": "PORCARIA_Assets_Jogaveis_v03",
       "notes": "Tutorial: extintor apenas na pausa cômica",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:42:06.873Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_elenco_mec_ana_alert_png",
@@ -266,8 +397,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:17.031Z",
+      "review_issue_number": 8,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_mec_ana_clipboard_png",
@@ -278,8 +414,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:20.893Z",
+      "review_issue_number": 8,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_mec_ana_extinguisher_png",
@@ -290,8 +431,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:22.182Z",
+      "review_issue_number": 8,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_mec_ana_idle_png",
@@ -302,8 +448,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:24.024Z",
+      "review_issue_number": 8,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_mec_ana_inspect_png",
@@ -314,8 +465,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:25.724Z",
+      "review_issue_number": 8,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_mec_ana_point_png",
@@ -326,8 +482,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:27.265Z",
+      "review_issue_number": 8,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_mec_ana_positive_png",
@@ -338,8 +499,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:29.484Z",
+      "review_issue_number": 8,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_mec_ana_radio_png",
@@ -350,8 +516,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:31.094Z",
+      "review_issue_number": 8,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_mec_ana_spritesheet_png",
@@ -362,8 +533,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "São 8 POSES, não um ciclo de marcha.",
       "kind": "spritesheet",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:33.504Z",
+      "review_issue_number": 8,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_mec_rafael_alert_png",
@@ -374,8 +550,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:46:22.927Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_elenco_mec_rafael_clipboard_png",
@@ -386,8 +567,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:46:23.582Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_elenco_mec_rafael_extinguisher_png",
@@ -398,8 +584,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:46:24.670Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_elenco_mec_rafael_idle_png",
@@ -410,8 +601,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:46:33.037Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_elenco_mec_rafael_inspect_png",
@@ -422,8 +618,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:46:34.741Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_elenco_mec_rafael_point_png",
@@ -434,8 +635,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:46:36.414Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_elenco_mec_rafael_positive_png",
@@ -446,8 +652,22 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "a testa tá amarela",
+      "user_reviewed_at": "2026-10-14T19:46:43.180Z",
+      "review_issue_number": 15,
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 15,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "bf90be3a8f75e2a7861f2fb76a7695df28766a301a09e8c7b28e688542db5f6b",
+        "corrected_sha256": "8c0b21f8ac4ffd4ef77a4fd2f9c7257820d9951e4227f758ee277bb609f8f6b8",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_mec_rafael.png",
+        "changed_pixels": 139
+      }
     },
     {
       "id": "personagens_elenco_mec_rafael_radio_png",
@@ -458,8 +678,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:46:46.119Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_elenco_mec_rafael_spritesheet_png",
@@ -470,8 +695,21 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "São 8 POSES, não um ciclo de marcha.",
       "kind": "spritesheet",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "refazer após os assets abaixo serem corrigidos:\nRafael — positive",
+      "user_reviewed_at": "2026-10-14T19:47:13.060Z",
+      "review_issue_number": 15,
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 15,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "332930dc4357078a222e03285448c8ec39b91edc9728ee49828688f0caed3439",
+        "corrected_sha256": "e1b9018fc47a5d8b9612637b7ad4594df1b82c5fca8521958184f207cbf738d6",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_mec_rafael.png"
+      }
     },
     {
       "id": "personagens_elenco_mec_lia_alert_png",
@@ -482,8 +720,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:45:48.402Z",
+      "review_issue_number": 11,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_mec_lia_clipboard_png",
@@ -494,8 +737,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:45:50.861Z",
+      "review_issue_number": 11,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_mec_lia_extinguisher_png",
@@ -506,8 +754,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:45:52.792Z",
+      "review_issue_number": 11,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_mec_lia_idle_png",
@@ -518,8 +771,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:45:54.913Z",
+      "review_issue_number": 11,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_mec_lia_inspect_png",
@@ -530,8 +788,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:45:56.515Z",
+      "review_issue_number": 11,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_mec_lia_point_png",
@@ -542,8 +805,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:45:58.304Z",
+      "review_issue_number": 11,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_mec_lia_positive_png",
@@ -554,8 +822,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:46:00.028Z",
+      "review_issue_number": 11,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_mec_lia_radio_png",
@@ -566,8 +839,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:46:01.539Z",
+      "review_issue_number": 11,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_mec_lia_spritesheet_png",
@@ -578,8 +856,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "São 8 POSES, não um ciclo de marcha.",
       "kind": "spritesheet",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:46:04.438Z",
+      "review_issue_number": 11,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_ele_davi_alert_png",
@@ -590,8 +873,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:43:09.451Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_elenco_ele_davi_clipboard_png",
@@ -602,8 +890,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:43:10.595Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_elenco_ele_davi_extinguisher_png",
@@ -614,8 +907,22 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugada a cor do capacete, era pra ser todo amarelo",
+      "user_reviewed_at": "2026-10-14T19:44:04.536Z",
+      "review_issue_number": 13,
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 13,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "594e305006772dc85b909464a0c7e20b291e8b2d9130aa86e23491c1ae3c2ff6",
+        "corrected_sha256": "4003e7733e1c926ab43e5661508021949e443a71c8dfb45a49afd41f1f468d23",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_ele_davi.png",
+        "changed_pixels": 1700
+      }
     },
     {
       "id": "personagens_elenco_ele_davi_idle_png",
@@ -626,8 +933,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:43:13.875Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_elenco_ele_davi_inspect_png",
@@ -638,8 +950,22 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugada a cor do capacete, era pra ser todo amarelo",
+      "user_reviewed_at": "2026-10-14T19:43:35.946Z",
+      "review_issue_number": 13,
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 13,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "29129f8ac996b5644fde61c19488c66b2dd3cc9051ba5b1a1b1ca4c72e20f5ee",
+        "corrected_sha256": "a89902562b5cb2a9ed774e338df64d6bfb0416d866ed5c75f3f65cf0ae5bfd5f",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_ele_davi.png",
+        "changed_pixels": 1324
+      }
     },
     {
       "id": "personagens_elenco_ele_davi_point_png",
@@ -650,8 +976,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:43:42.987Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_elenco_ele_davi_positive_png",
@@ -662,8 +993,22 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "testa ficou amarela",
+      "user_reviewed_at": "2026-10-14T19:43:51.647Z",
+      "review_issue_number": 13,
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 13,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "cfe0b6a4aedcacfc5521bb366b476859baba80308d9420467f40a215f968dc49",
+        "corrected_sha256": "ad91150aa08544b7d2b1581ed53149d35a4cf201ab5c980075b88837a4f1d9f8",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_ele_davi.png",
+        "changed_pixels": 122
+      }
     },
     {
       "id": "personagens_elenco_ele_davi_radio_png",
@@ -674,8 +1019,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:43:53.540Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_elenco_ele_davi_spritesheet_png",
@@ -686,8 +1036,21 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "São 8 POSES, não um ciclo de marcha.",
       "kind": "spritesheet",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "refazer após os assets abaixo serem corrigidos:\nDavi — positive\nDavi — inspect\nDavi — extinguisher",
+      "user_reviewed_at": "2026-10-14T19:44:46.395Z",
+      "review_issue_number": 13,
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 13,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "30d51b6bd5d4b20d4b84dc444a660b972da26eeef89c0b3ac8045b454dc978fe",
+        "corrected_sha256": "55634771c3e4df4e84027c79e5d41febb7c351e121bea327f5c97c3ee6a65338",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_ele_davi.png"
+      }
     },
     {
       "id": "personagens_elenco_ele_bia_alert_png",
@@ -698,8 +1061,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:35.776Z",
+      "review_issue_number": 9,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_ele_bia_clipboard_png",
@@ -710,8 +1078,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:37.106Z",
+      "review_issue_number": 9,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_ele_bia_extinguisher_png",
@@ -722,8 +1095,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:38.821Z",
+      "review_issue_number": 9,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_ele_bia_idle_png",
@@ -734,8 +1112,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:40.226Z",
+      "review_issue_number": 9,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_ele_bia_inspect_png",
@@ -746,8 +1129,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:41.543Z",
+      "review_issue_number": 9,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_ele_bia_point_png",
@@ -758,8 +1146,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:42.753Z",
+      "review_issue_number": 9,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_ele_bia_positive_png",
@@ -770,8 +1163,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:44.272Z",
+      "review_issue_number": 9,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_ele_bia_radio_png",
@@ -782,8 +1180,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:45.866Z",
+      "review_issue_number": 9,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_ele_bia_spritesheet_png",
@@ -794,8 +1197,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "São 8 POSES, não um ciclo de marcha.",
       "kind": "spritesheet",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:49.002Z",
+      "review_issue_number": 9,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_pcm_clara_alert_png",
@@ -806,8 +1214,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:51.192Z",
+      "review_issue_number": 10,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_pcm_clara_clipboard_png",
@@ -818,8 +1231,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:52.624Z",
+      "review_issue_number": 10,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_pcm_clara_extinguisher_png",
@@ -830,8 +1248,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:53.853Z",
+      "review_issue_number": 10,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_pcm_clara_idle_png",
@@ -842,8 +1265,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:55.364Z",
+      "review_issue_number": 10,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_pcm_clara_inspect_png",
@@ -854,8 +1282,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:56.677Z",
+      "review_issue_number": 10,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_pcm_clara_point_png",
@@ -866,8 +1299,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:42:58.194Z",
+      "review_issue_number": 10,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_pcm_clara_positive_png",
@@ -878,8 +1316,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:43:00.099Z",
+      "review_issue_number": 10,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_pcm_clara_radio_png",
@@ -890,8 +1333,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:43:01.336Z",
+      "review_issue_number": 10,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_pcm_clara_spritesheet_png",
@@ -902,8 +1350,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "São 8 POSES, não um ciclo de marcha.",
       "kind": "spritesheet",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:43:02.528Z",
+      "review_issue_number": 10,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_pcm_joao_alert_png",
@@ -914,8 +1367,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:44:49.030Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_elenco_pcm_joao_clipboard_png",
@@ -926,8 +1384,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:44:49.708Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_elenco_pcm_joao_extinguisher_png",
@@ -938,8 +1401,22 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugada a cor do capacete, era pra ser todo branco",
+      "user_reviewed_at": "2026-10-14T19:45:02.216Z",
+      "review_issue_number": 14,
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 14,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "6568f5589acc665dd955aa5573e4ceff1542ff86ff043c29444880c563afcdf6",
+        "corrected_sha256": "36b314dcbbbc038f87e6cffbebd3ef2bc640b67682d592e3c1a49cbb21de3072",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_pcm_joao.png",
+        "changed_pixels": 285
+      }
     },
     {
       "id": "personagens_elenco_pcm_joao_idle_png",
@@ -950,8 +1427,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:45:06.085Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_elenco_pcm_joao_inspect_png",
@@ -962,8 +1444,22 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugada a cor do capacete, era pra ser todo branco",
+      "user_reviewed_at": "2026-10-14T19:45:05.339Z",
+      "review_issue_number": 14,
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 14,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "8b4aba581ed2727bf9c5ef0cca20b9435c2c15d768567ab14be5473836222284",
+        "corrected_sha256": "1de1cc1bdba5e13452ce9ff820699ffb7b81eb59a66143008c67c7fcf771b21c",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_pcm_joao.png",
+        "changed_pixels": 293
+      }
     },
     {
       "id": "personagens_elenco_pcm_joao_point_png",
@@ -974,8 +1470,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:45:09.772Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_elenco_pcm_joao_positive_png",
@@ -986,8 +1487,22 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "a testa tá branca",
+      "user_reviewed_at": "2026-10-14T19:45:14.416Z",
+      "review_issue_number": 14,
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 14,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "79c27a875160d66e7eb5281bdd51b4b24b194e372bf488cb3b282940f74b553a",
+        "corrected_sha256": "330fc9a5d064432a294ed509695e9d92d8d46c10354358adf32db24236702c39",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_pcm_joao.png",
+        "changed_pixels": 207
+      }
     },
     {
       "id": "personagens_elenco_pcm_joao_radio_png",
@@ -998,8 +1513,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:45:17.805Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "personagens_elenco_pcm_joao_spritesheet_png",
@@ -1010,8 +1530,21 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "São 8 POSES, não um ciclo de marcha.",
       "kind": "spritesheet",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "refazer após os assets abaixo serem corrigidos:\nJoão — positive\nJoão — inspect\nJoão — extinguisher",
+      "user_reviewed_at": "2026-10-14T19:45:39.777Z",
+      "review_issue_number": 14,
+      "workflow_state": "ready-for-review",
+      "fix": {
+        "issue": 14,
+        "status": "technical-pixel-fix-awaiting-user-review",
+        "source_sha256": "9a3fc4563f8a058908b8c63726e8ce664942bfa7fc746b8e7568095a0d72ad27",
+        "corrected_sha256": "10dbdda51c831dd0aa132bdab40c4dcda94332627a72760fe0e1cf41595be175",
+        "validation": "same RGBA dimensions; unchanged alpha; original approved poses untouched; sheet frames exact",
+        "preview": "phaser/assets-review/previews/correcao_pcm_joao.png"
+      }
     },
     {
       "id": "personagens_elenco_brig_nina_alert_png",
@@ -1022,8 +1555,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:46:07.182Z",
+      "review_issue_number": 12,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_brig_nina_clipboard_png",
@@ -1034,8 +1572,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:46:08.430Z",
+      "review_issue_number": 12,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_brig_nina_extinguisher_png",
@@ -1046,8 +1589,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:46:09.963Z",
+      "review_issue_number": 12,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_brig_nina_idle_png",
@@ -1058,8 +1606,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:46:11.252Z",
+      "review_issue_number": 12,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_brig_nina_inspect_png",
@@ -1070,8 +1623,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:46:13.058Z",
+      "review_issue_number": 12,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_brig_nina_point_png",
@@ -1082,8 +1640,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:46:14.527Z",
+      "review_issue_number": 12,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_brig_nina_positive_png",
@@ -1094,8 +1657,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:46:15.720Z",
+      "review_issue_number": 12,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_brig_nina_radio_png",
@@ -1106,8 +1674,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "Pose v0.5.1; revisão artística ainda necessária.",
       "kind": "pose",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:46:18.315Z",
+      "review_issue_number": 12,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "personagens_elenco_brig_nina_spritesheet_png",
@@ -1118,8 +1691,13 @@
       "source": "PORCARIA_Elenco_Hotfix_v051",
       "notes": "São 8 POSES, não um ciclo de marcha.",
       "kind": "spritesheet",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tá bugado, refazer",
+      "user_reviewed_at": "2026-10-14T19:46:20.628Z",
+      "review_issue_number": 12,
+      "workflow_state": "needs-revision"
     },
     {
       "id": "conceituais_oficina_p_o_r_c_a_r_i_a__em_a__o_png",
@@ -1130,8 +1708,13 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:49:04.664Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "conceituais_sprite_sheet_de_brigadista_em_pixel_art_png",
@@ -1142,8 +1725,14 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:48:07.216Z",
+      "review_issue_number": null,
+      "workflow_state": "approved",
+      "github_blob_sha": "4201314a737691e67ab6416e2e8fbda946f3f95d"
     },
     {
       "id": "conceituais_folha_de_sprites_do_eletricista_mineiro_png",
@@ -1154,8 +1743,13 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:48:27.064Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "conceituais_supervisor_de_obra_em_pixel_art_png",
@@ -1166,8 +1760,14 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:49:24.072Z",
+      "review_issue_number": null,
+      "workflow_state": "approved",
+      "github_blob_sha": "f636ff0d075c118fca71f358e8ef81bb6bf04efc"
     },
     {
       "id": "conceituais_mec_nico_pixelando_com_chave_inglesa_png",
@@ -1178,8 +1778,14 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:49:02.352Z",
+      "review_issue_number": null,
+      "workflow_state": "approved",
+      "github_blob_sha": "79b5be24b586ecf070769f4c66fb76ae11b0ddc6"
     },
     {
       "id": "conceituais_a_large_clean_organized_pixel_art_sprite_sheet_i_png",
@@ -1190,8 +1796,13 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:47:46.416Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "conceituais_a_pixel_art_sprite_sheet_displays_maintenance_and_png",
@@ -1203,7 +1814,12 @@
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
       "github_binary_status": "pending-upload",
-      "review": "pending"
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "tudo bugado, ignorar",
+      "user_reviewed_at": "2026-10-14T19:47:57.517Z",
+      "review_issue_number": 17,
+      "workflow_state": "archived"
     },
     {
       "id": "conceituais_a_detailed_pixel_art_sprite_sheet_infographic_on_a_png",
@@ -1214,8 +1830,13 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:47:44.751Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "conceituais_a_detailed_pixel_art_sprite_sheet_asset_atlas_illu_png",
@@ -1227,7 +1848,12 @@
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
       "github_binary_status": "pending-upload",
-      "review": "pending"
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:48:00.632Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "conceituais_a_detailed_pixel_art_sprite_sheet_composite_image_png",
@@ -1238,8 +1864,14 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:47:43.295Z",
+      "review_issue_number": null,
+      "workflow_state": "approved",
+      "github_blob_sha": "d5a36e2df9384f07af9f663c837774182e8b800a"
     },
     {
       "id": "conceituais_a_wide_high_resolution_sprite_sheet_style_poster_png",
@@ -1250,8 +1882,13 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:49:17.255Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "conceituais_a_wide_high_resolution_pixel_art_sprite_sheet_a_png",
@@ -1263,7 +1900,12 @@
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
       "github_binary_status": "pending-upload",
-      "review": "pending"
+      "review": "pending",
+      "user_decision": "OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:49:21.104Z",
+      "review_issue_number": null,
+      "workflow_state": "approved"
     },
     {
       "id": "conceituais_a_wide_high_resolution_game_asset_style_sprite_s_png",
@@ -1274,8 +1916,14 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:48:20.480Z",
+      "review_issue_number": 17,
+      "workflow_state": "archived",
+      "github_blob_sha": "8b11ad1ffacc59f9df8fec011418cdc85f430b41"
     },
     {
       "id": "conceituais_a_clean_high_resolution_pixel_art_sprite_sheet_st_png",
@@ -1286,8 +1934,13 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:48:50.711Z",
+      "review_issue_number": 17,
+      "workflow_state": "archived"
     },
     {
       "id": "conceituais_a_clean_high_resolution_pixel_art_industrial_eng_png",
@@ -1298,8 +1951,13 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:48:52.663Z",
+      "review_issue_number": 17,
+      "workflow_state": "archived"
     },
     {
       "id": "conceituais_a_wide_poster_like_pixel_art_sprite_sheet_and_ass_png",
@@ -1310,8 +1968,14 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:48:45.167Z",
+      "review_issue_number": 17,
+      "workflow_state": "archived",
+      "github_blob_sha": "40f6dbec964c8e2a4c54b8412ad0f6b7e08a6a65"
     },
     {
       "id": "conceituais_wide_high_resolution_pixel_art_sprite_sheet_poste_png",
@@ -1322,8 +1986,13 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:48:54.815Z",
+      "review_issue_number": 17,
+      "workflow_state": "archived"
     },
     {
       "id": "conceituais_wide_infographic_pixel_art_concept_sheet_split_int_png",
@@ -1334,8 +2003,14 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:48:46.832Z",
+      "review_issue_number": 17,
+      "workflow_state": "archived",
+      "github_blob_sha": "ca4f85edb3e2ed1279e977958eae99a69fda762e"
     },
     {
       "id": "conceituais_a_detailed_comparison_and_upgrade_style_illustrati_png",
@@ -1346,8 +2021,13 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:48:59.144Z",
+      "review_issue_number": 17,
+      "workflow_state": "archived"
     },
     {
       "id": "conceituais_a_wide_infographic_style_comparison_image_in_a_pi_png",
@@ -1358,8 +2038,13 @@
       "source": "pranchas visuais geradas",
       "notes": "NÃO é sprite animado pronto para Phaser",
       "kind": "prancha",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "",
+      "user_reviewed_at": "2026-10-14T19:49:07.727Z",
+      "review_issue_number": 17,
+      "workflow_state": "archived"
     },
     {
       "id": "interface_porcaria_fault_instructor_png",
@@ -1370,8 +2055,13 @@
       "source": "estudos de interface",
       "notes": "Não homologado",
       "kind": "interface",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "pode ignorar, faremos uma interface melhor",
+      "user_reviewed_at": "2026-10-14T19:47:32.689Z",
+      "review_issue_number": 18,
+      "workflow_state": "archived"
     },
     {
       "id": "interface_porcaria_fault_mobile_png",
@@ -1382,8 +2072,40 @@
       "source": "estudos de interface",
       "notes": "Não homologado",
       "kind": "interface",
-      "github_binary_status": "pending-upload",
-      "review": "pending"
+      "github_binary_status": "uploaded",
+      "review": "pending",
+      "user_decision": "NAO_OK",
+      "user_comment": "pode ignorar, faremos uma interface melhor",
+      "user_reviewed_at": "2026-10-14T19:47:35.524Z",
+      "review_issue_number": 18,
+      "workflow_state": "archived"
     }
-  ]
+  ],
+  "review_provenance": {
+    "exportedAt": "2026-10-14T20:00:14.171Z",
+    "schema": "porcaria.asset-review.v2",
+    "summary": {
+      "yes": 41,
+      "no": 74,
+      "unfinished": 0,
+      "notesMissing": 9,
+      "total": 115,
+      "reviewed": 115
+    }
+  },
+  "workflow_counts": {
+    "approved": 42,
+    "archived": 14,
+    "ready-for-review": 11,
+    "needs-revision": 47,
+    "awaiting-clarification": 1
+  },
+  "binary_transfer_2026_10_14": {
+    "newly_uploaded_paths": [
+      "conceituais/a_detailed_pixel_art_sprite_sheet_infographic_on_a.png",
+      "conceituais/a_large_clean_organized_pixel_art_sprite_sheet_i.png"
+    ],
+    "verified_source": "original PNG base64 stored in user Library; first PNG source SHA256 cross-checked",
+    "remaining_missing_originals": 14
+  }
 }

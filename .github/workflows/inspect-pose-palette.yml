@@ -1,0 +1,32 @@
+name: Inspect character palette issues 13-15
+on:
+  push:
+    branches: [fix/assets-review-20261014]
+    paths:
+      - scripts/inspect_pose_palette.py
+      - .github/workflows/inspect-pose-palette.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+jobs:
+  diagnosis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/assets-review-20261014
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check pillow
+      - run: python scripts/inspect_pose_palette.py
+      - name: Commit technical diagnostic (no sprite changes)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/pose-palette-diagnostics.json scripts/pose-palette-crops.png phaser/assets-review/previews/issue0*.png
+          if ! git diff --cached --quiet; then
+            git commit -m "test(assets): diagnosticar cores para issues 13-15"
+            git push origin HEAD:fix/assets-review-20261014
+          fi

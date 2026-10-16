@@ -1,51 +1,80 @@
-# P.O.R.C.A.R.I.A. — Biblioteca de assets v0.8
+# P.O.R.C.A.R.I.A. — galeria de aprovação dos assets (v1.1)
 
-Acervo visual da oficina de manutenção de mina, para revisão por categoria e emissão de feedback via [GitHub Issues](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/new). Esta branch é de avaliação e **não modifica a versão jogável da `main`**.
+> **Branch de trabalho:** `fix/assets-review-20261014` | **PR:** [#20](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/20) | **Não mesclar na `main` até a validação.**
 
-**Estado real: 115 imagens catalogadas; os arquivos PNG binários ainda precisam ser transferidos para o GitHub**. As entradas listadas são parte do pacote ZIP disponível no chat, e os caminhos ainda não são links válidos de download no repositório. Não confundir documentação publicada com asset publicado.
+## Revisão em andamento — após as correções de 14/10/2026
 
-| Família | Quantidade | Status predominante |
+**[Abrir o HTML atualizado para avaliação dos sprites (90 imagens)](./avaliar-sprites-rodada02.html)**
+
+- **CAT395:** reaprovação visual registrada (issue #3).
+- **CAT6030 histórica (issue #4):** silhueta da caçamba revisada; [antes/depois](./previews/issue04_cat6030_before_after.png).
+- **Davi (issue #13):** [3 poses + spritesheet corrigidos](./previews/correcao_ele_davi.png).
+- **João (issue #14):** [3 poses + spritesheet corrigidos](./previews/correcao_pcm_joao.png).
+- **Rafael (issue #15):** [1 pose + spritesheet corrigidos](./previews/correcao_mec_rafael.png).
+
+**Estados atuais dos 115 arquivos:** 42 aprovados, 11 corrigidos aguardando aceite visual, 47 pendentes de correção, 1 aguardando esclarecimento, 14 arquivados.
+
+São números posteriores à primeira avaliação histórica de 41 OK / 74 Não OK, preservada para rastreabilidade.
+Há ainda 16 PNGs originais ausentes no GitHub (#19); o HTML v1.1 possui apenas prévias desses itens.
+
+O HTML atualizado usa os arquivos da branch de trabalho. Não mesclar na main enquanto houver itens reprovados.
+
+## Abrir a galeria
+
+**[Baixar `avaliar-v11.html` — revisão visual dos 115 assets](./avaliar-v11.html)**
+
+Na página do arquivo no GitHub, use **Download raw file** e abra o HTML baixado em Chrome/Edge/Firefox. O navegador do GitHub exibe o código, não executa a galeria como aplicativo.
+
+O HTML é **autossuficiente para avaliação visual**, com 115 imagens de prévia embutidas e sem depender de conexão para renderizar os itens. Prévia embutida NÃO substitui um PNG original em resolução completa.
+
+### Como revisar
+
+1. Use os filtros por categoria, decisão, condição de trabalho ou busca para localizar os assets.
+2. Clique na imagem para ampliar. A CAT 395 teve a transparência corrigida e está sinalizada para **reavaliação**, sem aprovação presumida.
+3. Marque **OK** ou **Não OK**. Ao marcar Não OK, preencha o comentário explicando a alteração pretendida.
+4. Use **Exportar avaliação** para gerar o JSON completo; **Issues em JSON** exporta a seleção reprovada com referências das issues existentes.
+5. Pode importar um JSON anterior para continuar em outro dispositivo; o navegador tenta salvar alterações no armazenamento local. **Exporte um backup antes de apagar cache ou trocar de navegador.**
+
+A avaliação original de 14/10/2026 está incorporada ao revisor e preservada separadamente no arquivo [`revisao_usuario_2026-10-14.json`](./revisao_usuario_2026-10-14.json). Alterações da v1.1 aparecem como novas decisões sem sobrescrever a avaliação original arquivada.
+
+## Inventário real verificado
+
+| Estado | Quantidade | Observação |
 |---|---:|---|
-| Máquinas e histórico | 13 | CAT 395 + dois estados DR410i aprovados visualmente; CAT 6030 pendente de revisão |
-| Pedro (poses) | 8 | Aprovado visualmente |
-| Elenco v0.5.1 | 72 (8 personagens × 9 arquivos) | Rafael, Davi e João preview validado; demais revisar |
-| Pranchas conceituais | 20 | Referência apenas |
-| Protótipos de interface | 2 | Revisão pendente |
+| Itens catalogados e avaliados | 115 | 41 OK, 74 Não OK |
+| Comentários ausentes entre reprovações | 9 | Alguns itens foram arquivados por instrução de ignorar |
+| Arquivos PNG originais publicados | 99 | Disponíveis em `assets/` |
+| PNGs originais ainda pendentes | 16 | Todas são pranchas conceituais, issue [#19](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/19) |
+| Imagens visualizáveis no HTML v1.1 | 115 | Incluem prévias locais dos 16 originais pendentes |
+| Itens arquivados logicamente | 14 | Não integrar ao Phaser, mas preservar para histórico |
+| Candidatos no manifesto `ativos.json` | 101 | Apenas `workflow_state: approved` está liberado visualmente |
 
-## Máquinas de prioridade alta
+**Atenção:** `README.md` antigo e campos históricos de `catalogo.json` podem descrever fases anteriores. Para decisões atuais consulte `workflow_state`, `user_decision`, `user_comment` e o JSON original.
 
-| Nome | Arquivo no pacote | Situação artística |
-|---|---|---|
-| CAT 395 — escavadeira | `equipamentos/cat395.png` | aprovado-visual |
-| CAT 6030 — Backhoe (estudo) | `equipamentos/cat6030_backhoe_estudo.png` | revisao-tecnica |
-| CAT 6030 — Front Shovel (estudo) | `equipamentos/cat6030_frontshovel_estudo.png` | revisao-tecnica |
-| Sandvik DR410i — mastro erguido | `equipamentos/sandvik_dr410i_torre_erguida.png` | aprovado-visual |
-| Sandvik DR410i — mastro abaixado | `equipamentos/sandvik_dr410i_torre_abaixada.png` | aprovado-visual |
-| Perfuratriz A (estudo) | `equipamentos/perfuratriz_a_estudo.png` | provisorio |
-| Caminhão de mineração (estudo) | `equipamentos/caminhao_mineracao_estudo.png` | provisorio |
+## Pastas e arquivos importantes
 
-## Equipe
+- `avaliar-v11.html` — revisor offline mais recente, com os comentários originais e exportação de nova análise.
+- `revisao_usuario_2026-10-14.json` — revisão original, auditável e imutável.
+- `catalogo.json` — 115 entradas, origens, decisions, estados e issues.
+- `ativos.json` — seleção de trabalho para integração futura no Phaser; **não** considerar todos os 101 como aprovados.
+- `assets/equipamentos/`, `assets/personagens/`, `assets/conceituais/`, `assets/interface/` — caminhos originais catalogados.
+- `ESTADO_POS_AVALIACAO.md` e `ISSUES_E_PROGRESSO.md` — sínteses de governança.
 
-**Pedro:** alerta, apontando, extintor, inspecionando, neutro, positivo, prancheta, radio.
+## Encaminhamento para Phaser
 
-**Personagens:** Ana, Rafael, Lia, Davi, Bia, Clara, João, Nina. Cada personagem possui `alert`, `clipboard`, `extinguisher`, `idle`, `inspect`, `point`, `positive`, `radio` e `spritesheet`.
+O jogo clássico permanece em `main` (`engine.js` / `app.js`). A fase seguinte é a primeira oficina Phaser com três boxes, fila de ocorrências, máquinas e mecânicos visíveis. Reutilizar o motor existente, controlar os assets por manifesto e impedir inclusão de itens rejeitados/arquivados. Nenhum spritesheet das personagens deve ser considerado automaticamente animação funcional.
 
-**Aviso:** os quadros das pessoas não constituem automaticamente um ciclo real de caminhada ou trabalho.
+### Critérios pendentes
 
-## Como avaliar
+- [x] Revisar as 115 decisões e preservar os comentários anteriores.
+- [x] Publicar revisor visual HTML v1.1 e prévias embutidas.
+- [x] Corrigir tecnicamente a transparência da CAT 395 e sinalizar reavaliação.
+- [ ] Concluir envio dos 16 PNGs **originais** e verificar SHA-256 (#19).
+- [ ] Corrigir/redesenhar os assets priorizados nas issues #4–#15.
+- [ ] Validar visualmente os resultados corrigidos usando o HTML.
+- [ ] Fazer teste funcional de ponta a ponta da v1.1 em navegador real e registrar evidências.
+- [ ] Criar primeira cena Phaser interligada ao `engine.js` sem afetar `main`.
 
-Abra uma [nova issue](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/new) com o título `[ASSET] Nome`, anote **Aprovar / Corrigir / Rejeitar** e inclua os pontos específicos. O catálogo JSON usa os mesmos identificadores e preserva a origem por versão.
+## Privacidade
 
-## Escopo e privacidade
-
-Não publicamos fotografias de pessoas reais, documentos corporativos ou dados de frota. As pranchas de modelos são conceituais; precisão mecânica depende de confirmação visual/geométrica.
-
-## Publicação
-
-- [x] Inventário mestre e auditoria de versões.
-- [x] Metadados e estados documentados nesta branch.
-- [ ] Copiar arquivos PNG / GIF / WEBP para o repositório e verificar links.
-- [ ] Disponibilizar a galeria com arquivos reais por GitHub Pages.
-- [ ] Integrar assets aprovados ao Phaser.
-
-Consulte o arquivo [catalogo.json](./catalogo.json) para a lista completa de 115 itens.
+Não incluir fotos reais de colegas, documentação corporativa ou dados sensíveis da mina neste repositório público.
