@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. v1.1 — motor determinístico testável, sem dependências. */
+/* P.O.R.C.A.R.I.A. v1.2 — turno de 12h, 10,5 HH úteis e meta de produtividade. */
 (function(root,factory){
   const E=factory(); if(typeof module!=='undefined'&&module.exports)module.exports=E; root.PORCARIA_ENGINE=E;
 })(typeof window!=='undefined'?window:globalThis,function(){
@@ -9,6 +9,34 @@
   ];
   const PERSONAS=[['Lia','👩🏽‍🔧'],['Davi','🧑🏻‍🔧'],['Rita','👩🏾‍🏭'],['Nico','🧑🏽‍🏭'],['Joana','👩🏻‍🔧'],['Zeca','👨🏿‍🔧'],['Ari','👩‍🔧'],['Mauro','👨‍🏭'],['Bia','👩🏽‍🏭'],['Theo','🧑‍🔧']];
   const clamp=(v,l=0,h=100)=>Math.min(h,Math.max(l,Math.round(v*10)/10));
+  const SHIFT_HOURS=12, DDS_HOURS=0.5, MEAL_HOURS=1;
+  const EFFECTIVE_HOURS=SHIFT_HOURS-DDS_HOURS-MEAL_HOURS;
+  const DEFAULT_PRODUCTIVITY_TARGET=60;
+  function productivityProfile(value){
+    const raw=Number(value);
+    const target=Number.isFinite(raw)?Math.min(100,Math.max(20,raw)):DEFAULT_PRODUCTIVITY_TARGET;
+    const above=Math.max(0,(target-60)/40),below=Math.max(0,(60-target)/40);
+    // Curva de pressão simulada, não representa fisiologia humana nem uma norma técnica.
+    const fatigueMultiplier=1+4*Math.expm1(3*above)/Math.expm1(3);
+    return {target,
+      speed:target>=60?1+0.20*above:1-0.25*below,
+      fatigueMultiplier,
+      moraleLossPerHour:1.25*below*below};
+  }
+  function setProductivityTarget(s,target){
+    const n=Number(target);
+    if(!Number.isFinite(n)||n<20||n>100)return 'A meta deve estar entre 20 e 100.';
+    s.productivityTarget=Math.round(n);
+    msg(s,'Meta de produtividade ajustada para '+s.productivityTarget+'/100.');
+    return null;
+  }
+  function applyWorkPressure(s,m,hours,profile){
+    const hh=Math.min(EFFECTIVE_HOURS,Math.max(0,Number(hours)||0));
+    if(!hh)return;
+    mentalCost(s,m,hh*0.35*profile.fatigueMultiplier);
+    physicalCost(s,m,hh*0.80*profile.fatigueMultiplier);
+    if(profile.moraleLossPerHour)m.morale=clamp(m.morale-hh*profile.moraleLossPerHour);
+  }
   const rnd=(rng=Math.random)=>rng();
   const one=(a,rng)=>a[Math.floor(rnd(rng)*a.length)];
   const mix=(a,rng)=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(rnd(rng)*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b};
@@ -17,7 +45,7 @@
   const scenario=(d,id)=>d.scenarios.find(x=>x.id===id);
   const employee=(s,id)=>s.team.find(x=>x.id===id);
   const job=(s,id)=>s.jobs.find(x=>x.id===id);
-  const timeLabel=(s)=>`Dia ${s.day} • ${s.shift===0?'Turno A':'Turno B'}`;
+  const timeLabel=(s)=>`Dia ${s.day} • ${s.shift===0?'Turno A (dia)':'Turno B (noite)'} · 12h`;
   function newMechanic(s,rng,role){
     const [name,avatar]=PERSONAS[(s.nextPerson-1)%PERSONAS.length];
     const spec=role||one(ROLES,rng)[1];
@@ -54,7 +82,7 @@
   }
   function mulberry32(seed){return ()=>{let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return ((t^t>>>14)>>>0)/4294967296}}
   function create(data,rng=Math.random){
-    const s={version:'1.1.0',day:1,shift:0,tick:0,cash:15800,reputation:86,xp:0,
+    const s={version:'1.1.0',day:1,shift:0,tick:0,cash:15800,reputation:86,xp:0,productivityTarget:DEFAULT_PRODUCTIVITY_TARGET,
       player:{mental:86,physical:84,actionsLeft:3},
       team:[],jobs:[],done:[],orders:[],stock:{},tools:{},nextJob:1,nextPerson:1,nextPO:1,
       logs:[],kpi:[],lastUtilization:0,metrics:{hours:0,productive:0,wages:0,outsourced:0,incidents:0,safety:0},
@@ -211,6 +239,7 @@
   }
   function advance(s,d,rng=Math.random){
     let hours=0;let completed=0;let blocks=0;
+    const pressure=productivityProfile(s.productivityTarget);
     const operating=[...s.jobs];
     for(const j of operating){
       if(!j.assigned)continue;
@@ -219,7 +248,8 @@
       if(!haveTool(s,c)){j.status='ferramenta';j.toolWait++;blocks++;continue}
       if(j.stage<6){
         j.status='diagnostico';
-        const n=j.help?1:Math.max(1,Math.min(3,1+Math.floor((m.skill-48)/23)));
+        const baseAttempts=j.help?1:Math.max(1,Math.min(3,1+Math.floor((m.skill-48)/23)));
+        const n=j.help?1:Math.max(1,Math.min(6,Math.round(baseAttempts*pressure.speed)));
         let spent=0;
         for(let k=0;k<n && j.stage<6;k++){
           const successChance=clamp(0.66+(m.skill-50)/170+(m.role===c.category?0.15:0)-(m.mental<20?0.3:0)-(m.morale<25?0.2:0),0.23,0.97);
@@ -228,7 +258,7 @@
           else{j.wrong++;j.rework=true;j.reworkHours++;j.diagRemaining+=1;mentalCost(s,m,4);m.morale=clamp(m.morale-3)}
           spent+=1;
         }
-        mentalCost(s,m,4+spent*1.2);physicalCost(s,m,1);
+        applyWorkPressure(s,m,spent,pressure);
         if(j.help){s.player.mental=clamp(s.player.mental-3);s.player.physical=clamp(s.player.physical-1);}
         j.worked+=spent;j.costLabor+=spent*24;hours+=spent;
         if(j.stage>=6){j.diagRemaining=0;j.status='apto';msg(s,`${j.id}: diagnóstico fechou. Peças e ferramental devem estar disponíveis.`,'ok')}
@@ -238,12 +268,13 @@
       const special=m.role===c.category?1.18:m.role==='geral'?1.02:0.9;
       const fatigue=m.physical<25||m.mental<20?0.62:1;
       const help=j.help?1.28:1;
-      const prod=clamp(8*special*fatigue*help,1,11);
+      const throughput=special*fatigue*help*pressure.speed;
+      const prod=EFFECTIVE_HOURS*throughput;
       const remaining=j.repairRemaining;const used=Math.min(remaining,prod);
+      const workedHH=Math.min(EFFECTIVE_HOURS,used/Math.max(0.01,throughput));
       j.repairRemaining=Math.max(0,Math.round((remaining-used)*10)/10);
-      j.worked+=used;j.costLabor+=used*42;hours+=Math.min(8,used/help);
-      physicalCost(s,m,Math.max(4,used*1.7/(j.help?1.3:1)));
-      mentalCost(s,m,1.4);
+      j.worked+=workedHH;j.costLabor+=workedHH*42;hours+=workedHH;
+      applyWorkPressure(s,m,workedHH,pressure);
       if(j.help){s.player.physical=clamp(s.player.physical-4);s.player.mental=clamp(s.player.mental-1.5);}
       if(j.repairRemaining<=0.01){complete(s,j,d,m);completed++}
     }
@@ -252,7 +283,10 @@
       if(m.restAt===s.tick){m.mental=clamp(m.mental+17);m.physical=clamp(m.physical+20);m.morale=clamp(m.morale+5);m.restAt=null}
       if(m.mental<24||m.physical<24)m.morale=clamp(m.morale-6);
     }
-    s.metrics.hours+=s.team.length*8;s.metrics.productive+=hours;s.lastUtilization=s.team.length?Math.round(hours/(s.team.length*8)*100):0;
+    const availableCrew=s.team.filter(m=>m.restAt!==s.tick).length;
+    const nominalHH=availableCrew*EFFECTIVE_HOURS;
+    s.metrics.hours+=nominalHH;s.metrics.productive+=hours;
+    s.lastUtilization=nominalHH?Math.min(100,Math.round(hours/nominalHH*100)):0;
     s.tick++;
     const received=s.orders.filter(o=>o.eta<=s.tick);
     for(const o of received){s.stock[o.item]=(s.stock[o.item]||0)+o.qty;msg(s,`Pedido ${o.id} recebido: ${o.qty} × ${d.items[o.item].name}.`,'ok')}
@@ -296,11 +330,12 @@
     const overdue=s.jobs.filter(j=>s.tick-j.tickOpen>4).length;
     const rate=s.metrics.hours?Math.min(100,Math.round(s.metrics.productive/s.metrics.hours*100)):0;
     return {done:completed,mttr:mean,firstTime:fix,backlog:s.jobs.length,critical,overdue,
-      backlogAging:s.jobs.length?Math.round(s.jobs.reduce((a,j)=>a+s.tick-j.tickOpen,0)/s.jobs.length*8):0,
+      backlogAging:s.jobs.length?Math.round(s.jobs.reduce((a,j)=>a+s.tick-j.tickOpen,0)/s.jobs.length*SHIFT_HOURS):0,
       utilization:rate,workshopCash:Math.round(s.cash),reputation:s.reputation,turnover:Math.max(0,s.nextPerson-1-s.team.length),
       pendingMaterials:s.jobs.filter(j=>j.status==='material').length, pendingTools:s.jobs.filter(j=>j.status==='ferramenta').length};
   }
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
   return {create,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
+    SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
     model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
 });
