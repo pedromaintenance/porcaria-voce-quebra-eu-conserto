@@ -43,8 +43,11 @@ assert.ok(phaserHtml.includes('overflow-x:auto'),'navegação responsiva roláve
 assert.ok(phaserScript.includes('function closeSceneMenu()'),'menu de cenário pode ser fechado');
 assert.ok(phaserScript.includes("sceneMenuBtn').addEventListener('click'"),'controle de abertura do menu presente');
 assert.ok(phaserScript.includes("if(!$('sceneMenu').hidden)"),'Escape fecha o dropdown antes do modal');
-assert.ok(phaserHtml.includes('game.js?v=0.7.7'),'script principal tem cache versionado');
+assert.ok(phaserHtml.includes('game.js?v=0.7.8'),'script principal tem cache versionado');
 assert.ok(phaserHtml.includes('shift-brief.js?v=0.7.7'),'módulo de briefing carregado junto ao jogo');
+assert.ok(phaserHtml.includes('planning.js?v=0.7.8'),'módulo do planejamento carregado no Pages');
+assert.ok(phaserHtml.includes('data-panel="planning"'),'menu de planejamento integrado sem adicionar botões ao header');
+assert.ok(phaserScript.includes('function drawPlanning()'),'planejamento renderizado do estado ativo');
 assert.ok(phaserHtml.includes('layout-math.js?v=0.7.6'),'funções de geometria carregam antes da oficina');
 
 const state=engine.create(data,()=>0.42);
