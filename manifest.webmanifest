@@ -2,12 +2,12 @@
   "id": "/porcaria-voce-quebra-eu-conserto/",
   "name": "P.O.R.C.A.R.I.A. — Você Quebra, Eu Conserto",
   "short_name": "P.O.R.C.A.R.I.A.",
-  "description": "Oficina fofinha e simulador de gestão de manutenção corretiva.",
-  "start_url": "./index.html",
+  "description": "Simulador de gestão de manutenção em oficina de mineração, com três boxes 2D em Phaser.",
+  "start_url": "./phaser-play/",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f6f1e7",
-  "theme_color": "#587969",
+  "background_color": "#07111d",
+  "theme_color": "#0b1928",
   "lang": "pt-BR",
   "icons": [
     {
