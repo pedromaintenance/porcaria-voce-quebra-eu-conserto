@@ -1,0 +1,112 @@
+{
+  "version": "0.6",
+  "reference": {
+    "file": "image(20261016-012504).png",
+    "width": 1672,
+    "height": 941,
+    "notes": "O screenshot de referencia inclui UI, pessoas e maquinas; gerar base limpa antes do commit final para evitar duplicacao."
+  },
+  "viewport": {
+    "width": 1080,
+    "height": 450,
+    "worldScrollX": 319,
+    "worldScrollY": 45
+  },
+  "background": {
+    "file": "./assets/oficina-base.png",
+    "available": false,
+    "sourceCrop": {
+      "x": 359,
+      "y": 246,
+      "width": 1045,
+      "height": 407
+    },
+    "drawInViewport": {
+      "x": 0,
+      "y": 0,
+      "width": 1080,
+      "height": 450
+    }
+  },
+  "bays": [
+    {
+      "id": 0,
+      "label": "BOX 1",
+      "hitWorld": {
+        "x": 324,
+        "y": 155,
+        "width": 337,
+        "height": 323
+      },
+      "spriteWorld": {
+        "x": 490,
+        "y": 395
+      },
+      "workerWorld": [
+        {
+          "x": 376,
+          "y": 442
+        },
+        {
+          "x": 605,
+          "y": 439
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "label": "BOX 2",
+      "hitWorld": {
+        "x": 679,
+        "y": 155,
+        "width": 337,
+        "height": 323
+      },
+      "spriteWorld": {
+        "x": 845,
+        "y": 395
+      },
+      "workerWorld": [
+        {
+          "x": 731,
+          "y": 442
+        },
+        {
+          "x": 960,
+          "y": 439
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "label": "BOX 3",
+      "hitWorld": {
+        "x": 1034,
+        "y": 155,
+        "width": 337,
+        "height": 323
+      },
+      "spriteWorld": {
+        "x": 1200,
+        "y": 395
+      },
+      "workerWorld": [
+        {
+          "x": 1086,
+          "y": 442
+        },
+        {
+          "x": 1315,
+          "y": 439
+        }
+      ]
+    }
+  ],
+  "controls": {
+    "scale": "FIT",
+    "pointer": "Phaser input ignored while modal is open"
+  },
+  "assets": {
+    "notes": "Sprites carregados em camadas, independentes da imagem de fundo; somente exibir quando houver OS no box."
+  }
+}
