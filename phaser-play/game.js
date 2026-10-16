@@ -20,8 +20,22 @@ let data,state,selected,scene;
 const FILTER={queue:'all',query:'',store:'all',stockQuery:''};
 let toastTimeout;
 const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO ATUAL',stats:'📊 INDICADORES E RECURSOS',team:'👷 EQUIPE DA OFICINA',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA'};
-function openPanel(name){const overlay=$('menuOverlay');if(!overlay)return;overlay.hidden=false;$('modalHeading').textContent=PANEL_TITLES[name]||'MENU DA OFICINA';document.querySelectorAll('[data-panel]').forEach(el=>el.classList.toggle('is-open',el.dataset.panel===name));document.body.style.overflow='hidden';$('closePanel')?.focus()}
-function closePanel(){const overlay=$('menuOverlay');if(overlay)overlay.hidden=true;document.body.style.overflow='';}
+// Modal tem exclusividade de entrada; nunca permitir selecao de box atraves do overlay.
+function modalOpen(){return !!$('menuOverlay')&&!$('menuOverlay').hidden}
+function openPanel(name){
+ const overlay=$('menuOverlay');if(!overlay)return;
+ if(scene?.input)scene.input.enabled=false;
+ overlay.hidden=false;
+ $('modalHeading').textContent=PANEL_TITLES[name]||'MENU DA OFICINA';
+ document.querySelectorAll('[data-panel]').forEach(el=>el.classList.toggle('is-open',el.dataset.panel===name));
+ document.body.style.overflow='hidden';
+ $('closePanel')?.focus();
+}
+function closePanel(){
+ const overlay=$('menuOverlay');if(overlay)overlay.hidden=true;
+ document.body.style.overflow='';
+ if(scene?.input)scene.input.enabled=true;
+}
 function save(){try{localStorage.setItem(SAVE,JSON.stringify(state))}catch(e){console.warn('Save',e)}}
 function action(error){if(error)notify(error);else{save();drawUI();if(scene)scene.refresh()}}
 function notify(t){const area=$('toast');if(!area)return;area.textContent=t;area.hidden=false;clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>{area.hidden=true},4400)}
@@ -176,6 +190,7 @@ class Workshop extends Phaser.Scene{
  }
  create(){
   scene=this;this.cameras.main.setBackgroundColor('#182838');
+  if(modalOpen())this.input.enabled=false;
   // Enquadramento solicitado: camera recorta o mundo, sem redimensionar sprites nem as zonas de clique.
   this.cameras.main.setScroll(319,45);
   const g=this.add.graphics();const box=(x,y,w,h,fill,stroke)=>{g.fillStyle(fill);g.fillRect(x,y,w,h);if(stroke){g.lineStyle(2,stroke);g.strokeRect(x,y,w,h)}};
@@ -232,7 +247,7 @@ class Workshop extends Phaser.Scene{
   this.text(720,49,'OFICINA CENTRAL',30,'#ffca65',true);
   this.text(1057,618,'ABASTECIMENTO E LUBRIFICAÇÃO',16,'#e6e9de',true);
   // Marcacao de areas clicaveis persistentes.
-  this.bayZones=[0,1,2].map(i=>{const x=324+i*355;const hit=this.add.zone(x,155,337,323).setOrigin(0).setInteractive({useHandCursor:true});hit.on('pointerdown',()=>{const j=state.jobs.find(z=>z.bay===i);if(j)pick(j.id)});return hit});
+  this.bayZones=[0,1,2].map(i=>{const x=324+i*355;const hit=this.add.zone(x,155,337,323).setOrigin(0).setInteractive({useHandCursor:true});hit.on('pointerdown',()=>{if(modalOpen())return;const j=state.jobs.find(z=>z.bay===i);if(j)pick(j.id)});return hit});
   this.statusText=this.add.text(17,612,'', {fontFamily:'monospace',fontSize:'14px',color:'#f2e3bb',backgroundColor:'#102132cc',padding:{x:9,y:7}});
   this.time.addEvent({delay:2300,loop:true,callback:()=>{if(!this.machineObjs.length)return;this.tweens.add({targets:this.machineObjs.filter(x=>x.type==='Image'),y:'-=2',yoyo:true,duration:900,ease:'Sine.easeInOut'})}});
   this.refresh();
