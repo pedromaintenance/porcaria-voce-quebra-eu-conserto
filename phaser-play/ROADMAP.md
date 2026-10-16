@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 16/10/2026 · versão de trabalho **Phaser 0.7.8** (planejamento PCM com priorização e alocação assistida; boxes e arte preservados, homologação no navegador pendente).
+**Estado de referência:** 16/10/2026 · versão de trabalho **Phaser 0.7.9** (visão semanal de capacidade nominal, 14 turnos e materiais diagnosticados; layout dos boxes preservado, homologação visual pendente).
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -299,10 +299,47 @@ O método antigo `machine()` renderizava TODOS os PNGs dentro da mesma caixa má
 
 **Critério de aceite:** a recomendação é rastreável aos dados simulados, respeita os recursos realmente livres, não altera o estado sem consentimento e pode ser executada em poucos cliques.
 
+## Entrega 0.7.9 — Visão semanal de capacidade e materiais conhecidos (implementada, QA pendente)
+
+### Fundamento técnico
+
+O motor `engine.js` resolve diagnósticos por etapas, com probabilidade de acerto, retrabalho, influência da especialidade e fadiga. No reparo, a taxa produtiva varia conforme habilidades e apoio do supervisor. As horas `repairRemaining` representam esforço pendente do simulador, **não HH de calendário confirmadas**. Portanto, **não é tecnicamente justificável prometer datas de conclusão nem subtrair diretamente esse esforço da capacidade bruta**.
+
+### Implementado
+
+- [x] **Nova aba `JANELA SEMANAL · 14 TURNOS`** dentro do menu `Planejamento PCM`, preservando a aba `PRÓXIMO TURNO · 8H` da versão 0.7.8. Nenhum botão novo ocupa a barra principal.
+- [x] **14 turnos de 8h corridas**, em janela deslizante a partir do turno A/B atual (112h corridas). Exibir sequência correta de dia/turno mesmo iniciando no turno B.
+- [x] **Capacidade nominal por turno:** `8h × min(boxes, mecânicos do quadro)`; descanso **já programado no turno atual** é descontado só nesse turno. Não projetar descanso futuro, contratação, rotatividade, liberação automática de box ou sobrecarga produtiva.
+- [x] **Separação entre capacidade e demanda:** painel informa HH nominais, esforço `repairRemaining` (horas-equivalentes do motor), número de OS aguardando diagnóstico e etapas ainda não confirmadas. Não converter etapas de diagnóstico arbitrariamente em HH e não inferir conclusão.
+- [x] **Recebimentos conhecidos, no turno correto:** pedidos com `eta = tick+offset+1` são exibidos **ao final** desse turno, quando o motor registra a entrega. Não antecipar disponibilidade da peça no mesmo turno.
+- [x] **Risco de materiais apenas de OS diagnosticadas:** agrupar componentes `scenario.material` somente quando `stage >= 6` e `materialUsed=false`; contar necessidades por item, saldo atual e quantidades de pedidos dentro do horizonte, mostrando déficit presente e déficit após entregas conhecidas. Não revelar a peça de falha ainda não diagnosticada.
+- [x] **Referência de custos fixos:** marcar viradas do dia (turno B) e calcular folha/estrutura do quadro atual pela fórmula do motor (`equipe × R$220 + R$180`). Não incluir gastos variáveis ou projetar caixa.
+- [x] **Módulo puro de leitura `phaser-play/weekly.js`:** consulta estado e catálogos sem gravar ou chamar `engine.advance()`; não simula aleatoriedade nem gera OS.
+- [x] **Visualização horizontal acessível e responsiva:** 14 colunas de turno com indicador de HH, entregas e virada do dia; navegação horizontal no celular, categorias com déficit e lista explícita de hipóteses e limites.
+- [x] **Testes de regressão:** `scripts/test-weekly.cjs` verifica dias/turnos, HH nominais, descanso, ETAs, materiais de OS diagnosticadas, competição por estoque e imutabilidade do save; pipeline do Pages bloqueia deploy se falhar.
+- [x] **Versão de cache:** `weekly.js?v=0.7.9` e `game.js?v=0.7.9`; mapa da oficina e sprites não alterados.
+
+### Limitações deliberadas
+
+- Não constitui um **cronograma semanal por OS** com datas e sequência de execução. Para chegar a essa funcionalidade, será necessário modelar alocações de HH ao longo dos turnos, consumo concorrente de peças, liberação de boxes e produtividade estocástica. Isso permanece no roadmap 0.8.
+- Não há previsão das novas falhas geradas na virada do dia, demissões, compras não realizadas ou resultados probabilísticos. Os valores são **fotografia dos recursos e obrigações conhecidas agora**.
+- Um pedido chegando na janela não garante que todas as OS disputando a peça poderão ser atendidas.
+
+### Homologação no navegador pendente
+
+- [ ] Alternar `PRÓXIMO TURNO` ↔ `JANELA SEMANAL` sem alocar, comprar, alterar energia ou avançar turnos.
+- [ ] Confirmar rolagem horizontal com 14 colunas no celular e legibilidade das entregas e salários.
+- [ ] Verificar que, quando o turno B é o atual, os marcadores de dia avançam corretamente na passagem para A.
+- [ ] Criar dois diagnósticos concluídos para a mesma peça com saldo 1 e confirmar alerta de insuficiência, incluindo ETA posterior ao turno atual.
+- [ ] Validar o gráfico e os indicadores após compras, descanso, contratação, conclusão de diagnóstico e avanço de turno.
+- [ ] Confirmar que os três boxes preservam o layout e os sprites da v0.7.6 (homologação de composição).
+
+**Critério de aceite:** capacidade bruta e demandas de materiais conhecidas são apresentadas de forma clara, coerente com o motor e sem produzir falsas previsões ou alterar o jogo.
+
 ## Entrega 0.8 — Gestão avançada de manutenção (P1)
 
 - [x] **Etapa inicial (v0.7.8):** priorização por criticidade, idade da OS e bloqueio de insumos, com pontuação de jogo explícita. **Pendente:** modelagem calibrável de risco e impacto operacional.
-- [ ] Planejamento **semanal** de serviços versus capacidade de HH, ferramentas e sobressalentes. *A v0.7.8 implementou apenas planejamento de oportunidades no próximo turno (8h), não programação semanal.*
+- [ ] **Programação semanal vinculante por OS**, com conflitos de HH, boxes e materiais e lógica de produtividade. *A v0.7.9 entregou somente a visão semanal da capacidade nominal e dos recursos já conhecidos (14 turnos), sem prometer datas de conclusão.*
 - [ ] Preventiva versus corretiva com efeito sobre falhas futuras **simulado e calibrável**, sem prometer comportamento real.
 - [ ] Especialidades técnicas, curva de experiência e fadiga com limites auditáveis.
 - [ ] KPIs de backlog, tempo médio de reparo, primeira execução correta, utilização e custo.
@@ -330,7 +367,7 @@ O método antigo `machine()` renderizava TODOS os PNGs dentro da mesma caixa má
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.7.8
+## Plano de validação para a versão 0.7.9
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -372,6 +409,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.7.6:** ajustes incrementais BOX 1 +20 px, BOX 2 −6 px, BOX 3 sem modificação; função `calibratedCenter()` garante que o movimento se manifeste mesmo quando sprites estavam limitados pela câmera; testes de posição e regressão; QA visual pendente.
 - **0.7.7:** briefing pré-turno dentro do modal Phaser, com três boxes, bloqueios específicos, ETA ao fim do turno, fadiga, folha, OS crítica sem equipe e atalhos de OS/almoxarifado; fluxo confirmar/cancelar; testes puros de leitura do estado e CI. **Implementado; QA funcional/visual pendente.**
 - **0.7.8:** planejamento PCM de curto prazo, índice heurístico transparente, comparação de especialidades/capacidade de HH brutas, recomendações com alocação explicitamente autorizada, bloqueios por insumos e atalhos contextuais. Módulo puro e testes adicionados; **homologação funcional pendente**.
+- **0.7.9:** janela de capacidade de 14 turnos, HH brutas sem extrapolar produtividade, necessidades de peças apenas após diagnóstico, entregas no fim do turno, referência de folha fixa, hipóteses explícitas e testes automatizados; **QA visual e funcional pendente**.
 
 ### Organização recomendada
 
