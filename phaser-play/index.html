@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0b1928"><title>P.O.R.C.A.R.I.A. | Oficina Phaser</title>
+<meta name="theme-color" content="#0b1928"><link rel="manifest" href="../manifest.webmanifest"><title>P.O.R.C.A.R.I.A. | Oficina Phaser</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#07111d;color:#e7f0fa;font-family:system-ui,'Segoe UI',sans-serif}button,select{font:inherit}
 .top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 13px;background:#0c1a2b;border-bottom:3px solid #f5a91e}.brand{font-size:25px;color:#ffb32b;font-weight:1000;text-shadow:2px 2px #603914;letter-spacing:2px;margin-right:10px}.tab{padding:11px 15px;background:#152a3d;border:1px solid #496077;border-radius:7px;color:#d9e6ef;text-decoration:none;font-weight:800;font-size:12px}.tab.on{background:#f4aa23;color:#081726}.pill{padding:8px 12px;background:#14283b;border:1px solid #37516a;border-radius:9px;font-size:12px}.pill b{color:#ffd274}
@@ -61,4 +61,4 @@ body{min-height:100vh}
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 <button class="act shift" id="advance">▶ AVANÇAR TURNO · 8H</button>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="../engine.js"></script><script src="./game.js"></script></body></html>
+<script src="../engine.js"></script><script src="./game.js"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
