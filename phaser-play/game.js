@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.7.4 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.7.5 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -477,11 +477,15 @@ class Workshop extends Phaser.Scene{
      texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
      const src=texture.getSourceImage();
      const plan=window.PORCARIA_LAYOUT.equipmentSize(src.width,src.height,scale,MODEL_PRESENTATION[modelId]||{},bay);
-     const node=this.add.image(Math.round(x),Math.round(y),renderKey).setOrigin(.5,1);
+     // The requested offset is preserved in scene-map.json; clipping protection is visual only.
+     const visibleX=window.PORCARIA_LAYOUT.visibleCenter(x,plan.width,SCENE_REFERENCE,8);
+     const node=this.add.image(visibleX,Math.round(y),renderKey).setOrigin(.5,1);
      node.setDisplaySize(plan.width,plan.height);
      this.machineObjs.push(node);
      return node;
    }else{
+     // Fallback machines obey the same viewport bounds as PNG sprites.
+     x=window.PORCARIA_LAYOUT.visibleCenter(x,220*scale,SCENE_REFERENCE,8);
      // Trator de esteiras: silhueta industrial própria enquanto não existe PNG aprovado do D9.
      if(modelId==='EQ07'){
       const g=this.add.graphics(),u=scale;
@@ -512,6 +516,7 @@ class Workshop extends Phaser.Scene{
    }
  }
  worker(x,y,slot,{facing='right',mode='diagnose'}={}){
+  x=window.PORCARIA_LAYOUT.visibleCenter(x,54,SCENE_REFERENCE,8);
   // Poses reais do catálogo: idle/inspect/point/clipboard, sem caminhar nem saltar.
   const person=slot%2===0?'lia':'rafael';
   const poses=mode==='blocked'?['idle']:mode==='repair'?['idle','inspect','clipboard','inspect']:['idle','inspect','point','inspect'];
@@ -551,20 +556,31 @@ class Workshop extends Phaser.Scene{
    this.workerSprites.forEach(a=>a.sprite.destroy());this.workerSprites=[];
    this.textObjects?.forEach(x=>x.destroy());this.textObjects=[];
    this.progressObjects?.forEach(x=>x.destroy());this.progressObjects=[];
-   BAY_LAYOUT.forEach(({id:i,spriteWorld,workerWorld,labelWorld,progressWorld})=>{
+   BAY_LAYOUT.forEach(({id:i,hitWorld,spriteWorld,workerWorld,labelWorld,progressWorld})=>{
      const j=state.jobs.find(z=>z.bay===i),cx=spriteWorld.x;
      if(j){
-       // Sombra de contato independente para assentar visualmente as rodas/esteiras no piso.
+       const machineNode=this.machine(cx,spriteWorld.y,j.modelId,spriteWorld.scale||.72,BAY_LAYOUT[i]);
+       // Track the actual (possibly edge-clamped) machine position, not its requested center.
+       const machineX=machineNode?.type==='Image'?machineNode.x:window.PORCARIA_LAYOUT.visibleCenter(cx,220*(spriteWorld.scale||.72),SCENE_REFERENCE,8);
        const ground=spriteWorld.groundY??(workerWorld[0].y-2);
-       const shadow=this.add.graphics();
+       const shadow=this.add.graphics().setDepth(-0.15);
        shadow.fillStyle(0x04090b,0.31);
-       shadow.fillEllipse(cx,ground,Math.min(205,(progressWorld?.width||225)*0.87),22);
+       shadow.fillEllipse(machineX,ground,Math.min(205,(progressWorld?.width||225)*0.87),22);
        shadow.fillStyle(0x02070a,0.13);
-       shadow.fillEllipse(cx,ground+3,245,30);
+       shadow.fillEllipse(machineX,ground+3,245,30);
        this.machineObjs.push(shadow);
-       this.machine(cx,spriteWorld.y,j.modelId,spriteWorld.scale||.72,BAY_LAYOUT[i]);
+       if(machineNode?.type==='Image'){
+        machineNode.setInteractive({useHandCursor:true});
+        machineNode.on('pointerdown',()=>{if(!modalOpen())pick(j.id)});
+       }
        const mode=j.status==='material'||j.status==='ferramenta'?'blocked':j.stage>=6?'repair':'diagnose';
-       workerWorld.forEach((w,idx)=>this.worker(w.x,w.y,i*2+idx,{facing:w.facing|| (idx?'left':'right'),mode}));
+       workerWorld.forEach((w,idx)=>{
+        const actor=this.worker(w.x,w.y,i*2+idx,{facing:w.facing|| (idx?'left':'right'),mode});
+        if(actor?.type==='Image'){
+         actor.setInteractive({useHandCursor:true});
+         actor.on('pointerdown',()=>{if(!modalOpen())pick(j.id)});
+        }
+       });
        // O HUD inferior já mostra equipamento e OS: evitar um segundo rótulo sobre as rodas.
        // Progresso visual da OS; diagnóstico e reparo são fases distintas.
        if(progressWorld){
@@ -584,7 +600,7 @@ class Workshop extends Phaser.Scene{
         this.progressObjects.push(caption);
        }
      }else{
-       let label=this.text(cx-68,(labelWorld?.y??430),'BOX DISPONÍVEL',12,'#d1dccd',true);label.setAlpha(.75);this.textObjects.push(label);
+       let label=this.text(hitWorld.x+hitWorld.width/2-68,(labelWorld?.y??430),'BOX DISPONÍVEL',12,'#d1dccd',true);label.setAlpha(.75);this.textObjects.push(label);
      }
    });
    this.statusText.setText('TURNO '+(state.shift?'B':'A')+'  |  '+state.jobs.filter(j=>j.assigned).length+' BOXES EM USO  |  '+state.done.length+' OS CONCLUÍDAS');
