@@ -1,5 +1,5 @@
 {
-  "version": "0.7.0",
+  "version": "0.7.1",
   "reference": {
     "file": "Oficina Industrial ao Entardecer.png",
     "width": 1976,
@@ -35,7 +35,7 @@
     "height": 363,
     "originalSource": "Oficina Industrial ao Entardecer.png",
     "publishedCommit": "b85015559a06474bc5cd64298646cc0c9c4b9ef1",
-    "notes": "Imagem limpa enviada pelo usuário; foi convertida em AVIF otimizado. Os hotspots permanecem em coordenadas do mundo Phaser."
+    "notes": "Fundo oficial em alta definição; carregamento em Phaser com filtragem LINEAR, sprites com filtro NEAREST."
   },
   "bays": [
     {
@@ -49,8 +49,9 @@
       },
       "spriteWorld": {
         "x": 501,
-        "y": 378,
-        "scale": 0.72
+        "y": 430,
+        "scale": 0.72,
+        "groundY": 412
       },
       "workerWorld": [
         {
@@ -64,11 +65,11 @@
       ],
       "labelWorld": {
         "x": 407,
-        "y": 436
+        "y": 426
       },
       "progressWorld": {
         "x": 402,
-        "y": 169,
+        "y": 217,
         "width": 220
       }
     },
@@ -83,8 +84,9 @@
       },
       "spriteWorld": {
         "x": 808,
-        "y": 378,
-        "scale": 0.72
+        "y": 430,
+        "scale": 0.72,
+        "groundY": 412
       },
       "workerWorld": [
         {
@@ -98,11 +100,11 @@
       ],
       "labelWorld": {
         "x": 721,
-        "y": 436
+        "y": 426
       },
       "progressWorld": {
         "x": 695,
-        "y": 169,
+        "y": 217,
         "width": 230
       }
     },
@@ -117,8 +119,9 @@
       },
       "spriteWorld": {
         "x": 1119,
-        "y": 378,
-        "scale": 0.72
+        "y": 430,
+        "scale": 0.72,
+        "groundY": 412
       },
       "workerWorld": [
         {
@@ -132,11 +135,11 @@
       ],
       "labelWorld": {
         "x": 1034,
-        "y": 436
+        "y": 426
       },
       "progressWorld": {
         "x": 1006,
-        "y": 169,
+        "y": 217,
         "width": 225
       }
     }
@@ -147,6 +150,6 @@
     "clickAreas": "Rectangles in world coordinates, no DOM click-through"
   },
   "assets": {
-    "notes": "Fundo clean é estático. Máquinas, mecânicos, seleção de OS e barras de progresso permanecem renderizados de forma independente."
+    "notes": "Máquinas ancoradas visualmente no piso y≈412: sprite na posição y=430 para compensar área transparente no PNG; sombra de contato projetada no solo. Fundo LINEAR, sprites NEAREST."
   }
 }
