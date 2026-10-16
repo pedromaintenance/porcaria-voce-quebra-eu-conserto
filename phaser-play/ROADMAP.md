@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 16/10/2026 · versão de trabalho **Phaser 0.7.4** (proporções por modelo, deslocamentos laterais e renderização HD implementados; QA visual desktop/mobile pendente).
+**Estado de referência:** 16/10/2026 · versão de trabalho **Phaser 0.7.5** (deslocamentos finais dos assets por box e proteção de bordas implementados; QA visual desktop/mobile pendente).
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -183,6 +183,34 @@ O método antigo `machine()` renderizava TODOS os PNGs dentro da mesma caixa má
 
 **Critério de aceite:** a DR410i e a 6030 comunicam porte muito superior, os três boxes mantêm leitura operacional e o canvas apresenta contornos nítidos sem movimento artificial das máquinas.
 
+## Entrega 0.7.5 — Ajuste fino de composição dos três boxes (implementado, QA visual pendente)
+
+**Solicitação de referência:** na v0.7.4, transladar os conjuntos visuais do **BOX 1 −72 px**, **BOX 2 +40 px** e **BOX 3 +82 px**.
+
+### Concluído no código
+
+- [x] **Centros nominais das máquinas:** BOX 1 `x=407` (antes 479); BOX 2 `x=848` (antes 808); BOX 3 `x=1223` (antes 1141), todos em coordenadas do mundo Phaser.
+- [x] **Mecânicos acompanham a composição:** BOX 1 `x=310/539`; BOX 2 `x=725/977`; BOX 3 `x=1102/1345`. Mantidos `groundY=448`, orientação lateral e poses animadas exclusivas dos mecânicos.
+- [x] **Hitboxes arquitetônicas preservadas:** `hitWorld.x=379/660/980`. Não deslocar essas zonas com os assets: as regiões dos boxes são definidas pela estrutura do galpão, não pelo centro da máquina. Mover as três áreas simultaneamente produziria sobreposição de cliques e recorte fora da câmera.
+- [x] **Indicadores e seleção preservados:** `progressWorld.x=402/695/1006`, contorno de seleção e rótulos de box vazio permanecem alinhados ao fundo e às posições físicas.
+- [x] **Proteção contra corte na câmera:** função pura `visibleCenter()` em `layout-math.js`; usa largura real calculada do sprite e recorte do viewport (mundo X=319..1399). Os valores solicitados continuam registrados no JSON; o centro visual pode ser corrigido apenas o mínimo necessário para manter o sprite integralmente na tela. Exemplo: mecânico nominal x=310 é apresentado em x=354.
+- [x] **Sombra de contato coerente:** acompanha o centro efetivamente renderizado da máquina (inclusive quando houve correção de borda), não o centro nominal fora da câmera.
+- [x] **Clique no asset correto:** clicar na imagem da máquina ou do mecânico abre a OS associada ao seu box, mesmo quando a arte ultrapassa visualmente a demarcação de outro box; pop-ups continuam bloqueando eventos da cena.
+- [x] **Regressões automatizadas:** valida coordenadas nominais, preservação de hitzones/indicadores, função de encaixe no viewport, sombra e click handlers. A lógica de OS, estoque, equipe, saves e avanço de turno não foi alterada.
+- [x] **Cache atualizado:** scripts com parâmetro `v=0.7.5` e marcação de versão no HTML.
+
+### QA visual pendente
+
+- [ ] Confirmar em desktop que o BOX 1 parece mais deslocado à esquerda sem perder partes importantes da máquina ou do mecânico.
+- [ ] Confirmar o afastamento dos BOXES 2 e 3, sobretudo com DR410i e CAT 6030, sem colidir excessivamente com o cenário.
+- [ ] Clicar diretamente em sprites posicionados na zona de transição entre boxes: devem abrir **a própria OS**, nunca a do box vizinho.
+- [ ] Conferir que os indicadores continuam fixos sobre seus respectivos boxes e que não acompanham os deslocamentos decorativos dos sprites.
+- [ ] Verificar no celular os limites da câmera, pop-ups e alcance de toque.
+- [ ] Ajustar offsets específicos por família, se os modelos maiores precisarem de compensação adicional.
+- [ ] Validar visualmente a posição do CAT D9 provisório e de modelos que ainda utilizam fallbacks.
+
+**Critério de aceite:** as posições correspondem ao pedido visual, nenhum sprite essencial fica cortado, a seleção de OS permanece correta e o galpão mantém sua geometria original.
+
 ## Entrega 0.8 — Gestão avançada de manutenção (P1)
 
 - [ ] Priorização por criticidade, idade da nota, risco e impacto operacional.
@@ -214,7 +242,7 @@ O método antigo `machine()` renderizava TODOS os PNGs dentro da mesma caixa má
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.7.4
+## Plano de validação para a versão 0.7.5
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -252,6 +280,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.7.2:** sprites de equipamentos e oito poses de dois mecânicos incorporados à `main`; veículos estáticos e rebaixados, profissionais laterais orientados ao equipamento, animação contextual de poses dos mecânicos, fallback D9 aprimorado, redução de movimento e testes estáticos de asset/posicionamento. **Implementado — homologação visual pendente.**
 - **0.7.3:** navegação reorganizada em duas faixas, indicadores separados, botão principal de turno no header, menu Visual para personalização do cenário, realce dos menus ativos, rolagem horizontal em telas estreitas, foco e comportamento de teclado aprimorados; testes CI e QA visual pendente.
 - **0.7.4:** composição deslocada 22 px nas laterais, escala configurável por modelo (CAT 6030 2×, DR410i 3× nominal), recorte alfa dos sprites, preservação da textura de fundo em 1350 px e separação de filtros, módulo de geometria testável e regressões de tamanho/posição. **Código implementado; testes e homologação visual devem ser verificados no Pages.**
+- **0.7.5:** offsets adicionais de −72/+40/+82 px nos três boxes, mantendo hotspots/indicadores arquitetônicos fixos; clamp visual para evitar cortes, sombras alinhadas ao centro renderizado, clique direto nas imagens para selecionar a OS correta e testes específicos de geometria. **Código implementado; QA visual pendente.**
 
 ### Organização recomendada
 
