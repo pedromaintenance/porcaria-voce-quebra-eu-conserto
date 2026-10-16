@@ -418,11 +418,16 @@ class Workshop extends Phaser.Scene{
   if(this.backgroundDecor)this.backgroundDecor.forEach(o=>o.setVisible(!img));
   if(!img){this.refresh();return}
   const crop=SCENE_REFERENCE.crop;
-  const canvas=document.createElement('canvas');canvas.width=SCENE_REFERENCE.width;canvas.height=SCENE_REFERENCE.height;
+  const width=img.naturalWidth||img.width,height=img.naturalHeight||img.height;
+  // Preserve the original 1350px workshop detail instead of discarding it into a 1080px canvas.
+  const density=Math.min(2,Math.max(1,width/SCENE_REFERENCE.width));
+  const canvas=document.createElement('canvas');
+  canvas.width=Math.round(SCENE_REFERENCE.width*density);
+  canvas.height=Math.round(SCENE_REFERENCE.height*density);
   const ctx=canvas.getContext('2d');
   if(!ctx)throw Error('Canvas 2D indisponível');
   ctx.imageSmoothingEnabled=true;
-  const width=img.naturalWidth||img.width,height=img.naturalHeight||img.height;
+  ctx.imageSmoothingQuality='high';
   const aspect=width/height;
   // O fundo oficial mantém a geometria 1976 x 796, mesmo quando é servido como AVIF otimizado.
   if(aspect>2.42&&aspect<2.55){
@@ -438,7 +443,7 @@ class Workshop extends Phaser.Scene{
   }
   if(this.textures.exists('dynamicWorkshopBG'))this.textures.remove('dynamicWorkshopBG');
   this.textures.addCanvas('dynamicWorkshopBG',canvas).setFilter(Phaser.Textures.FilterMode.LINEAR);
-  this.backdrop=this.add.image(SCENE_REFERENCE.worldX,SCENE_REFERENCE.worldY,'dynamicWorkshopBG').setOrigin(0).setDepth(-1);
+  this.backdrop=this.add.image(SCENE_REFERENCE.worldX,SCENE_REFERENCE.worldY,'dynamicWorkshopBG').setOrigin(0).setDisplaySize(SCENE_REFERENCE.width,SCENE_REFERENCE.height).setDepth(-1);
   this.refresh();
  }
  text(x,y,t,size,color,bold=false){return this.add.text(x,y,t,{fontFamily:'Arial, sans-serif',fontSize:size+'px',fontStyle:bold?'bold':'normal',color,stroke:'#112435',strokeThickness:4})}
@@ -603,9 +608,7 @@ async function boot(){
   if(!state)state=E.create(data);
   selected=state.jobs[0]?.id;events();drawUI();
   if(!window.Phaser||!window.PORCARIA_LAYOUT)throw Error('Phaser ou módulo de proporções não carregou. Verifique conexão.');
-  const displayWidth=$('game').clientWidth||1080;
-  const resolution=Math.min(2,Math.max(1,window.devicePixelRatio||1,displayWidth/1080));
-  new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1080,height:450,resolution,
+  new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1080,height:450,
    backgroundColor:'#182838',render:{pixelArt:false,antialias:false,roundPixels:true},
    scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_HORIZONTALLY},scene:[Workshop]});
  }catch(e){console.error(e);$('game').innerHTML='<div style="padding:60px;color:#ffc86a">Não foi possível iniciar a cena Phaser: '+esc(e.message)+'</div>'}
