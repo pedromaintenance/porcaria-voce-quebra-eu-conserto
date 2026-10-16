@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.7.3 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.7.4 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -20,6 +20,7 @@ const ASSETS={
  worker_rafael_clipboard:'./assets/characters/mec_rafael/clipboard.png'
 };
 const MACHINES={EQ01:'truck',EQ02:'shovel',EQ03:'excavator',EQ04:'excavator',EQ05:'drill',EQ06:'drill'};
+let MODEL_PRESENTATION={};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const brl=n=>Math.round(n).toLocaleString('pt-BR');
 let data,state,selected,scene;
@@ -441,14 +442,40 @@ class Workshop extends Phaser.Scene{
   this.refresh();
  }
  text(x,y,t,size,color,bold=false){return this.add.text(x,y,t,{fontFamily:'Arial, sans-serif',fontSize:size+'px',fontStyle:bold?'bold':'normal',color,stroke:'#112435',strokeThickness:4})}
- machine(x,y,modelId,scale=1){
+ trimmedEquipment(key){
+  const outKey='trim_'+key;
+  if(this.textures.exists(outKey))return outKey;
+  const src=this.textures.get(key).getSourceImage();
+  if(!src?.width||!src?.height)return key;
+  try{
+   const source=document.createElement('canvas');source.width=src.width;source.height=src.height;
+   const ctx=source.getContext('2d',{willReadFrequently:true});if(!ctx)return key;
+   ctx.drawImage(src,0,0);
+   const rgba=ctx.getImageData(0,0,src.width,src.height).data;
+   let minX=src.width,minY=src.height,maxX=-1,maxY=-1;
+   for(let y=0;y<src.height;y+=2)for(let x=0;x<src.width;x+=2){
+    if(rgba[(y*src.width+x)*4+3]>15){minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y)}
+   }
+   if(maxX<0||maxY<0)return key;
+   const left=Math.max(0,minX-3),top=Math.max(0,minY-3),right=Math.min(src.width,maxX+5),bottom=Math.min(src.height,maxY+5);
+   if(left<=1&&top<=1&&right>=src.width-1&&bottom>=src.height-1)return key;
+   const cropped=document.createElement('canvas');cropped.width=right-left;cropped.height=bottom-top;
+   cropped.getContext('2d').drawImage(src,left,top,cropped.width,cropped.height,0,0,cropped.width,cropped.height);
+   this.textures.addCanvas(outKey,cropped).setFilter(Phaser.Textures.FilterMode.NEAREST);
+   return outKey;
+  }catch(err){console.warn('Alpha crop skipped:',key,err);return key}
+ }
+ machine(x,y,modelId,scale=1,bay=null){
    const key=MACHINES[modelId];
    if(key&&this.textures.exists(key)){
-     this.textures.get(key).setFilter(Phaser.Textures.FilterMode.NEAREST);
-     const im=this.add.image(x,y,key).setOrigin(.5,1);const maxW=310*scale,maxH=220*scale;
-     const t=this.textures.get(key).getSourceImage();const factor=Math.min(maxW/t.width,maxH/t.height);
-     im.setScale(factor);
-     this.machineObjs.push(im);
+     const renderKey=this.trimmedEquipment(key),texture=this.textures.get(renderKey);
+     texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
+     const src=texture.getSourceImage();
+     const plan=window.PORCARIA_LAYOUT.equipmentSize(src.width,src.height,scale,MODEL_PRESENTATION[modelId]||{},bay);
+     const node=this.add.image(Math.round(x),Math.round(y),renderKey).setOrigin(.5,1);
+     node.setDisplaySize(plan.width,plan.height);
+     this.machineObjs.push(node);
+     return node;
    }else{
      // Trator de esteiras: silhueta industrial própria enquanto não existe PNG aprovado do D9.
      if(modelId==='EQ07'){
@@ -530,7 +557,7 @@ class Workshop extends Phaser.Scene{
        shadow.fillStyle(0x02070a,0.13);
        shadow.fillEllipse(cx,ground+3,245,30);
        this.machineObjs.push(shadow);
-       this.machine(cx,spriteWorld.y,j.modelId,spriteWorld.scale||.72);
+       this.machine(cx,spriteWorld.y,j.modelId,spriteWorld.scale||.72,BAY_LAYOUT[i]);
        const mode=j.status==='material'||j.status==='ferramenta'?'blocked':j.stage>=6?'repair':'diagnose';
        workerWorld.forEach((w,idx)=>this.worker(w.x,w.y,i*2+idx,{facing:w.facing|| (idx?'left':'right'),mode}));
        // O HUD inferior já mostra equipamento e OS: evitar um segundo rótulo sobre as rodas.
@@ -566,6 +593,7 @@ async function boot(){
    const mapRes=await fetch('./scene-map.json',{cache:'no-store'});
    if(mapRes.ok){const map=await mapRes.json();
     if(Array.isArray(map.bays)&&map.bays.length===3&&map.bays.every(b=>b.hitWorld&&b.spriteWorld&&b.workerWorld))BAY_LAYOUT=map.bays;
+    if(map.modelPresentation)MODEL_PRESENTATION=map.modelPresentation;
     if(map.background?.sourceCrop)SCENE_REFERENCE.crop=map.background.sourceCrop;
     if(map.background?.sourceWidth)SCENE_REFERENCE.sourceWidth=map.background.sourceWidth;
     if(map.background?.sourceHeight)SCENE_REFERENCE.sourceHeight=map.background.sourceHeight;
@@ -574,8 +602,12 @@ async function boot(){
   try{const raw=localStorage.getItem(SAVE);if(raw){const s=JSON.parse(raw);if(E.validate(s))state=s}}catch(e){console.warn(e)}
   if(!state)state=E.create(data);
   selected=state.jobs[0]?.id;events();drawUI();
-  if(!window.Phaser)throw Error('Phaser CDN não carregou. Verifique conexão.');
-  new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1080,height:450,backgroundColor:'#182838',render:{pixelArt:false,antialias:true},scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_HORIZONTALLY},scene:[Workshop]});
+  if(!window.Phaser||!window.PORCARIA_LAYOUT)throw Error('Phaser ou módulo de proporções não carregou. Verifique conexão.');
+  const displayWidth=$('game').clientWidth||1080;
+  const resolution=Math.min(2,Math.max(1,window.devicePixelRatio||1,displayWidth/1080));
+  new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1080,height:450,resolution,
+   backgroundColor:'#182838',render:{pixelArt:false,antialias:false,roundPixels:true},
+   scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_HORIZONTALLY},scene:[Workshop]});
  }catch(e){console.error(e);$('game').innerHTML='<div style="padding:60px;color:#ffc86a">Não foi possível iniciar a cena Phaser: '+esc(e.message)+'</div>'}
 }
 boot();
