@@ -44,7 +44,7 @@
   }
   const ranked=state.jobs.filter(j=>!j.assigned).map(j=>{
    const sc=scenes.get(j.scene),r=readiness(j,sc,state);
-   const agedHours=Math.max(0,(state.tick-j.tickOpen)*8);
+   const agedHours=Math.max(0,(state.tick-j.tickOpen)*12);
    const priority=clamp(Number(j.priority)||1,1,3);
    const agePoints=Math.min(90,Math.floor(agedHours/8)*3);
    const readyBonus=r.kind==='ready'?22:0;
@@ -72,10 +72,10 @@
    countWaiting:ranked.length,countCriticalWaiting:ranked.filter(j=>j.priority===3).length,
    freeMechanics:freeMechanics.map(m=>({id:m.id,name:m.name,role:m.role,skill:m.skill,mental:m.mental,physical:m.physical})),
    freeBays,remainingStarts:Math.min(freeBays.length,freeMechanics.length),
-   remainingGrossHours:Math.min(freeBays.length,freeMechanics.length)*8,
+   remainingGrossHours:Math.min(freeBays.length,freeMechanics.length)*10.5,
    ranked,
    method:'Pontuação heurística: criticidade ×100 +3 por turno de espera (máximo 90), +22 se insumos liberados ou −26 se bloqueados. Não equivale a risco técnico quantitativo.',
-   capacityNote:'HH brutas de oportunidade no próximo turno (8h × menor número entre boxes e mecânicos livres). Não incluem produtividade, fadiga ou trabalho já alocado. O motor define as horas efetivas.',
+   capacityNote:'HH úteis disponíveis no próximo turno (10,5 HH × menor número entre boxes e mecânicos livres), descontando DDS e almoço. Não incluem produtividade, fadiga ou trabalho já alocado. O motor define as horas efetivas.',
    etaNote:'Pedidos são recebidos ao final do turno pelo motor; ETA não significa disponibilidade de peça durante esse turno.'
   };
  }
