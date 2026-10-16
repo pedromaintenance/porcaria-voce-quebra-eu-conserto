@@ -11,6 +11,18 @@ const brl=n=>'R$ '+Math.round(n).toLocaleString('pt-BR');
 const bar=(name,v,cls)=>`<div class="meter-label"><span>${name}</span><b>${Math.round(v)}/100</b></div><div class="bar ${cls||''}"><span style="width:${Math.max(0,Math.min(100,v))}%"></span></div>`;
 const pri=n=>n===3?'Crítica':n===2?'Alta':'Moderada';
 const statusName={fila:'Aguardando diagnóstico',diagnostico:'Em diagnóstico',apto:'Diagnóstico confirmado',material:'Aguardando material',ferramenta:'Sem ferramental',reparo:'Em reparo'};
+// Arte provisoria de producao: somente PNGs existentes no inventario; fallback em emoji.
+const SPRITES={
+ EQ01:'equipamentos/historico/caminhao_pixel_art_original.png',
+ EQ02:'equipamentos/cat6030_frontshovel_estudo.png',
+ EQ03:'equipamentos/cat395.png',
+ EQ05:'equipamentos/sandvik_dr410i_torre_erguida.png',
+ EQ06:'equipamentos/sandvik_dr410i_torre_abaixada.png'
+};
+const spriteFor=id=>SPRITES[id]?'./phaser/assets-review/assets/'+SPRITES[id]:null;
+const machineArt=(id,cl='')=>{const src=spriteFor(id);return src?
+ `<span class="machine-art ${cl}"><img src="${src}" alt="" loading="lazy" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="fallback-art" hidden>${emojiFor(id)}</span></span>`:
+ `<span class="machine-art ${cl}"><span class="fallback-art">${emojiFor(id)}</span></span>`};
 const emojiFor=id=>({EQ01:'🚚',EQ02:'🏗️',EQ03:'🚜',EQ04:'🚜',EQ05:'⛏️',EQ06:'⛏️',EQ07:'🚜',EQ08:'🚜',EQ09:'🚜'})[id]||'🚜';
 function stageHint(j,c,path){
  const base=[
@@ -108,14 +120,14 @@ function renderHeader(){
 function renderScene(){
  const fill=i=>{const j=STATE.jobs.find(x=>x.bay===i);if(!j)return `<div class="bay"><strong>BOX ${i+1} · LIVRE</strong><div class="toy">🧼</div><div class="tiny">Bancada limpa. Aguardando serviço.</div></div>`;
  const m=E.model(DATA,j.modelId);const mech=E.employee(STATE,j.assigned);
- return `<div class="bay occupied"><strong>BOX ${i+1} · ${esc(statusName[j.status]||j.status)}</strong><div class="toy">${emojiFor(j.modelId)}</div><div class="tiny"><b>${esc(m?.title||'Máquina')}</b> · ${esc(j.id)}<br>${esc(mech?.name||'Sem mecânico')}<br><span class="chip">${j.stage}/6 diag · ${Math.ceil(j.repairRemaining)}h reparo</span></div></div>`;};
+ return `<div class="bay occupied"><strong>BOX ${i+1} · ${esc(statusName[j.status]||j.status)}</strong><div class="toy">${machineArt(j.modelId)}</div><div class="tiny"><b>${esc(m?.title||'Máquina')}</b> · ${esc(j.id)}<br>${esc(mech?.name||'Sem mecânico')}<br><span class="chip">${j.stage}/6 diag · ${Math.ceil(j.repairRemaining)}h reparo</span></div></div>`;};
  el('scene').innerHTML=`<div class="yard-sign"><div class="emoji">🏠</div><div><strong>OFICINA DA PORCARIA</strong><div class="small">3 boxes · 2 turnos de 8h</div></div></div>${[0,1,2].map(fill).join('')}`;
 }
 function renderQueue(){
  const sorted=[...STATE.jobs].sort((a,b)=>b.priority-a.priority||a.tickOpen-b.tickOpen);
  el('queue').innerHTML=sorted.length?sorted.map(j=>{
   const m=E.model(DATA,j.modelId),age=STATE.tick-j.tickOpen;
-  return `<button class="order ${UI.selected===j.id?'selected':''} ${j.priority===3?'urgent':''}" data-action="select" data-id="${j.id}"><div class="order-head"><b>${emojiFor(j.modelId)} ${esc(j.id)} · ${esc(m.title)}</b><span class="pill p${j.priority}">${pri(j.priority)}</span></div><p>${esc(j.report)}</p><div class="tags"><span class="tag">🕒 ${age*8}h aguard./exec.</span><span class="tag">${esc(statusName[j.status]||j.status)}</span><span class="tag">⏳ ${Math.ceil(j.repairRemaining)}h serviço</span></div></button>`;
+  return `<button class="order ${UI.selected===j.id?'selected':''} ${j.priority===3?'urgent':''}" data-action="select" data-id="${j.id}"><div class="order-head"><b>${machineArt(j.modelId,"mini")} ${esc(j.id)} · ${esc(m.title)}</b><span class="pill p${j.priority}">${pri(j.priority)}</span></div><p>${esc(j.report)}</p><div class="tags"><span class="tag">🕒 ${age*8}h aguard./exec.</span><span class="tag">${esc(statusName[j.status]||j.status)}</span><span class="tag">⏳ ${Math.ceil(j.repairRemaining)}h serviço</span></div></button>`;
  }).join(''):'<div class="empty">🎉 Nenhuma OS aberta. Aproveite para cuidar da equipe e do estoque.</div>';
 }
 function renderJob(){

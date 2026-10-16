@@ -1,5 +1,5 @@
 /* PWA offline-first. Atualize a versão do cache a cada release. */
-const CACHE='porcaria-vqec-1.1.0';
+const CACHE='porcaria-vqec-prototype-20261015';
 const URLS=['./','./index.html','./styles.css','./engine.js','./app.js','./game-data.json','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(URLS)));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE&&k.startsWith('porcaria-vqec-')).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
