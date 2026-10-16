@@ -34,7 +34,7 @@
    return {
     bay,kind,label:STATUSES[kind].label,id:j.id,model:models.get(j.modelId)?.title||j.modelId,
     priority:j.priority,stage:j.stage,assigned:mech?.name||'Não localizado',
-    ageHours:Math.max(0,(state.tick-j.tickOpen)*8),fatigued,
+    ageHours:Math.max(0,(state.tick-j.tickOpen)*12),fatigued,
     neededMaterial,neededTool,
     materialName:neededMaterial?(data.items[neededMaterial]?.name||neededMaterial):null,
     toolName:neededTool?(data.tools[neededTool]?.name||neededTool):null
@@ -50,7 +50,7 @@
    .map(m=>({name:m.name,id:m.id,mental:m.mental,physical:m.physical}));
   const unattendedCritical=state.jobs.filter(j=>j.priority===3&&!j.assigned)
    .map(j=>({id:j.id,model:models.get(j.modelId)?.title||j.modelId,
-    ageHours:Math.max(0,(state.tick-j.tickOpen)*8)}))
+    ageHours:Math.max(0,(state.tick-j.tickOpen)*12)}))
    .sort((a,b)=>b.ageHours-a.ageHours);
   const counts={
    assigned:jobs.length,free:bays.filter(b=>b.kind==='free').length,
