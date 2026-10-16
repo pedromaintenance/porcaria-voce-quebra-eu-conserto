@@ -24,9 +24,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Validate Phaser JavaScript syntax
-        run: node --check phaser-play/game.js && node --check engine.js
+        run: node --check phaser-play/game.js && node --check phaser-play/shift-brief.js && node --check engine.js
       - name: Regression tests (engine and scene map)
-        run: node scripts/smoke-phaser.cjs
+        run: node scripts/smoke-phaser.cjs && node scripts/test-shift-brief.cjs
       - name: Check Pages entrypoints
         run: test -f phaser-play/index.html && test -f phaser-play/game.js && test -f phaser-play/scene-map.json && test -f game-data.json
       - name: Verify official workshop image
