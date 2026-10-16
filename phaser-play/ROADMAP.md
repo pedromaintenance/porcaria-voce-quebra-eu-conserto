@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 16/10/2026 · versão de trabalho **Phaser 0.7.5** (deslocamentos finais dos assets por box e proteção de bordas implementados; QA visual desktop/mobile pendente).
+**Estado de referência:** 16/10/2026 · versão de trabalho **Phaser 0.7.6** (ajuste final de posição BOX 1 e BOX 2 implementado; BOX 3 preservado; QA visual pendente).
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -211,6 +211,32 @@ O método antigo `machine()` renderizava TODOS os PNGs dentro da mesma caixa má
 
 **Critério de aceite:** as posições correspondem ao pedido visual, nenhum sprite essencial fica cortado, a seleção de OS permanece correta e o galpão mantém sua geometria original.
 
+## Entrega 0.7.6 — Ajuste milimétrico de composição e limite de câmera (implementada; aguardando homologação visual)
+
+**Referência:** avaliação da captura da v0.7.5. O usuário aprovou integralmente o BOX 3 e pediu apenas **BOX 1 +20 px à direita** e **BOX 2 −6 px à esquerda**.
+
+### Código implementado
+
+- [x] **BOX 1:** centro nominal da máquina `407 → 427`; mecânicos `310/539 → 330/559`; deslocamento acumulado `-94 → -74 px`.
+- [x] **BOX 2:** centro nominal `848 → 842`; mecânicos `725/977 → 719/971`; deslocamento acumulado `+40 → +34 px`.
+- [x] **BOX 3 homologado visualmente pelo usuário na v0.7.5:** máquina `x=1223` e mecânicos `1102/1345` **preservados sem mudança**. Nenhuma escala, posicionamento vertical, sprite ou fundo alterado.
+- [x] **Correção do efeito de clamp (causa imediata):** quando o caminhão do BOX 1 já está limitado pela borda esquerda da câmera, alterar somente `spriteWorld.x` de 407 para 427 **não deslocaria a imagem**. A função pura `calibratedCenter()` em `layout-math.js` aplica o incremento ao **centro anteriormente renderizado** e depois valida novamente os limites de enquadramento.
+- [x] **Movimento visual demonstrável:** para um sprite de 265 px no BOX 1, o centro efetivo passa de `x=460` para `x=480`; o mecânico junto à borda passa de `354` para `374`. O BOX 2 perde os 6 px solicitados. O BOX 3 permanece igual.
+- [x] **Eixos e enquadramento consistentes:** máquina, sombra de contato e ambos os mecânicos consultam `visualCalibrationX` do box; a origem no solo `y=448` não muda.
+- [x] **Geometria de oficina imutável:** `hitWorld`, `progressWorld` e `labelWorld` continuam ligados aos três boxes físicos do galpão; não mover indicadores e zonas clicáveis junto com personagens/máquinas.
+- [x] **Testes automatizados:** asserts das novas coordenadas, deslocamento efetivo após clamp, preservação de geometria e integridade do motor de simulação.
+- [x] **Scripts com cache atualizado:** `game.js?v=0.7.6` e `layout-math.js?v=0.7.6`.
+
+### QA pendente
+
+- [ ] Confirmar, na mesma resolução da captura anterior, que o CAT 777E no BOX 1 anda **20 px para a direita**, sem corte de rodas ou cabine.
+- [ ] Confirmar o deslocamento discreto de **6 px para a esquerda** no BOX 2, inclusive com máquinas grandes.
+- [ ] Confirmar que o BOX 3 continua idêntico à versão aprovada.
+- [ ] Verificar se os mecânicos mantêm sua relação lateral com cada máquina e se o clique sobre qualquer sprite seleciona a OS correspondente.
+- [ ] Se algum tipo de sprite (especialmente fallback vetorial) parecer deslocado, calibrar o modelo isoladamente antes de alterar novamente um box aprovado.
+
+**Critério de aceite:** dois movimentos visuais observáveis, BOX 3 intacto e nenhum efeito regressivo em interações ou HUD. A aprovação desta geometria deve preceder novas alterações artísticas.
+
 ## Entrega 0.8 — Gestão avançada de manutenção (P1)
 
 - [ ] Priorização por criticidade, idade da nota, risco e impacto operacional.
@@ -242,7 +268,7 @@ O método antigo `machine()` renderizava TODOS os PNGs dentro da mesma caixa má
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.7.5
+## Plano de validação para a versão 0.7.6
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -281,6 +307,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.7.3:** navegação reorganizada em duas faixas, indicadores separados, botão principal de turno no header, menu Visual para personalização do cenário, realce dos menus ativos, rolagem horizontal em telas estreitas, foco e comportamento de teclado aprimorados; testes CI e QA visual pendente.
 - **0.7.4:** composição deslocada 22 px nas laterais, escala configurável por modelo (CAT 6030 2×, DR410i 3× nominal), recorte alfa dos sprites, preservação da textura de fundo em 1350 px e separação de filtros, módulo de geometria testável e regressões de tamanho/posição. **Código implementado; testes e homologação visual devem ser verificados no Pages.**
 - **0.7.5:** offsets adicionais de −72/+40/+82 px nos três boxes, mantendo hotspots/indicadores arquitetônicos fixos; clamp visual para evitar cortes, sombras alinhadas ao centro renderizado, clique direto nas imagens para selecionar a OS correta e testes específicos de geometria. **Código implementado; QA visual pendente.**
+- **0.7.6:** ajustes incrementais BOX 1 +20 px, BOX 2 −6 px, BOX 3 sem modificação; função `calibratedCenter()` garante que o movimento se manifeste mesmo quando sprites estavam limitados pela câmera; testes de posição e regressão; QA visual pendente.
 
 ### Organização recomendada
 
