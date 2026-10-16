@@ -29,6 +29,11 @@ jobs:
         run: node scripts/smoke-phaser.cjs
       - name: Check Pages entrypoints
         run: test -f phaser-play/index.html && test -f phaser-play/game.js && test -f phaser-play/scene-map.json && test -f game-data.json
+      - name: Restore versioned workshop background
+        run: |
+          cat phaser-play/assets/packed/part*.b64 | base64 --decode > phaser-play/assets/oficina-base.avif
+          echo "ce99d2a9b3fe47988a3f60d4b3634715fffa5e5b69af7b525ebe8b39dbf75704  phaser-play/assets/oficina-base.avif" | sha256sum --check
+          test -s phaser-play/assets/oficina-base.avif
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload website
