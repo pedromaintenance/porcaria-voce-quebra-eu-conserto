@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.7.2 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.7.3 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -61,19 +61,27 @@ async function useBackground(blob){
 }
 
 const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO ATUAL',stats:'📊 INDICADORES E RECURSOS',team:'👷 EQUIPE DA OFICINA',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA',management:'📋 GESTÃO DA OFICINA'};
+function closeSceneMenu(){
+ const menu=$('sceneMenu'),trigger=$('sceneMenuBtn');
+ if(menu)menu.hidden=true;
+ if(trigger)trigger.setAttribute('aria-expanded','false');
+}
 // Modal tem exclusividade de entrada; nunca permitir selecao de box atraves do overlay.
 function modalOpen(){return !!$('menuOverlay')&&!$('menuOverlay').hidden}
 function openPanel(name){
  const overlay=$('menuOverlay');if(!overlay)return;
  if(scene?.input)scene.input.enabled=false;
+ closeSceneMenu();
  overlay.hidden=false;
  $('modalHeading').textContent=PANEL_TITLES[name]||'MENU DA OFICINA';
  document.querySelectorAll('[data-panel]').forEach(el=>el.classList.toggle('is-open',el.dataset.panel===name));
+ document.querySelectorAll('.primary-nav [data-open-panel]').forEach(btn=>{const active=btn.dataset.openPanel===name;btn.classList.toggle('is-active',active);btn.setAttribute('aria-expanded',active?'true':'false')});
  document.body.style.overflow='hidden';
  $('closePanel')?.focus();
 }
 function closePanel(){
  const overlay=$('menuOverlay');if(overlay)overlay.hidden=true;
+ document.querySelectorAll('.primary-nav [data-open-panel]').forEach(btn=>{btn.classList.remove('is-active');btn.setAttribute('aria-expanded','false')});
  document.body.style.overflow='';
  if(scene?.input)scene.input.enabled=true;
 }
@@ -226,6 +234,12 @@ function drawStore(){
 
 function events(){
  $('helpBtn').addEventListener('click',()=>openPanel('help'));
+ $('sceneMenuBtn').addEventListener('click',ev=>{
+  ev.stopPropagation();
+  const menu=$('sceneMenu'),opening=menu.hidden;
+  closeSceneMenu();
+  if(opening){menu.hidden=false;$('sceneMenuBtn').setAttribute('aria-expanded','true')}
+ });
  $('queueSearch').addEventListener('input',ev=>{FILTER.query=ev.target.value;renderQueue()});
  $('queueFilter').addEventListener('change',ev=>{FILTER.queue=ev.target.value;renderQueue()});
  $('storeSearch').addEventListener('input',ev=>{FILTER.stockQuery=ev.target.value;drawStore()});
@@ -233,12 +247,16 @@ function events(){
  $('closePanel').addEventListener('click',closePanel);
  $('menuOverlay').addEventListener('click',ev=>{if(ev.target===$('menuOverlay'))closePanel()});
  document.addEventListener('keydown',ev=>{
- if(ev.key==='Escape'){closePanel();return}
+ if(ev.key==='Escape'){
+  if(!$('sceneMenu').hidden){closeSceneMenu();$('sceneMenuBtn').focus();return}
+  closePanel();return;
+ }
  if(ev.altKey||ev.ctrlKey||ev.metaKey||['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName))return;
  const panels={'0':'management','1':'queue','2':'detail','3':'team','4':'store','5':'stats'};
  if(panels[ev.key]){ev.preventDefault();openPanel(panels[ev.key])}
  });
  document.addEventListener('click',ev=>{
+  if(!ev.target.closest('.scene-tools'))closeSceneMenu();
   const submenu=ev.target.closest('[data-open-panel]');
   if(submenu){openPanel(submenu.dataset.openPanel);return}
   const p=ev.target.closest('[data-pick]');if(p){pick(p.dataset.pick);return}
@@ -296,7 +314,7 @@ function events(){
   }catch(error){notify('Falha ao importar: '+error.message)}
  });
   $('bgPicker').addEventListener('change',async ev=>{
-  const file=ev.target.files?.[0];ev.target.value='';if(!file)return;
+  const file=ev.target.files?.[0];ev.target.value='';closeSceneMenu();if(!file)return;
   try{
    if(file.size>12_000_000)throw Error('Imagem acima de 12 MB');
    if(!['image/png','image/jpeg','image/webp'].includes(file.type))throw Error('Formato não suportado');
@@ -304,7 +322,7 @@ function events(){
    notify('Cenário carregado. Para os sprites funcionarem sem duplicação, utilize uma imagem de fundo sem máquinas.');
   }catch(err){notify('Não foi possível carregar: '+err.message)}
  });
- $('bgReset').addEventListener('click',async()=>{localStorage.removeItem(CUSTOM_BACKGROUND_KEY);try{await sceneStore('delete')}catch(err){console.warn(err)}if(scene){const tex=scene.textures.exists('repoWorkshopBG')?scene.textures.get('repoWorkshopBG'):null;scene.setBackdrop(tex?.getSourceImage()||null)}notify('Cenário oficial restaurado.')});
+ $('bgReset').addEventListener('click',async()=>{closeSceneMenu();localStorage.removeItem(CUSTOM_BACKGROUND_KEY);try{await sceneStore('delete')}catch(err){console.warn(err)}if(scene){const tex=scene.textures.exists('repoWorkshopBG')?scene.textures.get('repoWorkshopBG'):null;scene.setBackdrop(tex?.getSourceImage()||null)}notify('Cenário oficial restaurado.')});
   $('reset').addEventListener('click',()=>{if(!confirm('Reiniciar a campanha Phaser?'))return;state=E.create(data);selected=state.jobs[0]?.id;action(null)});
 }
 class Workshop extends Phaser.Scene{
