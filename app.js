@@ -1,6 +1,7 @@
 /* P.O.R.C.A.R.I.A. v1.1 — apresentação e interação PWA. */
 'use strict';
 const K='porcaria.vqec.v1.1';
+const BUILD='2026.10.15.2';
 const E=window.PORCARIA_ENGINE;
 const STAGES=['Sistema','Grupo','Subgrupo','Componente (parte objeto)','Dano (perda)','Causa'];
 let DATA,STATE;
@@ -121,7 +122,10 @@ function renderScene(){
  const fill=i=>{const j=STATE.jobs.find(x=>x.bay===i);if(!j)return `<div class="bay"><strong>BOX ${i+1} · LIVRE</strong><div class="toy">🧼</div><div class="tiny">Bancada limpa. Aguardando serviço.</div></div>`;
  const m=E.model(DATA,j.modelId);const mech=E.employee(STATE,j.assigned);
  return `<div class="bay occupied"><strong>BOX ${i+1} · ${esc(statusName[j.status]||j.status)}</strong><div class="toy">${machineArt(j.modelId)}</div><div class="tiny"><b>${esc(m?.title||'Máquina')}</b> · ${esc(j.id)}<br>${esc(mech?.name||'Sem mecânico')}<br><span class="chip">${j.stage}/6 diag · ${Math.ceil(j.repairRemaining)}h reparo</span></div></div>`;};
- el('scene').innerHTML=`<div class="yard-sign"><div class="emoji">🏠</div><div><strong>OFICINA DA PORCARIA</strong><div class="small">3 boxes · 2 turnos de 8h</div></div></div>${[0,1,2].map(fill).join('')}`;
+ const featured=[...STATE.jobs].sort((a,b)=>b.priority-a.priority).slice(0,4);
+ const fleet=featured.map(j=>{const m=E.model(DATA,j.modelId);return `<button type="button" class="fleet-unit" data-action="select" data-id="${esc(j.id)}" title="Selecionar ${esc(j.id)}"><span class="fleet-unit-art">${machineArt(j.modelId)}</span><b>${esc(m?.title||'Equipamento')}</b><small>${esc(j.id)} · ${esc(pri(j.priority))}</small></button>`}).join('');
+ el('scene').innerHTML=`<div class="yard-sign"><div class="emoji">🛠️</div><div><strong>OFICINA P.O.R.C.A.R.I.A.</strong><div class="small">3 boxes · 2 turnos de 8h · Build ${BUILD}</div></div></div>${[0,1,2].map(fill).join('')}`;
+ el('fleetShowcase').innerHTML=fleet||'<p>Não há equipamentos aguardando manutenção neste turno.</p>';
 }
 function renderQueue(){
  const sorted=[...STATE.jobs].sort((a,b)=>b.priority-a.priority||a.tickOpen-b.tickOpen);
