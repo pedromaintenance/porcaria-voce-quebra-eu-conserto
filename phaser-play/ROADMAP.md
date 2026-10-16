@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 16/10/2026 · versão de trabalho **Phaser 0.7.6** (ajuste final de posição BOX 1 e BOX 2 implementado; BOX 3 preservado; QA visual pendente).
+**Estado de referência:** 16/10/2026 · versão de trabalho **Phaser 0.7.7** (briefing operacional pré-turno implementado, três boxes preservados; testes automatizados, QA no navegador pendente).
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -24,7 +24,7 @@
 | Phaser 3 / oficina 2D | Implementado, QA pendente | Cenário industrial com câmera recortada nos três boxes |
 | HUD | Implementado, QA pendente | Dia/turno, caixa, equipe, backlog e energia do supervisor |
 | Rota principal e Gestão | **0.7.1 — implementado, QA pendente** | `/` redireciona para `/phaser-play/`; Gestão é pop-up escuro com indicadores e atalhos, sem acesso à interface bege |
-| Menus pop-up | Implementado, QA pendente | Fila, Ordem, Equipe, Almoxarifado, Indicadores, Ajuda |
+| Menus pop-up | **0.7.7 — implementado, QA pendente** | Fila, Ordem, Equipe, Almoxarifado, Indicadores, Ajuda e Briefing do próximo turno, sem bloquear visualização do galpão permanentemente |
 | Isolamento de entrada do Phaser | Implementado, QA pendente | Não selecionar boxes sob pop-ups |
 | Estado da oficina | Implementado, QA pendente | Status por box, seleção destacada, fila pesquisável |
 | Motor de manutenção | Existente, parcialmente exposto | Diagnóstico em seis níveis, peças, ferramentas, alocação e turnos |
@@ -237,6 +237,37 @@ O método antigo `machine()` renderizava TODOS os PNGs dentro da mesma caixa má
 
 **Critério de aceite:** dois movimentos visuais observáveis, BOX 3 intacto e nenhum efeito regressivo em interações ou HUD. A aprovação desta geometria deve preceder novas alterações artísticas.
 
+## Entrega 0.7.7 — Briefing operacional antes de avançar o turno (implementada, QA no navegador pendente)
+
+**Problema:** a confirmação de `AVANÇAR TURNO +8H` utilizava `window.confirm`, exibindo apenas totais resumidos, sem identificar quais OS estavam bloqueadas ou dar acesso rápido à ordem e ao almoxarifado. Isso dificultava as decisões de programação e criava risco de avançar sem planejar o atendimento.
+
+### Implementado
+
+- [x] **Confirmação dentro do mesmo visual Phaser:** o botão `Avançar turno` abre o painel `Briefing do próximo turno` no mesmo overlay dos menus. Sem pop-up nativo do navegador, e sem alterar posições da oficina.
+- [x] **Resumo da capacidade:** boxes ocupados, diagnósticos, ordens aptas ao reparo e bloqueios, calculados a partir do **estado atual** (`state.jobs`, `state.stock`, `state.tools`) antes do avanço.
+- [x] **Três cartões por box:** exibem modelo, OS, mecânico alocado, idade da OS, etapa ou bloqueio específico. Um botão `VER OS` abre a ordem correta; `ALMOXARIFADO` abre a lista já filtrada pelo item/ferramenta faltante.
+- [x] **Riscos conhecidos:** OS crítica ainda sem mecânico, fadiga física/mental dos profissionais alocados e boxes livres. *Fadiga é um alerta de produtividade e não um bloqueio automático.*
+- [x] **Logística sem falsa previsão:** os pedidos com ETA `<= tick + 1` aparecem como recebimento **ao final das 8h**, seguindo a ordem de execução do motor `engine.advance()`. Não são contabilizados como saldo disponível para reparar a máquina durante as mesmas 8 horas.
+- [x] **Folha fixa na virada do dia:** quando o próximo avanço parte do turno B, o painel mostra `equipe × R$ 220 + R$ 180`, conforme o motor. Exclui custos variáveis, receitas, falhas e resultados não determinísticos.
+- [x] **Avanço de turno exclusivamente por confirmação:** `CANCELAR/VOLTAR` não modifica o estado; `CONFIRMAR +8H` avança exatamente uma vez via `E.advance()`. Token `data-turn-tick` exige nova revisão caso o turno tenha mudado desde a abertura.
+- [x] **Modelo testável sem dependência Phaser:** `phaser-play/shift-brief.js`, módulo puro que não modifica o save; `scripts/test-shift-brief.cjs` valida precedência de bloqueios, peças/ferramentas, pedidos com ETA, fadiga, folha, invariância do estado e ações de confirmação.
+- [x] **Acesso adicional pelo menu Gestão:** botão `REVISAR PRÓXIMO TURNO` no painel de gestão; navegação e sprites existentes mantidos.
+- [x] **Scripts com cache atualizado:** `shift-brief.js?v=0.7.7` e `game.js?v=0.7.7`.
+- [x] **Regressão incorporada ao pipeline de Pages:** testes de interface, motor, geometria e briefing passam a ser executados antes do upload/deploy.
+
+### Critérios de aceite / QA ainda pendentes
+
+- [ ] Abrir o briefing em desktop e celular, fechar com `Esc`, `VOLTAR À OFICINA` e botão `FECHAR`, sem alterar caixa, dia, turno, estoque, OS ou energia.
+- [ ] Avançar uma vez e conferir `+8H`, atualização do estado, persistência do save e inexistência de avanço duplo.
+- [ ] Criar OS em diagnóstico, bloqueada por ferramenta, bloqueada por peça e apta ao reparo; verificar mensagens exatas em cada cartão.
+- [ ] Testar o botão `VER OS` e o atalho do almoxarifado de um bloqueio, mantendo a OS de origem corretamente identificada.
+- [ ] Confirmar ETA de pedido ao fim do turno, distinguindo recebimento posterior ao trabalho de material já disponível.
+- [ ] Confirmar alerta de fadiga sem classificar automaticamente o reparo como bloqueado.
+- [ ] Inspecionar a legibilidade e a rolagem no celular, sem vazamento de clique para os boxes atrás do overlay.
+- [ ] Garantir que BOX 1 e BOX 2 mantenham os ajustes da v0.7.6 e que o BOX 3 continue na posição aprovada.
+
+**Critério de conclusão:** jogador consegue decidir o próximo turno com informações rastreáveis ao motor, e somente a confirmação executa a passagem de 8 horas. Não são inferidas durações, entregas ou probabilidades inexistentes no estado.
+
 ## Entrega 0.8 — Gestão avançada de manutenção (P1)
 
 - [ ] Priorização por criticidade, idade da nota, risco e impacto operacional.
@@ -268,7 +299,7 @@ O método antigo `machine()` renderizava TODOS os PNGs dentro da mesma caixa má
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.7.6
+## Plano de validação para a versão 0.7.7
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -308,6 +339,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.7.4:** composição deslocada 22 px nas laterais, escala configurável por modelo (CAT 6030 2×, DR410i 3× nominal), recorte alfa dos sprites, preservação da textura de fundo em 1350 px e separação de filtros, módulo de geometria testável e regressões de tamanho/posição. **Código implementado; testes e homologação visual devem ser verificados no Pages.**
 - **0.7.5:** offsets adicionais de −72/+40/+82 px nos três boxes, mantendo hotspots/indicadores arquitetônicos fixos; clamp visual para evitar cortes, sombras alinhadas ao centro renderizado, clique direto nas imagens para selecionar a OS correta e testes específicos de geometria. **Código implementado; QA visual pendente.**
 - **0.7.6:** ajustes incrementais BOX 1 +20 px, BOX 2 −6 px, BOX 3 sem modificação; função `calibratedCenter()` garante que o movimento se manifeste mesmo quando sprites estavam limitados pela câmera; testes de posição e regressão; QA visual pendente.
+- **0.7.7:** briefing pré-turno dentro do modal Phaser, com três boxes, bloqueios específicos, ETA ao fim do turno, fadiga, folha, OS crítica sem equipe e atalhos de OS/almoxarifado; fluxo confirmar/cancelar; testes puros de leitura do estado e CI. **Implementado; QA funcional/visual pendente.**
 
 ### Organização recomendada
 
