@@ -20,7 +20,8 @@ let data,state,selected,scene;
 const FILTER={queue:'all',query:'',store:'all',stockQuery:''};
 let toastTimeout;
 
-const SCENE_REFERENCE={crop:{x:359,y:246,width:1045,height:407},worldX:319,worldY:45,width:1080,height:450};
+const SCENE_REFERENCE={crop:{x:320,y:130,width:1350,height:563},sourceWidth:1976,sourceHeight:796,worldX:319,worldY:45,width:1080,height:450};
+const CUSTOM_BACKGROUND_KEY='porcaria.phaser.customBackdrop.official20261016';
 let BAY_LAYOUT=[0,1,2].map(i=>({id:i,hitWorld:{x:324+i*355,y:155,width:337,height:323},spriteWorld:{x:490+i*355,y:395},workerWorld:[{x:376+i*355,y:442},{x:605+i*355,y:439}]}));
 function sceneDB(){
  return new Promise((resolve,reject)=>{
@@ -270,18 +271,18 @@ function events(){
   try{
    if(file.size>12_000_000)throw Error('Imagem acima de 12 MB');
    if(!['image/png','image/jpeg','image/webp'].includes(file.type))throw Error('Formato não suportado');
-   await useBackground(file);await sceneStore('save',file);
+   await useBackground(file);await sceneStore('save',file);localStorage.setItem(CUSTOM_BACKGROUND_KEY,'1');
    notify('Cenário carregado. Para os sprites funcionarem sem duplicação, utilize uma imagem de fundo sem máquinas.');
   }catch(err){notify('Não foi possível carregar: '+err.message)}
  });
- $('bgReset').addEventListener('click',async()=>{scene?.setBackdrop(null);try{await sceneStore('delete')}catch(err){console.warn(err)}notify('Cenário padrão restaurado.')});
+ $('bgReset').addEventListener('click',async()=>{localStorage.removeItem(CUSTOM_BACKGROUND_KEY);try{await sceneStore('delete')}catch(err){console.warn(err)}if(scene){const tex=scene.textures.exists('repoWorkshopBG')?scene.textures.get('repoWorkshopBG'):null;scene.setBackdrop(tex?.getSourceImage()||null)}notify('Cenário oficial restaurado.')});
   $('reset').addEventListener('click',()=>{if(!confirm('Reiniciar a campanha Phaser?'))return;state=E.create(data);selected=state.jobs[0]?.id;action(null)});
 }
 class Workshop extends Phaser.Scene{
  constructor(){super('Workshop');this.machineObjs=[]}
  preload(){
   Object.entries(ASSETS).forEach(([key,url])=>this.load.image(key,url));
-  this.load.image('repoWorkshopBG','./assets/oficina-base.png');
+  this.load.image('repoWorkshopBG','./assets/oficina-base.avif?v=0.7.0');
   this.load.on('loaderror',f=>console.warn('Imagem opcional indisponivel:',f.key));
  }
  create(){
@@ -353,7 +354,7 @@ class Workshop extends Phaser.Scene{
   this.backgroundDecor=this.children.list.filter(o=>o!==this.statusText&&!this.bayZones.includes(o));
   this.refresh();
   if(this.textures.exists('repoWorkshopBG'))this.setBackdrop(this.textures.get('repoWorkshopBG').getSourceImage());
-  sceneStore('read').then(blob=>{if(blob)return useBackground(blob)}).catch(console.warn);
+  if(localStorage.getItem(CUSTOM_BACKGROUND_KEY)==='1')sceneStore('read').then(blob=>{if(blob)return useBackground(blob)}).catch(console.warn);
  }
  setBackdrop(img){
   if(this.backdrop){this.backdrop.destroy();this.backdrop=null}
@@ -364,14 +365,19 @@ class Workshop extends Phaser.Scene{
   const ctx=canvas.getContext('2d');
   if(!ctx)throw Error('Canvas 2D indisponível');
   ctx.imageSmoothingEnabled=true;
-  const aspect=img.naturalWidth/img.naturalHeight;
-  if(aspect>2.05){
-   // Fundo já recortado no formato panorâmico dos três boxes.
-   ctx.drawImage(img,0,0,img.naturalWidth,img.naturalHeight,0,0,canvas.width,canvas.height);
-  }else{
-   // Screenshot completo: remove o HUD e recorta os boxes.
-   const sx=img.naturalWidth/1672,sy=img.naturalHeight/941;
+  const width=img.naturalWidth||img.width,height=img.naturalHeight||img.height;
+  const aspect=width/height;
+  // O fundo oficial mantém a geometria 1976 x 796, mesmo quando é servido como AVIF otimizado.
+  if(aspect>2.42&&aspect<2.55){
+   const sx=width/SCENE_REFERENCE.sourceWidth,sy=height/SCENE_REFERENCE.sourceHeight;
    ctx.drawImage(img,crop.x*sx,crop.y*sy,crop.width*sx,crop.height*sy,0,0,canvas.width,canvas.height);
+  }else if(aspect>2.1){
+   // Fundos já recortados pelo jogador.
+   ctx.drawImage(img,0,0,width,height,0,0,canvas.width,canvas.height);
+  }else{
+   // Compatibilidade com screenshots completos da interface anterior.
+   const sx=width/1672,sy=height/941;
+   ctx.drawImage(img,359*sx,246*sy,1045*sx,407*sy,0,0,canvas.width,canvas.height);
   }
   if(this.textures.exists('dynamicWorkshopBG'))this.textures.remove('dynamicWorkshopBG');
   this.textures.addCanvas('dynamicWorkshopBG',canvas);
@@ -407,23 +413,23 @@ class Workshop extends Phaser.Scene{
    if(this.selectedOutline){this.selectedOutline.destroy();this.selectedOutline=null}
    const focus=state.jobs.find(z=>z.id===selected&&z.bay!==null);
    if(focus){
-     const x=BAY_LAYOUT[focus.bay].hitWorld.x;
+     const bounds=BAY_LAYOUT[focus.bay].hitWorld;
      const outline=this.add.graphics();
-     outline.lineStyle(5,0xffd05a,1);
-     outline.strokeRoundedRect(x+5,168,325,286,8);
+     outline.lineStyle(3,0xffc94b,0.9);
+     outline.strokeRoundedRect(bounds.x+3,bounds.y+3,bounds.width-6,bounds.height-6,6);
      this.selectedOutline=outline;
    }
    this.machineObjs.forEach(x=>x.destroy());this.machineObjs=[];
    this.textObjects?.forEach(x=>x.destroy());this.textObjects=[];
-   BAY_LAYOUT.forEach(({id:i,spriteWorld,workerWorld})=>{
+   BAY_LAYOUT.forEach(({id:i,spriteWorld,workerWorld,labelWorld,progressWorld})=>{
      const j=state.jobs.find(z=>z.bay===i),cx=spriteWorld.x;
      if(j){
-       this.machine(cx,spriteWorld.y,j.modelId,.87);
+       this.machine(cx,spriteWorld.y,j.modelId,spriteWorld.scale||.72);
        this.worker(workerWorld[0].x,workerWorld[0].y,i);this.worker(workerWorld[1].x,workerWorld[1].y,i+1);
-       let label=this.text(cx-130,445,E.model(data,j.modelId)?.title+' · '+j.id,15,'#ffffff',true);
+       let label=this.text(labelWorld?.x??cx-95,labelWorld?.y??430,E.model(data,j.modelId)?.title+' · '+j.id,12,'#ffffff',true);
        label.setBackgroundColor('#0c2539').setPadding(5);this.textObjects.push(label);
      }else{
-       let label=this.text(cx-70,320,'BOX DISPONÍVEL',15,'#d1dccd',true);label.setAlpha(.75);this.textObjects.push(label);
+       let label=this.text(cx-68,(labelWorld?.y??430),'BOX DISPONÍVEL',12,'#d1dccd',true);label.setAlpha(.75);this.textObjects.push(label);
      }
    });
    this.statusText.setText('TURNO '+(state.shift?'B':'A')+'  |  '+state.jobs.filter(j=>j.assigned).length+' BOXES EM USO  |  '+state.done.length+' OS CONCLUÍDAS');
@@ -438,6 +444,8 @@ async function boot(){
    if(mapRes.ok){const map=await mapRes.json();
     if(Array.isArray(map.bays)&&map.bays.length===3&&map.bays.every(b=>b.hitWorld&&b.spriteWorld&&b.workerWorld))BAY_LAYOUT=map.bays;
     if(map.background?.sourceCrop)SCENE_REFERENCE.crop=map.background.sourceCrop;
+    if(map.background?.sourceWidth)SCENE_REFERENCE.sourceWidth=map.background.sourceWidth;
+    if(map.background?.sourceHeight)SCENE_REFERENCE.sourceHeight=map.background.sourceHeight;
    }
   }catch(error){console.warn('Mapeamento opcional:',error)}
   try{const raw=localStorage.getItem(SAVE);if(raw){const s=JSON.parse(raw);if(E.validate(s))state=s}}catch(e){console.warn(e)}
