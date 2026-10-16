@@ -5,12 +5,11 @@ const $=id=>document.getElementById(id);
 const E=window.PORCARIA_ENGINE;
 const STAGES=['Sistema','Grupo','Subgrupo','Componente','Dano','Causa'];
 const SAVE='porcaria.phaser.prototype.v01';
-const REPO='https://raw.githubusercontent.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/fix/assets-review-20261014/phaser/assets-review/assets/';
 const ASSETS={
- truck:REPO+'equipamentos/historico/caminhao_pixel_art_original.png',
- shovel:REPO+'equipamentos/cat6030_frontshovel_estudo.png',
- excavator:REPO+'equipamentos/cat395.png',
- drill:REPO+'equipamentos/sandvik_dr410i_torre_erguida.png',
+ truck:'./assets/equipment/cat777e.png',
+ shovel:'./assets/equipment/cat6030.png',
+ excavator:'./assets/equipment/cat395.png',
+ drill:'./assets/equipment/sandvik_dr410i.png',
  worker_lia_idle:'./assets/characters/mec_lia/idle.png',
  worker_lia_inspect:'./assets/characters/mec_lia/inspect.png',
  worker_lia_point:'./assets/characters/mec_lia/point.png',
@@ -431,7 +430,27 @@ class Workshop extends Phaser.Scene{
      im.setScale(factor);
      this.machineObjs.push(im);
    }else{
-     // Maquina vetorial de emergencia, adequada mesmo sem imagem externa.
+     // Trator de esteiras: silhueta industrial própria enquanto não existe PNG aprovado do D9.
+     if(modelId==='EQ07'){
+      const g=this.add.graphics(),u=scale;
+      g.fillStyle(0x26313a);g.fillRoundedRect(x-98*u,y-33*u,195*u,31*u,13*u);
+      g.lineStyle(3*u,0x87908d);g.strokeRoundedRect(x-98*u,y-33*u,195*u,31*u,13*u);
+      for(let k=0;k<8;k++){g.fillStyle(k%2?0x4a5454:0x657073);g.fillRect(x+(-82+k*21)*u,y-26*u,12*u,18*u)}
+      for(const dx of [-70,-35,0,35,69]){g.fillStyle(0x191f25);g.fillCircle(x+dx*u,y-17*u,9*u);g.fillStyle(0x8e9796);g.fillCircle(x+dx*u,y-17*u,4*u)}
+      g.fillStyle(0xf0b124);g.fillRoundedRect(x-87*u,y-85*u,140*u,58*u,5*u);
+      g.fillStyle(0xda9118);g.fillRect(x-87*u,y-38*u,140*u,11*u);
+      g.fillStyle(0xf1b42f);g.fillRoundedRect(x+7*u,y-149*u,78*u,71*u,5*u);
+      g.fillStyle(0x243a46);g.fillRect(x+17*u,y-138*u,54*u,42*u);
+      g.fillStyle(0x7d9ca2);g.fillRect(x+20*u,y-135*u,24*u,33*u);
+      g.fillStyle(0x394a54);g.fillRect(x+49*u,y-135*u,18*u,33*u);
+      g.fillStyle(0xf2bd37);g.fillRect(x+5*u,y-153*u,82*u,8*u);
+      g.lineStyle(6*u,0x6b7475);g.lineBetween(x-83*u,y-44*u,x-117*u,y-63*u);
+      g.fillStyle(0xd39b31);g.fillRoundedRect(x-132*u,y-95*u,29*u,92*u,4*u);
+      g.fillStyle(0xffd16a);g.fillRect(x-131*u,y-93*u,4*u,79*u);
+      g.fillStyle(0x21343f);g.fillRect(x-52*u,y-74*u,13*u,19*u);
+      this.machineObjs.push(g);return;
+     }
+     // Fallback vetorial para modelos sem arte homologada.
      const g=this.add.graphics();const isTruck=modelId==='EQ01';g.fillStyle(0xf0a91e);
      g.fillRoundedRect(x-112*scale,y-98*scale,220*scale,80*scale,8*scale);
      if(isTruck){g.fillStyle(0xd48b10);g.fillPoints([{x:x-90*scale,y:y-125*scale},{x:x+80*scale,y:y-126*scale},{x:x+110*scale,y:y-95*scale},{x:x-85*scale,y:y-95*scale}],true)}
