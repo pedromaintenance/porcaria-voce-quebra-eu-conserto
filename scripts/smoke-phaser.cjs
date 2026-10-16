@@ -17,7 +17,9 @@ assert.ok(phaserHtml.includes('data-panel="management"'),'painel de gestão inte
 assert.ok(phaserScript.includes('function drawManagement(k)'),'métricas da gestão vêm da simulação');
 assert.equal(pwa.start_url,'./phaser-play/','PWA inicia no Phaser');
 
-const topHeader=phaserHtml.match(/<header class="top"[\\s\\S]*?<\\/header>/)?.[0];
+const headerStart=phaserHtml.indexOf('<header class="top"');
+const headerEnd=phaserHtml.indexOf('</header>',headerStart);
+const topHeader=headerStart>=0&&headerEnd>=0?phaserHtml.slice(headerStart,headerEnd+9):null;
 assert.ok(topHeader,'barra principal da oficina presente');
 assert.ok(topHeader.includes('class="top-main"')&&topHeader.includes('class="top-status"'),'duas faixas de controles distintas');
 assert.ok(topHeader.includes('class="primary-nav"'),'menus organizados em navegação própria');
