@@ -19,6 +19,39 @@ const brl=n=>Math.round(n).toLocaleString('pt-BR');
 let data,state,selected,scene;
 const FILTER={queue:'all',query:'',store:'all',stockQuery:''};
 let toastTimeout;
+
+const SCENE_REFERENCE={crop:{x:359,y:246,width:1045,height:407},worldX:319,worldY:45,width:1080,height:450};
+function sceneDB(){
+ return new Promise((resolve,reject)=>{
+  if(!('indexedDB' in window)){reject(Error('IndexedDB indisponível'));return}
+  const req=indexedDB.open('porcaria-workshop-background',1);
+  req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains('scene'))req.result.createObjectStore('scene')};
+  req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||Error('Falha no IndexedDB'));
+ });
+}
+async function sceneStore(op,blob){
+ const db=await sceneDB();
+ return new Promise((resolve,reject)=>{
+  const tx=db.transaction('scene',op==='read'?'readonly':'readwrite');
+  const req=op==='read'?tx.objectStore('scene').get('background'):op==='save'?tx.objectStore('scene').put(blob,'background'):tx.objectStore('scene').delete('background');
+  req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||Error('Falha ao salvar cenário'));
+  tx.oncomplete=()=>db.close();tx.onerror=()=>db.close();
+ });
+}
+async function imageFromBlob(blob){
+ const url=URL.createObjectURL(blob);
+ try{
+  const img=new Image();img.decoding='async';
+  await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(Error('Imagem inválida'));img.src=url});
+  return img;
+ }finally{URL.revokeObjectURL(url)}
+}
+async function useBackground(blob){
+ const img=await imageFromBlob(blob);
+ if(!scene)return;
+ scene.setBackdrop(img);
+}
+
 const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO ATUAL',stats:'📊 INDICADORES E RECURSOS',team:'👷 EQUIPE DA OFICINA',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA'};
 // Modal tem exclusividade de entrada; nunca permitir selecao de box atraves do overlay.
 function modalOpen(){return !!$('menuOverlay')&&!$('menuOverlay').hidden}
@@ -231,6 +264,16 @@ function events(){
    action(null);notify('Save importado com sucesso.');
   }catch(error){notify('Falha ao importar: '+error.message)}
  });
+  $('bgPicker').addEventListener('change',async ev=>{
+  const file=ev.target.files?.[0];ev.target.value='';if(!file)return;
+  try{
+   if(file.size>12_000_000)throw Error('Imagem acima de 12 MB');
+   if(!['image/png','image/jpeg','image/webp'].includes(file.type))throw Error('Formato não suportado');
+   await useBackground(file);await sceneStore('save',file);
+   notify('Cenário carregado. Para os sprites funcionarem sem duplicação, utilize uma imagem de fundo sem máquinas.');
+  }catch(err){notify('Não foi possível carregar: '+err.message)}
+ });
+ $('bgReset').addEventListener('click',async()=>{scene?.setBackdrop(null);try{await sceneStore('delete')}catch(err){console.warn(err)}notify('Cenário padrão restaurado.')});
   $('reset').addEventListener('click',()=>{if(!confirm('Reiniciar a campanha Phaser?'))return;state=E.create(data);selected=state.jobs[0]?.id;action(null)});
 }
 class Workshop extends Phaser.Scene{
@@ -301,6 +344,24 @@ class Workshop extends Phaser.Scene{
   this.bayZones=[0,1,2].map(i=>{const x=324+i*355;const hit=this.add.zone(x,155,337,323).setOrigin(0).setInteractive({useHandCursor:true});hit.on('pointerdown',()=>{if(modalOpen())return;const j=state.jobs.find(z=>z.bay===i);if(j)pick(j.id)});return hit});
   this.statusText=this.add.text(17,612,'', {fontFamily:'monospace',fontSize:'14px',color:'#f2e3bb',backgroundColor:'#102132cc',padding:{x:9,y:7}});
   this.time.addEvent({delay:2300,loop:true,callback:()=>{if(!this.machineObjs.length)return;this.tweens.add({targets:this.machineObjs.filter(x=>x.type==='Image'),y:'-=2',yoyo:true,duration:900,ease:'Sine.easeInOut'})}});
+  this.backgroundDecor=this.children.list.filter(o=>o!==this.statusText&&!this.bayZones.includes(o));
+  this.refresh();
+  sceneStore('read').then(blob=>{if(blob)return useBackground(blob)}).catch(console.warn);
+ }
+ setBackdrop(img){
+  if(this.backdrop){this.backdrop.destroy();this.backdrop=null}
+  if(this.backgroundDecor)this.backgroundDecor.forEach(o=>o.setVisible(!img));
+  if(!img){this.refresh();return}
+  const crop=SCENE_REFERENCE.crop;
+  const canvas=document.createElement('canvas');canvas.width=SCENE_REFERENCE.width;canvas.height=SCENE_REFERENCE.height;
+  const ctx=canvas.getContext('2d');
+  if(!ctx)throw Error('Canvas 2D indisponível');
+  ctx.imageSmoothingEnabled=true;
+  const sx=img.naturalWidth/1672,sy=img.naturalHeight/941;
+  ctx.drawImage(img,crop.x*sx,crop.y*sy,crop.width*sx,crop.height*sy,0,0,canvas.width,canvas.height);
+  if(this.textures.exists('dynamicWorkshopBG'))this.textures.remove('dynamicWorkshopBG');
+  this.textures.addCanvas('dynamicWorkshopBG',canvas);
+  this.backdrop=this.add.image(SCENE_REFERENCE.worldX,SCENE_REFERENCE.worldY,'dynamicWorkshopBG').setOrigin(0).setDepth(-1);
   this.refresh();
  }
  text(x,y,t,size,color,bold=false){return this.add.text(x,y,t,{fontFamily:'Arial, sans-serif',fontSize:size+'px',fontStyle:bold?'bold':'normal',color,stroke:'#112435',strokeThickness:4})}
