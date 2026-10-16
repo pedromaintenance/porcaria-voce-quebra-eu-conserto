@@ -32,7 +32,7 @@ jobs:
       - name: Verify official workshop image
         run: |
           test -s phaser-play/assets/oficina-base.avif
-          echo "ce99d2a9b3fe47988a3f60d4b3634715fffa5e5b69af7b525ebe8b39dbf75704  phaser-play/assets/oficina-base.avif" | sha256sum --check
+          echo "8d13599f38ac559f12a4c62e44119f1e432f5d8abc83b593d5a7ae852ef3f2bd  phaser-play/assets/oficina-base.avif" | sha256sum --check
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload website

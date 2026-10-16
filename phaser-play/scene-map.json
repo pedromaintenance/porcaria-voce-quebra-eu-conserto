@@ -15,12 +15,12 @@
   "background": {
     "file": "./assets/oficina-base.avif",
     "available": true,
-    "checksumSHA256": "ce99d2a9b3fe47988a3f60d4b3634715fffa5e5b69af7b525ebe8b39dbf75704",
-    "sourceWidth": 1976,
-    "sourceHeight": 796,
+    "checksumSHA256": "8d13599f38ac559f12a4c62e44119f1e432f5d8abc83b593d5a7ae852ef3f2bd",
+    "sourceWidth": 1350,
+    "sourceHeight": 563,
     "sourceCrop": {
-      "x": 320,
-      "y": 130,
+      "x": 0,
+      "y": 0,
       "width": 1350,
       "height": 563
     },
@@ -31,11 +31,11 @@
       "height": 450
     },
     "format": "AVIF",
-    "width": 900,
-    "height": 363,
+    "width": 1350,
+    "height": 563,
     "originalSource": "Oficina Industrial ao Entardecer.png",
     "publishedCommit": "b85015559a06474bc5cd64298646cc0c9c4b9ef1",
-    "notes": "O fundo é arte pintada: filtragem LINEAR no Phaser, sprites usam filtragem NEAREST. Corrigir textura para crop pré-renderizado em maior resolução (v0.7.1)."
+    "notes": "HQ nativo 1350x563 recortado do PNG original 1976x796. Renderização LINEAR para fundo; sprites NEAREST. Sem upscale de crop de 615px."
   },
   "bays": [
     {
