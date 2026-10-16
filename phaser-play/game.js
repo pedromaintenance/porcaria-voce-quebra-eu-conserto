@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.7.1 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.7.2 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -11,7 +11,14 @@ const ASSETS={
  shovel:REPO+'equipamentos/cat6030_frontshovel_estudo.png',
  excavator:REPO+'equipamentos/cat395.png',
  drill:REPO+'equipamentos/sandvik_dr410i_torre_erguida.png',
- worker:REPO+'personagens/elenco/mec_lia/idle.png'
+ worker_lia_idle:'./assets/characters/mec_lia/idle.png',
+ worker_lia_inspect:'./assets/characters/mec_lia/inspect.png',
+ worker_lia_point:'./assets/characters/mec_lia/point.png',
+ worker_lia_clipboard:'./assets/characters/mec_lia/clipboard.png',
+ worker_rafael_idle:'./assets/characters/mec_rafael/idle.png',
+ worker_rafael_inspect:'./assets/characters/mec_rafael/inspect.png',
+ worker_rafael_point:'./assets/characters/mec_rafael/point.png',
+ worker_rafael_clipboard:'./assets/characters/mec_rafael/clipboard.png'
 };
 const MACHINES={EQ01:'truck',EQ02:'shovel',EQ03:'excavator',EQ04:'excavator',EQ05:'drill',EQ06:'drill'};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -302,7 +309,7 @@ function events(){
   $('reset').addEventListener('click',()=>{if(!confirm('Reiniciar a campanha Phaser?'))return;state=E.create(data);selected=state.jobs[0]?.id;action(null)});
 }
 class Workshop extends Phaser.Scene{
- constructor(){super('Workshop');this.machineObjs=[]}
+ constructor(){super('Workshop');this.machineObjs=[];this.workerSprites=[]}
  preload(){
   Object.entries(ASSETS).forEach(([key,url])=>this.load.image(key,url));
   this.load.image('repoWorkshopBG','./assets/oficina-base.avif?v=0.7.0');
@@ -373,7 +380,14 @@ class Workshop extends Phaser.Scene{
    return hit;
   });
   this.statusText=this.add.text(17,612,'', {fontFamily:'monospace',fontSize:'14px',color:'#f2e3bb',backgroundColor:'#102132cc',padding:{x:9,y:7}});
-  this.time.addEvent({delay:2300,loop:true,callback:()=>{if(!this.machineObjs.length)return;this.tweens.add({targets:this.machineObjs.filter(x=>x.type==='Image'),y:'-=2',yoyo:true,duration:900,ease:'Sine.easeInOut'})}});
+  // Somente personagens mudam de pose; equipamentos e suas sombras nunca são animados.
+  this.time.addEvent({delay:560,loop:true,callback:()=>{
+   for(const actor of this.workerSprites){
+    if(!actor.sprite.active||actor.frames.length<2)continue;
+    actor.index=(actor.index+1)%actor.frames.length;
+    actor.sprite.setTexture(actor.frames[actor.index]);
+   }
+  }});
   this.backgroundDecor=this.children.list.filter(o=>o!==this.statusText&&!this.bayZones.includes(o));
   this.refresh();
   if(this.textures.exists('repoWorkshopBG'))this.setBackdrop(this.textures.get('repoWorkshopBG').getSourceImage());
@@ -426,14 +440,32 @@ class Workshop extends Phaser.Scene{
      this.machineObjs.push(g);
    }
  }
- worker(x,y,n){
-   if(this.textures.exists('worker')){
-     this.textures.get('worker').setFilter(Phaser.Textures.FilterMode.NEAREST);
-     const im=this.add.image(x,y,'worker').setOrigin(.5,1);const t=this.textures.get('worker').getSourceImage();im.setScale(Math.min(50/t.width,70/t.height));this.machineObjs.push(im);
-   }else{
-     const g=this.add.graphics();g.fillStyle(0x243b57);g.fillRoundedRect(x-11,y-43,22,34,4);g.fillStyle(0xf0b57a);g.fillCircle(x,y-51,11);g.fillStyle(0xf5b522);g.fillEllipse(x,y-61,25,12);g.fillStyle(0x192638);g.fillRect(x-11,y-9,9,15);g.fillRect(x+3,y-9,9,15);this.machineObjs.push(g);
-   }
+ worker(x,y,slot,{facing='right',mode='diagnose'}={}){
+  // Poses reais do catálogo: idle/inspect/point/clipboard, sem caminhar nem saltar.
+  const person=slot%2===0?'lia':'rafael';
+  const poses=mode==='blocked'?['idle']:mode==='repair'?['idle','inspect','clipboard','inspect']:['idle','inspect','point','inspect'];
+  const keys=poses.map(p=>'worker_'+person+'_'+p).filter(k=>this.textures.exists(k));
+  if(keys.length){
+   for(const key of new Set(keys))this.textures.get(key).setFilter(Phaser.Textures.FilterMode.NEAREST);
+   const im=this.add.image(x,y,keys[0]).setOrigin(.5,1);
+   const src=this.textures.get(keys[0]).getSourceImage();
+   im.setScale(Math.min(54/src.width,64/src.height));
+   // Esquerda do equipamento olha para a direita; direita olha para a esquerda.
+   im.setFlipX(facing==='left');
+   this.workerSprites.push({sprite:im,frames:keys,index:0});
+   return im;
+  }
+  // Fallback quando houver falha de rede/asset: mecânico parado no piso.
+  const g=this.add.graphics();
+  g.fillStyle(0x172d43);g.fillRoundedRect(x-13,y-39,26,31,3);
+  g.fillStyle(0xf0b57a);g.fillCircle(x,y-48,11);
+  g.fillStyle(0xe7ac26);g.fillEllipse(x,y-60,28,12);
+  g.fillStyle(0x172d43);g.fillRect(x-11,y-8,9,9);g.fillRect(x+3,y-8,9,9);
+  g.lineStyle(4,0xf0b57a);g.lineBetween(x+(facing==='right'?9:-9),y-33,x+(facing==='right'?21:-21),y-22);
+  this.machineObjs.push(g);
+  return g;
  }
+
  refresh(){
    if(this.selectedOutline){this.selectedOutline.destroy();this.selectedOutline=null}
    const focus=state.jobs.find(z=>z.id===selected&&z.bay!==null);
@@ -445,6 +477,7 @@ class Workshop extends Phaser.Scene{
      this.selectedOutline=outline;
    }
    this.machineObjs.forEach(x=>x.destroy());this.machineObjs=[];
+   this.workerSprites.forEach(a=>a.sprite.destroy());this.workerSprites=[];
    this.textObjects?.forEach(x=>x.destroy());this.textObjects=[];
    this.progressObjects?.forEach(x=>x.destroy());this.progressObjects=[];
    BAY_LAYOUT.forEach(({id:i,spriteWorld,workerWorld,labelWorld,progressWorld})=>{
@@ -459,9 +492,9 @@ class Workshop extends Phaser.Scene{
        shadow.fillEllipse(cx,ground+3,245,30);
        this.machineObjs.push(shadow);
        this.machine(cx,spriteWorld.y,j.modelId,spriteWorld.scale||.72);
-       this.worker(workerWorld[0].x,workerWorld[0].y,i);this.worker(workerWorld[1].x,workerWorld[1].y,i+1);
-       let label=this.text(labelWorld?.x??cx-95,labelWorld?.y??430,E.model(data,j.modelId)?.title+' · '+j.id,12,'#ffffff',true);
-       label.setBackgroundColor('#0c2539').setPadding(5);this.textObjects.push(label);
+       const mode=j.status==='material'||j.status==='ferramenta'?'blocked':j.stage>=6?'repair':'diagnose';
+       workerWorld.forEach((w,idx)=>this.worker(w.x,w.y,i*2+idx,{facing:w.facing|| (idx?'left':'right'),mode}));
+       // O HUD inferior já mostra equipamento e OS: evitar um segundo rótulo sobre as rodas.
        // Progresso visual da OS; diagnóstico e reparo são fases distintas.
        if(progressWorld){
         const p=progressWorld;
