@@ -41,8 +41,8 @@ assert.ok(phaserHtml.includes('overflow-x:auto'),'navegação responsiva roláve
 assert.ok(phaserScript.includes('function closeSceneMenu()'),'menu de cenário pode ser fechado');
 assert.ok(phaserScript.includes("sceneMenuBtn').addEventListener('click'"),'controle de abertura do menu presente');
 assert.ok(phaserScript.includes("if(!$('sceneMenu').hidden)"),'Escape fecha o dropdown antes do modal');
-assert.ok(phaserHtml.includes('game.js?v=0.7.4'),'script principal tem cache versionado');
-assert.ok(phaserHtml.includes('layout-math.js?v=0.7.4'),'funções de geometria carregam antes da oficina');
+assert.ok(phaserHtml.includes('game.js?v=0.7.5'),'script principal tem cache versionado');
+assert.ok(phaserHtml.includes('layout-math.js?v=0.7.5'),'funções de geometria carregam antes da oficina');
 
 const state=engine.create(data,()=>0.42);
 assert.ok(engine.validate(state),'save inicial válido');
@@ -62,6 +62,7 @@ assert.ok(fs.statSync(background).size>=90000,'AVIF com qualidade superior à te
 const crop=map.background.sourceCrop;
 assert.ok(crop.x>=0&&crop.y>=0&&crop.x+crop.width<=map.background.sourceWidth&&crop.y+crop.height<=map.background.sourceHeight,'recorte da oficina está dentro da imagem original');
 const left=map.viewport.worldScrollX,top=map.viewport.worldScrollY;
+const layoutMath=require(path.join(root,'phaser-play','layout-math.js'));
 for(const bay of map.bays){
  const z=bay.hitWorld;
  assert.ok(z.x>=left&&z.x+z.width<=left+map.viewport.width,'box visível horizontalmente');
@@ -69,17 +70,35 @@ for(const bay of map.bays){
  assert.ok(bay.spriteWorld.x>=z.x&&bay.spriteWorld.x<=z.x+z.width,'máquina centralizada no próprio box');
  assert.ok(bay.spriteWorld.y>=z.y&&bay.spriteWorld.y<=z.y+z.height,'máquina sobre piso do box');
  for(const worker of bay.workerWorld){
-  assert.ok(worker.x>=z.x&&worker.x<=z.x+z.width&&worker.y>=z.y&&worker.y<=z.y+z.height,'mecânico dentro da área do box');
+  assert.ok(worker.y>=z.y&&worker.y<=z.y+z.height,'mecânico mantém contato com o piso do galpão');
+  const visible=layoutMath.visibleCenter(worker.x,54,map.viewport,8);
+  assert.ok(visible>=left+35&&visible<=left+map.viewport.width-35,'mecânico é mantido dentro do recorte visível');
  }
  assert.ok(bay.progressWorld.x>=z.x&&bay.progressWorld.x+bay.progressWorld.width<=z.x+z.width,'barra de progresso dentro do box');
 }
 // v0.7.4 — escala específica por modelo com limites reais do espaço visual.
-const layoutMath=require(path.join(root,'phaser-play','layout-math.js'));
-assert.equal(map.version,'0.7.4','mapeamento da revisão atual');
+assert.equal(map.version,'0.7.5','mapeamento da revisão atual');
 assert.equal(map.modelPresentation.EQ02.scaleMultiplier,2,'CAT 6030 com proporção alvo 2x');
 assert.equal(map.modelPresentation.EQ05.scaleMultiplier,3,'DR410i com proporção alvo 3x');
-assert.equal(map.bays[0].spriteWorld.x,479,'box 1 deslocado para a esquerda');
-assert.equal(map.bays[2].spriteWorld.x,1141,'box 3 deslocado para a direita');
+const expectedX=[407,848,1223];
+const expectedWorkers=[[310,539],[725,977],[1102,1345]];
+const expectedProgress=[402,695,1006];
+const expectedHits=[379,660,980];
+for(let i=0;i<3;i++){
+ const b=map.bays[i];
+ assert.equal(b.spriteWorld.x,expectedX[i],`BOX ${i+1}: novo centro nominal da máquina`);
+ assert.deepEqual(b.workerWorld.map(w=>w.x),expectedWorkers[i],`BOX ${i+1}: mecânicos acompanham translação`);
+ assert.equal(b.hitWorld.x,expectedHits[i],`BOX ${i+1}: hotspot preservado`);
+ assert.equal(b.progressWorld.x,expectedProgress[i],`BOX ${i+1}: progresso não se desloca do letreiro`);
+}
+assert.deepEqual(map.bays.map(b=>b.compositionOffsetX),[-94,40,104],'deslocamentos acumulados a partir das versões anteriores');
+assert.equal(layoutMath.visibleCenter(310,54,map.viewport,8),354,'mecânico do box 1 protegido contra corte na borda esquerda');
+assert.equal(layoutMath.visibleCenter(407,272,map.viewport,8),463,'equipamento largo fica inteiramente visível');
+assert.equal(layoutMath.visibleCenter(1345,54,map.viewport,8),1345,'mecânico do box 3 não é alterado quando está visível');
+assert.ok(phaserScript.includes("machineNode.on('pointerdown'"),'clique na máquina seleciona a própria OS');
+assert.ok(phaserScript.includes("actor.on('pointerdown'"),'clique no mecânico seleciona a própria OS mesmo sobre região vizinha');
+assert.ok(phaserScript.includes('fillEllipse(machineX,ground'),'sombra acompanha centro efetivamente renderizado da máquina');
+assert.ok(phaserScript.includes('visibleCenter(x,54,SCENE_REFERENCE'),'mecânicos respeitam o enquadramento');
 const bay=map.bays[1];
 const oldDrill=layoutMath.equipmentSize(1086,1448,bay.spriteWorld.scale,{scaleMultiplier:1},bay);
 const newDrill=layoutMath.equipmentSize(1086,1448,bay.spriteWorld.scale,map.modelPresentation.EQ05,bay);
