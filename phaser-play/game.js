@@ -263,6 +263,15 @@ class Workshop extends Phaser.Scene{
    }
  }
  refresh(){
+   if(this.selectedOutline){this.selectedOutline.destroy();this.selectedOutline=null}
+   const focus=state.jobs.find(z=>z.id===selected&&z.bay!==null);
+   if(focus){
+     const x=324+focus.bay*355;
+     const outline=this.add.graphics();
+     outline.lineStyle(5,0xffd05a,1);
+     outline.strokeRoundedRect(x+5,168,325,286,8);
+     this.selectedOutline=outline;
+   }
    this.machineObjs.forEach(x=>x.destroy());this.machineObjs=[];
    this.textObjects?.forEach(x=>x.destroy());this.textObjects=[];
    [0,1,2].forEach(i=>{
