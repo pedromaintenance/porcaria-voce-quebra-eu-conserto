@@ -381,6 +381,7 @@ class Workshop extends Phaser.Scene{
   this.statusText=this.add.text(17,612,'', {fontFamily:'monospace',fontSize:'14px',color:'#f2e3bb',backgroundColor:'#102132cc',padding:{x:9,y:7}});
   // Somente personagens mudam de pose; equipamentos e suas sombras nunca são animados.
   this.time.addEvent({delay:560,loop:true,callback:()=>{
+   if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;
    for(const actor of this.workerSprites){
     if(!actor.sprite.active||actor.frames.length<2)continue;
     actor.index=(actor.index+1)%actor.frames.length;
