@@ -25,8 +25,10 @@ jobs:
         uses: actions/checkout@v4
       - name: Validate Phaser JavaScript syntax
         run: node --check phaser-play/game.js && node --check engine.js
+      - name: Regression tests (engine and scene map)
+        run: node scripts/smoke-phaser.cjs
       - name: Check Pages entrypoints
-        run: test -f phaser-play/index.html && test -f phaser-play/game.js && test -f game-data.json
+        run: test -f phaser-play/index.html && test -f phaser-play/game.js && test -f phaser-play/scene-map.json && test -f game-data.json
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload website
