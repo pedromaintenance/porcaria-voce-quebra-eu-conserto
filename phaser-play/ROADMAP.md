@@ -63,6 +63,7 @@ A imagem indicada para a nova oficina é uma **composição de interface**, com 
 - **Zonas clicáveis no mundo:** Box 1 `(324,155,337,323)`, Box 2 `(679,155,337,323)`, Box 3 `(1034,155,337,323)`.
 - **Sprites independentes:** coordenadas `spriteWorld` e `workerWorld` por box, editáveis no JSON.
 - **Substituição temporária:** botão **CENÁRIO** permite carregar PNG/JPEG/WebP do computador, aplica recorte e guarda no IndexedDB do navegador; **PADRÃO** restaura a cena vetorial.
+- **Integração automática preparada:** ao adicionar `phaser-play/assets/oficina-base.png` na branch `main`, o Phaser carrega a imagem como fundo; imagens panorâmicas usam a área inteira e screenshots completos (proporção 1672×941) são recortados para os boxes. A personalização salva no navegador tem precedência.
 - **Limitação:** a imagem enviada nesta conversa ainda **não foi publicada como PNG no GitHub**. A funcionalidade de importar a imagem pelo navegador não equivale a um asset incluído no repositório.
 - **Pendente P0:** produzir/fornecer versão limpa **sem equipamentos, personagens, HUD ou textos duplicados**, registrar `phaser-play/assets/oficina-base.png` e configurar carregamento automático. Caso o PNG contenha veículos, não sobrepor sprites móveis sem primeiro removê-los da base.
 - **Pendente P0:** validar manualmente alinhamento dos três hotspots com o fundo final em resoluções desktop e mobile; refinar as coordenadas do JSON conforme necessário.
