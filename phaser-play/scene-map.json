@@ -1,5 +1,5 @@
 {
-  "version": "0.7.1",
+  "version": "0.7.2",
   "reference": {
     "file": "Oficina Industrial ao Entardecer.png",
     "width": 1976,
@@ -45,27 +45,29 @@
         "x": 379,
         "y": 130,
         "width": 280,
-        "height": 322
+        "height": 356
       },
       "spriteWorld": {
         "x": 501,
-        "y": 430,
-        "scale": 0.72,
-        "groundY": 414
+        "y": 469,
+        "scale": 0.7,
+        "groundY": 448
       },
       "workerWorld": [
         {
-          "x": 427,
-          "y": 414
+          "x": 404,
+          "y": 448,
+          "facing": "right"
         },
         {
-          "x": 588,
-          "y": 414
+          "x": 633,
+          "y": 448,
+          "facing": "left"
         }
       ],
       "labelWorld": {
         "x": 407,
-        "y": 426
+        "y": 447
       },
       "progressWorld": {
         "x": 402,
@@ -80,27 +82,29 @@
         "x": 660,
         "y": 130,
         "width": 295,
-        "height": 322
+        "height": 356
       },
       "spriteWorld": {
         "x": 808,
-        "y": 430,
-        "scale": 0.72,
-        "groundY": 414
+        "y": 469,
+        "scale": 0.7,
+        "groundY": 448
       },
       "workerWorld": [
         {
-          "x": 737,
-          "y": 414
+          "x": 685,
+          "y": 448,
+          "facing": "right"
         },
         {
-          "x": 902,
-          "y": 414
+          "x": 937,
+          "y": 448,
+          "facing": "left"
         }
       ],
       "labelWorld": {
         "x": 721,
-        "y": 426
+        "y": 447
       },
       "progressWorld": {
         "x": 695,
@@ -115,27 +119,29 @@
         "x": 980,
         "y": 130,
         "width": 285,
-        "height": 322
+        "height": 356
       },
       "spriteWorld": {
         "x": 1119,
-        "y": 430,
-        "scale": 0.72,
-        "groundY": 414
+        "y": 469,
+        "scale": 0.7,
+        "groundY": 448
       },
       "workerWorld": [
         {
-          "x": 1045,
-          "y": 414
+          "x": 998,
+          "y": 448,
+          "facing": "right"
         },
         {
-          "x": 1205,
-          "y": 414
+          "x": 1241,
+          "y": 448,
+          "facing": "left"
         }
       ],
       "labelWorld": {
         "x": 1034,
-        "y": 426
+        "y": 447
       },
       "progressWorld": {
         "x": 1006,
@@ -150,6 +156,6 @@
     "clickAreas": "Rectangles in world coordinates, no DOM click-through"
   },
   "assets": {
-    "notes": "Máquinas ancoradas visualmente no piso y≈412: sprite na posição y=430 para compensar área transparente no PNG; sombra de contato projetada no solo. Fundo LINEAR, sprites NEAREST."
+    "notes": "v0.7.2: equipamentos ancorados em y469, sombra no piso y448, mecânicos em y448 nas laterais olhando para a máquina. Imagens de mec_lia e mec_rafael localizadas no repositório com poses reais idle/inspect/point/clipboard. Não há tween vertical: máquinas imóveis, somente poses dos mecânicos alternam."
   }
 }
