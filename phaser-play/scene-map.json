@@ -1,5 +1,5 @@
 {
-  "version": "0.7.2",
+  "version": "0.7.4",
   "reference": {
     "file": "Oficina Industrial ao Entardecer.png",
     "width": 1976,
@@ -48,32 +48,34 @@
         "height": 356
       },
       "spriteWorld": {
-        "x": 501,
-        "y": 469,
+        "x": 479,
+        "y": 448,
         "scale": 0.7,
         "groundY": 448
       },
       "workerWorld": [
         {
-          "x": 404,
+          "x": 382,
           "y": 448,
           "facing": "right"
         },
         {
-          "x": 633,
+          "x": 611,
           "y": 448,
           "facing": "left"
         }
       ],
       "labelWorld": {
-        "x": 407,
+        "x": 385,
         "y": 447
       },
       "progressWorld": {
         "x": 402,
         "y": 217,
         "width": 220
-      }
+      },
+      "compositionOffsetX": -22,
+      "assetsNote": "Conjunto deslocado 22px para a esquerda"
     },
     {
       "id": 1,
@@ -86,7 +88,7 @@
       },
       "spriteWorld": {
         "x": 808,
-        "y": 469,
+        "y": 448,
         "scale": 0.7,
         "groundY": 448
       },
@@ -110,7 +112,9 @@
         "x": 695,
         "y": 217,
         "width": 230
-      }
+      },
+      "compositionOffsetX": 0,
+      "assetsNote": "Conjunto centralizado"
     },
     {
       "id": 2,
@@ -122,32 +126,34 @@
         "height": 356
       },
       "spriteWorld": {
-        "x": 1119,
-        "y": 469,
+        "x": 1141,
+        "y": 448,
         "scale": 0.7,
         "groundY": 448
       },
       "workerWorld": [
         {
-          "x": 998,
+          "x": 1020,
           "y": 448,
           "facing": "right"
         },
         {
-          "x": 1241,
+          "x": 1263,
           "y": 448,
           "facing": "left"
         }
       ],
       "labelWorld": {
-        "x": 1034,
+        "x": 1056,
         "y": 447
       },
       "progressWorld": {
         "x": 1006,
         "y": 217,
         "width": 225
-      }
+      },
+      "compositionOffsetX": 22,
+      "assetsNote": "Conjunto deslocado 22px para a direita"
     }
   ],
   "controls": {
@@ -156,6 +162,71 @@
     "clickAreas": "Rectangles in world coordinates, no DOM click-through"
   },
   "assets": {
-    "notes": "v0.7.2: equipamentos ancorados em y469, sombra no piso y448, mecânicos em y448 nas laterais olhando para a máquina. Imagens de mec_lia e mec_rafael localizadas no repositório com poses reais idle/inspect/point/clipboard. Não há tween vertical: máquinas imóveis, somente poses dos mecânicos alternam."
+    "notes": "v0.7.4: equipamentos e mecânicos transladados em conjunto nos boxes 1 e 3; todos no mesmo piso após recorte alpha. Escalas nominais CAT 6030 ×2 e Sandvik DR410i ×3 com limites por espaço; tamanho visual final depende da proporção do PNG e da área do box."
+  },
+  "rendering": {
+    "backgroundFilter": "LINEAR",
+    "spriteFilter": "NEAREST",
+    "roundPixels": true,
+    "antialias": false,
+    "maxResolution": 2,
+    "trimTransparentMargins": true,
+    "notes": "Fundo ilustrado e sprites usam filtros diferentes. Resolução interna acompanha DPR/largura da tela, limitada a 2. Recorte da transparência remove margens que reduziam o tamanho aparente das máquinas."
+  },
+  "modelPresentation": {
+    "EQ01": {
+      "label": "CAT 777E",
+      "scaleMultiplier": 1,
+      "maximumWidth": 265,
+      "maximumHeight": 225
+    },
+    "EQ02": {
+      "label": "CAT 6030",
+      "scaleMultiplier": 2,
+      "maximumWidth": 272,
+      "maximumHeight": 282
+    },
+    "EQ03": {
+      "label": "CAT 395",
+      "scaleMultiplier": 1,
+      "maximumWidth": 260,
+      "maximumHeight": 234
+    },
+    "EQ04": {
+      "label": "CAT 336GC",
+      "scaleMultiplier": 0.95,
+      "maximumWidth": 256,
+      "maximumHeight": 228
+    },
+    "EQ05": {
+      "label": "Sandvik DR410i",
+      "scaleMultiplier": 3,
+      "maximumWidth": 252,
+      "maximumHeight": 310
+    },
+    "EQ06": {
+      "label": "Sandvik DI650i",
+      "scaleMultiplier": 2.4,
+      "maximumWidth": 248,
+      "maximumHeight": 302
+    },
+    "EQ07": {
+      "label": "CAT D9",
+      "scaleMultiplier": 1.12,
+      "maximumWidth": 258,
+      "maximumHeight": 230
+    },
+    "EQ08": {
+      "label": "CAT 966",
+      "scaleMultiplier": 1,
+      "maximumWidth": 258,
+      "maximumHeight": 230
+    },
+    "EQ09": {
+      "label": "CAT 16",
+      "scaleMultiplier": 1,
+      "maximumWidth": 258,
+      "maximumHeight": 230
+    }
   }
 }
