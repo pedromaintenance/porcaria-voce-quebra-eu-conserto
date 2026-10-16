@@ -1,10 +1,10 @@
 {
-  "version": "0.6",
+  "version": "0.7.0",
   "reference": {
-    "file": "image(20261016-012504).png",
-    "width": 1672,
-    "height": 941,
-    "notes": "O screenshot de referencia inclui UI, pessoas e maquinas; gerar base limpa antes do commit final para evitar duplicacao."
+    "file": "Oficina Industrial ao Entardecer.png",
+    "width": 1976,
+    "height": 796,
+    "notes": "Fundo limpo disponibilizado pelo usuário; asset distribuído no Pages em AVIF otimizado e recuperado no CI a partir de segmentos base64 versionados."
   },
   "viewport": {
     "width": 1080,
@@ -13,13 +13,17 @@
     "worldScrollY": 45
   },
   "background": {
-    "file": "./assets/oficina-base.png",
-    "available": false,
+    "file": "./assets/oficina-base.avif",
+    "available": true,
+    "encodedSource": "./assets/packed/part*.b64",
+    "checksumSHA256": "ce99d2a9b3fe47988a3f60d4b3634715fffa5e5b69af7b525ebe8b39dbf75704",
+    "sourceWidth": 1976,
+    "sourceHeight": 796,
     "sourceCrop": {
-      "x": 359,
-      "y": 246,
-      "width": 1045,
-      "height": 407
+      "x": 320,
+      "y": 130,
+      "width": 1350,
+      "height": 563
     },
     "drawInViewport": {
       "x": 0,
@@ -33,80 +37,111 @@
       "id": 0,
       "label": "BOX 1",
       "hitWorld": {
-        "x": 324,
-        "y": 155,
-        "width": 337,
-        "height": 323
+        "x": 379,
+        "y": 130,
+        "width": 280,
+        "height": 288
       },
       "spriteWorld": {
-        "x": 490,
-        "y": 395
+        "x": 501,
+        "y": 378,
+        "scale": 0.72
       },
       "workerWorld": [
         {
-          "x": 376,
-          "y": 442
+          "x": 427,
+          "y": 414
         },
         {
-          "x": 605,
-          "y": 439
+          "x": 588,
+          "y": 414
         }
-      ]
+      ],
+      "labelWorld": {
+        "x": 407,
+        "y": 436
+      },
+      "progressWorld": {
+        "x": 402,
+        "y": 169,
+        "width": 220
+      }
     },
     {
       "id": 1,
       "label": "BOX 2",
       "hitWorld": {
-        "x": 679,
-        "y": 155,
-        "width": 337,
-        "height": 323
+        "x": 660,
+        "y": 130,
+        "width": 295,
+        "height": 288
       },
       "spriteWorld": {
-        "x": 845,
-        "y": 395
+        "x": 808,
+        "y": 378,
+        "scale": 0.72
       },
       "workerWorld": [
         {
-          "x": 731,
-          "y": 442
+          "x": 737,
+          "y": 414
         },
         {
-          "x": 960,
-          "y": 439
+          "x": 902,
+          "y": 414
         }
-      ]
+      ],
+      "labelWorld": {
+        "x": 721,
+        "y": 436
+      },
+      "progressWorld": {
+        "x": 695,
+        "y": 169,
+        "width": 230
+      }
     },
     {
       "id": 2,
       "label": "BOX 3",
       "hitWorld": {
-        "x": 1034,
-        "y": 155,
-        "width": 337,
-        "height": 323
+        "x": 980,
+        "y": 130,
+        "width": 285,
+        "height": 288
       },
       "spriteWorld": {
-        "x": 1200,
-        "y": 395
+        "x": 1119,
+        "y": 378,
+        "scale": 0.72
       },
       "workerWorld": [
         {
-          "x": 1086,
-          "y": 442
+          "x": 1045,
+          "y": 414
         },
         {
-          "x": 1315,
-          "y": 439
+          "x": 1205,
+          "y": 414
         }
-      ]
+      ],
+      "labelWorld": {
+        "x": 1034,
+        "y": 436
+      },
+      "progressWorld": {
+        "x": 1006,
+        "y": 169,
+        "width": 225
+      }
     }
   ],
   "controls": {
     "scale": "FIT",
-    "pointer": "Phaser input ignored while modal is open"
+    "pointer": "Phaser input disabled while modal is open",
+    "clickAreas": "Rectangles in world coordinates, no DOM click-through"
   },
   "assets": {
-    "notes": "Sprites carregados em camadas, independentes da imagem de fundo; somente exibir quando houver OS no box."
+    "notes": "Fundo clean é estático. Máquinas, mecânicos, seleção de OS e barras de progresso permanecem renderizados de forma independente."
   }
 }
