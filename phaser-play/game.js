@@ -17,7 +17,7 @@ const MACHINES={EQ01:'truck',EQ02:'shovel',EQ03:'excavator',EQ04:'excavator',EQ0
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const brl=n=>Math.round(n).toLocaleString('pt-BR');
 let data,state,selected,scene;
-const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO ATUAL',stats:'📊 INDICADORES E RECURSOS'};
+const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO ATUAL',stats:'📊 INDICADORES E RECURSOS',team:'👷 EQUIPE DA OFICINA',store:'📦 ALMOXARIFADO E FERRAMENTAL'};
 function openPanel(name){const overlay=$('menuOverlay');if(!overlay)return;overlay.hidden=false;$('modalHeading').textContent=PANEL_TITLES[name]||'MENU DA OFICINA';document.querySelectorAll('[data-panel]').forEach(el=>el.classList.toggle('is-open',el.dataset.panel===name));document.body.style.overflow='hidden';$('closePanel')?.focus()}
 function closePanel(){const overlay=$('menuOverlay');if(overlay)overlay.hidden=true;document.body.style.overflow='';}
 function save(){try{localStorage.setItem(SAVE,JSON.stringify(state))}catch(e){console.warn('Save',e)}}
@@ -66,8 +66,37 @@ function drawUI(){
  }
  d.innerHTML=out;
  $('stats').innerHTML=`<div class="status">OS concluídas: <b>${k.done}</b> · Críticas: <b>${k.critical}</b></div><div class="status">Reputação: <b>${k.reputation}/100</b> · Utilização: <b>${k.utilization}%</b></div><div class="status">Mecânicos disponíveis: <b>${state.team.filter(x=>!x.assigned).length}</b></div><div class="progress"><i style="width:${k.reputation}%"></i></div><div class="legend">⚒ Clique nos boxes da oficina para selecionar uma OS.</div>`;
+ drawTeam();drawStore();
  $('logs').innerHTML=state.logs.slice(0,5).map(l=>`<div class="log">D${l.day}: ${esc(l.text)}</div>`).join('');
 }
+
+function energyMeter(label,value){
+ return `<div class="resourceMeter"><span>${label}</span><div class="progress"><i style="width:${Math.max(0,Math.min(100,value))}%"></i></div><b>${Math.round(value)}</b></div>`;
+}
+function drawTeam(){
+ const busy=new Set(state.jobs.map(j=>j.assigned).filter(Boolean));
+ $('teamPanel').innerHTML=`<p class="muted">Gerencie a energia física, mental e o moral dos profissionais. Contratações custam R$ 1.050 e 18 de energia mental do supervisor.</p><div class="actions"><button class="act" data-team-action="hire">+ CONTRATAR MECÂNICO</button></div><div class="resourceGrid">`+state.team.map(m=>{
+ const current=state.jobs.find(j=>j.assigned===m.id);
+ const resting=m.restAt===state.tick;
+ return `<article class="resourceCard"><h3>${esc(m.avatar)} ${esc(m.name)} · ${esc(m.role)}</h3><p class="muted">${current?'Em serviço: '+esc(current.id)+' · Box '+(current.bay+1):resting?'Descanso programado neste turno':'Disponível'} · Habilidade ${Math.round(m.skill)}</p>${energyMeter('Mental',m.mental)}${energyMeter('Física',m.physical)}${energyMeter('Moral',m.morale)}<div class="actions"><button class="act secondary" data-team-action="motivate" data-person="${esc(m.id)}">MOTIVAR</button><button class="act secondary" data-team-action="rest" data-person="${esc(m.id)}" ${current||resting?'disabled':''}>DESCANSAR</button></div></article>`;
+ }).join('')+'</div>';
+}
+function drawStore(){
+ const materials=Object.entries(data.items);
+ const tools=Object.entries(data.tools);
+ const inTransit=state.orders||[];
+ $('storePanel').innerHTML=`<p class="muted">Caixa: R$ ${brl(state.cash)}. Compra normal tem prazo maior; pedido urgente custa 65% a mais. Recebimento ocorre ao avançar turnos.</p>
+ <h3 class="resourceSection">MATERIAIS · ${materials.length} ITENS</h3>`+
+ materials.map(([id,item])=>{
+ const transit=inTransit.filter(p=>p.item===id).reduce((sum,p)=>sum+p.qty,0);
+ return `<div class="resourceRow"><div><strong>${esc(item.name)}</strong><br><small>Código ${esc(id)} · Saldo ${state.stock[id]||0} · Em trânsito ${transit} · Unitário R$ ${brl(item.unit)}</small></div><div class="actions"><select id="qty-${esc(id)}" aria-label="Quantidade de ${esc(item.name)}"><option value="1">1 un.</option><option value="2">2 un.</option><option value="3">3 un.</option><option value="5">5 un.</option><option value="10">10 un.</option></select><button class="act secondary" data-store-action="order" data-item="${esc(id)}">COMPRAR</button><button class="act" data-store-action="rush" data-item="${esc(id)}">URGENTE</button></div></div>`;
+ }).join('')+
+ `<h3 class="resourceSection">FERRAMENTAL · ${tools.length} ITENS</h3>`+
+ tools.map(([id,tool])=>`<div class="resourceRow"><div><strong>${esc(tool.name)}</strong><br><small>${state.tools[id]?'✓ Disponível na oficina':'⚠ Indisponível'} · Valor R$ ${brl(tool.cost)}</small></div><button class="act secondary" data-store-action="tool" data-item="${esc(id)}" ${state.tools[id]?'disabled':''}>${state.tools[id]?'ADQUIRIDA':'ADQUIRIR'}</button></div>`).join('')+
+ `<h3 class="resourceSection">PEDIDOS EM TRÂNSITO · ${inTransit.length}</h3>`+
+ (inTransit.length?inTransit.map(p=>`<div class="resourceRow"><span><strong>${esc(p.id)}</strong> — ${esc(data.items[p.item]?.name||p.item)} · ${p.qty} un.</span><small>Previsão em ${Math.max(0,p.eta-state.tick)} turno(s) · ${p.fast?'Urgente':'Normal'}</small></div>`).join(''):'<p class="muted">Nenhum pedido aguardando recebimento.</p>');
+}
+
 function events(){
  document.querySelectorAll('[data-open-panel]').forEach(b=>b.addEventListener('click',()=>openPanel(b.dataset.openPanel)));
  $('closePanel').addEventListener('click',closePanel);
@@ -81,6 +110,10 @@ function events(){
    action(null);if(!result.ok)notify('Hipótese incorreta: custo e retrabalho adicionados.');
    return;
   }
+  const tm=ev.target.closest('[data-team-action]');
+  if(tm){const id=tm.dataset.person;const mode=tm.dataset.teamAction;action(mode==='hire'?E.hire(state):mode==='rest'?E.rest(state,id):E.motivate(state,id));return}
+  const st=ev.target.closest('[data-store-action]');
+  if(st){const id=st.dataset.item,mode=st.dataset.storeAction;if(mode==='tool')action(E.buyTool(state,data,id));else{const qty=Number($('qty-'+id)?.value||1);action(E.orderMaterial(state,data,id,qty,mode==='rush'))}return}
   const b=ev.target.closest('[data-do]');if(!b)return;
   const j=job();if(!j)return;const c=E.scenario(data,j.scene);
   if(b.dataset.do==='assign')action(E.attach(state,j.id,$('mechanic').value,Number($('bay').value),true));
