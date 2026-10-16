@@ -281,6 +281,7 @@ class Workshop extends Phaser.Scene{
  constructor(){super('Workshop');this.machineObjs=[]}
  preload(){
   Object.entries(ASSETS).forEach(([key,url])=>this.load.image(key,url));
+  this.load.image('repoWorkshopBG','./assets/oficina-base.png');
   this.load.on('loaderror',f=>console.warn('Imagem opcional indisponivel:',f.key));
  }
  create(){
@@ -351,6 +352,7 @@ class Workshop extends Phaser.Scene{
   this.time.addEvent({delay:2300,loop:true,callback:()=>{if(!this.machineObjs.length)return;this.tweens.add({targets:this.machineObjs.filter(x=>x.type==='Image'),y:'-=2',yoyo:true,duration:900,ease:'Sine.easeInOut'})}});
   this.backgroundDecor=this.children.list.filter(o=>o!==this.statusText&&!this.bayZones.includes(o));
   this.refresh();
+  if(this.textures.exists('repoWorkshopBG'))this.setBackdrop(this.textures.get('repoWorkshopBG').getSourceImage());
   sceneStore('read').then(blob=>{if(blob)return useBackground(blob)}).catch(console.warn);
  }
  setBackdrop(img){
@@ -362,8 +364,15 @@ class Workshop extends Phaser.Scene{
   const ctx=canvas.getContext('2d');
   if(!ctx)throw Error('Canvas 2D indisponível');
   ctx.imageSmoothingEnabled=true;
-  const sx=img.naturalWidth/1672,sy=img.naturalHeight/941;
-  ctx.drawImage(img,crop.x*sx,crop.y*sy,crop.width*sx,crop.height*sy,0,0,canvas.width,canvas.height);
+  const aspect=img.naturalWidth/img.naturalHeight;
+  if(aspect>2.05){
+   // Fundo já recortado no formato panorâmico dos três boxes.
+   ctx.drawImage(img,0,0,img.naturalWidth,img.naturalHeight,0,0,canvas.width,canvas.height);
+  }else{
+   // Screenshot completo: remove o HUD e recorta os boxes.
+   const sx=img.naturalWidth/1672,sy=img.naturalHeight/941;
+   ctx.drawImage(img,crop.x*sx,crop.y*sy,crop.width*sx,crop.height*sy,0,0,canvas.width,canvas.height);
+  }
   if(this.textures.exists('dynamicWorkshopBG'))this.textures.remove('dynamicWorkshopBG');
   this.textures.addCanvas('dynamicWorkshopBG',canvas);
   this.backdrop=this.add.image(SCENE_REFERENCE.worldX,SCENE_REFERENCE.worldY,'dynamicWorkshopBG').setOrigin(0).setDepth(-1);
