@@ -14,3 +14,14 @@
 .prototype-guide ol{display:flex;gap:20px;flex-wrap:wrap;margin:8px 0 0;padding-left:18px}
 .prototype-guide li{flex:1 1 150px;font-size:12px;line-height:1.4}
 @media(max-width:800px){.bay .toy .machine-art{height:80px}.machine-art{height:75px}.prototype-guide ol{gap:7px}}
+
+/* Primeiro corte visual: frota selecionavel com sprites originais (ainda em revisao). */
+.fleet-showcase{background:linear-gradient(145deg,#263f43,#3f6259);color:#f8f7ea;border:2px solid #9ab0a6;border-radius:22px;padding:16px;margin:0 0 13px;box-shadow:0 14px 32px #1e312a30}
+.fleet-showcase-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.fleet-showcase-head strong{font-size:17px}.fleet-showcase-head span{font-size:12px;color:#e6e7d2}
+.fleet-showcase-items{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.fleet-unit{display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:6px;min-width:0;cursor:pointer;padding:10px 6px;background:#f6f2e8;color:#233b38;border:2px solid #a2b8aa;border-radius:14px;font:inherit;transition:transform .12s,box-shadow .12s}
+.fleet-unit:hover,.fleet-unit:focus-visible{transform:translateY(-3px);box-shadow:0 6px 16px #0003;outline:2px solid #d6b067}
+.fleet-unit-art{display:grid;place-items:center;width:100%;height:105px;overflow:hidden;background:linear-gradient(#d8e7e2,#eee5d2);border-radius:9px}
+.fleet-unit .machine-art{height:102px}.fleet-unit b{font-size:13px;text-align:center}.fleet-unit small{font-size:11px;color:#55635c}
+@media(max-width:720px){.fleet-showcase-items{grid-template-columns:repeat(2,minmax(0,1fr))}.fleet-unit-art,.fleet-unit .machine-art{height:82px}}
