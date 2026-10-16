@@ -93,7 +93,9 @@ assert.ok(newShovel.height>oldShovel.height*1.5,'CAT 6030 perceptivelmente maior
 assert.ok(newShovel.width<=map.modelPresentation.EQ02.maximumWidth,'CAT 6030 cabe em largura');
 assert.ok(phaserScript.includes('trimmedEquipment(key)'),'remover bordas transparentes para aproveitar o sprite');
 assert.ok(phaserScript.includes('equipmentSize(src.width,src.height'),'escala da maquina calculada pelo modulo');
-assert.ok(phaserScript.includes('resolution=Math.min(2'),'resolução interna adapta-se ao tamanho real');
+assert.ok(phaserScript.includes('const density=Math.min(2'),'backdrop mantém textura nativa de alta resolução');
+assert.ok(phaserScript.includes('setDisplaySize(SCENE_REFERENCE.width,SCENE_REFERENCE.height)'),'backdrop preserva tamanho lógico no mundo');
+assert.ok(!phaserScript.includes('width:1080,height:450,resolution'),'configuração Phaser 3 não depende da opção resolution descontinuada');
 assert.ok(phaserScript.includes('roundPixels:true'),'posições inteiras reduzem borrado');
 assert.ok(phaserScript.includes('texture.setFilter(Phaser.Textures.FilterMode.NEAREST)'),'sprites preservam contorno');
 assert.ok(phaserScript.includes("FilterMode.LINEAR"),'fundo pintado usa suavização independente');
