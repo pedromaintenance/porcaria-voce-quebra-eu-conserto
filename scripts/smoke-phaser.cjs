@@ -32,6 +32,8 @@ assert.equal((phaserHtml.match(/id="helpBtn"/g)||[]).length,1,'ajuda única');
 assert.equal((phaserHtml.match(/id="sceneMenuBtn"/g)||[]).length,1,'um controle visual');
 assert.equal((phaserHtml.match(/id="sceneMenu"/g)||[]).length,1,'menu de cenário único');
 assert.equal((phaserHtml.match(/id="bgPicker"/g)||[]).length,1,'selecionador de cenário preservado');
+assert.equal((phaserHtml.match(/id="bgPickBtn"/g)||[]).length,1,'botão de cenário acessível preservado');
+assert.ok(phaserScript.includes("bgPickBtn').addEventListener('click'"),'botão de cenário aciona seletor de arquivos');
 assert.equal((phaserHtml.match(/id="bgReset"/g)||[]).length,1,'ação restaurar cenário preservada');
 assert.ok(topHeader.includes('id="bgPicker"')&&topHeader.includes('id="bgReset"'),'ações de cenário agrupadas na barra');
 assert.ok(!phaserHtml.includes('class="backgroundControl"'),'menu de cenário não cobre mais os boxes');
