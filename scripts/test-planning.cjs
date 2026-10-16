@@ -69,6 +69,7 @@ state.team[1].restAt=null;
 state.team[1].mental=12;state.team[1].physical=18;
 assert.equal(P.candidateScore(state.team[1],sc2).fatigued,true,'fadiga explicitada');
 assert.equal(P.compute(state,data).remainingGrossHours,16,'fadiga reduz score, não remove mecanicamente da capacidade bruta');
+for(const x of state.jobs.filter(x=>!x.assigned))state.tools[E.scenario(data,x.scene).tool]=true;
 for(const x of state.jobs.filter(x=>!x.assigned)){
  const row=P.compute(state,data).ranked.find(z=>z.id===x.id);
  // O bloqueio manual é permitido pelo motor; o planner oferece alocação automática apenas quando apto.
