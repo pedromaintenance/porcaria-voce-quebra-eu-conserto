@@ -240,6 +240,7 @@ function events(){
   closeSceneMenu();
   if(opening){menu.hidden=false;$('sceneMenuBtn').setAttribute('aria-expanded','true')}
  });
+ $('bgPickBtn').addEventListener('click',()=>$('bgPicker').click());
  $('queueSearch').addEventListener('input',ev=>{FILTER.query=ev.target.value;renderQueue()});
  $('queueFilter').addEventListener('change',ev=>{FILTER.queue=ev.target.value;renderQueue()});
  $('storeSearch').addEventListener('input',ev=>{FILTER.stockQuery=ev.target.value;drawStore()});
