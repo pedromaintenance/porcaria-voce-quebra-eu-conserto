@@ -41,6 +41,7 @@ function action(error){if(error)notify(error);else{save();drawUI();if(scene)scen
 function notify(t){const area=$('toast');if(!area)return;area.textContent=t;area.hidden=false;clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>{area.hidden=true},4400)}
 function job(){return E.job(state,selected)||state.jobs[0]}
 function pick(id){selected=id;drawUI();if(scene)scene.refresh();openPanel('detail')}
+function showJob(id){const j=E.job(state,id);if(j)pick(j.id)}
 function statusFor(j){
  if(!j)return {label:'LIVRE',css:'free'};
  if(j.status==='material')return {label:'AGUARDANDO PEÇA',css:'blocked'};
@@ -53,6 +54,16 @@ function drawBays(){
  $('bayHUD').innerHTML=[0,1,2].map(i=>{const j=state.jobs.find(x=>x.bay===i),st=statusFor(j);
  return `<div class="bayBadge ${st.css}"><b>BOX ${i+1}</b><span>${j?esc(E.model(data,j.modelId)?.title)+' · '+esc(j.id):'Disponível'}</span><b>${st.label}</b></div>`}).join('');
 }
+function renderQueue(){
+ $('queue').innerHTML=[...state.jobs].filter(j=>{
+ const m=E.model(data,j.modelId),q=FILTER.query.toLowerCase();
+ const matched=!q||[j.id,j.report,m?.title,j.asset].some(x=>String(x||'').toLowerCase().includes(q));
+ return matched&&(FILTER.queue==='all'||FILTER.queue==='critical'&&j.priority===3||FILTER.queue==='waiting'&&!j.assigned||FILTER.queue==='assigned'&&!!j.assigned);
+ }).sort((a,b)=>b.priority-a.priority||a.tickOpen-b.tickOpen).map(j=>{
+ const m=E.model(data,j.modelId);
+ return `<button class="job ${j.id===selected?'active':''}" data-pick="${j.id}"><span class="severity">${j.priority===3?'CRÍTICA':j.priority===2?'ALTA':'MODERADA'}</span><strong>${esc(m?.title)} · ${esc(j.id)}</strong><small>${esc(j.report)}</small><small>${esc(j.status)} · ${j.stage}/6 etapas · ${Math.ceil(j.repairRemaining)}h reparo</small></button>`;
+ }).join('')||'<p class="muted">Nenhuma OS corresponde ao filtro.</p>';
+}
 function drawUI(){
  if(!state||!data)return;
  const k=E.kpis(state);
@@ -60,19 +71,15 @@ function drawUI(){
  $('cash').textContent='R$ '+brl(state.cash);$('team').textContent=state.team.length;
  $('backlog').textContent=k.backlog;$('energy').textContent=Math.round(state.player.mental)+'/100';
  drawBays();
- $('queue').innerHTML=[...state.jobs].filter(j=>{
- const m=E.model(data,j.modelId);
- const q=FILTER.query.toLowerCase();
- const matched=!q||[j.id,j.report,m?.title,j.asset].some(x=>String(x||'').toLowerCase().includes(q));
- return matched&&(FILTER.queue==='all'||FILTER.queue==='critical'&&j.priority===3||FILTER.queue==='waiting'&&!j.assigned||FILTER.queue==='assigned'&&!!j.assigned);
- }).sort((a,b)=>b.priority-a.priority||a.tickOpen-b.tickOpen).map(j=>{
- const m=E.model(data,j.modelId);
- return `<button class="job ${j.id===selected?'active':''}" data-pick="${j.id}"><span class="severity">${j.priority===3?'CRÍTICA':j.priority===2?'ALTA':'MODERADA'}</span><strong>${esc(m?.title)} · ${esc(j.id)}</strong><small>${esc(j.report)}</small><small>${esc(j.status)} · ${j.stage}/6 etapas · ${Math.ceil(j.repairRemaining)}h reparo</small></button>`;
- }).join('')||'<p class="muted">Nenhuma OS corresponde ao filtro.</p>';
+ renderQueue();
  const j=job(), d=$('detail');
  if(!j){d.innerHTML='<p>Sem ordens de serviço abertas.</p>';drawTeam();drawStore();$('stats').innerHTML='<p class="muted">Nenhuma OS pendente.</p>';$('logs').innerHTML=state.logs.slice(0,5).map(l=>`<div class="log">D${l.day}: ${esc(l.text)}</div>`).join('');return}
  selected=j.id;
  const c=E.scenario(data,j.scene),m=E.model(data,j.modelId);
+ const part=data.items[c.material],tool=data.tools[c.tool];
+ const inbound=state.orders.filter(p=>p.item===c.material).reduce((n,p)=>n+p.qty,0);
+ const toolOK=!!state.tools[c.tool],stockOK=!!state.stock[c.material]||j.materialUsed;
+ const resourceInfo=`<div class="readiness"><b>PRONTIDÃO PARA REPARO</b><span class="${toolOK?'ready':'warning'}">${toolOK?'✓':'!'} Ferramental: ${esc(tool?.name||c.tool)}</span><span class="${stockOK?'ready':'warning'}">${stockOK?'✓':'!'} Material: ${esc(part?.name||c.material)} (${state.stock[c.material]||0} em estoque · ${inbound} em trânsito)</span><button class="act secondary" data-do="openStore">ABRIR ALMOXARIFADO</button></div>`;
  let out=`<div style="font-size:20px;font-weight:900;color:#ffca6b">${esc(m?.title)} · ${esc(j.id)}</div><p class="muted">${esc(j.report)}</p><div class="progress"><i style="width:${Math.round(j.stage/6*100)}%"></i></div><p class="status">${j.stage}/6 etapas de diagnóstico · ${esc(j.status)}</p><div id="notice" style="display:none;background:#764b23;padding:9px;border-radius:8px;margin:8px 0"></div>`;
  if(!j.assigned){
   const busy=new Set(state.jobs.map(x=>x.assigned).filter(Boolean));
@@ -98,6 +105,7 @@ function drawUI(){
   }
   out+='<div class="actions"><button class="act secondary" data-do="release">LIBERAR BOX</button></div>';
  }
+ out+=resourceInfo;
  d.innerHTML=out;
  $('stats').innerHTML=`<div class="status">OS concluídas: <b>${k.done}</b> · Críticas: <b>${k.critical}</b></div><div class="status">Reputação: <b>${k.reputation}/100</b> · Utilização: <b>${k.utilization}%</b></div><div class="status">Mecânicos disponíveis: <b>${state.team.filter(x=>!x.assigned).length}</b></div><div class="progress"><i style="width:${k.reputation}%"></i></div><div class="legend">⚒ Clique nos boxes da oficina para selecionar uma OS.</div>`;
  drawTeam();drawStore();
@@ -135,8 +143,8 @@ function drawStore(){
 function events(){
  document.querySelectorAll('[data-open-panel]').forEach(b=>b.addEventListener('click',()=>openPanel(b.dataset.openPanel)));
  $('helpBtn').addEventListener('click',()=>openPanel('help'));
- $('queueSearch').addEventListener('input',ev=>{FILTER.query=ev.target.value;drawUI();$('queueSearch').value=FILTER.query});
- $('queueFilter').addEventListener('change',ev=>{FILTER.queue=ev.target.value;drawUI()});
+ $('queueSearch').addEventListener('input',ev=>{FILTER.query=ev.target.value;renderQueue()});
+ $('queueFilter').addEventListener('change',ev=>{FILTER.queue=ev.target.value;renderQueue()});
  $('storeSearch').addEventListener('input',ev=>{FILTER.stockQuery=ev.target.value;drawStore()});
  $('storeFilter').addEventListener('change',ev=>{FILTER.store=ev.target.value;drawStore()});
  $('closePanel').addEventListener('click',closePanel);
@@ -160,6 +168,7 @@ function events(){
   const st=ev.target.closest('[data-store-action]');
   if(st){const id=st.dataset.item,mode=st.dataset.storeAction;if(mode==='tool')action(E.buyTool(state,data,id));else{const qty=Number($('qty-'+id)?.value||1);action(E.orderMaterial(state,data,id,qty,mode==='rush'))}return}
   const b=ev.target.closest('[data-do]');if(!b)return;
+  if(b.dataset.do==='openStore'){openPanel('store');$('storeSearch').value='';FILTER.stockQuery='';drawStore();return}
   const j=job();if(!j)return;const c=E.scenario(data,j.scene);
   if(b.dataset.do==='assign')action(E.attach(state,j.id,$('mechanic').value,Number($('bay').value),true));
   if(b.dataset.do==='release')action(E.release(state,j.id));
@@ -169,7 +178,7 @@ function events(){
  });
  $('advance').addEventListener('click',()=>{
   const active=state.jobs.filter(j=>j.assigned).length;
-  const blocked=state.jobs.filter(j=>j.assigned&&['material','ferramenta'].includes(j.status)).length;
+  const blocked=state.jobs.filter(j=>j.assigned&&(['material','ferramenta'].includes(j.status)||j.stage>=6&&(!state.tools[E.scenario(data,j.scene).tool]||!state.stock[E.scenario(data,j.scene).material]&&!j.materialUsed))).length;
   const msg='Avançar 8 horas? '+active+' OS alocada(s) e '+blocked+' bloqueada(s). A equipe consumirá energia e poderão chegar peças ou novas ocorrências.';
   if(!confirm(msg))return;
   const oldDone=state.done.length;
