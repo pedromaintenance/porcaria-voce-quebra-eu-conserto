@@ -21,6 +21,7 @@ const FILTER={queue:'all',query:'',store:'all',stockQuery:''};
 let toastTimeout;
 
 const SCENE_REFERENCE={crop:{x:359,y:246,width:1045,height:407},worldX:319,worldY:45,width:1080,height:450};
+let BAY_LAYOUT=[0,1,2].map(i=>({id:i,hitWorld:{x:324+i*355,y:155,width:337,height:323},spriteWorld:{x:490+i*355,y:395},workerWorld:[{x:376+i*355,y:442},{x:605+i*355,y:439}]}));
 function sceneDB(){
  return new Promise((resolve,reject)=>{
   if(!('indexedDB' in window)){reject(Error('IndexedDB indisponível'));return}
@@ -341,7 +342,11 @@ class Workshop extends Phaser.Scene{
   this.text(720,49,'OFICINA CENTRAL',30,'#ffca65',true);
   this.text(1057,618,'ABASTECIMENTO E LUBRIFICAÇÃO',16,'#e6e9de',true);
   // Marcacao de areas clicaveis persistentes.
-  this.bayZones=[0,1,2].map(i=>{const x=324+i*355;const hit=this.add.zone(x,155,337,323).setOrigin(0).setInteractive({useHandCursor:true});hit.on('pointerdown',()=>{if(modalOpen())return;const j=state.jobs.find(z=>z.bay===i);if(j)pick(j.id)});return hit});
+  this.bayZones=BAY_LAYOUT.map(({id,hitWorld})=>{
+   const hit=this.add.zone(hitWorld.x,hitWorld.y,hitWorld.width,hitWorld.height).setOrigin(0).setInteractive({useHandCursor:true});
+   hit.on('pointerdown',()=>{if(modalOpen())return;const j=state.jobs.find(z=>z.bay===id);if(j)pick(j.id)});
+   return hit;
+  });
   this.statusText=this.add.text(17,612,'', {fontFamily:'monospace',fontSize:'14px',color:'#f2e3bb',backgroundColor:'#102132cc',padding:{x:9,y:7}});
   this.time.addEvent({delay:2300,loop:true,callback:()=>{if(!this.machineObjs.length)return;this.tweens.add({targets:this.machineObjs.filter(x=>x.type==='Image'),y:'-=2',yoyo:true,duration:900,ease:'Sine.easeInOut'})}});
   this.backgroundDecor=this.children.list.filter(o=>o!==this.statusText&&!this.bayZones.includes(o));
@@ -393,7 +398,7 @@ class Workshop extends Phaser.Scene{
    if(this.selectedOutline){this.selectedOutline.destroy();this.selectedOutline=null}
    const focus=state.jobs.find(z=>z.id===selected&&z.bay!==null);
    if(focus){
-     const x=324+focus.bay*355;
+     const x=BAY_LAYOUT[focus.bay].hitWorld.x;
      const outline=this.add.graphics();
      outline.lineStyle(5,0xffd05a,1);
      outline.strokeRoundedRect(x+5,168,325,286,8);
@@ -401,11 +406,11 @@ class Workshop extends Phaser.Scene{
    }
    this.machineObjs.forEach(x=>x.destroy());this.machineObjs=[];
    this.textObjects?.forEach(x=>x.destroy());this.textObjects=[];
-   [0,1,2].forEach(i=>{
-     const j=state.jobs.find(z=>z.bay===i),cx=490+i*355;
+   BAY_LAYOUT.forEach(({id:i,spriteWorld,workerWorld})=>{
+     const j=state.jobs.find(z=>z.bay===i),cx=spriteWorld.x;
      if(j){
-       this.machine(cx,395,j.modelId,.87);
-       this.worker(cx-114,442,i);this.worker(cx+115,439,i+1);
+       this.machine(cx,spriteWorld.y,j.modelId,.87);
+       this.worker(workerWorld[0].x,workerWorld[0].y,i);this.worker(workerWorld[1].x,workerWorld[1].y,i+1);
        let label=this.text(cx-130,445,E.model(data,j.modelId)?.title+' · '+j.id,15,'#ffffff',true);
        label.setBackgroundColor('#0c2539').setPadding(5);this.textObjects.push(label);
      }else{
@@ -419,6 +424,13 @@ async function boot(){
  try{
   const res=await fetch('../game-data.json',{cache:'no-store'});if(!res.ok)throw Error('HTTP '+res.status);
   data=await res.json();
+  try{
+   const mapRes=await fetch('./scene-map.json',{cache:'no-store'});
+   if(mapRes.ok){const map=await mapRes.json();
+    if(Array.isArray(map.bays)&&map.bays.length===3&&map.bays.every(b=>b.hitWorld&&b.spriteWorld&&b.workerWorld))BAY_LAYOUT=map.bays;
+    if(map.background?.sourceCrop)SCENE_REFERENCE.crop=map.background.sourceCrop;
+   }
+  }catch(error){console.warn('Mapeamento opcional:',error)}
   try{const raw=localStorage.getItem(SAVE);if(raw){const s=JSON.parse(raw);if(E.validate(s))state=s}}catch(e){console.warn(e)}
   if(!state)state=E.create(data);
   selected=state.jobs[0]?.id;events();drawUI();
