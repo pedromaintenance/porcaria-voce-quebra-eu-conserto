@@ -171,7 +171,7 @@
     "antialias": false,
     "maxResolution": 2,
     "trimTransparentMargins": true,
-    "notes": "Fundo ilustrado e sprites usam filtros diferentes. Resolução interna acompanha DPR/largura da tela, limitada a 2. Recorte da transparência remove margens que reduziam o tamanho aparente das máquinas."
+    "notes": "Phaser 3.90: fundo mantém até 2× a resolução LÓGICA por textura canvas, preservando os 1350 px nativos; GameConfig.resolution foi removido porque não é suportado como recurso geral de DPI. Sprites usam textura NEAREST, recorte transparente e coordenadas inteiras; canvas principal continua 1080×450 para preservar world mapping."
   },
   "modelPresentation": {
     "EQ01": {
