@@ -9,7 +9,8 @@
 })(typeof window!=='undefined'?window:null,function(){
  'use strict';
  const SHIFTS=14;
- const HOURS=8;
+ const SHIFT_HOURS=12;
+ const EFFECTIVE_HOURS=10.5;
  function calculate(state,data){
   if(!state||!data||!Array.isArray(state.jobs)||!Array.isArray(state.team)||!Array.isArray(state.orders))
    throw new Error('Estado inválido para quadro semanal');
@@ -28,7 +29,7 @@
    const receipts=state.orders.filter(o=>Number.isFinite(o.eta)&&o.eta===currentTick+1)
     .map(o=>({id:o.id,item:o.item,qty:o.qty,name:data.items[o.item]?.name||o.item}));
    return {
-    tick:currentTick,day,shift,slots,grossHH:slots*HOURS,
+    tick:currentTick,day,shift,slots,grossHH:slots*EFFECTIVE_HOURS,
     receipts,receiptCount:receipts.length,
     payrollAtEnd:phase===1?(totalCrew*220+180):0,
     current:offset===0
@@ -70,7 +71,7 @@
   }).sort((a,b)=>b.gapNow-a.gapNow||a.name.localeCompare(b.name));
   const received=ticks.flatMap(t=>t.receipts);
   return {
-   horizonShifts:SHIFTS,horizonHours:SHIFTS*HOURS,
+   horizonShifts:SHIFTS,horizonHours:SHIFTS*SHIFT_HOURS,
    teamCount:totalCrew,bays,capacitySlots,restingNow,
    capacityHH,assigned,unassigned:state.jobs.length-assigned,
    backlog:state.jobs.length,critical,diagnosed,awaitingDiagnosis,
@@ -79,7 +80,7 @@
    receipts:received,receiptCount:received.length,
    fixedWageReference:ticks.reduce((sum,t)=>sum+t.payrollAtEnd,0),
    assumptions:[
-    'Capacidade bruta = 8 h × min(boxes, mecânicos no quadro) por turno; apenas descansos já programados no turno atual são subtraídos.',
+    'HH úteis disponíveis = 10,5 h × min(boxes, mecânicos no quadro) por turno (12h menos DDS 0,5h e refeição 1h); descansos atuais são descontados apenas do primeiro turno.',
     'Horas remanescentes de reparo são unidades de esforço do simulador, não HH confirmadas de execução. Diagnósticos são mostrados em etapas, separadamente.',
     'Não foram previstos novos chamados, saídas, contratações, decisões de compra, produtividade, conclusão de OS ou liberação futura dos boxes.',
     'Pedidos com ETA são recebidos AO FINAL do turno correspondente; recebimento não garante atendimento de todas as OS que disputam o mesmo item.',
@@ -88,5 +89,5 @@
    ]
   };
  }
- return {calculate,SHIFTS,HOURS};
+ return {calculate,SHIFTS,SHIFT_HOURS,EFFECTIVE_HOURS};
 });
