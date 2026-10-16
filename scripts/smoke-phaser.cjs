@@ -16,6 +16,29 @@ assert.ok(phaserHtml.includes('data-open-panel="management"'),'gestão abre pop-
 assert.ok(phaserHtml.includes('data-panel="management"'),'painel de gestão integrado ao Phaser');
 assert.ok(phaserScript.includes('function drawManagement(k)'),'métricas da gestão vêm da simulação');
 assert.equal(pwa.start_url,'./phaser-play/','PWA inicia no Phaser');
+
+const topHeader=phaserHtml.match(/<header class="top"[\\s\\S]*?<\\/header>/)?.[0];
+assert.ok(topHeader,'barra principal da oficina presente');
+assert.ok(topHeader.includes('class="top-main"')&&topHeader.includes('class="top-status"'),'duas faixas de controles distintas');
+assert.ok(topHeader.includes('class="primary-nav"'),'menus organizados em navegação própria');
+assert.equal((topHeader.match(/class="tab nav-item/g)||[]).length,7,'sete opções de navegação, incluindo oficina atual');
+assert.ok(topHeader.includes('class="status-metrics"'),'KPIs separados da navegação');
+assert.ok(topHeader.includes('class="toolbar-actions"'),'comandos de sessão agrupados');
+assert.equal((phaserHtml.match(/id="advance"/g)||[]).length,1,'ação avançar turno aparece uma única vez');
+assert.ok(topHeader.includes('id="advance"'),'avançar turno fora da área dos boxes');
+assert.equal((phaserHtml.match(/id="helpBtn"/g)||[]).length,1,'ajuda única');
+assert.equal((phaserHtml.match(/id="sceneMenuBtn"/g)||[]).length,1,'um controle visual');
+assert.equal((phaserHtml.match(/id="sceneMenu"/g)||[]).length,1,'menu de cenário único');
+assert.equal((phaserHtml.match(/id="bgPicker"/g)||[]).length,1,'selecionador de cenário preservado');
+assert.equal((phaserHtml.match(/id="bgReset"/g)||[]).length,1,'ação restaurar cenário preservada');
+assert.ok(topHeader.includes('id="bgPicker"')&&topHeader.includes('id="bgReset"'),'ações de cenário agrupadas na barra');
+assert.ok(!phaserHtml.includes('class="backgroundControl"'),'menu de cenário não cobre mais os boxes');
+assert.ok(phaserHtml.includes('overflow-x:auto'),'navegação responsiva rolável');
+assert.ok(phaserScript.includes('function closeSceneMenu()'),'menu de cenário pode ser fechado');
+assert.ok(phaserScript.includes("sceneMenuBtn').addEventListener('click'"),'controle de abertura do menu presente');
+assert.ok(phaserScript.includes("if(!$('sceneMenu').hidden)"),'Escape fecha o dropdown antes do modal');
+assert.ok(phaserHtml.includes('game.js?v=0.7.3'),'versão do JavaScript invalidará cache anterior');
+
 const state=engine.create(data,()=>0.42);
 assert.ok(engine.validate(state),'save inicial válido');
 assert.equal(state.jobs.length,3,'iniciar com três OS');
