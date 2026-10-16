@@ -41,7 +41,8 @@ assert.ok(phaserHtml.includes('overflow-x:auto'),'navegação responsiva roláve
 assert.ok(phaserScript.includes('function closeSceneMenu()'),'menu de cenário pode ser fechado');
 assert.ok(phaserScript.includes("sceneMenuBtn').addEventListener('click'"),'controle de abertura do menu presente');
 assert.ok(phaserScript.includes("if(!$('sceneMenu').hidden)"),'Escape fecha o dropdown antes do modal');
-assert.ok(phaserHtml.includes('game.js?v=0.7.3'),'versão do JavaScript invalidará cache anterior');
+assert.ok(phaserHtml.includes('game.js?v=0.7.4'),'script principal tem cache versionado');
+assert.ok(phaserHtml.includes('layout-math.js?v=0.7.4'),'funções de geometria carregam antes da oficina');
 
 const state=engine.create(data,()=>0.42);
 assert.ok(engine.validate(state),'save inicial válido');
@@ -72,6 +73,31 @@ for(const bay of map.bays){
  }
  assert.ok(bay.progressWorld.x>=z.x&&bay.progressWorld.x+bay.progressWorld.width<=z.x+z.width,'barra de progresso dentro do box');
 }
+// v0.7.4 — escala específica por modelo com limites reais do espaço visual.
+const layoutMath=require(path.join(root,'phaser-play','layout-math.js'));
+assert.equal(map.version,'0.7.4','mapeamento da revisão atual');
+assert.equal(map.modelPresentation.EQ02.scaleMultiplier,2,'CAT 6030 com proporção alvo 2x');
+assert.equal(map.modelPresentation.EQ05.scaleMultiplier,3,'DR410i com proporção alvo 3x');
+assert.equal(map.bays[0].spriteWorld.x,479,'box 1 deslocado para a esquerda');
+assert.equal(map.bays[2].spriteWorld.x,1141,'box 3 deslocado para a direita');
+const bay=map.bays[1];
+const oldDrill=layoutMath.equipmentSize(1086,1448,bay.spriteWorld.scale,{scaleMultiplier:1},bay);
+const newDrill=layoutMath.equipmentSize(1086,1448,bay.spriteWorld.scale,map.modelPresentation.EQ05,bay);
+assert.ok(newDrill.height>oldDrill.height*1.7,'perfuratriz significativamente maior sem atravessar o teto do box');
+assert.ok(newDrill.width<=map.modelPresentation.EQ05.maximumWidth,'perfuratriz cabe no box pela largura');
+assert.ok(newDrill.height<=bay.spriteWorld.groundY-bay.hitWorld.y-14,'perfuratriz cabe no box pela altura');
+assert.ok(newDrill.capped,'fator nominal 3x respeita limite físico da cena');
+const oldShovel=layoutMath.equipmentSize(540,540,bay.spriteWorld.scale,{scaleMultiplier:1},bay);
+const newShovel=layoutMath.equipmentSize(540,540,bay.spriteWorld.scale,map.modelPresentation.EQ02,bay);
+assert.ok(newShovel.height>oldShovel.height*1.5,'CAT 6030 perceptivelmente maior');
+assert.ok(newShovel.width<=map.modelPresentation.EQ02.maximumWidth,'CAT 6030 cabe em largura');
+assert.ok(phaserScript.includes('trimmedEquipment(key)'),'remover bordas transparentes para aproveitar o sprite');
+assert.ok(phaserScript.includes('equipmentSize(src.width,src.height'),'escala da maquina calculada pelo modulo');
+assert.ok(phaserScript.includes('resolution=Math.min(2'),'resolução interna adapta-se ao tamanho real');
+assert.ok(phaserScript.includes('roundPixels:true'),'posições inteiras reduzem borrado');
+assert.ok(phaserScript.includes('texture.setFilter(Phaser.Textures.FilterMode.NEAREST)'),'sprites preservam contorno');
+assert.ok(phaserScript.includes("FilterMode.LINEAR"),'fundo pintado usa suavização independente');
+// As áreas clicáveis continuam sem sobreposição; a apresentação visual é limitada por tipo de máquina.
 // v0.7.2 — sprites versionados e nenhuma flutuação do maquinário.
 const pngHeader=Buffer.from('89504e470d0a1a0a','hex');
 const equipment=['cat777e.png','cat6030.png','cat395.png','sandvik_dr410i.png'];
@@ -99,7 +125,7 @@ assert.ok(phaserScript.includes('actor.sprite.setTexture(actor.frames[actor.inde
 for(const bay of map.bays){
  const b=bay.hitWorld,m=bay.spriteWorld,w=bay.workerWorld;
  assert.equal(w.length,2,'dois profissionais em cada box');
- assert.ok(m.y>m.groundY,'ancoragem da imagem compensa margem transparente');
+ assert.equal(m.y,m.groundY,'apos recorte alpha, a base visual da maquina coincide com a sombra/piso');
  assert.ok(m.y<=b.y+b.height,'imagem ainda está dentro da zona clicável');
  assert.ok(w.every(p=>p.y===m.groundY),'mecânicos e equipamento compartilham o mesmo plano do piso');
  assert.ok(w[0].x<m.x&&w[1].x>m.x,'mecânicos devem ficar nas laterais');
