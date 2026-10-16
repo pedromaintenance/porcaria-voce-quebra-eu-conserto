@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 15/10/2026 · versão de trabalho **Phaser 0.5**.
+**Estado de referência:** 16/10/2026 · versão de trabalho **Phaser 0.6-dev** (código entregue, QA visual pendente).
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -30,6 +30,10 @@
 | Gestão de equipe | Implementado, QA pendente | Moral/energia, descanso, motivação, contratação |
 | Almoxarifado | Implementado, QA pendente | Saldos, pedido normal/urgente, ferramentas e itens em trânsito |
 | Prontidão da OS | **0.5 — implementado, QA pendente** | Disponibilidade de peça/ferramenta, quantidade em trânsito e atalho para estoque |
+| Mapeamento visual dos boxes | **0.6-dev — implementado, QA pendente** | Arquivo `scene-map.json` centraliza posição dos sprites e zonas clicáveis |
+| Background personalizável | **0.6-dev — implementado, QA pendente** | Importação de PNG/JPEG/WebP pelo jogador e persistência IndexedDB; imagem limpa ainda não publicada no repo |
+| Backlog e previsão de turno | **0.6-dev — implementado, QA pendente** | Tempo de espera, avisos de bloqueios, diagnóstico/reparo e pedidos previstos |
+| Testes de regressão no CI | **0.6-dev — implementado, execução pendente** | Smoke-test Node como pré-condição para Pages |
 | Pesquisa da fila | **0.5 — corrigido, QA pendente** | Filtro atualiza a lista, sem recriar a janela inteira a cada tecla |
 | Save | **0.5 — import/export, QA pendente** | Exportação JSON; importação validada por versão e confirmação de substituição |
 | Feedback e atalhos | Implementado, QA pendente | Avisos temporários, confirmação de turno, atalhos 1–5 e Esc |
@@ -40,14 +44,28 @@
 
 - [ ] **QA ponta a ponta:** abrir, selecionar OS, alocar profissional, diagnosticar, comprar, avançar turno, concluir e salvar/reabrir.
 - [ ] **Resolver bugs detectados em QA:** verificar fluxo de foco ao trocar/fechar pop-ups e cliques no canvas após interações.
-- [ ] **Refinar estado pré-turno:** detalhar OS executáveis, OS bloqueadas, chegadas previstas e impacto na energia/custos.
+- [x] **Refinar estado pré-turno (código):** detalhar OS executáveis, OS bloqueadas e pedidos com chegada prevista. **QA pendente**, sem previsão determinística do trabalho realizado.
 - [ ] **Definir regras para boxes especializados:** Mecânica/Elétrica/Hidráulica; hoje os rótulos são visuais e não restringem tarefas.
-- [ ] **Fila com idade e criticidade:** mostrar espera em horas, risco de postergação e prioridade, sem induzir diagnóstico como certeza.
+- [x] **Fila com idade e criticidade (código):** exibir tempo de espera em horas, prioridade e indisponibilidades de recursos. **QA pendente**.
 - [ ] **Diagnóstico didático:** apresentar evidências e consequências de decisões sem revelar respostas antecipadamente.
 - [ ] **Atalhos de operação:** ir da OS bloqueada para o material exato no estoque e voltar à mesma OS.
 - [ ] **Persistir UI mínima:** reabrir o menu previamente acessado sem afetar a campanha.
 
 **Critério de aceite:** o jogador conclui pelo menos uma OS sem precisar da interface antiga, e consegue interpretar por que outra OS não progrediu.
+
+## Cenário de referência e integração de arte — 0.6-dev
+
+A imagem indicada para a nova oficina é uma **composição de interface**, com máquinas, pessoas e HUD já desenhados. Não pode servir diretamente como fundo definitivo de sprites independentes sem causar duplicação.
+
+- **Arquivo de mapeamento:** `phaser-play/scene-map.json`.
+- **Referência:** 1672 × 941 px, três boxes; recorte inicialmente estimado em `x=359, y=246, largura=1045, altura=407`.
+- **Cena Phaser:** 1080 × 450 px, câmera world scroll `(319,45)`.
+- **Zonas clicáveis no mundo:** Box 1 `(324,155,337,323)`, Box 2 `(679,155,337,323)`, Box 3 `(1034,155,337,323)`.
+- **Sprites independentes:** coordenadas `spriteWorld` e `workerWorld` por box, editáveis no JSON.
+- **Substituição temporária:** botão **CENÁRIO** permite carregar PNG/JPEG/WebP do computador, aplica recorte e guarda no IndexedDB do navegador; **PADRÃO** restaura a cena vetorial.
+- **Limitação:** a imagem enviada nesta conversa ainda **não foi publicada como PNG no GitHub**. A funcionalidade de importar a imagem pelo navegador não equivale a um asset incluído no repositório.
+- **Pendente P0:** produzir/fornecer versão limpa **sem equipamentos, personagens, HUD ou textos duplicados**, registrar `phaser-play/assets/oficina-base.png` e configurar carregamento automático. Caso o PNG contenha veículos, não sobrepor sprites móveis sem primeiro removê-los da base.
+- **Pendente P0:** validar manualmente alinhamento dos três hotspots com o fundo final em resoluções desktop e mobile; refinar as coordenadas do JSON conforme necessário.
 
 ## Entrega 0.7 — Oficina viva (P1)
 
@@ -103,6 +121,18 @@
 8. Exportar o save, importar o mesmo arquivo e verificar continuidade.
 9. Repetir o fluxo no celular; registrar qualquer bloqueio de UI ou escala inadequada.
 
+## Política de testes e publicação
+
+O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node scripts/smoke-phaser.cjs` antes do upload. O smoke-test cobre:
+
+- Save inicial e serialização;
+- três boxes sem sobreposição e layout versionado;
+- alocação, bloqueio de dupla alocação e liberação;
+- descanso e impedimento de nova alocação durante o descanso;
+- avanço de turno e retorno numérico da simulação.
+
+**Pendência:** estes testes não substituem o Playwright ou QA real do canvas, do carregamento de imagens nem da navegação pop-up. Se o CI falhar, corrigir antes de declarar que a versão está no ar.
+
 ## Registro de evolução
 
 - **0.1:** primeira cena Phaser e integração ao motor existente.
@@ -111,6 +141,7 @@
 - **0.4:** indicadores de boxes, filtros, atalhos, avisos, resumo de turno.
 - **0.4.1:** bloqueio de cliques no Phaser atrás do modal.
 - **0.5:** prontidão da OS, atalho ao Almoxarifado, busca da fila sem perda de foco, importação de save validada e documentação deste roadmap.
+- **0.6-dev:** idade de OS e bloqueios na fila, previsão de turno por categoria, coordenadas dos boxes em JSON, fundo personalizado armazenado no navegador, smoke-test automatizado e roadmap atualizado.
 
 ### Organização recomendada
 
