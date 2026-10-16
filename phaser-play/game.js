@@ -199,14 +199,18 @@ function events(){
  });
  $('advance').addEventListener('click',()=>{
   const preview=shiftPreview();
-  const msg='AVANÇAR 8 HORAS?\\n\n'
-   +'Ordens alocadas: '+preview.jobs.length+'\\n'
-   +'Em diagnóstico: '+preview.diagnostic.length+'\\n'
-   +'Aptas ao reparo: '+preview.repair.length+'\\n'
-   +'Bloqueadas por peça/ferramenta: '+preview.blocked.length+'\\n'
-   +'Profissionais com energia baixa: '+preview.low.length+'\\n'
-   +'Pedidos com chegada prevista: '+preview.orders.length+'\\n\n'
-   +'Os resultados reais dependem da simulação de trabalho, falhas e logística. Confirmar?';
+  const msg=[
+    'AVANÇAR 8 HORAS?',
+    '',
+    'Ordens alocadas: '+preview.jobs.length,
+    'Em diagnóstico: '+preview.diagnostic.length,
+    'Aptas ao reparo: '+preview.repair.length,
+    'Bloqueadas por peça/ferramenta: '+preview.blocked.length,
+    'Profissionais com energia baixa: '+preview.low.length,
+    'Pedidos com chegada prevista: '+preview.orders.length,
+    '',
+    'Os resultados reais dependem da simulação de trabalho, falhas e logística. Confirmar?'
+  ].join(String.fromCharCode(10));
   if(!confirm(msg))return;
   const oldDone=state.done.length;
   const result=E.advance(state,data);selected=E.job(state,selected)?.id||state.jobs[0]?.id;action(null);
