@@ -132,7 +132,8 @@ assert.ok(phaserScript.includes("actor.on('pointerdown'"),'clique no mecânico s
 assert.ok(phaserScript.includes('fillEllipse(machineX,ground'),'sombra acompanha centro efetivamente renderizado da máquina');
 assert.ok(phaserScript.includes('calibratedCenter(x,54,SCENE_REFERENCE,visualCalibrationX'),'mecânicos usam deslocamento posterior ao clamp');
 assert.ok(phaserScript.includes('calibratedCenter(x,plan.width,SCENE_REFERENCE,bay?.visualCalibrationX'),'equipamentos usam deslocamento posterior ao clamp');
-assert.ok(phaserScript.includes('calibratedCenter(cx,220*'),'sombra de equipamento vetorial segue calibração');
+assert.ok(phaserScript.includes('this.lastFallbackMachineX=x'),'fallback vetorial guarda sua posição efetivamente renderizada');
+assert.ok(phaserScript.includes('this.lastFallbackMachineX??cx'),'sombra do fallback acompanha o centro renderizado');
 const bay=map.bays[1];
 const oldDrill=layoutMath.equipmentSize(1086,1448,bay.spriteWorld.scale,{scaleMultiplier:1},bay);
 const newDrill=layoutMath.equipmentSize(1086,1448,bay.spriteWorld.scale,map.modelPresentation.EQ05,bay);
