@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.8 — orientação técnica por etapa sem resposta antecipada, interpretação pós-confirmação e aprendizado do caso após 6/6; QA visual e interativo pendente.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.9 — teste local reversível do sprite CAT 777E a partir de PNG/WebP, sem substituir o asset oficial nem alterar saves; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -628,6 +628,37 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
+## Entrega 0.8.9 — Revisão da perspectiva do CAT 777E (P0 / arte)
+
+**Solicitação:** o caminhão publicado na 0.8.3 tem ângulo de câmera excessivamente baixo, olhando de baixo para cima; isso destoa do ponto de vista do galpão. A referência enviada requer vista frontal em três quartos, com câmera acima do solo em altura de cabine e eixo de visão horizontal. O novo sprite deve ter perspectiva coerente com o piso e manter cabine, rodas, escadas e caçamba identificáveis.
+
+### Novos candidatos de arte (externos ao repositório)
+- [x] Arte de comparação gerada para análise e convertida para recorte com transparência e sem sombra de estúdio.
+- [x] PNG de trabalho e WebP otimizado em 1100 × 781 px (mesmas dimensões nominais da textura atual), entregues ao solicitante na conversa.
+- [ ] **Aprovação visual da perspectiva:** o candidato é aproximação gerada, não reprodução geométrica exata de fotografia. Confirmar em jogo se altura da câmera e ângulo correspondem à referência.
+- [ ] **Incorporar WebP binário no repositório como asset versionado** após aprovação; esta entrega publica **o mecanismo de comparação**, não substitui a textura `cat777e_v2.webp`.
+- [ ] Revisar logos, número de modelo, silhueta, posição das rodas e licenciamento/proveniência da arte antes de promovê-la a sprite definitivo.
+
+### Comparação no Phaser (código implementado)
+- [x] `VISUAL → Testar PNG/WebP do 777E` permite importar o candidato sem modificar o motor da simulação.
+- [x] `truckCustom` substitui exclusivamente os sprites `EQ01`/CAT 777E; outros modelos mantêm seus assets.
+- [x] Importação local persistida em IndexedDB, **fora do save da campanha**; restaurada após recarga do navegador.
+- [x] Limites de arquivo: PNG/WebP, até 5 MB, largura e altura de 100–4096 px; filtragem LINEAR.
+- [x] Recalcula a textura recortada `trim_truckCustom` ao substituir arquivo e atualiza a cena, mantendo tamanho e geometria calculados por `layout-math.js`.
+- [x] `Restaurar 777E oficial` remove a textura local e seu registro do IndexedDB; preserva o arquivo binário original do jogo.
+- [x] Status e miniatura local no menu Visual, que passa a rolar em viewport estreita.
+- [x] Novo teste `scripts/test-777-override.cjs` na suíte de PR e deploy. Cache PWA passa para `v089` e script principal para `0.8.9`.
+
+### Homologação no Pages
+- [ ] Abrir Visual, conferir que o estado inicial é “sprite oficial do jogo”.
+- [ ] Importar o WebP de 1100 × 781 fornecido na conversa e verificar miniatura/status de teste.
+- [ ] Alocar uma OS do CAT 777E nos BOX 1, 2 e 3 em situações diferentes, avaliando escala, apoio das rodas no piso e coerência visual com fundo diurno/noturno.
+- [ ] Verificar que os outros equipamentos não trocam de textura e que o upload não modifica OS, estoque, energia ou save.
+- [ ] Recarregar a página, verificar persistência local; usar “Restaurar 777E oficial” e confirmar retorno exato ao asset `cat777e_v2.webp`.
+- [ ] Testar importação no desktop e Android, arquivo incompatível, limites de tamanho e comportamento offline PWA.
+
+**Critério de aceite:** importar, comparar e reverter o candidato do 777E sem alterar textura oficial ou estado da campanha. **Aprovação artística e publicação binária como sprite definitivo permanecem separadas.**
+
 ## Entrega 0.8 — Gestão avançada de manutenção (P1)
 
 - [x] **Etapa inicial (v0.7.8):** priorização por criticidade, idade da OS e bloqueio de insumos, com pontuação de jogo explícita. **Pendente:** modelagem calibrável de risco e impacto operacional.
@@ -659,7 +690,7 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.8
+## Plano de validação para a versão 0.8.9
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -711,6 +742,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.6:** retira spoiler da peça no detalhe antes do diagnóstico, cria consulta de insumos vinculada à OS com retorno validado, expande alertas além dos seis principais, mantém toda ação manual, atualiza cache e testes de PR/deploy; **QA interativo e visual pendente.**
 - **0.8.7:** quadro visual de diagnóstico por OS com seis etapas, autoria e descrição das confirmações, descobertas do mecânico, tentativas inconclusivas, evidências e compatibilidade com saves legados. **QA interativo pendente.**
 - **0.8.8:** evidências orientativas sem revelar respostas, coach de investigação por etapa, explicações pós-confirmação com critérios de catálogo para dano/causa, lição de cenário apenas após 6/6, limpeza visual de dicas legadas e testes de segurança pedagógica. **QA visual/interativo pendente.**
+- **0.8.9:** permite carregar PNG/WebP do 777E localmente para comparação no Phaser, persistir em IndexedDB e restaurar o sprite oficial; código, PWA e regressões atualizados, sem substituição binária e **QA visual pendente**.
 
 ### Organização recomendada
 
