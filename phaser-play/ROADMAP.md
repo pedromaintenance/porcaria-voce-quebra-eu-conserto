@@ -630,7 +630,7 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 
 ## Entrega 0.8.10 — Sprite oficial CAT 777E em pixel art (P0 / arte)
 
-**Status:** implementação concluída na branch `feature/cat777e-pixel-art-official-v0810`. Aprovação artística obtida na conversa; testes CI e publicação no Pages exigidos antes de integrar `main`.
+**Status:** **publicado na `main`** por meio do [PR #29](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/29), merge `c6e346db` em 17/10/2026. CI de PR aprovado e workflow [Deploy P.O.R.C.A.R.I.A. to GitHub Pages](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39059085461) concluído com sucesso, incluindo verificação do SHA-256 da imagem e regressão. **Homologação visual e funcional no navegador ainda pendente.**
 
 ### Decisão visual implementada
 
