@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.4 — cenário noturno HQ oficial integrado e alternância automática dia/noite; QA visual pendente.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.5 — quadro consultivo de prontidão operacional, HH úteis, alertas de fadiga e bloqueios de OS; QA no navegador pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -491,6 +491,41 @@ Na versão 0.8.1, `hitWorld` controlava simultaneamente o clique, a largura máx
 
 **Critério de aceite:** um usuário em um novo navegador, sem fundos personalizados, vê o **asset noturno correto** automaticamente a cada Turno B, sem escolher arquivo local. O sistema continua reversível e nenhuma geometria dos boxes ou progressão de jogo é modificada.
 
+## Entrega 0.8.5 — Quadro de Prontidão Operacional e decisões de equipe (implementada; QA interativo pendente)
+
+**Objetivo:** transformar a Gestão em apoio prático para decidir o próximo turno, além de exibir apenas os KPIs gerais. Um mecânico pode estar disponível, cansado, com moral comprometida, em descanso ou alocado em OS bloqueada — condições que precisam ficar explícitas antes de comprometer recursos. O sistema **não automatiza decisões** de descanso, compra, alocação nem avanço.
+
+### Implementação
+
+- [x] **Módulo novo e puro:** `phaser-play/readiness.js` expõe `window.PORCARIA_READINESS.compute(state,data)` e `module.exports` para testes Node. Não grava estado, não realiza compras, não muda OS nem altera o save. A ordenação dos alertas é determinística.
+- [x] **Capacidade por turno e gargalo físico:** relatório informa `nominalCrewHH = mecânicos disponíveis × 10,5`, `boxLimitedHH = min(boxes,mecânicos disponíveis) × 10,5` e `additionalHH = min(boxes livres,mecânicos livres não descansando) × 10,5`. Distingue HH nominais de oportunidade, não estima produção real nem duração para encerramento da OS.
+- [x] **Condição da equipe:** registra quantos estão alocados, livres, descansando, em atenção e em estado crítico; calcula a menor energia entre mental/física. Limiares fictícios e auditáveis: **energia abaixo de 25 = crítica; abaixo de 45 = atenção; moral abaixo de 25 = crítica; abaixo de 40 = atenção**. O uso de “crítico” é apenas a severidade do indicador do jogo e **não uma classificação médica ou de segurança ocupacional**.
+- [x] **Situação por box:** `free`, `diagnosis`, `repair`, `tool`, `material` ou `unknown` conforme OS alocada, ferramenta existente, etapa de diagnóstico, peça e reserva (`materialUsed`). Um pedido de material em trânsito **não libera** reparo antes de ser recebido e baixado pelo motor.
+- [x] **Painel Gestão visual:** quatro indicadores quantitativos, três cartões de box e lista priorizada de alertas com botões de navegação. Situações mais urgentes aparecem primeiro, sem cobrir a oficina Phaser.
+- [x] **Atalhos funcionais:** bloqueio de peça/ferramenta abre o Almoxarifado com busca preenchida para o código; energia/moral abre Equipe; OS crítica sem equipe abre a OS vigente (somente se ainda existir). Sem ações silenciosas.
+- [x] **Briefing de turno enriquecido:** informa teto de HH e contagem de profissionais com energia/moral em atenção ou crítica, com botão para abrir o quadro da Gestão, antes da confirmação de +12 horas.
+- [x] **Testes automatizados:** `scripts/test-readiness.cjs` cobre pureza, determinismo, regras 10,5 HH, gargalo de 3 boxes, descanso, prioridade de alerta, energia e moral nos limiares, ferramentas, peças, reserva, ETA não antecipado, OS crítica sem alocação e integração de navegação/UI. `.github/workflows/deploy-pages.yml` exige esse teste e verificação sintática em toda publicação.
+- [x] **Sem mudanças no core simulado:** faturamento, moral, fadiga, diagnóstico, ordens, contratação, turnos A/B, assets, cena diurna/noturna, coordenadas dos boxes e textos do jogo continuam baseados no motor e mapeamento anteriores.
+- [x] **Versão em cache:** `readiness.js?v=0.8.5` é carregado antes de `game.js?v=0.8.5`; o Phaser sinaliza ausência do módulo ao iniciar, em vez de apresentar tela parcialmente quebrada.
+
+### Limitações explícitas
+
+- O quadro **não prevê falha, absenteísmo ou acidentes**; limiares e níveis são heurísticas de balanceamento.
+- O teto de HH ignora aptidão por especialidade, horas efetivamente produzidas, sequência de diagnóstico e esperas logísticas. A leitura de capacidade **não substitui** programação operacional detalhada.
+- A equipe “em atenção” é um aviso visual, **não impede a escala automaticamente**. O operador do jogo deve abrir Equipe e Planejamento para decidir.
+- Alertas são derivados de dados do save no instante da consulta; não monitoram continuamente fora do jogo.
+
+### Critérios de homologação no Pages
+
+- [ ] Abrir Gestão no dia 1: **4 mecânicos × 10,5 HH = 42 HH disponíveis**, **3 boxes × 10,5 HH = teto 31,5 HH**, oportunidade para novos serviços até 31,5 HH, sem alocações.
+- [ ] Alocar uma OS em um box: o contador de HH livres passa para no máximo **21 HH** (dois boxes livres); alterar meta e avançar turno deve atualizar a equipe sem travar.
+- [ ] Reduzir energia física/mental ou moral ao longo da campanha: abrir Equipe pelo alerta; conferir recomendação de descanso sem ação automática.
+- [ ] Criar OS com falta de ferramenta ou material, abrir Almoxarifado pelo botão e conferir o código filtrado. Peça em trânsito não deve ser exibida como disponível.
+- [ ] Navegar do alerta de OS crítica até os detalhes, retornar à oficina e confirmar que o pop-up não ativa o box por trás.
+- [ ] Confirmar que os fundos de dia/noite, as máquinas (incluindo novo 777E) e a precisão dos boxes permanecem inalterados.
+
+**Critério de aceite:** leitura consistente e acionável do estado da oficina, sem prometer produtividade ou prever falhas; gestores conseguem identificar atenção de equipe e bloqueios com poucos cliques, sem regressões de save e cena.
+
 ## Entrega 0.8 — Gestão avançada de manutenção (P1)
 
 - [x] **Etapa inicial (v0.7.8):** priorização por criticidade, idade da OS e bloqueio de insumos, com pontuação de jogo explícita. **Pendente:** modelagem calibrável de risco e impacto operacional.
@@ -522,7 +557,7 @@ Na versão 0.8.1, `hitWorld` controlava simultaneamente o clique, a largura máx
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.4
+## Plano de validação para a versão 0.8.5
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -570,6 +605,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.2:** distingue clique, área visual, indicador e footer; sobe rodado/mecânicos para linha de apoio, desloca barras para a faixa inferior e limita sprites pelas laterais dos boxes; habilita guias opcionais `debugBoxes=1`. **Testes de geometria automatizados; QA visual pendente.**
 - **0.8.3:** substitui o sprite do 777E por arte frontal 3/4 sem logos e com fundo transparente (WebP + alpha), calibra escala/footprint e minificação, arquiva original PNG e mantém asset anterior como backup; adiciona manifesto, SHA-256 e testes obrigatórios no deploy. **QA visual pendente.**
 - **0.8.4:** arquivo original noturno otimizado publicado no repositório (AVIF de 1976×796, SHA-256 auditado), alternância automática por turno com perfil geométrico apropriado, origem exibida no menu Visual, personalizações opcionais e restauração do cenário oficial; testes binários e regressão em CI. **QA visual pendente.**
+- **0.8.5:** quadro consultivo de prontidão, capacidade nominal de 10,5 HH por mecânico e gargalo de três boxes, condição física/mental e moral, alertas de bloqueios e OS críticas, links de ação manual e resumo no briefing; testes de pureza e limites integrados ao Pages. **QA interativo pendente.**
 
 ### Organização recomendada
 
