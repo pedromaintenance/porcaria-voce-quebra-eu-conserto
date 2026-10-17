@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. v0.8.7 — regressão de contexto da OS e alertas consultivos. */
+/* P.O.R.C.A.R.I.A. v0.8.8 — regressão de contexto da OS e alertas consultivos. */
 'use strict';
 const assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path');
@@ -41,7 +41,7 @@ assert.ok(js.includes("ready.warnings.slice(6).map(renderReadyAlert)"),'nenhum a
 assert.ok(js.includes("extra.hidden=!extra.hidden"),'controle expansível não muda o motor');
 assert.ok(html.includes('#readinessMore[hidden]{display:none!important}'),'alertas ocultos não vazam pelo CSS');
 assert.ok(html.includes('aria-controls="readinessMore"')===false,'controle é gerado pelo JS');
-assert.ok(html.includes('readiness.js?v=0.8.7')&&html.includes('game.js?v=0.8.7'),'cache atualizado');
+assert.ok(html.includes('readiness.js?v=0.8.8')&&html.includes('game.js?v=0.8.8'),'cache atualizado');
 assert.ok(sw.includes('porcaria-vqec-20261017-v087'));
 assert.ok(sw.includes("'./phaser-play/readiness.js'"),'módulo consultivo entra no cache PWA');
 console.log('OK: OS↔estoque, peça após diagnóstico, seis+ alertas acessíveis, cache atualizado.');
