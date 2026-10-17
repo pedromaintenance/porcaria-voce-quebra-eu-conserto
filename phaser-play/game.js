@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.8 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.9 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -33,6 +33,8 @@ let stockReturnJobId=null; // Contexto de navegação, não faz parte do save.
 const SCENE_REFERENCE={crop:{x:320,y:130,width:1350,height:563},sourceWidth:1976,sourceHeight:796,worldX:319,worldY:45,width:1080,height:450};
 const CUSTOM_BACKGROUND_KEY='porcaria.phaser.customBackdrop.official20261016';
 const NIGHT_BACKGROUND_KEY='porcaria.phaser.nightBackdrop.20261016';
+const CUSTOM_TRUCK_KEY='porcaria.phaser.customTruck.20261017';
+let truckPreviewURL=null;
 let BAY_LAYOUT=[0,1,2].map(i=>({id:i,hitWorld:{x:324+i*355,y:155,width:337,height:323},spriteWorld:{x:490+i*355,y:395},workerWorld:[{x:376+i*355,y:442},{x:605+i*355,y:439}]}));
 function sceneDB(){
  return new Promise((resolve,reject)=>{
@@ -66,6 +68,32 @@ async function useBackground(blob){
  scene.setBackdrop(img,'fullFrame');
 }
 
+function updateTruckStatus(){
+ const el=$('truckAssetState');
+ if(el)el.textContent=scene?.textures?.exists('truckCustom')?'777E: sprite de teste ativo':'777E: sprite oficial do jogo';
+}
+function clearTruckPreview(){
+ if(truckPreviewURL){URL.revokeObjectURL(truckPreviewURL);truckPreviewURL=null}
+ const thumb=$('truckAssetThumb');if(thumb){thumb.removeAttribute('src');thumb.hidden=true}
+}
+async function useTruckSprite(blob){
+ const img=await imageFromBlob(blob);
+ const w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
+ if(w<100||h<100||w>4096||h>4096)throw Error('Use imagem de 100 a 4096 px.');
+ if(!scene?.textures)throw Error('A oficina ainda está carregando.');
+ for(const key of ['trim_truckCustom','truckCustom'])if(scene.textures.exists(key))scene.textures.remove(key);
+ scene.textures.addImage('truckCustom',img).setFilter(Phaser.Textures.FilterMode.LINEAR);
+ scene.refresh();
+ clearTruckPreview();
+ truckPreviewURL=URL.createObjectURL(blob);
+ const thumb=$('truckAssetThumb');if(thumb){thumb.src=truckPreviewURL;thumb.hidden=false}
+ updateTruckStatus();
+}
+function restoreTruckSprite(){
+ if(scene?.textures)for(const key of ['trim_truckCustom','truckCustom'])if(scene.textures.exists(key))scene.textures.remove(key);
+ if(scene)scene.refresh();
+ clearTruckPreview();updateTruckStatus();
+}
 function updateSceneStatus(){
  const status=$('sceneState');if(!status||!state)return;
  const night=state.shift===1;
@@ -482,6 +510,7 @@ function events(){
   if(opening){menu.hidden=false;$('sceneMenuBtn').setAttribute('aria-expanded','true')}
  });
  $('bgPickBtn').addEventListener('click',()=>$('bgPicker').click());
+ $('truckPickBtn').addEventListener('click',()=>$('truckPicker').click());
  $('bgNightBtn').addEventListener('click',()=>$('nightPicker').click());
  $('queueSearch').addEventListener('input',ev=>{FILTER.query=ev.target.value;renderQueue()});
  $('queueFilter').addEventListener('change',ev=>{FILTER.queue=ev.target.value;renderQueue()});
@@ -626,7 +655,23 @@ function events(){
   updateSceneStatus();notify('Fundo noturno personalizado removido: cenário oficial da noite restaurado.');
  });
  $('bgReset').addEventListener('click',async()=>{closeSceneMenu();localStorage.removeItem(CUSTOM_BACKGROUND_KEY);try{await sceneStore('delete')}catch(err){console.warn(err)}if(scene){scene.customBackdrop=false;scene.applyOfficialBackdrop()}updateSceneStatus();notify('Cenário automático dia/noite restaurado.')});
-  $('reset').addEventListener('click',()=>{if(!confirm('Reiniciar a campanha Phaser?'))return;state=E.create(data);selected=state.jobs[0]?.id;action(null);if(scene)scene.applyOfficialBackdrop()});
+  $('truckPicker').addEventListener('change',async ev=>{
+  const file=ev.target.files?.[0];ev.target.value='';closeSceneMenu();if(!file)return;
+  try{
+   if(file.size>5_000_000)throw Error('Imagem acima de 5 MB.');
+   if(!['image/png','image/webp'].includes(file.type))throw Error('Formato aceito: PNG ou WebP.');
+   await useTruckSprite(file);
+   await sceneStore('save',file,'truckSprite');
+   localStorage.setItem(CUSTOM_TRUCK_KEY,'1');
+   notify('777E em teste neste navegador; o sprite oficial segue preservado.');
+  }catch(err){notify('Falha ao testar 777E: '+err.message)}
+ });
+ $('truckReset').addEventListener('click',async()=>{
+  closeSceneMenu();localStorage.removeItem(CUSTOM_TRUCK_KEY);
+  try{await sceneStore('delete',null,'truckSprite')}catch(e){console.warn(e)}
+  restoreTruckSprite();notify('777E original restaurado, sem alterar a campanha.');
+ });
+ $('reset').addEventListener('click',()=>{if(!confirm('Reiniciar a campanha Phaser?'))return;state=E.create(data);selected=state.jobs[0]?.id;action(null);if(scene)scene.applyOfficialBackdrop()});
 }
 class Workshop extends Phaser.Scene{
  constructor(){super('Workshop');this.machineObjs=[];this.workerSprites=[];this.activeProfile='cropped';this.activeBayLayout=BAY_LAYOUT;}
@@ -712,6 +757,11 @@ class Workshop extends Phaser.Scene{
   this.refresh();
   this.customBackdrop=false;
   this.applyOfficialBackdrop();
+  updateTruckStatus();
+  if(localStorage.getItem(CUSTOM_TRUCK_KEY)==='1')sceneStore('read',null,'truckSprite').then(blob=>{
+   if(blob)return useTruckSprite(blob);
+   localStorage.removeItem(CUSTOM_TRUCK_KEY);updateTruckStatus();
+  }).catch(err=>{console.warn('777E local:',err);updateTruckStatus()});
   if(localStorage.getItem(CUSTOM_BACKGROUND_KEY)==='1')sceneStore('read').then(blob=>{if(blob)return useBackground(blob)}).catch(console.warn);
   if(localStorage.getItem(NIGHT_BACKGROUND_KEY)==='1')sceneStore('read',null,'night').then(async blob=>{
    if(!blob)return;
@@ -799,7 +849,8 @@ class Workshop extends Phaser.Scene{
   }catch(err){console.warn('Alpha crop skipped:',key,err);return key}
  }
  machine(x,y,modelId,scale=1,bay=null){
-   const key=MACHINES[modelId];
+   const normalKey=MACHINES[modelId];
+   const key=modelId==='EQ01'&&this.textures.exists('truckCustom')?'truckCustom':normalKey;
    if(key&&this.textures.exists(key)){
      const renderKey=this.trimmedEquipment(key),texture=this.textures.get(renderKey);
      texture.setFilter(modelId==='EQ01' ? Phaser.Textures.FilterMode.LINEAR : Phaser.Textures.FilterMode.NEAREST);
