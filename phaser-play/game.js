@@ -869,6 +869,23 @@ class Workshop extends Phaser.Scene{
        let label=this.text(hitWorld.x+hitWorld.width/2-68,(labelWorld?.y??430),'BOX DISPONÍVEL',12,'#d1dccd',true);label.setAlpha(.75);this.textObjects.push(label);
      }
    });
+   // Optional test template: ?debugBoxes=1 draws the same reference colors used by QA.
+   // Red = support plane, green = horizontal asset envelope, blue = diagnostic HUD,
+   // violet = independent OS footer; upper green edges intentionally NOT enforced.
+   if(this.layoutGuides){this.layoutGuides.destroy();this.layoutGuides=null}
+   if(new URLSearchParams(window.location.search).get('debugBoxes')==='1'){
+    const guide=this.add.graphics().setDepth(101);
+    activeBays.forEach(b=>{
+     const place=b.placementWorld||b.hitWorld,ground=place.groundY??b.spriteWorld.groundY;
+     guide.lineStyle(2,0x43d16e,0.94);
+     guide.lineBetween(place.x,ground-140,place.x,ground);
+     guide.lineBetween(place.x+place.width,ground-140,place.x+place.width,ground);
+     guide.lineStyle(3,0xff4050,0.95);guide.lineBetween(place.x,ground,place.x+place.width,ground);
+     if(b.progressWorld){const p=b.progressWorld;guide.lineStyle(2,0x558dff,0.94);guide.strokeRect(p.x-6,p.y-31,p.width+12,48)}
+     if(b.footerWorld){const f=b.footerWorld;guide.lineStyle(2,0x9879ff,0.9);guide.strokeRect(f.x,f.y,f.width,17)}
+    });
+    this.layoutGuides=guide;
+   }
    this.statusText.setText('TURNO '+(state.shift?'B':'A')+'  |  '+state.jobs.filter(j=>j.assigned).length+' BOXES EM USO  |  '+state.done.length+' OS CONCLUÍDAS');
  }
 }
