@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.9 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.10 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -6,7 +6,7 @@ const E=window.PORCARIA_ENGINE;
 const STAGES=['Sistema','Grupo','Subgrupo','Componente','Dano','Causa'];
 const SAVE='porcaria.phaser.prototype.v01';
 const ASSETS={
- truck:'./assets/equipment/cat777e_v2.webp',
+ truck:'./assets/equipment/cat777e_v3.webp',
  shovel:'./assets/equipment/cat6030.png',
  excavator:'./assets/equipment/cat395.png',
  drill:'./assets/equipment/sandvik_dr410i.png',
@@ -33,7 +33,7 @@ let stockReturnJobId=null; // Contexto de navegação, não faz parte do save.
 const SCENE_REFERENCE={crop:{x:320,y:130,width:1350,height:563},sourceWidth:1976,sourceHeight:796,worldX:319,worldY:45,width:1080,height:450};
 const CUSTOM_BACKGROUND_KEY='porcaria.phaser.customBackdrop.official20261016';
 const NIGHT_BACKGROUND_KEY='porcaria.phaser.nightBackdrop.20261016';
-const CUSTOM_TRUCK_KEY='porcaria.phaser.customTruck.20261017';
+const CUSTOM_TRUCK_KEY='porcaria.phaser.customTruck.20261017.v0810';
 let truckPreviewURL=null;
 let BAY_LAYOUT=[0,1,2].map(i=>({id:i,hitWorld:{x:324+i*355,y:155,width:337,height:323},spriteWorld:{x:490+i*355,y:395},workerWorld:[{x:376+i*355,y:442},{x:605+i*355,y:439}]}));
 function sceneDB(){
@@ -70,7 +70,7 @@ async function useBackground(blob){
 
 function updateTruckStatus(){
  const el=$('truckAssetState');
- if(el)el.textContent=scene?.textures?.exists('truckCustom')?'777E: sprite de teste ativo':'777E: sprite oficial do jogo';
+ if(el)el.textContent=scene?.textures?.exists('truckCustom')?'777E: sprite de teste ativo':'777E: pixel art oficial v3 · calços na roda traseira';
 }
 function clearTruckPreview(){
  if(truckPreviewURL){URL.revokeObjectURL(truckPreviewURL);truckPreviewURL=null}

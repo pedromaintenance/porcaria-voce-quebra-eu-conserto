@@ -18,7 +18,7 @@ assert.ok(phaserHtml.includes('data-panel="shift"'),'briefing pré-turno usa o m
 assert.ok(phaserScript.includes('function drawManagement(k)'),'métricas da gestão vêm da simulação');
 assert.ok(phaserScript.includes('window.PORCARIA_READINESS.compute(state,data)'),'gestão/briefing usam cálculo puro do quadro');
 assert.ok(phaserHtml.includes('readiness.js?v=0.8.8'),'módulo prontidão carregado');
-assert.ok(phaserHtml.indexOf('readiness.js?v=0.8.8')<phaserHtml.indexOf('game.js?v=0.8.9'),'prontidão entra antes do Phaser');
+assert.ok(phaserHtml.indexOf('readiness.js?v=0.8.8')<phaserHtml.indexOf('game.js?v=0.8.10'),'prontidão entra antes do Phaser');
 assert.ok(phaserHtml.includes('.readinessBays'),'novo quadro tem CSS responsivo');
 
 assert.ok(phaserScript.includes('function drawShiftBrief()'),'briefing é renderizado com dados atuais');
@@ -48,7 +48,7 @@ assert.ok(phaserHtml.includes('overflow-x:auto'),'navegação responsiva roláve
 assert.ok(phaserScript.includes('function closeSceneMenu()'),'menu de cenário pode ser fechado');
 assert.ok(phaserScript.includes("sceneMenuBtn').addEventListener('click'"),'controle de abertura do menu presente');
 assert.ok(phaserScript.includes("if(!$('sceneMenu').hidden)"),'Escape fecha o dropdown antes do modal');
-assert.ok(phaserHtml.includes('game.js?v=0.8.9'),'script principal tem cache versionado');
+assert.ok(phaserHtml.includes('game.js?v=0.8.10'),'script principal tem cache versionado');
 assert.ok(phaserHtml.includes('shift-brief.js?v=0.7.7'),'módulo de briefing carregado junto ao jogo');
 assert.ok(phaserHtml.includes('planning.js?v=0.7.8'),'módulo do planejamento carregado no Pages');
 assert.ok(phaserHtml.includes('weekly.js?v=0.7.9'),'módulo semanal do PCM carregado');
@@ -170,7 +170,7 @@ assert.ok(phaserScript.includes("FilterMode.LINEAR"),'fundo pintado usa suaviza�
 // As áreas clicáveis continuam sem sobreposição; a apresentação visual é limitada por tipo de máquina.
 // v0.7.2 — sprites versionados e nenhuma flutuação do maquinário.
 const pngHeader=Buffer.from('89504e470d0a1a0a','hex');
-const equipment=['cat777e_v2.webp','cat6030.png','cat395.png','sandvik_dr410i.png'];
+const equipment=['cat777e_v3.webp','cat6030.png','cat395.png','sandvik_dr410i.png'];
 const poses=['idle','inspect','point','clipboard'];
 for(const sprite of equipment){
  const asset=path.join(root,'phaser-play','assets','equipment',sprite);

@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.9 — teste local reversível do sprite CAT 777E a partir de PNG/WebP, sem substituir o asset oficial nem alterar saves; QA visual pendente.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.10 — CAT 777E pixel art oficial v3 com calços e backup da textura anterior; CI/deploy e QA visual devem ser verificados.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -628,24 +628,37 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
-## Entrega 0.8.10 — Promoção do sprite pixel art do 777E (P0, aguardando transferência binária)
+## Entrega 0.8.10 — Sprite oficial CAT 777E em pixel art (P0 / arte)
 
-**Decisão artística:** aprovada pelo usuário. Novo sprite sem marcas CAT, perspectiva frontal em três quartos e calços amarelos posicionados na frente e atrás da roda traseira aparente, representando o bloqueio durante manutenção.
+**Status:** implementação concluída na branch `feature/cat777e-pixel-art-official-v0810`. Aprovação artística obtida na conversa; testes CI e publicação no Pages exigidos antes de integrar `main`.
 
-**Arte final verificada fora do repositório:** `cat777e_v2_replacement.webp`, 1100 × 781 px, RGBA/transparente, WebP lossless, 622.844 bytes, SHA-256 `bec258a0b4afb512cae047a0a3c10ff7072be2dba5156b826c57fb0ca137a4bd`. Existe também `cat777e_v2_replacement.png` para edição. Os arquivos foram gerados e verificados no ambiente da conversa.
+### Decisão visual implementada
 
-**Estado real da publicação:** **PENDENTE**. O conector GitHub foi recuperado e a versão 0.8.9 permanece publicada, mas o transporte do binário local para o endpoint GitHub Blob não está habilitado no caminho disponível. O repositório **ainda usa** `phaser-play/assets/equipment/cat777e_v2.webp`, o sprite antigo. Não marcar como substituído, testado ou publicado até confirmar a gravação de um blob com o hash do novo asset.
+- [x] **Asset novo e exato enviado ao GitHub:** `phaser-play/assets/equipment/cat777e_v3.webp`, WebP VP8L lossless com alfa, 1100 × 781 px, **622.844 bytes**.
+- [x] **SHA-256:** `bec258a0b4afb512cae047a0a3c10ff7072be2dba5156b826c57fb0ca137a4bd`.
+- [x] **Git blob SHA-1:** `5edb793900159cd0b2a76a07dccd5800aa52cd67`; hash verificado idêntico ao arquivo de origem antes da integração.
+- [x] **Arte aprovada:** perspectiva frontal em três quartos com câmera à altura da cabine, pixel art sem marcas CAT, calços amarelos localizados **na frente e atrás da roda traseira visível**. São parte da representação de máquina imobilizada na oficina; não substituem um procedimento real de bloqueio.
+- [x] **Backup para rollback:** tanto `cat777e_v2.webp` quanto `cat777e.png` continuam versionados.
+- [x] **Runtime:** `ASSETS.truck` aponta para v3 e `scene-map.json.modelPresentation.EQ01.texturePath` contém o novo caminho e checksum. Restrições geométricas dos boxes e parâmetros de escala mantidos.
+- [x] **Aprimoramento da transição:** a chave de preferência de upload local no menu Visual foi versionada; um preview antigo da v0.8.9 não substitui silenciosamente o novo sprite oficial. O jogador ainda pode testar outra textura e restaurar a versão v3.
+- [x] **PWA:** v0.8.10 e cache `porcaria-vqec-20261017-v090`, com o novo WebP incluído no cache offline.
+- [x] **Validação automatizada:** `scripts/test-777-asset.cjs` exige RIFF/VP8L, alfa, dimensão exata, tamanho, SHA-256, presença dos backups, caminho v3, encaixe horizontal e vertical em três boxes; workflow do GitHub Pages só publica se hash do arquivo bater com o aprovado.
+- [x] **Manifesto artístico** atualizado em `phaser-play/assets/equipment/CAT777E_ASSET.md`.
 
-### Plano de execução ao liberar acesso ao binário
+### O que foi preservado
 
-- [ ] Adicionar ao repositório o WebP aprovado no lugar do atual (preferir nova revisão `cat777e_v3.webp` com original preservado para rollback).
-- [ ] Alterar a referência `ASSETS.truck` no `phaser-play/game.js` e manter opção de avaliação local no menu Visual.
-- [ ] Atualizar checks de integridade e tamanho nos testes `scripts/test-777-asset.cjs` e no workflow de deploy, **somente com hash do artefato realmente enviado**.
-- [ ] Atualizar versão de build e cache do Service Worker para forçar renovação de textura no Pages.
-- [ ] Rodar CI, verificar build e publicação de GitHub Pages e testar 777E nos três boxes, dia/noite.
-- [ ] Homologar largura, altura, ponto de apoio das rodas, ausência de marcas e posicionamento dos dois calços. Não substituir o trabalho atual antes disso.
+Sem alteração em `engine.js`, saves, códigos de cenário, economia, energia, turnos, equipamento lógico `EQ01`, hitboxes dos boxes, posições de mecânicos, fundos diurno/noturno ou interface de diagnóstico. Filtro LINEAR para minificação da textura grande foi mantido até comparação visual com NEAREST.
 
-**Alternativa já publicada para prévia:** a v0.8.9 permite `VISUAL → Testar PNG/WebP do 777E` com o arquivo da conversa; o original pode ser restaurado pelo mesmo menu. Essa prévia é local e não equivale à substituição definitiva.
+### Homologação no Pages
+
+- [ ] Abrir sem preview local e alocar OS do 777E para confirmar carregamento da textura v3.
+- [ ] Examinar BOX 1, 2 e 3 com cenário diurno e noturno: cabine, caçamba, rodas, margem e contato com piso.
+- [ ] Confirmar que não há marca CAT e que dois calços amarelos aparecem na frente e atrás da roda traseira visível.
+- [ ] Confirmar que outros equipamentos não foram alterados.
+- [ ] Conferir atualização automática do PWA (sem reinstalação) e opção do menu Visual para testar/restaurar outros sprites sem mudar saves.
+- [ ] Se a minificação prejudicar leitura da pixel art, comparar filtro LINEAR/NEAREST em mudança separada e documentada.
+
+**Critério de aceite:** v3 renderizada por padrão, integridade do arquivo verificada, fallback versionado e publicação automatizada aprovada. A homologação visual por dispositivo permanece separada da aprovação dos testes Node.
 
 ## Entrega 0.8.9 — Revisão da perspectiva do CAT 777E (P0 / arte)
 
@@ -712,7 +725,7 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.9
+## Plano de validação para a versão 0.8.10
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -765,6 +778,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.7:** quadro visual de diagnóstico por OS com seis etapas, autoria e descrição das confirmações, descobertas do mecânico, tentativas inconclusivas, evidências e compatibilidade com saves legados. **QA interativo pendente.**
 - **0.8.8:** evidências orientativas sem revelar respostas, coach de investigação por etapa, explicações pós-confirmação com critérios de catálogo para dano/causa, lição de cenário apenas após 6/6, limpeza visual de dicas legadas e testes de segurança pedagógica. **QA visual/interativo pendente.**
 - **0.8.9:** permite carregar PNG/WebP do 777E localmente para comparação no Phaser, persistir em IndexedDB e restaurar o sprite oficial; código, PWA e regressões atualizados, sem substituição binária e **QA visual pendente**.
+- **0.8.10:** sprite oficial v3 em WebP lossless/alpha, pixel art aprovado sem logos e com calços na roda traseira visível; versão v2 preservada, chave de preview local renovada, cache PWA atualizado, arquivo/hash e geometria testados, manifesto atualizado. **QA visual do Pages pendente.**
 
 ### Organização recomendada
 
