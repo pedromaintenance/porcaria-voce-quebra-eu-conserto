@@ -26,13 +26,17 @@ jobs:
       - name: Validate Phaser JavaScript syntax
         run: node --check phaser-play/layout-math.js && node --check phaser-play/game.js && node --check phaser-play/planning.js && node --check phaser-play/weekly.js && node --check phaser-play/shift-brief.js && node --check engine.js
       - name: Regression tests (engine and scene map)
-        run: node scripts/smoke-phaser.cjs && node scripts/test-shift-brief.cjs && node scripts/test-planning.cjs && node scripts/test-weekly.cjs && node scripts/test-shifts-productivity.cjs && node scripts/test-scene-profiles.cjs
+        run: node scripts/smoke-phaser.cjs && node scripts/test-shift-brief.cjs && node scripts/test-planning.cjs && node scripts/test-weekly.cjs && node scripts/test-shifts-productivity.cjs && node scripts/test-scene-profiles.cjs && node scripts/test-777-asset.cjs
       - name: Check Pages entrypoints
         run: test -f phaser-play/assets/OFICINA-NOTURNA.md && test -f phaser-play/index.html && test -f phaser-play/game.js && test -f phaser-play/planning.js && test -f phaser-play/weekly.js && test -f phaser-play/scene-map.json && test -f game-data.json
       - name: Verify official workshop image
         run: |
           test -s phaser-play/assets/oficina-base.avif
           echo "8d13599f38ac559f12a4c62e44119f1e432f5d8abc83b593d5a7ae852ef3f2bd  phaser-play/assets/oficina-base.avif" | sha256sum --check
+      - name: Verify new 777E transparent texture
+        run: |
+          test -s phaser-play/assets/equipment/cat777e_v2.webp
+          echo "c0c304a84f7dad6e26e046877470d609c74148717ea355a2cd0beae0d33be7fd  phaser-play/assets/equipment/cat777e_v2.webp" | sha256sum --check
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload website
