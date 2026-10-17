@@ -59,6 +59,7 @@ async function imageFromBlob(blob){
 async function useBackground(blob){
  const img=await imageFromBlob(blob);
  if(!scene)return;
+ scene.customBackdrop=true;
  scene.setBackdrop(img);
 }
 
@@ -470,7 +471,7 @@ function events(){
     const beforeDone=state.done.length;
     const result=E.advance(state,data);
     selected=E.job(state,selected)?.id||state.jobs[0]?.id;
-    closePanel();action(null);$('advance').focus();
+    closePanel();action(null);if(scene)scene.applyOfficialBackdrop();$('advance').focus();
     notify((state.done.length-beforeDone)+' OS concluída(s), '+result.blocks+' bloqueio(s) no turno.');
     return;
    }
@@ -527,14 +528,16 @@ function events(){
    notify('Cenário carregado. Para os sprites funcionarem sem duplicação, utilize uma imagem de fundo sem máquinas.');
   }catch(err){notify('Não foi possível carregar: '+err.message)}
  });
- $('bgReset').addEventListener('click',async()=>{closeSceneMenu();localStorage.removeItem(CUSTOM_BACKGROUND_KEY);try{await sceneStore('delete')}catch(err){console.warn(err)}if(scene){const tex=scene.textures.exists('repoWorkshopBG')?scene.textures.get('repoWorkshopBG'):null;scene.setBackdrop(tex?.getSourceImage()||null)}notify('Cenário oficial restaurado.')});
-  $('reset').addEventListener('click',()=>{if(!confirm('Reiniciar a campanha Phaser?'))return;state=E.create(data);selected=state.jobs[0]?.id;action(null)});
+ $('bgReset').addEventListener('click',async()=>{closeSceneMenu();localStorage.removeItem(CUSTOM_BACKGROUND_KEY);try{await sceneStore('delete')}catch(err){console.warn(err)}if(scene){scene.customBackdrop=false;scene.applyOfficialBackdrop()}notify('Cenário automático dia/noite restaurado.')});
+  $('reset').addEventListener('click',()=>{if(!confirm('Reiniciar a campanha Phaser?'))return;state=E.create(data);selected=state.jobs[0]?.id;action(null);if(scene)scene.applyOfficialBackdrop()});
 }
 class Workshop extends Phaser.Scene{
  constructor(){super('Workshop');this.machineObjs=[];this.workerSprites=[]}
  preload(){
   Object.entries(ASSETS).forEach(([key,url])=>this.load.image(key,url));
   this.load.image('repoWorkshopBG','./assets/oficina-base.avif?v=0.7.0');
+  // Asset original noturno preservado; arquivo público será adicionado posteriormente.
+  this.load.image('repoNightWorkshopBG','./assets/oficina-noturna-hq.avif?v=0.8.0');
   this.load.on('loaderror',f=>console.warn('Imagem opcional indisponivel:',f.key));
  }
  create(){
@@ -613,8 +616,18 @@ class Workshop extends Phaser.Scene{
   }});
   this.backgroundDecor=this.children.list.filter(o=>o!==this.statusText&&!this.bayZones.includes(o));
   this.refresh();
-  if(this.textures.exists('repoWorkshopBG'))this.setBackdrop(this.textures.get('repoWorkshopBG').getSourceImage());
+  this.customBackdrop=false;
+  this.applyOfficialBackdrop();
   if(localStorage.getItem(CUSTOM_BACKGROUND_KEY)==='1')sceneStore('read').then(blob=>{if(blob)return useBackground(blob)}).catch(console.warn);
+ }
+ applyOfficialBackdrop(){
+  if(this.customBackdrop)return;
+  const night=state?.shift===1;
+  const key=night&&this.textures.exists('repoNightWorkshopBG')?'repoNightWorkshopBG':'repoWorkshopBG';
+  const img=this.textures.exists(key)?this.textures.get(key).getSourceImage():null;
+  this.setBackdrop(img);
+  // Fallback visual TEMPORÁRIO enquanto AVIF noturno não integra a branch main.
+  if(night&&key!=='repoNightWorkshopBG'&&this.backdrop)this.backdrop.setTint(0x7986a4);
  }
  setBackdrop(img){
   if(this.backdrop){this.backdrop.destroy();this.backdrop=null}
