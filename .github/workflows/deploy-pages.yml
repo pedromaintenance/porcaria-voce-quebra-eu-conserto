@@ -35,8 +35,8 @@ jobs:
           echo "8d13599f38ac559f12a4c62e44119f1e432f5d8abc83b593d5a7ae852ef3f2bd  phaser-play/assets/oficina-base.avif" | sha256sum --check
       - name: Verify new 777E transparent texture
         run: |
-          test -s phaser-play/assets/equipment/cat777e_v2.webp
-          echo "c0c304a84f7dad6e26e046877470d609c74148717ea355a2cd0beae0d33be7fd  phaser-play/assets/equipment/cat777e_v2.webp" | sha256sum --check
+          test -s phaser-play/assets/equipment/cat777e_v3.webp
+          echo "bec258a0b4afb512cae047a0a3c10ff7072be2dba5156b826c57fb0ca137a4bd  phaser-play/assets/equipment/cat777e_v3.webp" | sha256sum --check
       - name: Verify official night workshop image
         run: |
           test -s phaser-play/assets/oficina-noturna-hq.avif
