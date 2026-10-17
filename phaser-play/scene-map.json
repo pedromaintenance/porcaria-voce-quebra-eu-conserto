@@ -353,7 +353,13 @@
             "y": 470,
             "width": 343
           },
-          "assetsNote": "0.8.2: largura delimitada pela zona verde, piso na linha vermelha, barra de diagnóstico dentro da faixa azul. Posição vertical dos assets subiu 40 unidades de mundo. BOX 1; hitbox permanece independente."
+          "assetsNote": "0.8.2: largura delimitada pela zona verde, piso na linha vermelha, barra de diagnóstico dentro da faixa azul. Posição vertical dos assets subiu 40 unidades de mundo. BOX 1; hitbox permanece independente.",
+          "signageWorld": {
+            "x": 548,
+            "y": 166,
+            "width": 137,
+            "height": 37
+          }
         },
         {
           "id": 1,
@@ -404,7 +410,13 @@
             "y": 470,
             "width": 349
           },
-          "assetsNote": "0.8.2: largura delimitada pela zona verde, piso na linha vermelha, barra de diagnóstico dentro da faixa azul. Posição vertical dos assets subiu 40 unidades de mundo. BOX 2; hitbox permanece independente."
+          "assetsNote": "0.8.2: largura delimitada pela zona verde, piso na linha vermelha, barra de diagnóstico dentro da faixa azul. Posição vertical dos assets subiu 40 unidades de mundo. BOX 2; hitbox permanece independente.",
+          "signageWorld": {
+            "x": 798,
+            "y": 166,
+            "width": 118,
+            "height": 37
+          }
         },
         {
           "id": 2,
@@ -455,7 +467,13 @@
             "y": 470,
             "width": 350
           },
-          "assetsNote": "0.8.2: largura delimitada pela zona verde, piso na linha vermelha, barra de diagnóstico dentro da faixa azul. Posição vertical dos assets subiu 40 unidades de mundo. BOX 3; hitbox permanece independente."
+          "assetsNote": "0.8.2: largura delimitada pela zona verde, piso na linha vermelha, barra de diagnóstico dentro da faixa azul. Posição vertical dos assets subiu 40 unidades de mundo. BOX 3; hitbox permanece independente.",
+          "signageWorld": {
+            "x": 1052,
+            "y": 166,
+            "width": 112,
+            "height": 37
+          }
         }
       ]
     }
