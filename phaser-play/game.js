@@ -292,6 +292,7 @@ function renderQueue(){
  }).join('')||'<p class="muted">Nenhuma OS corresponde ao filtro.</p>';
 }
 function drawManagement(k){
+ const pressure=E.productivityProfile(state.productivityTarget);
  const assigned=state.jobs.filter(j=>j.assigned);
  const blocked=assigned.filter(j=>j.status==='material'||j.status==='ferramenta').length;
  const available=state.team.filter(m=>!state.jobs.some(j=>j.assigned===m.id)).length;
@@ -309,6 +310,11 @@ function drawManagement(k){
  $('management').innerHTML='<p class="muted">Controle da oficina no mesmo ambiente Phaser. Dados e decisões vêm da campanha ativa.</p>'
    +'<div class="managementGrid">'+metrics.map(([name,value])=>'<div class="managementMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong></div>').join('')+'</div>'
    +'<div class="managementActions"><button class="act" data-open-panel="planning">🗓️ PLANEJAR OS</button><button class="act secondary" data-open-panel="shift">📋 REVISAR PRÓXIMO TURNO</button><button class="act secondary" data-open-panel="queue">📻 ABRIR CARTEIRA</button><button class="act secondary" data-open-panel="team">👷 EQUIPE</button><button class="act secondary" data-open-panel="store">📦 ESTOQUE</button><button class="act secondary" data-open-panel="stats">📊 INDICADORES</button></div>'
+   +'<section class="productivityControl"><h3>🎯 META DE PRODUTIVIDADE · '+pressure.target+'/100</h3>'
+   +'<p>Estável em 60. Acima de 60, a energia mental e física é consumida exponencialmente por hora trabalhada; abaixo de 60, aumenta a perda de moral.</p>'
+   +'<div class="metaRange"><span>20 · Moral ↓</span><input type="range" id="productivityTarget" min="20" max="100" step="5" value="'+pressure.target+'" aria-label="Meta de produtividade"><span>100 · Energia ↓</span></div>'
+   +'<div id="productivityImpact" class="productivityImpact">Ritmo '+Math.round(pressure.speed*100)+'% · Fadiga '+pressure.fatigueMultiplier.toFixed(2)+'× · Moral −'+pressure.moraleLossPerHour.toFixed(2)+' pts/HH</div>'
+   +'<small>Turnos de 12h: DDS 0,5h + almoço 1h = 10,5 HH úteis por mecânico. Balanceamento fictício, não modelo fisiológico.</small></section>'
    +'<h3 class="resourceSection">Últimos acontecimentos</h3>'
    +(state.logs.slice(0,6).map(l=>'<div class="managementRecent">D'+l.day+': '+esc(l.text)+'</div>').join('')||'<p class="muted">Nenhum evento registrado.</p>');
 }
@@ -392,6 +398,18 @@ function drawStore(){
 
 function events(){
  $('helpBtn').addEventListener('click',()=>openPanel('help'));
+ document.addEventListener('input',ev=>{
+  if(ev.target?.id!=='productivityTarget')return;
+  const p=E.productivityProfile(Number(ev.target.value));
+  const impact=$('productivityImpact');
+  if(impact)impact.textContent='Ritmo '+Math.round(p.speed*100)+'% · Fadiga '+p.fatigueMultiplier.toFixed(2)+'× · Moral −'+p.moraleLossPerHour.toFixed(2)+' pts/HH';
+ });
+ document.addEventListener('change',ev=>{
+  if(ev.target?.id!=='productivityTarget')return;
+  const err=E.setProductivityTarget(state,Number(ev.target.value));
+  action(err);
+  if(!err)notify('Meta de produtividade ajustada para '+state.productivityTarget+'/100.');
+ });
  $('sceneMenuBtn').addEventListener('click',ev=>{
   ev.stopPropagation();
   const menu=$('sceneMenu'),opening=menu.hidden;
