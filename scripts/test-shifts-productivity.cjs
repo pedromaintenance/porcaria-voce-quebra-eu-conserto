@@ -1,0 +1,71 @@
+/* P.O.R.C.A.R.I.A. — turnos de 12h e meta 20–100, regressões sem navegador. */
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const root=path.join(__dirname,'..');
+const E=require(path.join(root,'engine.js'));
+const data=JSON.parse(fs.readFileSync(path.join(root,'game-data.json'),'utf8'));
+assert.equal(E.SHIFT_HOURS,12);
+assert.equal(E.DDS_HOURS,0.5);
+assert.equal(E.MEAL_HOURS,1);
+assert.equal(E.EFFECTIVE_HOURS,10.5);
+assert.equal(E.DEFAULT_PRODUCTIVITY_TARGET,60);
+const baseline=E.productivityProfile(60),low=E.productivityProfile(20),high=E.productivityProfile(100);
+assert.equal(baseline.target,60);
+assert.equal(baseline.fatigueMultiplier,1,'60 is stable no EXTRA fatigue pressure');
+assert.equal(baseline.moraleLossPerHour,0,'60 no target-driven morale penalty');
+assert.ok(high.fatigueMultiplier>=4.9,'100 sharply increases fatigue');
+assert.ok(high.fatigueMultiplier>E.productivityProfile(80).fatigueMultiplier*2,'pressure grows nonlinearly toward 100');
+assert.ok(low.moraleLossPerHour>0,'20 lowers morale per worked hour');
+assert.equal(high.moraleLossPerHour,0);
+assert.ok(low.speed<baseline.speed&&high.speed>baseline.speed,'target moderates simulated throughput');
+assert.equal(E.productivityProfile(undefined).target,60,'legacy saves fall back to 60');
+function testState(goal){
+ const s=E.create(data,()=>0.42);
+ assert.equal(s.productivityTarget,60);
+ assert.equal(E.setProductivityTarget(s,goal),null);
+ const j=s.jobs[0],c=E.scenario(data,j.scene),m=s.team[0];
+ j.stage=6;j.diagRemaining=0;j.repairRemaining=80;j.repairTarget=80;
+ s.tools[c.tool]=true;s.stock[c.material]=4;
+ m.mental=90;m.physical=90;m.morale=90;m.skill=83;m.role=c.category;
+ assert.equal(E.attach(s,j.id,m.id,0,false),null);
+ const before={energy:m.mental,physical:m.physical,morale:m.morale};
+ E.advance(s,data,()=>0.5);
+ return {s,m,j,before};
+}
+const z20=testState(20),z60=testState(60),z100=testState(100);
+assert.equal(z60.s.tick,1,'12h shift tick progressed');
+assert.equal(z60.s.shift,1,'A day -> B night');
+assert.ok(E.timeLabel(z60.s).includes('noite'),'night label');
+assert.equal(z60.s.metrics.hours,42,'4 available mechanics x 10.5HH (3 bays affect maximum executed)');
+for(const t of [z20,z60,z100]){
+ assert.ok(t.j.worked<=10.5+1e-8,'mechanic cannot work more than 10.5HH in one shift');
+ assert.ok(t.s.metrics.productive<=10.5+1e-8,'one allocated mechanic contributes up to 10.5HH');
+}
+assert.ok(z20.m.morale<z60.m.morale,'low target reduces morale');
+assert.ok(z100.m.mental<z60.m.mental,'high target increases mental exhaustion');
+assert.ok(z100.m.physical<z60.m.physical,'high target increases physical exhaustion');
+assert.ok(z100.j.repairRemaining<z60.j.repairRemaining,'high target works faster in simulation');
+assert.ok(z20.j.repairRemaining>z60.j.repairRemaining,'low target works slower in simulation');
+const u=E.create(data,()=>0.42);
+assert.ok(E.setProductivityTarget(u,19),'reject below minimum');
+assert.ok(E.setProductivityTarget(u,101),'reject above maximum');
+assert.equal(u.productivityTarget,60,'invalid target cannot change state');
+assert.equal(E.setProductivityTarget(u,85),null);
+assert.equal(u.productivityTarget,85);
+const snapshot=JSON.parse(JSON.stringify(u));
+assert.ok(E.validate(snapshot),'saved target is JSON round-trip compatible');
+E.advance(u,data,()=>0.5);
+assert.equal(u.shift,1);
+E.advance(u,data,()=>0.5);
+assert.equal(u.shift,0);
+assert.equal(u.day,2,'A and B complete a 24h day');
+// Completed order calendar age uses elapsed 12h per tick.
+const done=E.create(data,()=>0.42),job=done.jobs[0],sc=E.scenario(data,job.scene);
+job.stage=6;job.repairRemaining=1;job.repairTarget=1;
+done.tools[sc.tool]=true;done.stock[sc.material]=5;
+assert.equal(E.attach(done,job.id,done.team[0].id,0,false),null);
+E.advance(done,data,()=>0.5);
+assert.equal(done.done[0].elapsedHours,12,'MTTR calendar hours reflect 12h per completed shift');
+console.log('OK: 12h A/B clock, DDS/almoço, 10.5HH, goal 20/60/100, fatigue, morale, throughput, saved goals and MTTR.');
