@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.1 — perfis geométricos independentes para fundos recortados/completos; homologação visual pendente.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.2 — piso, envelopes laterais e indicadores de diagnóstico independentes por box; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -406,6 +406,36 @@ O código antigo em `setBackdrop()` decidia arbitrariamente se deveria recortar 
 
 **Critério de aceite:** todas as imagens da oficina selecionam e renderizam geometria compatível; rodas/esteiras e mecânicos ficam dentro do box certo; barra de progresso e clique correspondem à mesma OS. Não ajustar offsets isolados antes de validar o perfil do cenário escolhido.
 
+## Entrega 0.8.2 — Reposicionamento físico do piso, assets e HUDs (implementada; homologação visual pendente)
+
+**Evidência:** duas capturas fornecidas pelo usuário em 17/10/2026, sendo a segunda anotada com três zonas. A interpretação aprovada distingue **linha vermelha horizontal inferior = contato com o piso**, **bordas verdes laterais = limites permitidos para equipamentos/mecânicos**, **região azul inferior = percentual de diagnóstico**. **As bordas superiores dos retângulos verdes NÃO são restrições verticais.**
+
+### Causa de engenharia
+
+Na versão 0.8.1, `hitWorld` controlava simultaneamente o clique, a largura máxima do sprite e a posição do mecânico, enquanto `progressWorld.y=217` colocava os indicadores na região visual dos letreiros. O plano de contato `groundY=448` deixava máquinas e mecânicos aproximadamente **40 unidades do mundo** abaixo da linha de apoio indicada pelo usuário. Isso não podia ser resolvido apenas transladando máquinas para os lados.
+
+### Alterações entregues
+
+- [x] **Quatro geometrías independentes por box:** `hitWorld` (clique), `placementWorld` (limites laterais dos assets e linha de piso), `progressWorld` (HUD de percentual) e `footerWorld` (barra inferior identificadora da OS). `signageWorld` registra os letreiros para verificação de ausência de sobreposição.
+- [x] **Perfil `fullFrame` calibrado segundo a captura:** `placementWorld.x=[450,738,1008]` e larguras `[228,228,202]` em coordenadas mundiais. Os limites verdes são somente laterais; `topY=101` é o limite técnico independente de altura disponível, não a borda superior da marcação.
+- [x] **Máquinas e mecânicos elevados:** `spriteWorld.y=groundY=408` e `workerWorld[].y=408` nos três boxes completos (antes 448). As sombras de contato também utilizam `placementWorld.groundY`, reduzindo dimensões para caber dentro de cada envelope.
+- [x] **HUD de diagnóstico abaixo da máquina:** `progressWorld.y=441` (antes 217), desenhando o card de 48px em `y=410…458`, imediatamente abaixo do piso em `y=408` e dentro da faixa azul marcada. Larguras dos cards **220/219/194** estão contidas nos envelopes verdes. Os letreiros `BOX 1/2/3` em `y≈166…203` ficam livres.
+- [x] **Rodapé independente:** `footerWorld.y=470` e posições horizontais individuais; os badges HTML no rodapé passam a ler percentuais derivados do mundo Phaser, em vez de ocupar arbitrariamente colunas de um grid. No celular o rodapé continua fixado à borda inferior para manter legibilidade.
+- [x] **Encaixe por `placementWorld`:** `equipmentSize()`, `placeMachineInBay()` e `placeWorkerInBay()` usam a área visual quando presente, nunca o `hitWorld` para dimensionar a arte. A área de clique permanece separada e reconstruída pelo perfil de fundo ativo.
+- [x] **Suporte ao fundo previamente recortado:** os centros, tamanhos, apoio e progressos da v0.7.6 permanecem nos mesmos valores; apenas a nova separação semântica e o sistema de rodapé são compartilhados. A homologação visual desse perfil permanece pendente.
+- [x] **Modo de verificação opcional:** acrescentar `&debugBoxes=1` à URL de Pages para mostrar os guias em **verde** (laterais), **vermelho** (contato), **azul** (indicador) e **violeta** (barra inferior), sem impactar o jogo padrão nem capturar cliques.
+- [x] **Regressões em CI:** `scripts/test-scene-profiles.cjs` verifica os três fundos e zonas, colisões horizontais, encaixe de modelos grandes, piso, distância entre card e letreiro, intervalo entre diagnóstico e rodapé e posições do cenário da v0.7.6.
+
+### Controle de qualidade pendente
+
+- [ ] No fundo completo, validar que rodas/esteiras e pés correspondem à marcação horizontal vermelha; o recorte alfa dos PNGs pode introduzir diferenças entre **base total do sprite** e **ponto real de contato do rodado**.
+- [ ] Em cada box, verificar CAT 777E, CAT 6030, CAT 336GC, DR410i e veículos com arte vetorial, observando interferência visual dos mecânicos com a máquina.
+- [ ] Conferir na resolução 1703×821 (referência da captura) que a barra percentual ocupa a faixa azul **sem encobrir placas**, que ficam acima dela, e que a barra inferior de identificação não cobre informação essencial.
+- [ ] Comparar visualmente o perfil recortado do dia, o perfil completo de noite e um fundo completo selecionado manualmente. Ajustar a posição conforme o enquadramento real do asset, não apenas pelo aspect ratio.
+- [ ] Validar áreas clicáveis, animação dos mecânicos, menu sobreposto, responsividade mobile e linha de apoio ao trocar Turno A ↔ B ↔ A.
+
+**Critério de aceite:** as máquinas e mecânicos estão no piso vermelho, limitados lateralmente ao verde; indicadores ficam na faixa azul abaixo dos equipamentos; nomes dos boxes e barras inferiores permanecem legíveis. O motor de 12h, 10,5 HH úteis e meta de produtividade 20–100 **não foi modificado**.
+
 ## Entrega 0.8 — Gestão avançada de manutenção (P1)
 
 - [x] **Etapa inicial (v0.7.8):** priorização por criticidade, idade da OS e bloqueio de insumos, com pontuação de jogo explícita. **Pendente:** modelagem calibrável de risco e impacto operacional.
@@ -437,7 +467,7 @@ O código antigo em `setBackdrop()` decidia arbitrariamente se deveria recortar 
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.1
+## Plano de validação para a versão 0.8.2
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -482,6 +512,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.7.9:** janela de capacidade de 14 turnos, HH brutas sem extrapolar produtividade, necessidades de peças apenas após diagnóstico, entregas no fim do turno, referência de folha fixa, hipóteses explícitas e testes automatizados; **QA visual e funcional pendente**.
 - **0.8.0:** 12h/turno, DDS 0,5h e almoço 1h, 10,5 HH/mecânico, meta 20–100 (60 estável; fadiga exponencial acima; moral abaixo), interface e PCM recalibrados. PNG noturno original e AVIF derivados arquivados, hashes no manifesto; **publicação do binário noturno ainda pendente**.
 - **0.8.1:** elimina corte de imagem decidido pela proporção, mapeia separadamente o galpão recortado e o cenário completo, alterna hitboxes/indicadores/sprites em conjunto e usa limites físicos de box e centro de apoio do equipamento. Testes geométricos em CI. **QA visual no Pages pendente.**
+- **0.8.2:** distingue clique, área visual, indicador e footer; sobe rodado/mecânicos para linha de apoio, desloca barras para a faixa inferior e limita sprites pelas laterais dos boxes; habilita guias opcionais `debugBoxes=1`. **Testes de geometria automatizados; QA visual pendente.**
 
 ### Organização recomendada
 
