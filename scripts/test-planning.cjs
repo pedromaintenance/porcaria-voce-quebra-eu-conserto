@@ -14,7 +14,7 @@ assert.equal(JSON.stringify(state),initial,'planejamento apenas lê o save');
 assert.equal(p.freeBays.length,3,'boxes livres na abertura');
 assert.equal(p.freeMechanics.length,4,'equipe completa livre na abertura');
 assert.equal(p.remainingStarts,3,'capacidade limitada pelo número de boxes');
-assert.equal(p.remainingGrossHours,24,'HH brutas = 3 boxes × 8h, não 4 mecânicos × 8h');
+assert.equal(p.remainingGrossHours,31.5,'HH úteis = 3 boxes × 10,5h, não 4 mecânicos × 10,5h');
 assert.equal(p.ranked.length,3,'todas as OS iniciais entram na fila planejável');
 assert.ok(p.ranked.every(j=>j.freeBays.length===3),'cada sugestão considera a ocupação presente');
 assert.ok(p.ranked.every((j,i,arr)=>i===0||arr[i-1].score>=j.score),'fila ordenada por pontuação');
@@ -34,7 +34,7 @@ assert.equal(state.team[0].assigned,null,'consultar sugestão não aloca automat
 assert.equal(E.attach(state,j.id,row.recommended.mechanicId,row.recommended.bay,true),null,'motor autoriza sugestão explícita');
 p=P.compute(state,data);
 assert.equal(p.remainingStarts,2,'capacidade decrementa após alocação');
-assert.equal(p.remainingGrossHours,16,'HH brutas remanescentes decrementam');
+assert.equal(p.remainingGrossHours,21,'HH úteis remanescentes decrementam');
 assert.equal(p.ranked.length,2,'OS já alocada sai das sugestões');
 assert.ok(p.ranked.every(x=>x.recommended?.bay!==0),'box ocupado nunca é recomendado');
 assert.ok(p.ranked.every(x=>x.recommended?.mechanicId!==state.team[0].id),'mecânico ocupado não é recomendado');
@@ -68,7 +68,7 @@ assert.ok(!p.freeMechanics.some(x=>x.id===state.team[1].id),'descansando não re
 state.team[1].restAt=null;
 state.team[1].mental=12;state.team[1].physical=18;
 assert.equal(P.candidateScore(state.team[1],sc2).fatigued,true,'fadiga explicitada');
-assert.equal(P.compute(state,data).remainingGrossHours,16,'fadiga reduz score, não remove mecanicamente da capacidade bruta');
+assert.equal(P.compute(state,data).remainingGrossHours,21,'fadiga reduz score, não remove mecanicamente da capacidade útil');
 for(const x of state.jobs.filter(x=>!x.assigned))state.tools[E.scenario(data,x.scene).tool]=true;
 for(const x of state.jobs.filter(x=>!x.assigned)){
  const row=P.compute(state,data).ranked.find(z=>z.id===x.id);
