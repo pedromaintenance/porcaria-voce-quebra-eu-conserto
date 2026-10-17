@@ -727,7 +727,7 @@ class Workshop extends Phaser.Scene{
      const plan=window.PORCARIA_LAYOUT.equipmentSize(src.width,src.height,scale,MODEL_PRESENTATION[modelId]||{},bay);
      // The requested offset is preserved in scene-map.json; clipping protection is visual only.
      const visibleX=this.activeProfile==='fullFrame'
-      ?window.PORCARIA_LAYOUT.placeMachineInBay(x,plan.width,bay,MODEL_PRESENTATION[modelId]||{},5).x
+      ?window.PORCARIA_LAYOUT.placeMachineInBay(x,plan.width,bay,MODEL_PRESENTATION[modelId]||{},3).x
       :window.PORCARIA_LAYOUT.calibratedCenter(x,plan.width,SCENE_REFERENCE,bay?.visualCalibrationX||0,8);
      const node=this.add.image(visibleX,Math.round(y),renderKey).setOrigin(.5,1);
      node.setDisplaySize(plan.width,plan.height);
@@ -736,7 +736,7 @@ class Workshop extends Phaser.Scene{
    }else{
      // Fallback machines obey the same viewport bounds as PNG sprites.
      x=this.activeProfile==='fullFrame'
-      ?window.PORCARIA_LAYOUT.placeMachineInBay(x,220*scale,bay,MODEL_PRESENTATION[modelId]||{},5).x
+      ?window.PORCARIA_LAYOUT.placeMachineInBay(x,220*scale,bay,MODEL_PRESENTATION[modelId]||{},3).x
       :window.PORCARIA_LAYOUT.calibratedCenter(x,220*scale,SCENE_REFERENCE,bay?.visualCalibrationX||0,8);
      this.lastFallbackMachineX=x;
      // Trator de esteiras: silhueta industrial própria enquanto não existe PNG aprovado do D9.
