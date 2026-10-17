@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.7 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.8 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);

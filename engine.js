@@ -189,9 +189,10 @@
     if(s.player.mental<4)return 'O gestor não tem energia mental suficiente para coordenar o teste.';
     const m=employee(s,j.assigned);if(!m)return 'Mecânico não encontrado.';
     j.hints=j.hints||{};j.hints[j.stage]=true;j.diagRemaining+=0.4;
-    const c=scenario(d,j.scene),stage=j.stage;
-    const clue=stage<3?c.path[stage]:[c.component,c.damage,c.verification][stage-3];
-    diagnosticEvent(s,j,stage,'evidence','player',m,clue||c.verification||'Inspeção adicional solicitada');
+    // A inspeção registra somente a solicitação, nunca a resposta correta.
+    // O quadro didático oferece procedimento orientativo sem revelar a hipótese.
+    const stage=j.stage;
+    diagnosticEvent(s,j,stage,'evidence','player',m,'Inspeção orientativa solicitada');
     s.player.mental=clamp(s.player.mental-4);m.mental=clamp(m.mental-1);
     msg(s,`Inspeção adicional na ${id}: −4 mental da chefia, +0,4h de investigação.`);
     return null;
