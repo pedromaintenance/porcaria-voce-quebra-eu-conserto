@@ -1,5 +1,5 @@
 {
-  "version": "0.8.1",
+  "version": "0.8.2",
   "reference": {
     "file": "Oficina Industrial ao Entardecer.png",
     "width": 1976,
@@ -76,7 +76,18 @@
       },
       "compositionOffsetX": -74,
       "assetsNote": "Ajuste visual v0.7.6: +20 px à direita. Aplicar calibração após proteção de borda para que o CAT 777E não fique imóvel devido ao clamp. Mecânicos acompanham a máquina; demais HUD/hitboxes continuam fixos.",
-      "visualCalibrationX": 20
+      "visualCalibrationX": 20,
+      "placementWorld": {
+        "x": 386,
+        "width": 266,
+        "topY": 115,
+        "groundY": 448
+      },
+      "footerWorld": {
+        "x": 322,
+        "y": 470,
+        "width": 348
+      }
     },
     {
       "id": 1,
@@ -116,7 +127,18 @@
       },
       "compositionOffsetX": 34,
       "assetsNote": "Ajuste visual v0.7.6: -6 px à esquerda. Máquina e mecânicos movem juntos sem alterar hitbox e barra de progresso.",
-      "visualCalibrationX": -6
+      "visualCalibrationX": -6,
+      "placementWorld": {
+        "x": 667,
+        "width": 281,
+        "topY": 115,
+        "groundY": 448
+      },
+      "footerWorld": {
+        "x": 678,
+        "y": 470,
+        "width": 348
+      }
     },
     {
       "id": 2,
@@ -156,7 +178,18 @@
       },
       "compositionOffsetX": 104,
       "assetsNote": "BOX 3 aprovado em v0.7.5: nenhum deslocamento adicional em v0.7.6.",
-      "visualCalibrationX": 0
+      "visualCalibrationX": 0,
+      "placementWorld": {
+        "x": 987,
+        "width": 271,
+        "topY": 115,
+        "groundY": 448
+      },
+      "footerWorld": {
+        "x": 1034,
+        "y": 470,
+        "width": 365
+      }
     }
   ],
   "controls": {
@@ -167,8 +200,8 @@
     "cameraClipProtection": "O renderer limita o centro dos sprites e mecânicos aos limites da câmera sem alterar as posições nominais no JSON.",
     "visualCalibration": "visualCalibrationX corrige deslocamento desejado mesmo em sprites anteriormente travados no limite do viewport: aplicar clamp sobre posição anterior (spriteWorld.x - visualCalibrationX), somar delta e reaplicar clamp; não deslocar hitWorld, progressWorld ou labelWorld.",
     "backgroundProfileSelection": "preCropped = background asset already cropped to 1350×563. fullFrame = original workshop image in full 1976×796 (or aspect-preserving similar image) — never crop this source with legacy SCENE_REFERENCE.crop.",
-    "interaction": "Each layout profile owns hitWorld, progressWorld, spriteWorld and workerWorld, and must rebuild pointer zones upon profile switch.",
-    "worldPlacement": "fullFrame: clamp the full rendered sprite to corresponding physical bay limits after accounting for footprint anchor. cropped: retain exact v0.7.6 calibration that was previously accepted."
+    "interaction": "Zonas clicáveis usam exclusivamente hitWorld; colocar sprites por placementWorld sem fazer hitbox coincidir com a arte. Os cliques diretos dos sprites continuam selecionando sua OS, inclusive ao ultrapassar hitWorld.",
+    "worldPlacement": "0.8.2: assets e mecânicos do perfil fullFrame cabem nas laterais de placementWorld, sem usar as laterais amplas de hitWorld. Seus pés/contato usam placementWorld.groundY. Hud de progresso usa progressWorld próximo ao chão, footer usa footerWorld. Cropped preserva ancoragem original."
   },
   "assets": {
     "notes": "v0.7.6: BOX 1 +20 px (x427; mecânicos 330/559), BOX 2 -6 px (x842; mecânicos 719/971), BOX 3 preservado (x1223; mecânicos 1102/1345). A calibração de borda garante movimento visível no BOX 1 sem cortar sprites. HUD, hotspots e posição vertical preservados."
@@ -256,7 +289,7 @@
     },
     "fullFrame": {
       "label": "Oficina completa (dia/noite)",
-      "description": "Imagem original com os três letreiros na composição completa; deve ser mostrada por inteiro. Coordenadas independentes alinhadas aos letreiros e faixas no piso; QA visual pendente.",
+      "description": "Imagem original com os três letreiros na composição completa; deve ser mostrada por inteiro. Coordenadas independentes alinhadas aos letreiros e faixas no piso; QA visual pendente. v0.8.2: limites laterais e plano de chão reancorados de acordo com a marcação do usuário; cards de diagnóstico deslocados para faixa inferior.",
       "mode": "fullFrame",
       "sourceReference": {
         "width": 1976,
@@ -275,120 +308,163 @@
           "id": 0,
           "label": "BOX 1",
           "hitWorld": {
-            "x": 495,
-            "y": 130,
-            "width": 233,
-            "height": 356
+            "x": 437,
+            "y": 125,
+            "width": 278,
+            "height": 359
           },
           "spriteWorld": {
-            "x": 611,
-            "y": 448,
+            "x": 568,
+            "y": 408,
             "scale": 0.7,
-            "groundY": 448
+            "groundY": 408
           },
           "workerWorld": [
             {
-              "x": 513,
-              "y": 448,
+              "x": 474,
+              "y": 408,
               "facing": "right"
             },
             {
-              "x": 708,
-              "y": 448,
+              "x": 658,
+              "y": 408,
               "facing": "left"
             }
           ],
           "labelWorld": {
-            "x": 502,
-            "y": 447
+            "x": 462,
+            "y": 420
           },
           "progressWorld": {
-            "x": 503,
-            "y": 217,
-            "width": 215
+            "x": 454,
+            "y": 441,
+            "width": 220
           },
           "compositionOffsetX": 0,
-          "visualCalibrationX": 0
+          "visualCalibrationX": 0,
+          "placementWorld": {
+            "x": 450,
+            "width": 228,
+            "topY": 101,
+            "groundY": 408
+          },
+          "footerWorld": {
+            "x": 325,
+            "y": 470,
+            "width": 343
+          },
+          "assetsNote": "0.8.2: largura delimitada pela zona verde, piso na linha vermelha, barra de diagnóstico dentro da faixa azul. Posição vertical dos assets subiu 40 unidades de mundo. BOX 1; hitbox permanece independente."
         },
         {
           "id": 1,
           "label": "BOX 2",
           "hitWorld": {
-            "x": 729,
-            "y": 130,
-            "width": 235,
-            "height": 356
+            "x": 715,
+            "y": 125,
+            "width": 277,
+            "height": 359
           },
           "spriteWorld": {
-            "x": 846,
-            "y": 448,
+            "x": 852,
+            "y": 408,
             "scale": 0.7,
-            "groundY": 448
+            "groundY": 408
           },
           "workerWorld": [
             {
-              "x": 748,
-              "y": 448,
+              "x": 758,
+              "y": 408,
               "facing": "right"
             },
             {
-              "x": 945,
-              "y": 448,
+              "x": 949,
+              "y": 408,
               "facing": "left"
             }
           ],
           "labelWorld": {
-            "x": 736,
-            "y": 447
+            "x": 750,
+            "y": 420
           },
           "progressWorld": {
-            "x": 738,
-            "y": 217,
-            "width": 215
+            "x": 742,
+            "y": 441,
+            "width": 219
           },
           "compositionOffsetX": 0,
-          "visualCalibrationX": 0
+          "visualCalibrationX": 0,
+          "placementWorld": {
+            "x": 738,
+            "width": 228,
+            "topY": 101,
+            "groundY": 408
+          },
+          "footerWorld": {
+            "x": 678,
+            "y": 470,
+            "width": 349
+          },
+          "assetsNote": "0.8.2: largura delimitada pela zona verde, piso na linha vermelha, barra de diagnóstico dentro da faixa azul. Posição vertical dos assets subiu 40 unidades de mundo. BOX 2; hitbox permanece independente."
         },
         {
           "id": 2,
           "label": "BOX 3",
           "hitWorld": {
-            "x": 970,
-            "y": 130,
-            "width": 250,
-            "height": 356
+            "x": 996,
+            "y": 125,
+            "width": 251,
+            "height": 359
           },
           "spriteWorld": {
-            "x": 1094,
-            "y": 448,
+            "x": 1109,
+            "y": 408,
             "scale": 0.7,
-            "groundY": 448
+            "groundY": 408
           },
           "workerWorld": [
             {
-              "x": 989,
-              "y": 448,
+              "x": 1027,
+              "y": 408,
               "facing": "right"
             },
             {
-              "x": 1200,
-              "y": 448,
+              "x": 1192,
+              "y": 408,
               "facing": "left"
             }
           ],
           "labelWorld": {
-            "x": 978,
-            "y": 447
+            "x": 1020,
+            "y": 420
           },
           "progressWorld": {
-            "x": 980,
-            "y": 217,
-            "width": 230
+            "x": 1011,
+            "y": 441,
+            "width": 194
           },
           "compositionOffsetX": 0,
-          "visualCalibrationX": 0
+          "visualCalibrationX": 0,
+          "placementWorld": {
+            "x": 1008,
+            "width": 202,
+            "topY": 101,
+            "groundY": 408
+          },
+          "footerWorld": {
+            "x": 1035,
+            "y": 470,
+            "width": 350
+          },
+          "assetsNote": "0.8.2: largura delimitada pela zona verde, piso na linha vermelha, barra de diagnóstico dentro da faixa azul. Posição vertical dos assets subiu 40 unidades de mundo. BOX 3; hitbox permanece independente."
         }
       ]
     }
+  },
+  "geometryConvention": {
+    "source": "Marcação do usuário sobre screenshot 1703×821 (2026-10-17): base vermelha ~y674, faixa azul ~y678-761, limites verdes x≈[205,557],[652,1006],[1069,1376] na captura. Valores abaixo usam mundo Phaser 1080×450 com câmera (319,45) e foram arredondados; QA em Pages é necessário.",
+    "profileLogic": "fullFrame possui hitWorld (clique), placementWorld (limites laterais, topo técnico e piso), progressWorld (HUD de diagnóstico na faixa azul) e footerWorld (barra inferior da OS). A borda superior dos retângulos verdes NÃO define altura máxima; apenas suas laterais limitam os assets.",
+    "groundWorldY": 408,
+    "progressWorldY": 441,
+    "footerWorldY": 470
   }
 }
