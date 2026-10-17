@@ -24,9 +24,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Validate Phaser JavaScript syntax
-        run: node --check phaser-play/game.js && node --check phaser-play/planning.js && node --check phaser-play/weekly.js && node --check phaser-play/shift-brief.js && node --check engine.js
+        run: node --check phaser-play/layout-math.js && node --check phaser-play/game.js && node --check phaser-play/planning.js && node --check phaser-play/weekly.js && node --check phaser-play/shift-brief.js && node --check engine.js
       - name: Regression tests (engine and scene map)
-        run: node scripts/smoke-phaser.cjs && node scripts/test-shift-brief.cjs && node scripts/test-planning.cjs && node scripts/test-weekly.cjs && node scripts/test-shifts-productivity.cjs
+        run: node scripts/smoke-phaser.cjs && node scripts/test-shift-brief.cjs && node scripts/test-planning.cjs && node scripts/test-weekly.cjs && node scripts/test-shifts-productivity.cjs && node scripts/test-scene-profiles.cjs
       - name: Check Pages entrypoints
         run: test -f phaser-play/assets/OFICINA-NOTURNA.md && test -f phaser-play/index.html && test -f phaser-play/game.js && test -f phaser-play/planning.js && test -f phaser-play/weekly.js && test -f phaser-play/scene-map.json && test -f game-data.json
       - name: Verify official workshop image
