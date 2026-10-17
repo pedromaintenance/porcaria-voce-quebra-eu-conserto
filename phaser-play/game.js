@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.10 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.11 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -29,6 +29,8 @@ const FILTER={queue:'all',query:'',store:'all',stockQuery:''};
 let toastTimeout;
 let planningHorizon='turn';
 let stockReturnJobId=null; // Contexto de navegação, não faz parte do save.
+let completedOrderId=null;
+let completedSearch=''; // Estado transitório de interface, nunca no save.
 
 const SCENE_REFERENCE={crop:{x:320,y:130,width:1350,height:563},sourceWidth:1976,sourceHeight:796,worldX:319,worldY:45,width:1080,height:450};
 const CUSTOM_BACKGROUND_KEY='porcaria.phaser.customBackdrop.official20261016';
@@ -402,6 +404,19 @@ function drawManagement(k){
    +'<h3 class="resourceSection">Últimos acontecimentos</h3>'
    +(state.logs.slice(0,6).map(l=>'<div class="managementRecent">D'+l.day+': '+esc(l.text)+'</div>').join('')||'<p class="muted">Nenhum evento registrado.</p>');
 }
+function drawCompletedOrders(){
+ const host=$('closedOrders');if(!host)return;
+ const R=window.PORCARIA_CLOSED_ORDERS;
+ const result=R.compute(state,data,completedSearch,completedOrderId);
+ if(!result.selected){
+  if(completedOrderId)completedOrderId=null;
+  host.innerHTML=R.renderList(result);return;
+ }
+ host.innerHTML=R.renderDetail(result)
+  +'<div class="closedDiagnostic"><h3>INVESTIGAÇÃO PRESERVADA NO ENCERRAMENTO</h3>'
+  +window.PORCARIA_DIAGNOSTIC_VIEW.render(window.PORCARIA_DIAGNOSTIC.compute(state,data,result.selected.raw),result.selected.id)
+  +'</div>';
+}
 function drawUI(){
  if(!state||!data)return;
  updateSceneStatus();
@@ -413,7 +428,13 @@ function drawUI(){
  drawBays();
  renderQueue();
  const j=job(), d=$('detail');
- if(!j){d.innerHTML='<p>Sem ordens de serviço abertas.</p>';drawTeam();drawStore();$('stats').innerHTML='<p class="muted">Nenhuma OS pendente.</p>';$('logs').innerHTML=state.logs.slice(0,5).map(l=>`<div class="log">D${l.day}: ${esc(l.text)}</div>`).join('');return}
+ if(!j){
+  d.innerHTML='<p>Sem ordens de serviço abertas.</p>';drawTeam();drawStore();
+  $('stats').innerHTML='<p class="muted">Nenhuma OS aberta. Consulte as OS concluídas abaixo.</p>';
+  drawCompletedOrders();
+  $('logs').innerHTML=state.logs.slice(0,5).map(l=>`<div class="log">D${l.day}: ${esc(l.text)}</div>`).join('');
+  return;
+ }
  selected=j.id;
  const c=E.scenario(data,j.scene),m=E.model(data,j.modelId);
  const part=data.items[c.material],tool=data.tools[c.tool];
@@ -454,7 +475,7 @@ function drawUI(){
  out+=resourceInfo;
  d.innerHTML=out;
  $('stats').innerHTML=`<div class="status">OS concluídas: <b>${k.done}</b> · Críticas: <b>${k.critical}</b></div><div class="status">Reputação: <b>${k.reputation}/100</b> · Utilização: <b>${k.utilization}%</b></div><div class="status">Mecânicos disponíveis: <b>${state.team.filter(x=>!x.assigned).length}</b></div><div class="progress"><i style="width:${k.reputation}%"></i></div><div class="legend">⚒ Clique nos boxes da oficina para selecionar uma OS.</div>`;
- drawTeam();drawStore();
+ drawTeam();drawStore();drawCompletedOrders();
  $('logs').innerHTML=state.logs.slice(0,5).map(l=>`<div class="log">D${l.day}: ${esc(l.text)}</div>`).join('');
 }
 
@@ -512,6 +533,10 @@ function events(){
  $('bgPickBtn').addEventListener('click',()=>$('bgPicker').click());
  $('truckPickBtn').addEventListener('click',()=>$('truckPicker').click());
  $('bgNightBtn').addEventListener('click',()=>$('nightPicker').click());
+ $('closedOrderSearch').addEventListener('input',ev=>{
+   completedSearch=ev.target.value;
+   completedOrderId=null;drawCompletedOrders();
+ });
  $('queueSearch').addEventListener('input',ev=>{FILTER.query=ev.target.value;renderQueue()});
  $('queueFilter').addEventListener('change',ev=>{FILTER.queue=ev.target.value;renderQueue()});
  $('storeSearch').addEventListener('input',ev=>{FILTER.stockQuery=ev.target.value;drawStore()});
@@ -587,6 +612,14 @@ function events(){
   if(!origin){stockReturnJobId=null;drawStore();notify('A OS de origem já saiu da carteira.');return}
   stockReturnJobId=null;pick(origin.id);return;
  }
+ const closedBack=ev.target.closest('[data-closed-back]');
+ if(closedBack){completedOrderId=null;drawCompletedOrders();$('closedOrderSearch').focus();return}
+ const closedPick=ev.target.closest('[data-closed-order]');
+ if(closedPick){
+  const completed=state.done.find(x=>x.id===closedPick.dataset.closedOrder);
+  if(!completed){notify('OS já não está no histórico da campanha.');drawCompletedOrders();return}
+  completedOrderId=completed.id;drawCompletedOrders();return;
+ }
  const p=ev.target.closest('[data-pick]');if(p){pick(p.dataset.pick);return}
   const ans=ev.target.closest('[data-answer]');if(ans){
    const result=E.answer(state,data,selected,ans.dataset.answer);
@@ -624,6 +657,7 @@ function events(){
    if(!E.validate(candidate))throw Error('Save incompatível com a simulação atual.');
    if(!confirm('Importar save e substituir o progresso desta oficina? Exporte o save atual antes de continuar.'))return;
    state=candidate;state.productivityTarget=E.productivityProfile(state.productivityTarget).target;selected=state.jobs[0]?.id||null;
+    completedOrderId=null;completedSearch='';$('closedOrderSearch').value='';
    action(null);notify('Save importado com sucesso.');
   }catch(error){notify('Falha ao importar: '+error.message)}
  });
@@ -671,7 +705,7 @@ function events(){
   try{await sceneStore('delete',null,'truckSprite')}catch(e){console.warn(e)}
   restoreTruckSprite();notify('777E original restaurado, sem alterar a campanha.');
  });
- $('reset').addEventListener('click',()=>{if(!confirm('Reiniciar a campanha Phaser?'))return;state=E.create(data);selected=state.jobs[0]?.id;action(null);if(scene)scene.applyOfficialBackdrop()});
+ $('reset').addEventListener('click',()=>{if(!confirm('Reiniciar a campanha Phaser?'))return;state=E.create(data);selected=state.jobs[0]?.id;completedOrderId=null;completedSearch='';$('closedOrderSearch').value='';action(null);if(scene)scene.applyOfficialBackdrop()});
 }
 class Workshop extends Phaser.Scene{
  constructor(){super('Workshop');this.machineObjs=[];this.workerSprites=[];this.activeProfile='cropped';this.activeBayLayout=BAY_LAYOUT;}
@@ -1029,7 +1063,7 @@ async function boot(){
   if(!state)state=E.create(data);
   state.productivityTarget=E.productivityProfile(state.productivityTarget).target;
   selected=state.jobs[0]?.id;events();drawUI();
-  if(!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
+  if(!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
   new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1080,height:450,
    backgroundColor:'#182838',render:{pixelArt:false,antialias:false,roundPixels:true},
    scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_HORIZONTALLY},scene:[Workshop]});
