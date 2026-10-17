@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.6 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.7 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -396,7 +396,9 @@ function drawUI(){
  <span class="${toolOK?'ready':'warning'}">${toolOK?'✓':'!'} Ferramental: ${esc(tool?.name||c.tool)}</span>
  <span class="${j.stage<6?'':stockOK?'ready':'warning'}">${j.stage<6?'🔎 Material a confirmar no diagnóstico':(stockOK?'✓':'!')+' Material: '+esc(part?.name||c.material)+' ('+(state.stock[c.material]||0)+' em estoque · '+inbound+' em trânsito)'}</span>
  <div class="actions"><button class="act secondary" data-do="stockTool">VER FERRAMENTAL</button>${j.stage>=6?'<button class="act secondary" data-do="stockPart">VER PEÇA CONFIRMADA</button>':''}</div></div>`;
- let out=`<div style="font-size:20px;font-weight:900;color:#ffca6b">${esc(m?.title)} · ${esc(j.id)}</div><p class="muted">Prioridade: ${j.priority===3?'Crítica':j.priority===2?'Alta':'Moderada'} · Tempo desde abertura: ${age}h · OS ${esc(j.id)}</p><p class="muted">${esc(j.report)}</p><div class="progress"><i style="width:${Math.round(j.stage/6*100)}%"></i></div><p class="status">${j.stage}/6 etapas de diagnóstico · ${esc(j.status)}</p><div id="notice" style="display:none;background:#764b23;padding:9px;border-radius:8px;margin:8px 0"></div>`;
+ let out=`<div class="diagnosticOsTitle">${esc(m?.title)} · ${esc(j.id)}</div><p class="muted">Prioridade: ${j.priority===3?'Crítica':j.priority===2?'Alta':'Moderada'} · Tempo desde abertura: ${age}h · OS ${esc(j.id)}</p><p class="muted">${esc(j.report)}</p>`;
+ out+=window.PORCARIA_DIAGNOSTIC_VIEW.render(window.PORCARIA_DIAGNOSTIC.compute(state,data,j),j.id);
+ out+='<div id="notice" style="display:none"></div>';
  if(!j.assigned){
   const busy=new Set(state.jobs.map(x=>x.assigned).filter(Boolean));
   const free=state.team.filter(x=>!busy.has(x.id)&&x.restAt!==state.tick);
@@ -409,10 +411,10 @@ function drawUI(){
   out+=`<p class="muted">BOX ${j.bay+1} · ${esc(mech?.name)} · diagnóstico assistido</p>`;
   if(!state.tools[c.tool])out+=`<p class="status">⚠ Falta ferramenta: ${esc(data.tools[c.tool]?.name)}</p><button class="act" data-do="tool">ADQUIRIR FERRAMENTA · R$ ${brl(data.tools[c.tool]?.cost||0)}</button>`;
   if(j.stage<6){
-   out+=`<h3 style="font-size:14px;color:#ffca6b">ETAPA ${j.stage+1} — ${STAGES[j.stage]}</h3><div class="muted">Selecione a hipótese mais provável; erros geram retrabalho.</div>`;
+   out+=`<h3 class="diagnosticAnswerHeading">SUA DECISÃO · ETAPA ${j.stage+1} — ${STAGES[j.stage]}</h3><div class="muted">Escolha a hipótese. O resultado aparecerá no quadro acima; erros geram retrabalho.</div>`;
    (j.options[j.stage]||[]).forEach(o=>out+=`<button class="answer" data-answer="${esc(o.id)}">${esc(o.label)}</button>`);
    out+='<button class="act secondary" data-do="hint">SOLICITAR EVIDÊNCIA</button>';
-   if(j.hints[j.stage])out+=`<p class="status">Indício: ${esc((j.stage<3?c.path[j.stage]:[c.component,c.damage,c.verification][j.stage-3])||c.verification)}</p>`;
+   // Evidência é exibida no quadro após a solicitação.
   }else{
    out+='<h3 style="font-size:15px;color:#89e198">DIAGNÓSTICO CONCLUÍDO</h3>';
    out+=`<p class="muted">Peça necessária: ${esc(data.items[c.material]?.name)} · estoque: ${state.stock[c.material]||0}</p>`;
@@ -976,7 +978,7 @@ async function boot(){
   if(!state)state=E.create(data);
   state.productivityTarget=E.productivityProfile(state.productivityTarget).target;
   selected=state.jobs[0]?.id;events();drawUI();
-  if(!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
+  if(!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
   new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1080,height:450,
    backgroundColor:'#182838',render:{pixelArt:false,antialias:false,roundPixels:true},
    scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_HORIZONTALLY},scene:[Workshop]});

@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.6 — consulta de insumos vinculada à OS, diagnóstico sem antecipação de peças e alertas expansíveis; testes automatizados no PR, QA visual e interativo ainda pendentes.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.7 — linha de diagnóstico visível por OS, confirmação por autoria, descobertas automáticas, evidências e histórico de tentativas; validação em navegador pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -557,6 +557,39 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 
 **Critério de aceite:** cada consulta mantém a referência do serviço; o diagnóstico não revela a peça antes da investigação; todos os alertas são acessíveis, sem regressões nas rotinas da oficina.
 
+## Entrega 0.8.7 — Rastreamento e destaque da investigação (P0)
+
+**Problema:** a OS exibia somente o avanço numérico (`stage`), sem registrar o que foi confirmado e sem distinguir investigação guiada pelo jogador de descoberta automática do mecânico durante o turno.
+
+**Implementado:**
+- [x] **Etapa atual em primeiro plano:** título grande da fase atual (Sistema → Grupo → Subgrupo → Componente → Dano → Causa), índice 1/6–6/6, percentual e barra com atributos de acessibilidade.
+- [x] **Mapa visual das seis fases:** resultados confirmados com sua descrição; etapa em andamento destacada; etapas futuras mostram apenas "A investigar", sem revelar resposta.
+- [x] **Duas fontes de conhecimento:** painel "Você confirmou" para respostas corretas dadas manualmente e "Mecânico descobriu" para etapas que avançaram na simulação automática. Nome do mecânico e turno são registrados quando disponíveis.
+- [x] **Registro de investigação:** eventos de acerto, hipótese incorreta, tentativa automática inconclusiva e evidência solicitada; tentativas não confirmadas não avançam o estágio.
+- [x] **Evidência contextual:** indício pedido continua visível apenas depois de solicitação, agora em área destacada do quadro. A seção de decisão manual permanece separada abaixo do histórico.
+- [x] **Save retrocompatível:** campo `job.diagnosticLog` opcional, sem alteração de `state.version`. Saves anteriores têm etapas já confirmadas reconstruídas pelos dados do cenário, em seção "Histórico anterior", **sem inventar a autoria nem recuperar palpites antigos**. Novas respostas e turnos passam a ser auditáveis.
+- [x] **Módulos isolados:** `phaser-play/diagnostic-board.js` (projeção pura, sem mutação) e `phaser-play/diagnostic-view.js` (HTML escapado). Eventos são gravados apenas por `engine.js`.
+- [x] **Responsividade e PWA:** UI adequada a três colunas no desktop e duas no celular, títulos acessíveis, cache dos dois módulos e versão 0.8.7 do cliente.
+- [x] **Testes:** `scripts/test-diagnostic.cjs` para fluxos manual e automático, erro, evidência, não antecipação das respostas, leitura imutável, save legado, XSS e etapas concluídas; testes do Pages/PR exigem a suíte.
+
+**Limites e decisões:**
+- `job.wrong` inclui tanto erros do jogador quanto tentativas automáticas fracassadas; contador agregado, não índice separado de culpa.
+- Descobertas anteriores à 0.8.7 não tinham autoria; só é seguro reconstituir resultados das fases efetivamente concluídas. Nem todas as tentativas antigas podem ser recuperadas.
+- Respostas futuras e peças ainda não confirmadas não são mostradas; o jogador ainda precisa interpretar o sintoma e escolher as hipóteses.
+- As regras de chance de sucesso, fadiga, progressão, turno, compras e economia **não mudaram**.
+
+**Homologação em browser (pendente):**
+- [ ] Abrir OS nova e confirmar “ETAPA 1 DE 6 · SISTEMA”, seis fases visuais e todos os resultados futuros ocultos.
+- [ ] Errar hipótese: etapa não muda; registro informa hipótese incorreta sem mostrar a resposta correta.
+- [ ] Acertar Sistema: mapa da etapa 1 confirmado, coluna "Você confirmou" mostra a escolha e atualiza fase 2.
+- [ ] Solicitar evidência em fase em andamento: aparece somente após o clique.
+- [ ] Alocar mecânico e avançar turno: descoberta automática aparece na seção do mecânico com nome e turno; progresso e fase são atualizados.
+- [ ] Salvar/exportar/importar, recarregar PWA e conferir preservação do histórico e das autorias.
+- [ ] Importar save anterior à 0.8.7 com diagnóstico parcial e verificar “Histórico anterior” sem autoria falsa.
+- [ ] Testar em Android/desktop (rolagem, legibilidade, foco e modal), sem interferência nos fundos/boxes.
+
+**Critério de aceite:** o jogador sabe imediatamente em qual fase está, o que já foi comprovado e por quem, sem respostas antecipadas ou registros inventados.
+
 ## Entrega 0.8 — Gestão avançada de manutenção (P1)
 
 - [x] **Etapa inicial (v0.7.8):** priorização por criticidade, idade da OS e bloqueio de insumos, com pontuação de jogo explícita. **Pendente:** modelagem calibrável de risco e impacto operacional.
@@ -588,7 +621,7 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.6
+## Plano de validação para a versão 0.8.7
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -638,6 +671,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.4:** arquivo original noturno otimizado publicado no repositório (AVIF de 1976×796, SHA-256 auditado), alternância automática por turno com perfil geométrico apropriado, origem exibida no menu Visual, personalizações opcionais e restauração do cenário oficial; testes binários e regressão em CI. **QA visual pendente.**
 - **0.8.5:** quadro consultivo de prontidão, capacidade nominal de 10,5 HH por mecânico e gargalo de três boxes, condição física/mental e moral, alertas de bloqueios e OS críticas, links de ação manual e resumo no briefing; testes de pureza e limites integrados ao Pages. **QA interativo pendente.**
 - **0.8.6:** retira spoiler da peça no detalhe antes do diagnóstico, cria consulta de insumos vinculada à OS com retorno validado, expande alertas além dos seis principais, mantém toda ação manual, atualiza cache e testes de PR/deploy; **QA interativo e visual pendente.**
+- **0.8.7:** quadro visual de diagnóstico por OS com seis etapas, autoria e descrição das confirmações, descobertas do mecânico, tentativas inconclusivas, evidências e compatibilidade com saves legados. **QA interativo pendente.**
 
 ### Organização recomendada
 
