@@ -44,5 +44,26 @@
   const previous=visibleCenter(Number(requestedX)-delta,renderWidth,viewport,padding);
   return visibleCenter(previous+delta,renderWidth,viewport,padding);
  }
- return {equipmentSize,visibleCenter,calibratedCenter};
+ // A full-frame photograph requires its own physical bay footprint boundaries.
+ // An equipment's track/wheel support-point can be offset from its artwork center.
+ function placeMachineInBay(anchorX,renderWidth,bay,presentation={},padding=5){
+  const region=bay?.hitWorld;
+  if(!region||!(region.width>0))throw new Error('Invalid bay geometry');
+  const width=Math.max(1,Number(renderWidth)||1);
+  const supportRatio=Math.min(.85,Math.max(.15,Number(presentation.footprintAnchorX)||.5));
+  const ideal=Number(anchorX)+(0.5-supportRatio)*width;
+  const min=region.x+width/2+padding;
+  const max=region.x+region.width-width/2-padding;
+  const x=Math.round(min>max?region.x+region.width/2:Math.min(max,Math.max(min,ideal)));
+  return {x,anchorX:Number(anchorX),footprintX:x+(supportRatio-.5)*width,footprintRatio:supportRatio,
+   width,fullyFits:min<=max,contained:x-width/2>=region.x-padding&&x+width/2<=region.x+region.width+padding};
+ }
+ function placeWorkerInBay(requestedX,bay,displayWidth=54,padding=2){
+  const region=bay?.hitWorld;
+  if(!region||!(region.width>0))throw new Error('Invalid worker bay');
+  const half=Math.max(1,Number(displayWidth)||54)/2;
+  const min=region.x+half+padding,max=region.x+region.width-half-padding;
+  return Math.round(Math.min(max,Math.max(min,Number(requestedX))));
+ }
+ return {equipmentSize,visibleCenter,calibratedCenter,placeMachineInBay,placeWorkerInBay};
 });
