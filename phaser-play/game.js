@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.12 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.13 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -104,7 +104,8 @@ function updateSceneStatus(){
  else if(night&&scene?.nightBackdropImage)label='Noite: imagem personalizada deste navegador';
  else if(night&&scene?.textures?.exists('repoNightWorkshopBG'))label='Noite: cenário oficial HQ do repositório';
  else if(night)label='Noite: cenário diurno escurecido (alternativa)';
- else label='Dia: cenário oficial da oficina';
+ else if(scene?.textures?.exists('repoDayWorkshopBG'))label='Dia: oficina original completa 1976×796';
+ else label='Dia: oficina recortada (fallback AVIF)';
  status.textContent=label;
 }
 
@@ -711,7 +712,10 @@ class Workshop extends Phaser.Scene{
  constructor(){super('Workshop');this.machineObjs=[];this.workerSprites=[];this.activeProfile='cropped';this.activeBayLayout=BAY_LAYOUT;}
  preload(){
   Object.entries(ASSETS).forEach(([key,url])=>this.load.image(key,url));
+  // Preserva a versão recortada somente como fallback.
   this.load.image('repoWorkshopBG','./assets/oficina-base.avif?v=0.7.0');
+  // Derivado do PNG original do usuário: composição integral, 1976×796.
+  this.load.image('repoDayWorkshopBG','./assets/oficina-diurna-fullframe.avif?v=0.8.13');
   // Cenário noturno real disponível no Pages, verificado por hash no deploy.
   this.load.image('repoNightWorkshopBG','./assets/oficina-noturna-hq.avif?v=0.8.4');
   this.load.on('loaderror',f=>console.warn('Imagem opcional indisponivel:',f.key));
@@ -824,9 +828,11 @@ class Workshop extends Phaser.Scene{
   if(this.customBackdrop)return;
   const night=state?.shift===1;
   if(night&&this.nightBackdropImage){this.setBackdrop(this.nightBackdropImage,'fullFrame');return}
-  const key=night&&this.textures.exists('repoNightWorkshopBG')?'repoNightWorkshopBG':'repoWorkshopBG';
+  const key=night&&this.textures.exists('repoNightWorkshopBG')?'repoNightWorkshopBG'
+   :!night&&this.textures.exists('repoDayWorkshopBG')?'repoDayWorkshopBG':'repoWorkshopBG';
   const img=this.textures.exists(key)?this.textures.get(key).getSourceImage():null;
-  this.setBackdrop(img,key==='repoNightWorkshopBG'?'fullFrame':'cropped');
+  // Os dois turnos compartilham geometria fullFrame; o perfil cropped é só fallback.
+  this.setBackdrop(img,key==='repoWorkshopBG'?'cropped':'fullFrame');
   // Fallback apenas para navegadores sem suporte AVIF ou falha de carregamento.
   if(night&&key!=='repoNightWorkshopBG'&&this.backdrop)this.backdrop.setTint(0x7986a4);
   updateSceneStatus();
@@ -848,9 +854,8 @@ class Workshop extends Phaser.Scene{
   if(!ctx)throw Error('Canvas 2D indisponível');
   ctx.imageSmoothingEnabled=true;
   ctx.imageSmoothingQuality='high';
-  // Both modes draw the entire supplied texture. The official daytime asset is
-  // already 1350x563 cropped; original full-frame 1976x796 images MUST NOT
-  // receive the old (x=320,y=130) crop, which shifted box signage against sprites.
+  // Os dois cenários oficiais são 1976×796 fullFrame. A versão 1350×563 é fallback.
+  // Nunca recortar a imagem completa; isso deslocaria os três letreiros/boxes.
   ctx.drawImage(img,0,0,width,height,0,0,canvas.width,canvas.height);
   if(this.textures.exists('dynamicWorkshopBG'))this.textures.remove('dynamicWorkshopBG');
   this.textures.addCanvas('dynamicWorkshopBG',canvas).setFilter(Phaser.Textures.FilterMode.LINEAR);
