@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.7 — linha de diagnóstico visível por OS, confirmação por autoria, descobertas automáticas, evidências e histórico de tentativas; validação em navegador pendente.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.8 — orientação técnica por etapa sem resposta antecipada, interpretação pós-confirmação e aprendizado do caso após 6/6; QA visual e interativo pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -593,6 +593,41 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 
 **Critério de aceite:** o jogador sabe imediatamente em qual fase está, o que já foi comprovado e por quem, sem respostas antecipadas ou registros inventados.
 
+## Entrega 0.8.8 — Evidências didáticas sem spoilers (P0)
+
+**Problema observado na v0.8.7:** `hint()` registrava o código da resposta correta em `diagnosticLog`; a projeção do painel também apresentava o valor de `scenario.path[stage]`, `component`, `damage` ou `verification` como indício. Isso transformava a opção “Solicitar evidência” numa forma de consultar o gabarito, principalmente nas três fases da localização funcional.
+
+### Implementado na branch `feature/diagnostic-evidence-teaching-v088`
+
+- [x] **Corrigido o vazamento na origem:** `engine.hint()` registra somente “Inspeção orientativa solicitada”, preservando o custo de 4 pontos de energia mental da chefia, 1 ponto do mecânico e 0,4 h na investigação.
+- [x] **Orientação por fase:** cada uma das seis etapas tem uma pergunta-guia, objetivo e orientação sobre que decisão tomar, sem apontar a alternativa correta.
+- [x] **Evidência solicitada = método, não resposta:** quando o jogador pede evidência, a interface expande passos de investigação relativos à fase, sem revelar sistema, grupo, subgrupo, componente, dano ou causa.
+- [x] **Higienização retrocompatível:** `diagnostic-board.js` elimina da apresentação o valor bruto das antigas entradas `outcome='evidence'`, inclusive em saves importados; não modifica nem apaga o registro histórico persistido.
+- [x] **Interpretação após a escolha:** ao confirmar uma etapa, o jogador pode expandir “Por que as etapas confirmadas importam” para ler o significado daquela identificação sem inferir automaticamente causa raiz.
+- [x] **Critérios do catálogo:** definições de dano e causa provenientes de `game-data.json.catalog.damages/causes[].criteria` só são expostas depois de suas respectivas etapas serem confirmadas.
+- [x] **Conclusão técnica do cenário:** `verification` e `lesson` da própria base são apresentadas em “Aprendizado do caso” somente quando a OS atinge `stage=6`. São referências didáticas, **não prova de que o teste foi executado no campo**.
+- [x] **UI e PWA:** blocos responsivos `diagnosticCoach`, `diagnosticLearning` e `diagnosticCaseStudy`; recursos cacheados em v0.8.8.
+- [x] **Teste antisspoiler:** `scripts/test-diagnostic-teaching.cjs` percorre todos os cenários, verifica ocultação de `lesson`/`verification` antes de 6/6, limpeza de indícios antigos, fluxo do motor, imutabilidade, HTML escapado e compatibilidade do cache; CI de PR e deploy exigem esse teste.
+
+### Limites e dependências
+
+- As orientações são **métodos de investigação do jogo**, não procedimentos OEM nem instruções executáveis com especificações de torque, pressão ou segurança.
+- A descrição do relatório do operador continua visível desde a abertura da OS (informação inicialmente conhecida). Os testes e as lições do cenário continuam bloqueados até a conclusão.
+- O comportamento da escolha, probabilidade do mecânico, punições, custo de evidência, meta de produtividade e estado do save são preservados.
+- Os eventos antigos com gabarito continuam fisicamente no arquivo de save, mas não são apresentados pela interface; uma migração de dados opcional pode higienizar sua exportação futuramente.
+
+### Homologação funcional no GitHub Pages
+
+- [ ] Abrir uma OS nova, ler orientação da fase Sistema e conferir que a resposta correta não aparece antes da escolha.
+- [ ] Solicitar evidência: verificar orientação de como investigar e custo no motor, sem nomes/códigos do gabarito.
+- [ ] Errar uma hipótese, registrar a tentativa e confirmar que a resposta não é exposta.
+- [ ] Acertar etapas e abrir “Por que as etapas confirmadas importam”, garantindo que nada sobre etapas futuras é revelado.
+- [ ] Concluir a sexta etapa e verificar “Aprendizado do caso” com procedimento/explicação fiel ao cenário, claramente didáticos.
+- [ ] Importar save antigo contendo um evento `evidence` com resposta, conferir que o texto não é renderizado pelo painel.
+- [ ] Testar em desktop, mobile e PWA; conferir que fundo e boxes permanecem visualmente inalterados.
+
+**Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
+
 ## Entrega 0.8 — Gestão avançada de manutenção (P1)
 
 - [x] **Etapa inicial (v0.7.8):** priorização por criticidade, idade da OS e bloqueio de insumos, com pontuação de jogo explícita. **Pendente:** modelagem calibrável de risco e impacto operacional.
@@ -624,7 +659,7 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.7
+## Plano de validação para a versão 0.8.8
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -675,6 +710,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.5:** quadro consultivo de prontidão, capacidade nominal de 10,5 HH por mecânico e gargalo de três boxes, condição física/mental e moral, alertas de bloqueios e OS críticas, links de ação manual e resumo no briefing; testes de pureza e limites integrados ao Pages. **QA interativo pendente.**
 - **0.8.6:** retira spoiler da peça no detalhe antes do diagnóstico, cria consulta de insumos vinculada à OS com retorno validado, expande alertas além dos seis principais, mantém toda ação manual, atualiza cache e testes de PR/deploy; **QA interativo e visual pendente.**
 - **0.8.7:** quadro visual de diagnóstico por OS com seis etapas, autoria e descrição das confirmações, descobertas do mecânico, tentativas inconclusivas, evidências e compatibilidade com saves legados. **QA interativo pendente.**
+- **0.8.8:** evidências orientativas sem revelar respostas, coach de investigação por etapa, explicações pós-confirmação com critérios de catálogo para dano/causa, lição de cenário apenas após 6/6, limpeza visual de dicas legadas e testes de segurança pedagógica. **QA visual/interativo pendente.**
 
 ### Organização recomendada
 
