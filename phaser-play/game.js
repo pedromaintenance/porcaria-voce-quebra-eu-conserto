@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.7.9 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.0 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -166,19 +166,19 @@ function drawShiftBrief(){
  out+='<p>'+esc(report.deliveryNote)+'</p></section></div>';
  out+='<div class="shiftBriefFoot"><p>Os resultados de diagnóstico, reparo, falhas e custos variáveis continuam sujeitos ao motor da simulação. Este briefing não é uma previsão de OS concluídas.</p>'
    +'<div class="actions"><button class="act secondary" data-shift-action="cancel">VOLTAR À OFICINA</button>'
-   +'<button class="act" data-shift-action="confirm" data-turn-tick="'+report.tick+'">▶ CONFIRMAR +8H</button></div></div>';
+   +'<button class="act" data-shift-action="confirm" data-turn-tick="'+report.tick+'">▶ CONFIRMAR +12H</button></div></div>';
  $('shiftBrief').innerHTML=out;
 }
 function planningTabs(){
  return '<div class="planningTabs" role="group" aria-label="Horizonte de planejamento">'
-  +'<button type="button" data-planning-horizon="turn" class="'+(planningHorizon==='turn'?'selected':'')+'" aria-pressed="'+(planningHorizon==='turn')+'">PRÓXIMO TURNO · 8H</button>'
+  +'<button type="button" data-planning-horizon="turn" class="'+(planningHorizon==='turn'?'selected':'')+'" aria-pressed="'+(planningHorizon==='turn')+'">PRÓXIMO TURNO · 12H</button>'
   +'<button type="button" data-planning-horizon="week" class="'+(planningHorizon==='week'?'selected':'')+'" aria-pressed="'+(planningHorizon==='week')+'">JANELA SEMANAL · 14 TURNOS</button></div>';
 }
 function drawWeekly(){
  const w=window.PORCARIA_WEEKLY.calculate(state,data);
  const metric=(name,value)=>'<div class="planningMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong></div>';
  let out=planningTabs();
- out+='<p class="planningIntro">Janela deslizante de 14 turnos de 8h (112h corridas), a partir do turno atual. '
+ out+='<p class="planningIntro">Janela deslizante de 14 turnos de 12h (168h corridas), a partir do turno atual. '
   +'É uma leitura de capacidade e dos recursos hoje conhecidos, <strong>não um cronograma de conclusão automática</strong>.</p>';
  out+='<div class="planningMetrics">'
   +metric('Capacidade nominal',w.capacityHH+' HH')
@@ -286,7 +286,7 @@ function renderQueue(){
  return matched&&(FILTER.queue==='all'||FILTER.queue==='critical'&&j.priority===3||FILTER.queue==='waiting'&&!j.assigned||FILTER.queue==='assigned'&&!!j.assigned);
  }).sort((a,b)=>b.priority-a.priority||a.tickOpen-b.tickOpen).map(j=>{
  const m=E.model(data,j.modelId);
- const aged=(state.tick-j.tickOpen)*8;
+ const aged=(state.tick-j.tickOpen)*E.SHIFT_HOURS;
  const flags=jobBlockers(j);
  return `<button class="job ${j.id===selected?'active':''}" data-pick="${j.id}"><span class="severity">${j.priority===3?'CRÍTICA':j.priority===2?'ALTA':'MODERADA'}</span><strong>${esc(m?.title)} · ${esc(j.id)}</strong><small>${esc(j.report)}</small><small>${esc(j.status)} · ${j.stage}/6 etapas · ${Math.ceil(j.repairRemaining)}h reparo · ${aged}h na carteira</small>${flags.length?'<small class="queueWarning">⚠ '+esc(flags.join(' · '))+'</small>':''}</button>`;
  }).join('')||'<p class="muted">Nenhuma OS corresponde ao filtro.</p>';
@@ -316,7 +316,7 @@ function drawUI(){
  if(!state||!data)return;
  const k=E.kpis(state);
  drawManagement(k);
- $('day').textContent='DIA '+state.day+' · TURNO '+(state.shift?'B':'A');
+ $('day').textContent='DIA '+state.day+' · '+(state.shift?'🌙 NOITE · B':'☀ DIA · A');
  $('cash').textContent='R$ '+brl(state.cash);$('team').textContent=state.team.length;
  $('backlog').textContent=k.backlog;$('energy').textContent=Math.round(state.player.mental)+'/100';
  drawBays();
@@ -326,7 +326,7 @@ function drawUI(){
  selected=j.id;
  const c=E.scenario(data,j.scene),m=E.model(data,j.modelId);
  const part=data.items[c.material],tool=data.tools[c.tool];
- const age=(state.tick-j.tickOpen)*8;
+ const age=(state.tick-j.tickOpen)*E.SHIFT_HOURS;
  const inbound=state.orders.filter(p=>p.item===c.material).reduce((n,p)=>n+p.qty,0);
  const toolOK=!!state.tools[c.tool],stockOK=!!state.stock[c.material]||j.materialUsed;
  const resourceInfo=`<div class="readiness"><b>PRONTIDÃO PARA REPARO</b><span class="${toolOK?'ready':'warning'}">${toolOK?'✓':'!'} Ferramental: ${esc(tool?.name||c.tool)}</span><span class="${stockOK?'ready':'warning'}">${stockOK?'✓':'!'} Material: ${esc(part?.name||c.material)} (${state.stock[c.material]||0} em estoque · ${inbound} em trânsito)</span><button class="act secondary" data-do="openStore">ABRIR ALMOXARIFADO</button></div>`;
@@ -496,7 +496,7 @@ function events(){
    const candidate=JSON.parse(await file.text());
    if(!E.validate(candidate))throw Error('Save incompatível com a simulação atual.');
    if(!confirm('Importar save e substituir o progresso desta oficina? Exporte o save atual antes de continuar.'))return;
-   state=candidate;selected=state.jobs[0]?.id||null;
+   state=candidate;state.productivityTarget=E.productivityProfile(state.productivityTarget).target;selected=state.jobs[0]?.id||null;
    action(null);notify('Save importado com sucesso.');
   }catch(error){notify('Falha ao importar: '+error.message)}
  });
@@ -807,6 +807,7 @@ async function boot(){
   }catch(error){console.warn('Mapeamento opcional:',error)}
   try{const raw=localStorage.getItem(SAVE);if(raw){const s=JSON.parse(raw);if(E.validate(s))state=s}}catch(e){console.warn(e)}
   if(!state)state=E.create(data);
+  state.productivityTarget=E.productivityProfile(state.productivityTarget).target;
   selected=state.jobs[0]?.id;events();drawUI();
   if(!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
   new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1080,height:450,
