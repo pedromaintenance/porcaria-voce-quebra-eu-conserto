@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.4 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.5 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -129,6 +129,7 @@ function jobBlockers(j){
 }
 function drawShiftBrief(){
  const report=window.PORCARIA_SHIFT_BRIEF.compute(state,data);
+ const ready=window.PORCARIA_READINESS.compute(state,data);
  const metric=(title,value,tone)=>'<div class="shiftMetric '+(tone||'')+'"><small>'+esc(title)+'</small><strong>'+esc(value)+'</strong></div>';
  let out='<p class="shiftBriefIntro">DIA '+report.day+' · TURNO '+report.shift+' → '+report.nextShift
    +' · Janela de 12 horas (10,5 HH úteis/mecânico). Revise bloqueios antes de comprometer a próxima escala.</p>';
@@ -138,6 +139,9 @@ function drawShiftBrief(){
    +metric('Aptas ao reparo',report.counts.repair)
    +metric('Bloqueios',report.counts.blocked,report.counts.blocked?'critical':'')
    +'</div>';
+ out+='<div class="shiftReadinessSummary"><strong>PRONTIDÃO DA EQUIPE</strong>'
+   +'<span>'+ready.metrics.boxLimitedHH+' HH úteis nominais pelo limite de boxes · '+ready.metrics.atRisk+' profissional(is) em atenção · '+ready.metrics.criticalCrew+' em condição crítica de jogo</span>'
+   +'<button class="act secondary" data-open-panel="management">VER PRONTIDÃO</button></div>';
  out+='<h3 class="resourceSection">STATUS DOS TRÊS BOXES</h3><div class="shiftBoxGrid">';
  out+=report.bays.map(b=>{
   if(b.kind==='free')return '<article class="shiftBox"><div class="shiftBoxTitle"><span>BOX '+(b.bay+1)+'</span><span class="shiftBoxStatus">LIVRE</span></div><p>Box disponível para nova alocação.</p><div class="shiftBoxActions"><button class="act secondary" data-open-panel="queue">ABRIR FILA</button></div></article>';
@@ -317,6 +321,7 @@ function renderQueue(){
 }
 function drawManagement(k){
  const pressure=E.productivityProfile(state.productivityTarget);
+ const ready=window.PORCARIA_READINESS.compute(state,data);
  const assigned=state.jobs.filter(j=>j.assigned);
  const blocked=assigned.filter(j=>j.status==='material'||j.status==='ferramenta').length;
  const available=state.team.filter(m=>!state.jobs.some(j=>j.assigned===m.id)).length;
@@ -334,6 +339,24 @@ function drawManagement(k){
  $('management').innerHTML='<p class="muted">Controle da oficina no mesmo ambiente Phaser. Dados e decisões vêm da campanha ativa.</p>'
    +'<div class="managementGrid">'+metrics.map(([name,value])=>'<div class="managementMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong></div>').join('')+'</div>'
    +'<div class="managementActions"><button class="act" data-open-panel="planning">🗓️ PLANEJAR OS</button><button class="act secondary" data-open-panel="shift">📋 REVISAR PRÓXIMO TURNO</button><button class="act secondary" data-open-panel="queue">📻 ABRIR CARTEIRA</button><button class="act secondary" data-open-panel="team">👷 EQUIPE</button><button class="act secondary" data-open-panel="store">📦 ESTOQUE</button><button class="act secondary" data-open-panel="stats">📊 INDICADORES</button></div>'
+   +'<section class="readinessBoard"><div class="readinessHeading"><h3>🛠️ PRONTIDÃO OPERACIONAL · TURNO '+ready.shift+'</h3><span>QUADRO CONSULTIVO</span></div>'
+   +'<div class="readinessMetrics">'
+     +'<div><small>HH DE EQUIPE DISPONÍVEIS</small><strong>'+ready.metrics.nominalCrewHH+' HH</strong><span>'+ready.metrics.availableCrew+' profissional(is) × 10,5 HH</span></div>'
+     +'<div><small>TETO SIMULTÂNEO DA OFICINA</small><strong>'+ready.metrics.boxLimitedHH+' HH</strong><span>Máximo de '+ready.bays.length+' boxes</span></div>'
+     +'<div><small>OPORTUNIDADE DE NOVAS OS</small><strong>'+ready.metrics.additionalHH+' HH</strong><span>'+ready.metrics.freeBays+' box(es) livre(s) · '+ready.metrics.freeCrew+' mecânico(s) livre(s)</span></div>'
+     +'<div><small>ATENÇÃO À EQUIPE</small><strong>'+ready.metrics.atRisk+' / '+ready.metrics.crewTotal+'</strong><span>'+ready.metrics.criticalCrew+' crítico(s) · '+ready.metrics.resting+' em descanso</span></div>'
+   +'</div>'
+   +'<div class="readinessBays">'+ready.bays.map(b=>'<div class="readinessBay '+esc(b.kind)+'"><strong>BOX '+(b.id+1)+'</strong><span>'+esc(b.label)+'</span><small>'+esc(b.jobId?(b.model+' · '+b.jobId):'Disponível para alocação')+'</small></div>').join('')+'</div>'
+   +'<div class="readinessAlertHeader"><h4>ALERTAS DE DECISÃO · '+ready.warnings.length+'</h4><small>Não executam ações automaticamente</small></div>'
+   +(ready.warnings.length?'<div class="readinessAlerts">'+ready.warnings.slice(0,6).map(a=>
+     '<article class="readinessAlert '+esc(a.level)+'"><div><strong>'+esc(a.title)+'</strong><p>'+esc(a.detail)+'</p></div>'
+     +(a.action?.kind==='store'?'<button class="act secondary" data-plan-stock="'+esc(a.action.item)+'">'+esc(a.action.label)+'</button>'
+       :a.action?.kind==='job'?'<button class="act secondary" data-readiness-job="'+esc(a.action.jobId)+'">'+esc(a.action.label)+'</button>'
+       :a.action?.kind==='team'?'<button class="act secondary" data-open-panel="team">'+esc(a.action.label)+'</button>':'')
+     +'</article>').join('')+'</div>'
+     +(ready.warnings.length>6?'<p class="muted">+'+(ready.warnings.length-6)+' alertas adicionais. Abra Equipe ou Planejamento para revisar.</p>':'')
+     :'<p class="readinessClear">Nenhuma condição de atenção detectada com os limiares atuais do jogo.</p>')
+   +'<small class="readinessMethod">'+esc(ready.methodology)+'</small></section>'
    +'<section class="productivityControl"><h3>🎯 META DE PRODUTIVIDADE · '+pressure.target+'/100</h3>'
    +'<p>Estável em 60. Acima de 60, a energia mental e física é consumida exponencialmente por hora trabalhada; abaixo de 60, aumenta a perda de moral.</p>'
    +'<div class="metaRange"><span>20 · Moral ↓</span><input type="range" id="productivityTarget" min="20" max="100" step="5" value="'+pressure.target+'" aria-label="Meta de produtividade"><span>100 · Energia ↓</span></div>'
@@ -507,6 +530,11 @@ function events(){
    FILTER.stockQuery=stockShortcut.dataset.shiftStock;
    $('storeSearch').value=FILTER.stockQuery;
    drawStore();openPanel('store');return;
+  }
+  const readinessJob=ev.target.closest('[data-readiness-job]');
+  if(readinessJob){const target=E.job(state,readinessJob.dataset.readinessJob);
+   if(!target){notify('Esta OS já não está na carteira.');return}
+   pick(target.id);return;
   }
   const p=ev.target.closest('[data-pick]');if(p){pick(p.dataset.pick);return}
   const ans=ev.target.closest('[data-answer]');if(ans){
@@ -924,7 +952,7 @@ async function boot(){
   if(!state)state=E.create(data);
   state.productivityTarget=E.productivityProfile(state.productivityTarget).target;
   selected=state.jobs[0]?.id;events();drawUI();
-  if(!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
+  if(!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
   new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1080,height:450,
    backgroundColor:'#182838',render:{pixelArt:false,antialias:false,roundPixels:true},
    scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_HORIZONTALLY},scene:[Workshop]});
