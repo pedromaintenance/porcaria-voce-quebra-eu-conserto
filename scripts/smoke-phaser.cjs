@@ -145,7 +145,7 @@ const oldDrill=layoutMath.equipmentSize(1086,1448,bay.spriteWorld.scale,{scaleMu
 const newDrill=layoutMath.equipmentSize(1086,1448,bay.spriteWorld.scale,map.modelPresentation.EQ05,bay);
 assert.ok(newDrill.height>oldDrill.height*1.7,'perfuratriz significativamente maior sem atravessar o teto do box');
 assert.ok(newDrill.width<=map.modelPresentation.EQ05.maximumWidth,'perfuratriz cabe no box pela largura');
-assert.ok(newDrill.height<=bay.spriteWorld.groundY-bay.hitWorld.y-14,'perfuratriz cabe no box pela altura');
+assert.ok(newDrill.height<=bay.placementWorld.groundY-bay.placementWorld.topY-14,'perfuratriz cabe na altura técnica do placementWorld, independente do clique');
 assert.ok(newDrill.capped,'fator nominal 3x respeita limite físico da cena');
 const oldShovel=layoutMath.equipmentSize(540,540,bay.spriteWorld.scale,{scaleMultiplier:1},bay);
 const newShovel=layoutMath.equipmentSize(540,540,bay.spriteWorld.scale,map.modelPresentation.EQ02,bay);
