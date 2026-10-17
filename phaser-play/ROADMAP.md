@@ -630,6 +630,9 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 
 ## Entrega 0.8.9 — Revisão da perspectiva do CAT 777E (P0 / arte)
 
+**Integração:** PR [#28](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/28) integrado na `main`, commit `0deb47c8`. CI de PR aprovado, e o workflow `Deploy P.O.R.C.A.R.I.A. to GitHub Pages` do commit concluiu com sucesso. O sprite de teste precisa ser importado manualmente pelo jogador, pois não foi incorporado ao repositório.
+
+
 **Solicitação:** o caminhão publicado na 0.8.3 tem ângulo de câmera excessivamente baixo, olhando de baixo para cima; isso destoa do ponto de vista do galpão. A referência enviada requer vista frontal em três quartos, com câmera acima do solo em altura de cabine e eixo de visão horizontal. O novo sprite deve ter perspectiva coerente com o piso e manter cabine, rodas, escadas e caçamba identificáveis.
 
 ### Novos candidatos de arte (externos ao repositório)
