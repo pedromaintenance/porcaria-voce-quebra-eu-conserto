@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.11 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.12 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -984,11 +984,15 @@ class Workshop extends Phaser.Scene{
        // Track the actual (possibly edge-clamped) machine position, not its requested center.
        const machineX=machineNode?.type==='Image'?machineNode.x:this.lastFallbackMachineX??cx;
        const ground=placementWorld?.groundY??spriteWorld.groundY??(workerWorld[0].y-2);
+       // Deslocar SOMENTE as sombras em ambos perfis: a linha de apoio,
+       // pés dos mecânicos, rodas/esteiras e zona clicável não se movem no eixo Y.
+       const shadowMainY=ground-3;
+       const shadowSoftY=ground-1;
        const shadow=this.add.graphics().setDepth(-0.15);
        shadow.fillStyle(0x04090b,0.31);
-       shadow.fillEllipse(machineX,ground,Math.min(196,(placementWorld?.width||progressWorld?.width||225)*0.84),18);
+       shadow.fillEllipse(machineX,shadowMainY,Math.min(196,(placementWorld?.width||progressWorld?.width||225)*0.84),18);
        shadow.fillStyle(0x02070a,0.13);
-       shadow.fillEllipse(machineX,ground+2,Math.min(223,(placementWorld?.width||245)*0.97),22);
+       shadow.fillEllipse(machineX,shadowSoftY,Math.min(223,(placementWorld?.width||245)*0.97),22);
        this.machineObjs.push(shadow);
        if(machineNode?.type==='Image'){
         machineNode.setInteractive({useHandCursor:true});
