@@ -358,6 +358,20 @@ body{min-height:100vh}
 .closedDiagnostic .diagnosticBoard{margin-top:0}
 @media(max-width:600px){.closedMetrics{grid-template-columns:1fr 1fr}.closedMetric strong{font-size:15px}.closedLedgerHeader{display:grid;gap:3px}}
 
+
+/* 0.8.14 — retratos dos profissionais oficiais e contratados sem sprite. */
+.teamIdentity{display:flex;align-items:center;gap:10px;margin-bottom:7px;min-width:0}
+.teamIdentity>div{min-width:0;flex:1}
+.teamIdentity h3{margin:0 0 3px;font-size:14px;overflow-wrap:anywhere}
+.teamIdentity h3 small{font-size:10px;color:#aac4d1;margin-left:4px}
+.teamIdentity p{margin:0}
+.teamPortrait{flex:0 0 66px;width:66px;height:66px;display:block;
+ border:1px solid #527389;border-radius:9px;background-color:#172c3e;
+ background-size:200% 200%;background-position:left top;background-repeat:no-repeat}
+.teamPortrait.placeholder{display:flex;align-items:center;justify-content:center;
+ background:#122739;color:#b4c9d6;font-size:9px;line-height:1.45;font-weight:900;text-align:center}
+@media(max-width:650px){.teamIdentity{gap:7px}.teamPortrait{flex-basis:55px;width:55px;height:55px}}
+
 </style></head><body>
 <div id="layout">
 <header class="top" role="banner">
@@ -415,9 +429,9 @@ body{min-height:100vh}
 <h2>📚 Histórico de OS concluídas</h2>
 <p>Abra um serviço encerrado para consultar o diagnóstico, as descobertas do mecânico, a lição técnica e o esforço registrado. Busca limitada às últimas 200 OS preservadas pela campanha.</p>
 <input type="search" id="closedOrderSearch" placeholder="Buscar OS, equipamento, sintoma ou caso..." aria-label="Buscar histórico de OS concluídas">
-<div id="closedOrders" aria-live="polite"></div></section><h2>📋 Diário do turno</h2><div id="logs"></div><div class="actions"><button class="act secondary" id="save">Exportar save</button><label class="act secondary uploadSave" for="importSave">Importar save<input id="importSave" type="file" accept=".json,application/json"></label><button class="act secondary" id="reset">Reiniciar</button></div><p class="hint">Build Phaser 0.8.13 · histórico diagnóstico por OS, autoria das confirmações e etapas visuais; quadro de prontidão da equipe, HH nominais e alertas de bloqueio em Gestão · câmera nos boxes + menus pop-up · arte provisória · simulação fictícia. Save independente do jogo de gestão.</p></section></div></div></div>
+<div id="closedOrders" aria-live="polite"></div></section><h2>📋 Diário do turno</h2><div id="logs"></div><div class="actions"><button class="act secondary" id="save">Exportar save</button><label class="act secondary uploadSave" for="importSave">Importar save<input id="importSave" type="file" accept=".json,application/json"></label><button class="act secondary" id="reset">Reiniciar</button></div><p class="hint">Build Phaser 0.8.14 · histórico diagnóstico por OS, autoria das confirmações e etapas visuais; quadro de prontidão da equipe, HH nominais e alertas de bloqueio em Gestão · câmera nos boxes + menus pop-up · arte provisória · simulação fictícia. Save independente do jogo de gestão.</p></section></div></div></div>
 </div>
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="../engine.js"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.7.8"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./game.js?v=0.8.13"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
+<script src="../engine.js"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.7.8"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./game.js?v=0.8.14"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
