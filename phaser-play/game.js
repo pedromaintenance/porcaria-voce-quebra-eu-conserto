@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.0 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.1 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -21,6 +21,7 @@ const ASSETS={
 };
 const MACHINES={EQ01:'truck',EQ02:'shovel',EQ03:'excavator',EQ04:'excavator',EQ05:'drill',EQ06:'drill'};
 let MODEL_PRESENTATION={};
+let BACKGROUND_PROFILES=null;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const brl=n=>Math.round(n).toLocaleString('pt-BR');
 let data,state,selected,scene;
@@ -61,7 +62,7 @@ async function useBackground(blob){
  const img=await imageFromBlob(blob);
  if(!scene)return;
  scene.customBackdrop=true;
- scene.setBackdrop(img);
+ scene.setBackdrop(img,'fullFrame');
 }
 
 const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO ATUAL',stats:'📊 INDICADORES E RECURSOS',planning:'🗓️ PLANEJAMENTO PCM',shift:'📋 BRIEFING DE TURNO',team:'👷 EQUIPE DA OFICINA',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA',management:'📋 GESTÃO DA OFICINA'};
@@ -551,7 +552,7 @@ function events(){
   $('reset').addEventListener('click',()=>{if(!confirm('Reiniciar a campanha Phaser?'))return;state=E.create(data);selected=state.jobs[0]?.id;action(null);if(scene)scene.applyOfficialBackdrop()});
 }
 class Workshop extends Phaser.Scene{
- constructor(){super('Workshop');this.machineObjs=[];this.workerSprites=[]}
+ constructor(){super('Workshop');this.machineObjs=[];this.workerSprites=[];this.activeProfile='cropped';this.activeBayLayout=BAY_LAYOUT;}
  preload(){
   Object.entries(ASSETS).forEach(([key,url])=>this.load.image(key,url));
   this.load.image('repoWorkshopBG','./assets/oficina-base.avif?v=0.7.0');
@@ -618,11 +619,8 @@ class Workshop extends Phaser.Scene{
   this.text(720,49,'OFICINA CENTRAL',30,'#ffca65',true);
   this.text(1057,618,'ABASTECIMENTO E LUBRIFICAÇÃO',16,'#e6e9de',true);
   // Marcacao de areas clicaveis persistentes.
-  this.bayZones=BAY_LAYOUT.map(({id,hitWorld})=>{
-   const hit=this.add.zone(hitWorld.x,hitWorld.y,hitWorld.width,hitWorld.height).setOrigin(0).setInteractive({useHandCursor:true});
-   hit.on('pointerdown',()=>{if(modalOpen())return;const j=state.jobs.find(z=>z.bay===id);if(j)pick(j.id)});
-   return hit;
-  });
+  this.activeProfile='cropped';this.activeBayLayout=BAY_LAYOUT;
+  this.bayZones=this.createBayZones();
   this.statusText=this.add.text(17,612,'', {fontFamily:'monospace',fontSize:'14px',color:'#f2e3bb',backgroundColor:'#102132cc',padding:{x:9,y:7}});
   // Somente personagens mudam de pose; equipamentos e suas sombras nunca são animados.
   this.time.addEvent({delay:560,loop:true,callback:()=>{
@@ -644,17 +642,35 @@ class Workshop extends Phaser.Scene{
    if(state?.shift===1&&!this.customBackdrop)this.applyOfficialBackdrop();
   }).catch(console.warn);
  }
+ createBayZones(){
+  return this.activeBayLayout.map(({id,hitWorld})=>{
+   const hit=this.add.zone(hitWorld.x,hitWorld.y,hitWorld.width,hitWorld.height)
+    .setOrigin(0).setInteractive({useHandCursor:true});
+   hit.on('pointerdown',()=>{if(modalOpen())return;const j=state.jobs.find(z=>z.bay===id);if(j)pick(j.id)});
+   return hit;
+  });
+ }
+ applyBayProfile(profile){
+  const chosen=profile==='fullFrame'&&Array.isArray(BACKGROUND_PROFILES?.fullFrame?.bays)?'fullFrame':'cropped';
+  if(chosen===this.activeProfile)return;
+  this.bayZones?.forEach(z=>z.destroy());
+  this.activeProfile=chosen;
+  this.activeBayLayout=chosen==='fullFrame'?BACKGROUND_PROFILES.fullFrame.bays:BAY_LAYOUT;
+  this.bayZones=this.createBayZones();
+ }
  applyOfficialBackdrop(){
   if(this.customBackdrop)return;
   const night=state?.shift===1;
-  if(night&&this.nightBackdropImage){this.setBackdrop(this.nightBackdropImage);return}
+  if(night&&this.nightBackdropImage){this.setBackdrop(this.nightBackdropImage,'fullFrame');return}
   const key=night&&this.textures.exists('repoNightWorkshopBG')?'repoNightWorkshopBG':'repoWorkshopBG';
   const img=this.textures.exists(key)?this.textures.get(key).getSourceImage():null;
-  this.setBackdrop(img);
+  this.setBackdrop(img,key==='repoNightWorkshopBG'?'fullFrame':'cropped');
   // Fallback visual TEMPORÁRIO enquanto AVIF noturno não integra a branch main.
   if(night&&key!=='repoNightWorkshopBG'&&this.backdrop)this.backdrop.setTint(0x7986a4);
  }
- setBackdrop(img){
+ setBackdrop(img,profile='fullFrame'){
+  // The photograph and its bays MUST change as a single scene geometry.
+  this.applyBayProfile(profile);
   if(this.backdrop){this.backdrop.destroy();this.backdrop=null}
   if(this.backgroundDecor)this.backgroundDecor.forEach(o=>o.setVisible(!img));
   if(!img){this.refresh();return}
@@ -669,19 +685,10 @@ class Workshop extends Phaser.Scene{
   if(!ctx)throw Error('Canvas 2D indisponível');
   ctx.imageSmoothingEnabled=true;
   ctx.imageSmoothingQuality='high';
-  const aspect=width/height;
-  // O fundo oficial mantém a geometria 1976 x 796, mesmo quando é servido como AVIF otimizado.
-  if(aspect>2.42&&aspect<2.55){
-   const sx=width/SCENE_REFERENCE.sourceWidth,sy=height/SCENE_REFERENCE.sourceHeight;
-   ctx.drawImage(img,crop.x*sx,crop.y*sy,crop.width*sx,crop.height*sy,0,0,canvas.width,canvas.height);
-  }else if(aspect>2.1){
-   // Fundos já recortados pelo jogador.
-   ctx.drawImage(img,0,0,width,height,0,0,canvas.width,canvas.height);
-  }else{
-   // Compatibilidade com screenshots completos da interface anterior.
-   const sx=width/1672,sy=height/941;
-   ctx.drawImage(img,359*sx,246*sy,1045*sx,407*sy,0,0,canvas.width,canvas.height);
-  }
+  // Both modes draw the entire supplied texture. The official daytime asset is
+  // already 1350x563 cropped; original full-frame 1976x796 images MUST NOT
+  // receive the old (x=320,y=130) crop, which shifted box signage against sprites.
+  ctx.drawImage(img,0,0,width,height,0,0,canvas.width,canvas.height);
   if(this.textures.exists('dynamicWorkshopBG'))this.textures.remove('dynamicWorkshopBG');
   this.textures.addCanvas('dynamicWorkshopBG',canvas).setFilter(Phaser.Textures.FilterMode.LINEAR);
   this.backdrop=this.add.image(SCENE_REFERENCE.worldX,SCENE_REFERENCE.worldY,'dynamicWorkshopBG').setOrigin(0).setDisplaySize(SCENE_REFERENCE.width,SCENE_REFERENCE.height).setDepth(-1);
@@ -856,6 +863,7 @@ async function boot(){
    if(mapRes.ok){const map=await mapRes.json();
     if(Array.isArray(map.bays)&&map.bays.length===3&&map.bays.every(b=>b.hitWorld&&b.spriteWorld&&b.workerWorld))BAY_LAYOUT=map.bays;
     if(map.modelPresentation)MODEL_PRESENTATION=map.modelPresentation;
+    if(map.backgroundProfiles)BACKGROUND_PROFILES=map.backgroundProfiles;
     if(map.background?.sourceCrop)SCENE_REFERENCE.crop=map.background.sourceCrop;
     if(map.background?.sourceWidth)SCENE_REFERENCE.sourceWidth=map.background.sourceWidth;
     if(map.background?.sourceHeight)SCENE_REFERENCE.sourceHeight=map.background.sourceHeight;
