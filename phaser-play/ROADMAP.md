@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.13 — cenário diurno original 1976×796 sem recorte usando exatamente a geometria fullFrame do noturno; testes automatizados e QA visual pendentes.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.13 — cenário diurno original 1976×796 sem recorte usando exatamente a geometria fullFrame do noturno; CI e GitHub Pages aprovados, QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -629,6 +629,9 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
 ## Entrega 0.8.13 — Unificar enquadramento original dia/noite (P0 / visual)
+
+**Publicação:** [PR #32](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/32) integrado à `main` no commit `3e858327`. Sintaxe e suíte completa aprovadas, incluindo integridade SHA-256/dimensões do asset. [Workflow GitHub Pages #39076569324](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39076569324) concluído com sucesso. **Homologação visual e funcional em navegador/PWA ainda pendente.**
+
 
 **Solicitação:** o jogador percebeu que o dia estava ampliado/recortado, enquanto a noite mostrava a imagem completa. Enviou novamente a **imagem original de entardecer em 1976 × 796 px** e rejeitou corretamente a geração de uma arte substituta. O dia deve preservar integralmente essa arte e usar o mesmo `fullFrame` da noite.
 
