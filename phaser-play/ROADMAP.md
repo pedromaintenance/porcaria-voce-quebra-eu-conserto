@@ -528,7 +528,7 @@ Na versão 0.8.1, `hitWorld` controlava simultaneamente o clique, a largura máx
 
 ## Entrega 0.8.6 — Consulta de OS, estoque e decisões rastreáveis (P0)
 
-**Status:** implementado na branch `feature/phaser-stock-roundtrip-v086`. Publicar somente após testes do PR e validar visualmente no Pages.
+**Status:** **PR #25 integrado à `main` em 17/10/2026**, após aprovação da suíte Phaser no GitHub Actions. Deploy automático solicitado pelo push; confirmação do Pages e QA no navegador ainda pendentes.
 
 ### Problema resolvido
 
