@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 16/10/2026 · **Phaser 0.8.0 — turnos de 12h, 10,5 HH úteis, meta 20–100, arquivo noturno preservado; homologação visual pendente.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.1 — perfis geométricos independentes para fundos recortados/completos; homologação visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -374,6 +374,38 @@ O motor `engine.js` resolve diagnósticos por etapas, com probabilidade de acert
 - [ ] Testar o arquivo noturno **real** no browser, após integrar o binário. Até lá, a tonalização provisória serve apenas para distinguir períodos.
 - [ ] Validar responsividade em desktop/celular, continuidade dos saves e integridade das posições dos boxes aprovadas na v0.7.6.
 
+## Entrega 0.8.1 — Correção estrutural do mapeamento visual (implementada; QA no Pages pendente)
+
+**Sintoma observado:** no teste após a v0.8.0, a CAT 6030 e os caminhões 777E pareciam deslocados para fora dos boxes, apesar de as barras e os letreiros permanecerem em posições plausíveis. O problema tornou-se evidente ao usar uma imagem completa da oficina no lugar do fundo diurno oficial já recortado.
+
+### Diagnóstico
+
+O código antigo em `setBackdrop()` decidia arbitrariamente se deveria recortar uma imagem conforme a proporção (`aspect > 2.42`). O PNG completo (1976×796, proporção 2,482) era recortado em uma janela equivalente a `x=320, y=130`, enquanto versões completas reexportadas em proporções pouco diferentes eram exibidas inteiras. **As imagens passavam a ter coordenadas visuais distintas, mas máquinas, mecânicos e hitboxes continuavam usando o mesmo `scene-map.json`**. Os ajustes acumulados da v0.7.6 e a proteção de borda da câmera aumentavam a inconsistência.
+
+### Implementado
+
+- [x] **Dois perfis explícitos:** `cropped` para `oficina-base.avif` (arquivo 1350×563 previamente recortado) e `fullFrame` para imagens completas, incluindo o original do turno noturno e os arquivos personalizados da oficina.
+- [x] **Preservar o perfil já aprovado:** `backgroundProfiles.cropped.bays="base"` mantém os três centros `[427,842,1223]`, posições dos trabalhadores, barras, áreas clicáveis e escala da v0.7.6.
+- [x] **Recalibração inicial do fundo completo:** centros dos três boxes `[611,846,1094]` no mundo Phaser. Os limites físicos `hitWorld` estão separados, sem sobreposição entre áreas clicáveis. Coordenadas derivadas do enquadramento e imagem disponibilizados pelo usuário; **precisam de QA visual real**.
+- [x] **Remoção do recorte implícito baseado em aspect ratio:** `setBackdrop(img,profile)` desenha a fonte inteira; o asset diurno oficial já tem a janela correta pré-aplicada. Fundos completos não devem sofrer a antiga operação de corte `(320,130)`.
+- [x] **Troca sincronizada de geometria e fundo:** `applyBayProfile()` seleciona o conjunto certo de boxes, recria `this.bayZones` com as novas áreas clicáveis e mantém o vínculo da seleção da OS. Máquina, mecânicos, sombras, rótulos de box livre e indicadores passam a usar `activeBayLayout` simultaneamente.
+- [x] **Apoio físico dentro de cada box:** `layout-math.js` inclui `placeMachineInBay()` para levar em conta o deslocamento entre centro visual e centro de apoio de rodas/esteiras (`footprintAnchorX`) e limitar a imagem ao espaço da área operacional. `placeWorkerInBay()` mantém mecânicos laterais visíveis dentro do box ao usar o fundo completo.
+- [x] **Preservação das regras de manutenção:** motor diesel, diagnóstico, alocação, produtividade, turno de 12h, DDS, almoço e disponibilidade de 10,5HH não sofreram alteração nesta entrega.
+- [x] **Testes de regressão:** `scripts/test-scene-profiles.cjs` valida separação de hitboxes, posicionamento de equipamentos e mecânicos, apoio no chão, limites de largura/altura e os dois modos de exibição. Integração no workflow de Pages com verificação obrigatória antes do deploy.
+- [x] **Cache invalidado:** `game.js?v=0.8.1` e `layout-math.js?v=0.8.1` no HTML público.
+
+### Verificações pendentes para homologação
+
+- [ ] Testar **fundo diurno oficial** e comparar com a disposição aprovada na v0.7.6; nenhuma mudança visual relevante deve aparecer.
+- [ ] Importar **imagem completa do galpão** pelo menu Visual, validar que placas BOX 1/2/3 coincidem com as OS e que a 6030 e os 777E permanecem dentro dos espaços corretos.
+- [ ] Repetir no Turno B com o **asset noturno original**, preservado conforme `phaser-play/assets/OFICINA-NOTURNA.md`; confirmar alternância A→B→A e os mesmos pontos de apoio.
+- [ ] Clicar diretamente nas máquinas, nos mecânicos e nas regiões vazias dos boxes: não pode abrir a OS do box vizinho.
+- [ ] Conferir a proporção da 6030, 777E, DR410i e D9 no perfil completo (máquinas grandes precisam de limites sem perder a leitura visual de porte).
+- [ ] Confirmar visibilidade do último mecânico do BOX 3 e alinhamento do chão nas resoluções usuais.
+- [ ] **Pendência separada:** enviar o arquivo binário da noite para `main` e validar SHA-256; a preservação na Biblioteca e manifesto não equivale à publicação do asset.
+
+**Critério de aceite:** todas as imagens da oficina selecionam e renderizam geometria compatível; rodas/esteiras e mecânicos ficam dentro do box certo; barra de progresso e clique correspondem à mesma OS. Não ajustar offsets isolados antes de validar o perfil do cenário escolhido.
+
 ## Entrega 0.8 — Gestão avançada de manutenção (P1)
 
 - [x] **Etapa inicial (v0.7.8):** priorização por criticidade, idade da OS e bloqueio de insumos, com pontuação de jogo explícita. **Pendente:** modelagem calibrável de risco e impacto operacional.
@@ -405,7 +437,7 @@ O motor `engine.js` resolve diagnósticos por etapas, com probabilidade de acert
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.0
+## Plano de validação para a versão 0.8.1
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -449,6 +481,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.7.8:** planejamento PCM de curto prazo, índice heurístico transparente, comparação de especialidades/capacidade de HH brutas, recomendações com alocação explicitamente autorizada, bloqueios por insumos e atalhos contextuais. Módulo puro e testes adicionados; **homologação funcional pendente**.
 - **0.7.9:** janela de capacidade de 14 turnos, HH brutas sem extrapolar produtividade, necessidades de peças apenas após diagnóstico, entregas no fim do turno, referência de folha fixa, hipóteses explícitas e testes automatizados; **QA visual e funcional pendente**.
 - **0.8.0:** 12h/turno, DDS 0,5h e almoço 1h, 10,5 HH/mecânico, meta 20–100 (60 estável; fadiga exponencial acima; moral abaixo), interface e PCM recalibrados. PNG noturno original e AVIF derivados arquivados, hashes no manifesto; **publicação do binário noturno ainda pendente**.
+- **0.8.1:** elimina corte de imagem decidido pela proporção, mapeia separadamente o galpão recortado e o cenário completo, alterna hitboxes/indicadores/sprites em conjunto e usa limites físicos de box e centro de apoio do equipamento. Testes geométricos em CI. **QA visual no Pages pendente.**
 
 ### Organização recomendada
 
