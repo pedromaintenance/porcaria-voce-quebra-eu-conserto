@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. v0.8.7 — apresentação da investigação (DOM HTML seguro). */
+/* P.O.R.C.A.R.I.A. v0.8.8 — apresentação da investigação (DOM HTML seguro). */
 (function(root,factory){
  const view=factory();
  if(typeof module!=='undefined'&&module.exports)module.exports=view;
@@ -19,18 +19,34 @@
      e.source==='player'?'Você'+(e.mechanicName?' com '+e.mechanicName:''):
      e.source==='mechanic'?'Mecânico '+(e.mechanicName||'não identificado'):'Origem não registrada')
    +(e.tick!==null?' · Turno '+e.tick:'')+'</span></li>').join('');
+  const coaching=r.currentGuidance?
+   '<section class="diagnosticCoach" aria-label="Orientação técnica da etapa atual">'
+   +'<small>QUESTÃO DA ETAPA ATUAL</small><h4>'+esc(r.currentGuidance.question)+'</h4>'
+   +'<p>'+esc(r.currentGuidance.guidance)+'</p>'
+   +(r.currentGuidance.evidence?'<div class="diagnosticClue"><b>🔎 COMO INVESTIGAR · EVIDÊNCIA SOLICITADA</b><p>'+esc(r.currentGuidance.evidence)+'</p></div>'
+    :'<small class="diagnosticNoClue">Para obter uma orientação de inspeção específica desta fase, use SOLICITAR EVIDÊNCIA.</small>')
+   +'</section>':'';
+  const explanations=r.confirmed.length?
+   '<details class="diagnosticLearning"><summary>POR QUE AS ETAPAS CONFIRMADAS IMPORTAM · '+r.confirmed.length+' ▾</summary><ol>'
+   +r.confirmed.map(x=>'<li><strong>'+esc(x.label)+' · '+esc(x.result)+'</strong><p>'+esc(x.explanation||'Confirmação registrada, sem explicação adicional.')+'</p></li>').join('')
+   +'</ol></details>':'';
+  const caseStudy=r.complete&&r.caseStudy?
+   '<section class="diagnosticCaseStudy"><small>APRENDIZADO DO CASO · CENÁRIO DIDÁTICO</small>'
+   +'<h4>Verificação técnica recomendada</h4><p>'+esc(r.caseStudy.verification)+'</p>'
+   +'<h4>Interpretação e lição</h4><p>'+esc(r.caseStudy.lesson)+'</p>'
+   +'<small>'+esc(r.caseStudy.provenance)+'</small></section>':'';
   return '<section class="diagnosticBoard" aria-labelledby="diagnosticTitle">'
    +'<div class="diagnosticHero"><div><small>INVESTIGAÇÃO · '+esc(jobId)+'</small><h3 id="diagnosticTitle">'
    +(r.complete?'✓ DIAGNÓSTICO CONCLUÍDO':'ETAPA '+(r.stage+1)+' DE 6 · '+esc(r.currentLabel).toUpperCase())+'</h3>'
    +'<p>'+(r.complete?'Seis fases confirmadas. Prepare o reparo.':'Fase atual: '+esc(r.currentLabel)+'. Confirme uma hipótese ou peça evidências para avançar.')+'</p></div>'
    +'<div class="diagnosticPercent"><b>'+r.progress+'%</b><small>'+r.stage+'/6 confirmadas</small></div></div>'
    +'<div class="diagnosticMeter" role="progressbar" aria-label="Progresso do diagnóstico" aria-valuenow="'+r.stage+'" aria-valuemin="0" aria-valuemax="6"><i style="width:'+r.progress+'%"></i></div>'
-   +'<div class="diagnosticSteps">'+steps+'</div>'
+   +'<div class="diagnosticSteps">'+steps+'</div>'+coaching
    +'<div class="diagnosticGroups">'
    +group('✓ VOCÊ CONFIRMOU',r.player,'Nenhum acerto confirmado por você ainda.','player')
    +group('🔧 MECÂNICO DESCOBRIU',r.mechanic,'Nenhuma descoberta autônoma até agora.','mechanic')
    +(r.unknown.length?group('◷ HISTÓRICO ANTERIOR',r.unknown,'','unknown'):'')+'</div>'
-   +(r.hasHint?'<div class="diagnosticClue"><b>🔎 EVIDÊNCIA COLETADA · '+esc(r.currentLabel)+'</b><p>'+esc(r.clue)+'</p></div>':'')
+   +explanations+caseStudy
    +'<details class="diagnosticJournal"><summary>REGISTRO DA INVESTIGAÇÃO · '+r.log.length+' EVENTO(S) ▾</summary>'
    +(events?'<ol>'+events+'</ol>':'<p>Sem registros. Os acertos e as tentativas aparecerão aqui.</p>')
    +'<small>'+esc(r.methodology)+'</small></details>'
