@@ -24,15 +24,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Validate Phaser JavaScript syntax
-        run: node --check phaser-play/readiness.js && node --check phaser-play/diagnostic-board.js && node --check phaser-play/diagnostic-view.js && node --check scripts/test-diagnostic-teaching.cjs && node --check phaser-play/layout-math.js && node --check phaser-play/game.js && node --check phaser-play/planning.js && node --check phaser-play/weekly.js && node --check phaser-play/shift-brief.js && node --check engine.js && node --check scripts/test-777-override.cjs && node --check phaser-play/closed-orders.js && node --check scripts/test-closed-orders.cjs && node --check scripts/test-bay-contact.cjs
+        run: node --check phaser-play/readiness.js && node --check phaser-play/diagnostic-board.js && node --check phaser-play/diagnostic-view.js && node --check scripts/test-diagnostic-teaching.cjs && node --check phaser-play/layout-math.js && node --check phaser-play/game.js && node --check phaser-play/planning.js && node --check phaser-play/weekly.js && node --check phaser-play/shift-brief.js && node --check engine.js && node --check scripts/test-777-override.cjs && node --check phaser-play/closed-orders.js && node --check scripts/test-closed-orders.cjs && node --check scripts/test-bay-contact.cjs && node --check scripts/test-day-night-fullframe.cjs
       - name: Regression tests (engine and scene map)
-        run: node scripts/smoke-phaser.cjs && node scripts/test-shift-brief.cjs && node scripts/test-planning.cjs && node scripts/test-weekly.cjs && node scripts/test-shifts-productivity.cjs && node scripts/test-scene-profiles.cjs && node scripts/test-777-asset.cjs && node scripts/test-night-workshop.cjs && node scripts/test-readiness.cjs && node scripts/test-readiness-navigation.cjs && node scripts/test-diagnostic.cjs && node scripts/test-diagnostic-teaching.cjs && node scripts/test-777-override.cjs && node scripts/test-closed-orders.cjs && node scripts/test-bay-contact.cjs
+        run: node scripts/smoke-phaser.cjs && node scripts/test-shift-brief.cjs && node scripts/test-planning.cjs && node scripts/test-weekly.cjs && node scripts/test-shifts-productivity.cjs && node scripts/test-scene-profiles.cjs && node scripts/test-777-asset.cjs && node scripts/test-night-workshop.cjs && node scripts/test-readiness.cjs && node scripts/test-readiness-navigation.cjs && node scripts/test-diagnostic.cjs && node scripts/test-diagnostic-teaching.cjs && node scripts/test-777-override.cjs && node scripts/test-closed-orders.cjs && node scripts/test-bay-contact.cjs && node scripts/test-day-night-fullframe.cjs
       - name: Check Pages entrypoints
-        run: test -f phaser-play/readiness.js && test -f phaser-play/diagnostic-board.js && test -f phaser-play/diagnostic-view.js && test -f phaser-play/closed-orders.js && test -f phaser-play/assets/OFICINA-NOTURNA.md && test -f phaser-play/index.html && test -f phaser-play/game.js && test -f phaser-play/planning.js && test -f phaser-play/weekly.js && test -f phaser-play/scene-map.json && test -f game-data.json
+        run: test -f phaser-play/readiness.js && test -f phaser-play/diagnostic-board.js && test -f phaser-play/diagnostic-view.js && test -f phaser-play/closed-orders.js && test -f phaser-play/assets/OFICINA-NOTURNA.md && test -f phaser-play/index.html && test -f phaser-play/game.js && test -f phaser-play/planning.js && test -f phaser-play/weekly.js && test -f phaser-play/scene-map.json && test -f phaser-play/assets/oficina-diurna-fullframe.avif && test -f game-data.json
       - name: Verify official workshop image
         run: |
           test -s phaser-play/assets/oficina-base.avif
           echo "8d13599f38ac559f12a4c62e44119f1e432f5d8abc83b593d5a7ae852ef3f2bd  phaser-play/assets/oficina-base.avif" | sha256sum --check
+      - name: Verify original full-frame daytime workshop
+        run: |
+          test -s phaser-play/assets/oficina-diurna-fullframe.avif
+          echo "31453309223d11800e78276edd2e02b641a82eb4a2ffb52982dbc766e0a003c7  phaser-play/assets/oficina-diurna-fullframe.avif" | sha256sum --check
       - name: Verify new 777E transparent texture
         run: |
           test -s phaser-play/assets/equipment/cat777e_v3.webp
