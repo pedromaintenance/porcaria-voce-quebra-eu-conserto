@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.12 — microajuste visual do BOX 3 (−5 px) e sombras de contato elevadas nos cenários diurno/noturno; CI e QA visual pendentes.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.12 — microajuste visual do BOX 3 (−5 px) e sombras de contato elevadas nos cenários diurno/noturno; CI e GitHub Pages aprovados, QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -629,6 +629,9 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
 ## Entrega 0.8.12 — Composição BOX 3 e sombras de contato (P0 / visual)
+
+**Publicação:** [PR #31](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/31) integrado à `main` no commit `fa7f4a2`. Todos os testes Node/CI, incluindo `test-bay-contact.cjs`, passaram; [GitHub Pages workflow #39066953314](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39066953314) concluído com sucesso. **Comparação visual no navegador, especialmente rodas/sombras de dia e noite, continua pendente.**
+
 
 **Origem:** captura do jogador de 17/10/2026. A máquina e os mecânicos do BOX 3 apareciam cerca de 5 px à direita do desejado, e as sombras estavam baixas em relação ao contato dos pneus/esteiras com o chão, criando aparência de flutuação. A solicitação contempla **dia e noite**, não apenas o fundo fotografado no print.
 
