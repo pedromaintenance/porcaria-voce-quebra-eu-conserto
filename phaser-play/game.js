@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.2 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.3 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -6,7 +6,7 @@ const E=window.PORCARIA_ENGINE;
 const STAGES=['Sistema','Grupo','Subgrupo','Componente','Dano','Causa'];
 const SAVE='porcaria.phaser.prototype.v01';
 const ASSETS={
- truck:'./assets/equipment/cat777e.png',
+ truck:'./assets/equipment/cat777e_v2.webp',
  shovel:'./assets/equipment/cat6030.png',
  excavator:'./assets/equipment/cat395.png',
  drill:'./assets/equipment/sandvik_dr410i.png',
@@ -732,7 +732,7 @@ class Workshop extends Phaser.Scene{
    const key=MACHINES[modelId];
    if(key&&this.textures.exists(key)){
      const renderKey=this.trimmedEquipment(key),texture=this.textures.get(renderKey);
-     texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
+     texture.setFilter(modelId==='EQ01' ? Phaser.Textures.FilterMode.LINEAR : Phaser.Textures.FilterMode.NEAREST);
      const src=texture.getSourceImage();
      const plan=window.PORCARIA_LAYOUT.equipmentSize(src.width,src.height,scale,MODEL_PRESENTATION[modelId]||{},bay);
      // The requested offset is preserved in scene-map.json; clipping protection is visual only.

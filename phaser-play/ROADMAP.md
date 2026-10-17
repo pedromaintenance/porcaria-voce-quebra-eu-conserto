@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.2 — piso, envelopes laterais e indicadores de diagnóstico independentes por box; QA visual pendente.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.3 — novo sprite do CAT 777E sem logos, transparente e com ângulo frontal 3/4; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -436,6 +436,36 @@ Na versão 0.8.1, `hitWorld` controlava simultaneamente o clique, a largura máx
 
 **Critério de aceite:** as máquinas e mecânicos estão no piso vermelho, limitados lateralmente ao verde; indicadores ficam na faixa azul abaixo dos equipamentos; nomes dos boxes e barras inferiores permanecem legíveis. O motor de 12h, 10,5 HH úteis e meta de produtividade 20–100 **não foi modificado**.
 
+## Entrega 0.8.3 — CAT 777E em pixel art: substituição e escala (implementada; QA visual pendente)
+
+**Solicitação:** substituir o asset antigo do 777E, cuja caçamba parecia excessivamente inclinada, pela nova pixel art aprovada pelo usuário, baseada na referência frontal 3/4, sem logos CAT/Caterpillar e com fundo transparente.
+
+### Trabalho executado
+
+- [x] **Novo arquivo binário real integrado ao GitHub:** `phaser-play/assets/equipment/cat777e_v2.webp` (**1100×781 px; 339.086 bytes**), criado a partir do PNG RGBA final de 1488×1057 px, com redução de resolução Lanczos, WebP qualidade 98 e canal alpha. A transparência é preservada sem fundo preto.
+- [x] **Arte aprovada mantida:** cabine, chassis, caçamba, corrimãos, escadas, grade e rodados intactos na composição da imagem-fonte. Sprite com vista frontal 3/4 menos inclinada, sem marcas CAT/Caterpillar visíveis.
+- [x] **Arquivo original protegido:** `caminhão_de_mineração_em_pixel_art.png` (1.835.427 B, SHA-256 `1269bd7498dce4dfe71653d41e213d5d44e5672bf4e538cccf07f67d9718f967`) guardado na Biblioteca do projeto em `/PORCARIA/Assets/Equipamentos/CAT777E_sem_logos_original.png`. O WebP otimizado também foi guardado ali como segunda cópia.
+- [x] **Arquivo anterior conservado no Git:** `phaser-play/assets/equipment/cat777e.png` permanece como backup e não é mais referenciado pelo carregamento `truck` do Phaser. Nenhuma máquina adicional foi alterada.
+- [x] **Integração Phaser:** `ASSETS.truck` aponta para `./assets/equipment/cat777e_v2.webp`. `MACHINES.EQ01` continua apontando para `truck`; a lógica e os saves de OS não precisam migrar.
+- [x] **Escala e rodas:** em `scene-map.json`, `EQ01.scaleMultiplier=1.10`, `EQ01.footprintAnchorX=0.54`, largura máxima 265 e altura máxima 225; o perfil de `placementWorld` limita o equipamento ao envelope lateral do box no cenário completo, com `origin(.5,1)` apoiado no `groundY`.
+- [x] **Nitidez de renderização:** o 777E usa filtro `LINEAR` ao reduzir o sprite detalhado de 1100px para aproximadamente 200px no jogo, evitando aliasing excessivo; os demais equipamentos continuam com o filtro `NEAREST` anterior.
+- [x] **Manifesto de asset:** `phaser-play/assets/equipment/CAT777E_ASSET.md` documenta origem, duas versões, checksums, parâmetros, risco visual e rollback.
+- [x] **Cache atualizado para v0.8.3:** `game.js?v=0.8.3` no HTML, sem alterar as referências independentes de módulos estáveis.
+- [x] **Regressões e integridade binária:** `scripts/test-777-asset.cjs` verifica byte count, SHA-256, formato RIFF/WEBP/VP8X, canal alpha, dimensões, caminho utilizado no Phaser, layout e limites dos três boxes completos. O pipeline valida o checksum antes de publicar.
+
+**SHA-256 do novo arquivo publicado:** `c0c304a84f7dad6e26e046877470d609c74148717ea355a2cd0beae0d33be7fd`.
+
+### Homologação visual pendente
+
+- [ ] Testar no **GitHub Pages** com o CAT 777E no BOX 1, BOX 2 e BOX 3, em fundo diurno e noturno.
+- [ ] Confirmar a redução visual da inclinação e a correspondência com a referência fotográfica.
+- [ ] Confirmar que o WebP mantém fundo realmente transparente e bordas sem halo visível no galpão.
+- [ ] Verificar apoio das rodas na linha de chão (`groundY`) e ocupação lateral sem invadir o box vizinho.
+- [ ] Verificar nitidez do asset a tamanho de jogo e o equilíbrio de escala com a CAT 6030 e a CAT 336GC.
+- [ ] Conferir que nenhuma interação, HUD, mecânico, turno ou OS foi alterada ou regressou.
+
+**Critério de aceite:** o caminhão novo aparece automaticamente no Pages, com pose frontal 3/4, sem logos e sem fundo, nas dimensões apropriadas e com as rodas apoiadas, sem deslocar o restante da oficina. Se o usuário não aprovar o tamanho, calibrar apenas o `EQ01` e não os boxes.
+
 ## Entrega 0.8 — Gestão avançada de manutenção (P1)
 
 - [x] **Etapa inicial (v0.7.8):** priorização por criticidade, idade da OS e bloqueio de insumos, com pontuação de jogo explícita. **Pendente:** modelagem calibrável de risco e impacto operacional.
@@ -467,7 +497,7 @@ Na versão 0.8.1, `hitWorld` controlava simultaneamente o clique, a largura máx
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.2
+## Plano de validação para a versão 0.8.3
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -513,6 +543,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.0:** 12h/turno, DDS 0,5h e almoço 1h, 10,5 HH/mecânico, meta 20–100 (60 estável; fadiga exponencial acima; moral abaixo), interface e PCM recalibrados. PNG noturno original e AVIF derivados arquivados, hashes no manifesto; **publicação do binário noturno ainda pendente**.
 - **0.8.1:** elimina corte de imagem decidido pela proporção, mapeia separadamente o galpão recortado e o cenário completo, alterna hitboxes/indicadores/sprites em conjunto e usa limites físicos de box e centro de apoio do equipamento. Testes geométricos em CI. **QA visual no Pages pendente.**
 - **0.8.2:** distingue clique, área visual, indicador e footer; sobe rodado/mecânicos para linha de apoio, desloca barras para a faixa inferior e limita sprites pelas laterais dos boxes; habilita guias opcionais `debugBoxes=1`. **Testes de geometria automatizados; QA visual pendente.**
+- **0.8.3:** substitui o sprite do 777E por arte frontal 3/4 sem logos e com fundo transparente (WebP + alpha), calibra escala/footprint e minificação, arquiva original PNG e mantém asset anterior como backup; adiciona manifesto, SHA-256 e testes obrigatórios no deploy. **QA visual pendente.**
 
 ### Organização recomendada
 
