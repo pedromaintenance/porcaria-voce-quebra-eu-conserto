@@ -9,7 +9,7 @@ const html=fs.readFileSync(path.join(root,'phaser-play/index.html'),'utf8');
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
 const map=JSON.parse(fs.readFileSync(path.join(root,'phaser-play/scene-map.json'),'utf8'));
 assert.ok(g.includes("truck:'./assets/equipment/cat777e_v3.webp'"),'asset original mantido');
-assert.ok(g.includes("CUSTOM_TRUCK_KEY='porcaria.phaser.customTruck.20261017'"),'chave não colide com save');
+assert.ok(g.includes("CUSTOM_TRUCK_KEY='porcaria.phaser.customTruck.20261017.v0810'"),'chave não colide com save');
 assert.ok(g.includes("sceneStore('save',file,'truckSprite')"),'importação persistida localmente');
 assert.ok(g.includes("sceneStore('read',null,'truckSprite')"),'persistência reaberta no boot');
 assert.ok(g.includes("sceneStore('delete',null,'truckSprite')"),'reversão remove conteúdo local');
