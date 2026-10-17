@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.3 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.4 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -63,6 +63,18 @@ async function useBackground(blob){
  if(!scene)return;
  scene.customBackdrop=true;
  scene.setBackdrop(img,'fullFrame');
+}
+
+function updateSceneStatus(){
+ const status=$('sceneState');if(!status||!state)return;
+ const night=state.shift===1;
+ let label;
+ if(scene?.customBackdrop)label='Imagem personalizada para os dois turnos';
+ else if(night&&scene?.nightBackdropImage)label='Noite: imagem personalizada deste navegador';
+ else if(night&&scene?.textures?.exists('repoNightWorkshopBG'))label='Noite: cenário oficial HQ do repositório';
+ else if(night)label='Noite: cenário diurno escurecido (alternativa)';
+ else label='Dia: cenário oficial da oficina';
+ status.textContent=label;
 }
 
 const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO ATUAL',stats:'📊 INDICADORES E RECURSOS',planning:'🗓️ PLANEJAMENTO PCM',shift:'📋 BRIEFING DE TURNO',team:'👷 EQUIPE DA OFICINA',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA',management:'📋 GESTÃO DA OFICINA'};
@@ -332,6 +344,7 @@ function drawManagement(k){
 }
 function drawUI(){
  if(!state||!data)return;
+ updateSceneStatus();
  const k=E.kpis(state);
  drawManagement(k);
  $('day').textContent='DIA '+state.day+' · '+(state.shift?'🌙 NOITE · B':'☀ DIA · A');
@@ -548,16 +561,17 @@ function events(){
    const img=await imageFromBlob(file);
    await sceneStore('save',file,'night');localStorage.setItem(NIGHT_BACKGROUND_KEY,'1');
    if(scene){scene.nightBackdropImage=img;if(state?.shift===1&&!scene.customBackdrop)scene.applyOfficialBackdrop()}
-   notify('Fundo noturno salvo neste navegador. Será utilizado automaticamente no Turno B.');
+   updateSceneStatus();
+   notify('Fundo noturno personalizado salvo. Ele substitui o cenário oficial apenas no Turno B.');
   }catch(err){notify('Falha no cenário noturno: '+err.message)}
  });
  $('bgNightReset').addEventListener('click',async()=>{
   closeSceneMenu();localStorage.removeItem(NIGHT_BACKGROUND_KEY);
   try{await sceneStore('delete',null,'night')}catch(err){console.warn(err)}
   if(scene){scene.nightBackdropImage=null;if(state?.shift===1&&!scene.customBackdrop)scene.applyOfficialBackdrop()}
-  notify('Cenário noturno personalizado removido; será usado o padrão disponível.');
+  updateSceneStatus();notify('Fundo noturno personalizado removido: cenário oficial da noite restaurado.');
  });
- $('bgReset').addEventListener('click',async()=>{closeSceneMenu();localStorage.removeItem(CUSTOM_BACKGROUND_KEY);try{await sceneStore('delete')}catch(err){console.warn(err)}if(scene){scene.customBackdrop=false;scene.applyOfficialBackdrop()}notify('Cenário automático dia/noite restaurado.')});
+ $('bgReset').addEventListener('click',async()=>{closeSceneMenu();localStorage.removeItem(CUSTOM_BACKGROUND_KEY);try{await sceneStore('delete')}catch(err){console.warn(err)}if(scene){scene.customBackdrop=false;scene.applyOfficialBackdrop()}updateSceneStatus();notify('Cenário automático dia/noite restaurado.')});
   $('reset').addEventListener('click',()=>{if(!confirm('Reiniciar a campanha Phaser?'))return;state=E.create(data);selected=state.jobs[0]?.id;action(null);if(scene)scene.applyOfficialBackdrop()});
 }
 class Workshop extends Phaser.Scene{
@@ -565,8 +579,8 @@ class Workshop extends Phaser.Scene{
  preload(){
   Object.entries(ASSETS).forEach(([key,url])=>this.load.image(key,url));
   this.load.image('repoWorkshopBG','./assets/oficina-base.avif?v=0.7.0');
-  // Asset original noturno preservado; arquivo público será adicionado posteriormente.
-  this.load.image('repoNightWorkshopBG','./assets/oficina-noturna-hq.avif?v=0.8.0');
+  // Cenário noturno real disponível no Pages, verificado por hash no deploy.
+  this.load.image('repoNightWorkshopBG','./assets/oficina-noturna-hq.avif?v=0.8.4');
   this.load.on('loaderror',f=>console.warn('Imagem opcional indisponivel:',f.key));
  }
  create(){
@@ -675,15 +689,16 @@ class Workshop extends Phaser.Scene{
   const key=night&&this.textures.exists('repoNightWorkshopBG')?'repoNightWorkshopBG':'repoWorkshopBG';
   const img=this.textures.exists(key)?this.textures.get(key).getSourceImage():null;
   this.setBackdrop(img,key==='repoNightWorkshopBG'?'fullFrame':'cropped');
-  // Fallback visual TEMPORÁRIO enquanto AVIF noturno não integra a branch main.
+  // Fallback apenas para navegadores sem suporte AVIF ou falha de carregamento.
   if(night&&key!=='repoNightWorkshopBG'&&this.backdrop)this.backdrop.setTint(0x7986a4);
+  updateSceneStatus();
  }
  setBackdrop(img,profile='fullFrame'){
   // The photograph and its bays MUST change as a single scene geometry.
   this.applyBayProfile(profile);
   if(this.backdrop){this.backdrop.destroy();this.backdrop=null}
   if(this.backgroundDecor)this.backgroundDecor.forEach(o=>o.setVisible(!img));
-  if(!img){this.refresh();return}
+  if(!img){this.refresh();updateSceneStatus();return}
   const crop=SCENE_REFERENCE.crop;
   const width=img.naturalWidth||img.width,height=img.naturalHeight||img.height;
   // Preserve the original 1350px workshop detail instead of discarding it into a 1080px canvas.
@@ -703,6 +718,7 @@ class Workshop extends Phaser.Scene{
   this.textures.addCanvas('dynamicWorkshopBG',canvas).setFilter(Phaser.Textures.FilterMode.LINEAR);
   this.backdrop=this.add.image(SCENE_REFERENCE.worldX,SCENE_REFERENCE.worldY,'dynamicWorkshopBG').setOrigin(0).setDisplaySize(SCENE_REFERENCE.width,SCENE_REFERENCE.height).setDepth(-1);
   this.refresh();
+  updateSceneStatus();
  }
  text(x,y,t,size,color,bold=false){return this.add.text(x,y,t,{fontFamily:'Arial, sans-serif',fontSize:size+'px',fontStyle:bold?'bold':'normal',color,stroke:'#112435',strokeThickness:4})}
  trimmedEquipment(key){

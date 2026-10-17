@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.3 — novo sprite do CAT 777E sem logos, transparente e com ângulo frontal 3/4; QA visual pendente.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.4 — cenário noturno HQ oficial integrado e alternância automática dia/noite; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -466,6 +466,31 @@ Na versão 0.8.1, `hitWorld` controlava simultaneamente o clique, a largura máx
 
 **Critério de aceite:** o caminhão novo aparece automaticamente no Pages, com pose frontal 3/4, sem logos e sem fundo, nas dimensões apropriadas e com as rodas apoiadas, sem deslocar o restante da oficina. Se o usuário não aprovar o tamanho, calibrar apenas o `EQ01` e não os boxes.
 
+## Entrega 0.8.4 — Publicação do cenário noturno oficial e continuidade dia/noite (implementada; QA visual pendente)
+
+**Motivação:** o fundo noturno entregue pelo usuário estava preservado na Biblioteca desde 16/10/2026, mas não integrava o Pages. Isso obrigava a importação manual em cada navegador e produzia, por padrão, apenas a versão diurna escurecida quando o turno B começava.
+
+### Alterações concretas
+
+- [x] **Publicação de binário autêntico:** `phaser-play/assets/oficina-noturna-hq.avif`, **1976×796 pixels**, **160.249 bytes**, AVIF extraído sem reprocessamento do arquivo previamente aprovado. **SHA-256:** `0637e55b3a1978842c7aa71e27c763b176ea7c8438a82ee5bc711140e1a72c15`. Original PNG preservado na Biblioteca pessoal sob `/PORCARIA/Assets/Oficina/Hangar Industrial Noturno sob a Chuva.png`; SHA-256 `fd4711611b7f83ca6f3428b5bbc59ae855cc800ab26dcd481b8c2eaf0c89ceee`.
+- [x] **Preload e seleção por turno:** Phaser carrega o arquivo oficial sob a textura `repoNightWorkshopBG` com `?v=0.8.4`. No turno **A (dia)**, utiliza `repoWorkshopBG` com perfil `cropped`; no turno **B (noite)**, utiliza `repoNightWorkshopBG` com perfil `fullFrame`. A câmera, as dimensões do palco, os limites dos boxes e a disposição dos sprites permanecem como definidos em `scene-map.json`.
+- [x] **Menu Visual informativo:** campo `sceneState` exibe de onde veio a imagem ativa: dia oficial, noite oficial, noite personalizada do navegador ou imagem personalizada para ambos os turnos. Isso permite identificar uma preferência local persistente que antes mascarava o fundo real.
+- [x] **Personalização reversível:** `Substituir noite (opcional)` guarda a imagem do jogador apenas no navegador; `Restaurar noite oficial` elimina essa substituição sem afetar a campanha. `Restaurar dia/noite oficiais` remove a sobreposição global de fundo, preservando as preferências específicas da noite.
+- [x] **Fallback transparente ao usuário:** somente se o navegador não conseguir carregar o AVIF oficial, o turno B exibe a versão diurna escurecida. Quando o arquivo existe, o original noturno é utilizado — não uma tonalização simulada.
+- [x] **Arquivo de origem e manifesto:** `phaser-play/assets/OFICINA-NOTURNA.md` atualizado para distinguir **binário agora versionado** de **validação artística futura**, sem apagar o histórico dos arquivos de origem.
+- [x] **Testes obrigatórios de implantação:** `scripts/test-night-workshop.cjs` verifica SHA-256, tamanho, cabeçalho AVIF `ftyp`, dimensões no box `ispe`, preload, precedência de personalizações, textos do menu, troca correta dos perfis e integridade do posicionamento dos três boxes. Pipeline `.github/workflows/deploy-pages.yml` exige o hash exato antes do deploy.
+- [x] **Nenhuma alteração de simulação:** motor de manutenção, diagnóstico, HH úteis de 10,5h, turno de 12h, meta de produtividade, gestão PCM, mecânicos e sprite novo CAT 777E seguem inalterados.
+
+### Homologação de navegador pendente
+
+- [ ] Abrir um save no **turno A**, conferir o fundo diurno oficial, avançar para B e ver a **oficina noturna real**, avançar para A e retornar ao cenário diurno sem alteração de OS, posição de máquinas ou mecânicos.
+- [ ] Em **VISUAL**, comprovar o rótulo `Noite: cenário oficial HQ do repositório`; testar a personalização noturna e `Restaurar noite oficial`.
+- [ ] Conferir no celular e no desktop se a imagem de 1976×796 preenche o palco com nitidez adequada e se a perspectiva dos boxes coincide com a geometria `fullFrame` calibrada anteriormente.
+- [ ] Verificar comportamento em navegador sem suporte a AVIF: fallback do turno B deve manter o jogo operacional, com indicação correta no menu.
+- [ ] Garantir que o menu nunca passe cliques para os boxes enquanto aberto.
+
+**Critério de aceite:** um usuário em um novo navegador, sem fundos personalizados, vê o **asset noturno correto** automaticamente a cada Turno B, sem escolher arquivo local. O sistema continua reversível e nenhuma geometria dos boxes ou progressão de jogo é modificada.
+
 ## Entrega 0.8 — Gestão avançada de manutenção (P1)
 
 - [x] **Etapa inicial (v0.7.8):** priorização por criticidade, idade da OS e bloqueio de insumos, com pontuação de jogo explícita. **Pendente:** modelagem calibrável de risco e impacto operacional.
@@ -497,7 +522,7 @@ Na versão 0.8.1, `hitWorld` controlava simultaneamente o clique, a largura máx
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.3
+## Plano de validação para a versão 0.8.4
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -544,6 +569,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.1:** elimina corte de imagem decidido pela proporção, mapeia separadamente o galpão recortado e o cenário completo, alterna hitboxes/indicadores/sprites em conjunto e usa limites físicos de box e centro de apoio do equipamento. Testes geométricos em CI. **QA visual no Pages pendente.**
 - **0.8.2:** distingue clique, área visual, indicador e footer; sobe rodado/mecânicos para linha de apoio, desloca barras para a faixa inferior e limita sprites pelas laterais dos boxes; habilita guias opcionais `debugBoxes=1`. **Testes de geometria automatizados; QA visual pendente.**
 - **0.8.3:** substitui o sprite do 777E por arte frontal 3/4 sem logos e com fundo transparente (WebP + alpha), calibra escala/footprint e minificação, arquiva original PNG e mantém asset anterior como backup; adiciona manifesto, SHA-256 e testes obrigatórios no deploy. **QA visual pendente.**
+- **0.8.4:** arquivo original noturno otimizado publicado no repositório (AVIF de 1976×796, SHA-256 auditado), alternância automática por turno com perfil geométrico apropriado, origem exibida no menu Visual, personalizações opcionais e restauração do cenário oficial; testes binários e regressão em CI. **QA visual pendente.**
 
 ### Organização recomendada
 

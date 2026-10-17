@@ -43,7 +43,7 @@ assert.ok(phaserHtml.includes('overflow-x:auto'),'navegação responsiva roláve
 assert.ok(phaserScript.includes('function closeSceneMenu()'),'menu de cenário pode ser fechado');
 assert.ok(phaserScript.includes("sceneMenuBtn').addEventListener('click'"),'controle de abertura do menu presente');
 assert.ok(phaserScript.includes("if(!$('sceneMenu').hidden)"),'Escape fecha o dropdown antes do modal');
-assert.ok(phaserHtml.includes('game.js?v=0.8.3'),'script principal tem cache versionado');
+assert.ok(phaserHtml.includes('game.js?v=0.8.4'),'script principal tem cache versionado');
 assert.ok(phaserHtml.includes('shift-brief.js?v=0.7.7'),'módulo de briefing carregado junto ao jogo');
 assert.ok(phaserHtml.includes('planning.js?v=0.7.8'),'módulo do planejamento carregado no Pages');
 assert.ok(phaserHtml.includes('weekly.js?v=0.7.9'),'módulo semanal do PCM carregado');
@@ -61,6 +61,9 @@ assert.equal(engine.EFFECTIVE_HOURS,10.5,'DDS 30min e almoço 1h');
 assert.equal(state.productivityTarget,60,'meta padrão de produtividade estável');
 assert.ok(phaserScript.includes('applyOfficialBackdrop()'),'alternância de fundos por turno implementada');
 assert.ok(phaserHtml.includes('id="bgNightBtn"'),'menu Visual permite escolher asset da noite');
+assert.ok(phaserHtml.includes('id="sceneState"'),'menu informa cenário diurno ou noturno ativo');
+assert.ok(phaserHtml.includes('Restaurar noite oficial'),'ação restaura a noite oficial sem apagar save');
+assert.ok(phaserScript.includes("oficina-noturna-hq.avif?v=0.8.4"),'caminho da noite oficial versionado e carregado');
 assert.ok(phaserHtml.includes('id="nightPicker"'),'arquivo noturno tem seletor separado');
 assert.ok(phaserHtml.includes('id="bgNightReset"'),'arquivo noturno pode ser limpo');
 assert.ok(phaserScript.includes("sceneStore('save',file,'night')"),'imagem da noite é persistida em chave própria');
