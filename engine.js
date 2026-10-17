@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. v1.2 — turno de 12h, 10,5 HH úteis e meta de produtividade. */
+/* P.O.R.C.A.R.I.A. v1.3 — turno de 12h, 10,5 HH úteis e meta de produtividade. */
 (function(root,factory){
   const E=factory(); if(typeof module!=='undefined'&&module.exports)module.exports=E; root.PORCARIA_ENGINE=E;
 })(typeof window!=='undefined'?window:globalThis,function(){
@@ -109,7 +109,7 @@
       const severity=c.priority;
       const j={id:`OS${String(s.nextJob++).padStart(4,'0')}`,scene:c.id,asset,modelId:c.modelId,
         title:c.title,report:c.operator,dayOpen:s.day,tickOpen:s.tick,priority:severity,
-        status:'fila',assigned:null,bay:null,help:false,stage:0,hints:{},
+        status:'fila',assigned:null,bay:null,help:false,stage:0,hints:{},diagnosticLog:[],
         diagTarget:c.diagHours*2,diagRemaining:c.diagHours*2,
         repairTarget:c.hours,repairRemaining:c.hours,
         options:options(d,c,Math.floor(rnd(rng)*2**30)),wrong:0,rework:false,
@@ -141,6 +141,18 @@
   }
   function mentalCost(s,mech,cost){mech.mental=clamp(mech.mental-cost);if(mech.mental<25)mech.morale=clamp(mech.morale-4)}
   function physicalCost(s,mech,cost){mech.physical=clamp(mech.physical-cost);if(mech.physical<25)mech.morale=clamp(mech.morale-4)}
+  // Registro exclusivamente de fatos observados pelo jogador/mecânico.
+  // A etapa ainda em análise NUNCA recebe a resposta correta antecipadamente.
+  function diagnosticEvent(s,j,stage,outcome,source,m,value){
+    if(!Array.isArray(j.diagnosticLog))j.diagnosticLog=[];
+    const evidence={tick:s.tick,stage,outcome,source,mechanicId:m?.id||null,
+      mechanicName:m?.name||null,value:String(value||'')};
+    j.diagnosticLog.push(evidence);
+    return evidence;
+  }
+  function diagnosticLabel(j,stage,code){
+    return j.options?.[stage]?.find(option=>option.id===code)?.label||String(code||'');
+  }
   function answer(s,d,id,chosen){
     const j=job(s,id);if(!j||!j.assigned||!j.help)return {error:'O diagnóstico assistido exige mecânico e box alocados.'};
     if(j.stage>=6)return {error:'Diagnóstico já concluído.'};
@@ -149,15 +161,18 @@
     const m=employee(s,j.assigned), sc=scenario(d,j.scene);
     if(!m)return {error:'Mecânico indisponível.'};
     s.player.actionsLeft--;
-    const correct=[...sc.path,sc.component,sc.damage,sc.cause][j.stage];
+    const currentStage=j.stage;
+    const correct=[...sc.path,sc.component,sc.damage,sc.cause][currentStage];
     const ok=chosen===correct;
     if(ok){
+      diagnosticEvent(s,j,currentStage,'confirmed','player',m,diagnosticLabel(j,currentStage,chosen));
       j.stage++; j.diagRemaining=clamp(j.diagRemaining-1,0,10000);
       m.mental=clamp(m.mental+4);m.physical=clamp(m.physical+3);m.morale=clamp(m.morale+2);
       s.player.mental=clamp(s.player.mental+3);s.player.physical=clamp(s.player.physical+2);
       msg(s,`Boa investigação na ${id}: etapa ${j.stage}/6 confirmada. Dupla recuperou energia.`,'ok');
       if(j.stage===6){j.status='apto';j.diagRemaining=0;msg(s,`${id}: diagnóstico confirmado. Providencie peças e ferramentas para a corretiva.`,'ok')}
     }else{
+      diagnosticEvent(s,j,currentStage,'rejected','player',m,diagnosticLabel(j,currentStage,chosen));
       j.wrong++;j.diagRemaining+=0.5;j.reworkHours+=0.5;
       m.mental=clamp(m.mental-8);m.physical=clamp(m.physical-3);m.morale=clamp(m.morale-5);
       s.player.mental=clamp(s.player.mental-9);s.player.physical=clamp(s.player.physical-3);
@@ -174,6 +189,9 @@
     if(s.player.mental<4)return 'O gestor não tem energia mental suficiente para coordenar o teste.';
     const m=employee(s,j.assigned);if(!m)return 'Mecânico não encontrado.';
     j.hints=j.hints||{};j.hints[j.stage]=true;j.diagRemaining+=0.4;
+    const c=scenario(d,j.scene),stage=j.stage;
+    const clue=stage<3?c.path[stage]:[c.component,c.damage,c.verification][stage-3];
+    diagnosticEvent(s,j,stage,'evidence','player',m,clue||c.verification||'Inspeção adicional solicitada');
     s.player.mental=clamp(s.player.mental-4);m.mental=clamp(m.mental-1);
     msg(s,`Inspeção adicional na ${id}: −4 mental da chefia, +0,4h de investigação.`);
     return null;
@@ -255,8 +273,14 @@
         for(let k=0;k<n && j.stage<6;k++){
           const successChance=clamp(0.66+(m.skill-50)/170+(m.role===c.category?0.15:0)-(m.mental<20?0.3:0)-(m.morale<25?0.2:0),0.23,0.97);
           const ok=rnd(rng)<successChance;
-          if(ok){j.stage++;j.diagRemaining=clamp(j.diagRemaining-1,0,10000)}
-          else{j.wrong++;j.rework=true;j.reworkHours++;j.diagRemaining+=1;mentalCost(s,m,4);m.morale=clamp(m.morale-3)}
+          if(ok){
+            const stage=j.stage,answer=[...c.path,c.component,c.damage,c.cause][stage];
+            diagnosticEvent(s,j,stage,'confirmed','mechanic',m,diagnosticLabel(j,stage,answer));
+            j.stage++;j.diagRemaining=clamp(j.diagRemaining-1,0,10000);
+          }else{
+            diagnosticEvent(s,j,j.stage,'inconclusive','mechanic',m,'Hipótese não confirmada durante o turno');
+            j.wrong++;j.rework=true;j.reworkHours++;j.diagRemaining+=1;mentalCost(s,m,4);m.morale=clamp(m.morale-3);
+          }
           spent+=1;
         }
         applyWorkPressure(s,m,spent,pressure);
