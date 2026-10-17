@@ -43,3 +43,26 @@
 ### Rollback
 
 Para reverter apenas o caminhão, trocar `ASSETS.truck` novamente para `./assets/equipment/cat777e.png`, redefinir os valores anteriores do modelo `EQ01` (`scaleMultiplier=1`, `footprintAnchorX=0.52`) e preservar os arquivos e o histórico.
+
+## Entrega Phaser 0.8.10 — sprite pixel art oficial v3
+
+**Status:** integrado na branch de desenvolvimento; publicação condicionada a CI e merge. **Arte aprovada pelo usuário**, homologação em cena diurna/noturna pendente.
+
+- **Arquivo oficial:** `phaser-play/assets/equipment/cat777e_v3.webp` (1100 × 781 px, WebP VP8L lossless RGBA, **622.844 bytes**).
+- **SHA-256:** `bec258a0b4afb512cae047a0a3c10ff7072be2dba5156b826c57fb0ca137a4bd`.
+- **Git blob SHA-1:** `5edb793900159cd0b2a76a07dccd5800aa52cd67`, validado localmente e no GitHub.
+- **Visual aprovado:** pixel art sem marcas CAT/Caterpillar; três quartos pela frente, câmera nivelada à cabine; dois calços amarelos de roda posicionados à frente e atrás da roda traseira visível. Os calços são **representação visual** de bloqueio, não comprovação de procedimento de segurança em campo.
+- **Integridade:** o novo arquivo é o WebP original fornecido/otimizado na conversa, sem quantização ou redução posterior. O `cat777e_v2.webp` e o `cat777e.png` permanecem no repositório como rollback.
+- **Runtime:** `ASSETS.truck` passa a referenciar `cat777e_v3.webp`, modelo lógico `EQ01`, e `scene-map.json` é atualizado. Geometria, materiais, finanças e saves não mudam. Filtragem LINEAR de minificação mantida para textura nativa 1100 px na exibição em torno de 200 px; validar definição no browser antes de mudar para NEAREST.
+- **Cache:** novo arquivo incluído no precache do PWA, identificador v090 e `game.js?v=0.8.10`.
+- **Testes:** hash, tamanho, assinatura VP8L, alfa, dimensão, referência do jogo, geometria dos três boxes e backup, obrigatórios no CI/Pages.
+
+### Verificação visual ainda necessária
+
+- [ ] Abrir o jogo sem override local, confirmar que `cat777e_v3.webp` é carregado ao alocar `EQ01`.
+- [ ] Confirmar leitura do sprite no BOX 1, BOX 2 e BOX 3, sem ultrapassar as bordas ou atravessar o piso.
+- [ ] Conferir os dois calços na roda traseira visível e ausência de marcas identificáveis.
+- [ ] Verificar exibição diurna e noturna, desktop e celular, comportamento com PWA atualizado.
+- [ ] Comparar filtro LINEAR e NEAREST em tamanho de renderização; não ajustar ângulo de câmera sem nova autorização.
+
+**Rollback:** alterar somente `ASSETS.truck` e `scene-map.json.modelPresentation.EQ01.texturePath` para `cat777e_v2.webp`, com revisão do cache. O arquivo v2 permanece versionado.
