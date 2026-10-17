@@ -85,9 +85,9 @@ assert.ok(q.warnings.some(a=>a.id==='critical-'+critical.id&&a.action.kind==='jo
 for(const [i,worker] of s.team.entries())if(i===0||i===1){if(worker.assigned)E.release(s,worker.assigned);assert.equal(E.rest(s,worker.id),null)}
 q=R.compute(s,data);
 assert.equal(q.metrics.resting,2);
-assert.equal(q.metrics.availableCrew,2);
-assert.equal(q.metrics.nominalCrewHH,21);
-assert.equal(q.metrics.boxLimitedHH,21);
+assert.equal(q.metrics.availableCrew,1);
+assert.equal(q.metrics.nominalCrewHH,10.5);
+assert.equal(q.metrics.boxLimitedHH,10.5);
 assert.ok(q.crew[0].resting);
 assert.equal(q.crew[0].canRest,false);
 const before=JSON.stringify(s);
