@@ -628,6 +628,25 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
+## Entrega 0.8.10 — Promoção do sprite pixel art do 777E (P0, aguardando transferência binária)
+
+**Decisão artística:** aprovada pelo usuário. Novo sprite sem marcas CAT, perspectiva frontal em três quartos e calços amarelos posicionados na frente e atrás da roda traseira aparente, representando o bloqueio durante manutenção.
+
+**Arte final verificada fora do repositório:** `cat777e_v2_replacement.webp`, 1100 × 781 px, RGBA/transparente, WebP lossless, 622.844 bytes, SHA-256 `bec258a0b4afb512cae047a0a3c10ff7072be2dba5156b826c57fb0ca137a4bd`. Existe também `cat777e_v2_replacement.png` para edição. Os arquivos foram gerados e verificados no ambiente da conversa.
+
+**Estado real da publicação:** **PENDENTE**. O conector GitHub foi recuperado e a versão 0.8.9 permanece publicada, mas o transporte do binário local para o endpoint GitHub Blob não está habilitado no caminho disponível. O repositório **ainda usa** `phaser-play/assets/equipment/cat777e_v2.webp`, o sprite antigo. Não marcar como substituído, testado ou publicado até confirmar a gravação de um blob com o hash do novo asset.
+
+### Plano de execução ao liberar acesso ao binário
+
+- [ ] Adicionar ao repositório o WebP aprovado no lugar do atual (preferir nova revisão `cat777e_v3.webp` com original preservado para rollback).
+- [ ] Alterar a referência `ASSETS.truck` no `phaser-play/game.js` e manter opção de avaliação local no menu Visual.
+- [ ] Atualizar checks de integridade e tamanho nos testes `scripts/test-777-asset.cjs` e no workflow de deploy, **somente com hash do artefato realmente enviado**.
+- [ ] Atualizar versão de build e cache do Service Worker para forçar renovação de textura no Pages.
+- [ ] Rodar CI, verificar build e publicação de GitHub Pages e testar 777E nos três boxes, dia/noite.
+- [ ] Homologar largura, altura, ponto de apoio das rodas, ausência de marcas e posicionamento dos dois calços. Não substituir o trabalho atual antes disso.
+
+**Alternativa já publicada para prévia:** a v0.8.9 permite `VISUAL → Testar PNG/WebP do 777E` com o arquivo da conversa; o original pode ser restaurado pelo mesmo menu. Essa prévia é local e não equivale à substituição definitiva.
+
 ## Entrega 0.8.9 — Revisão da perspectiva do CAT 777E (P0 / arte)
 
 **Integração:** PR [#28](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/28) integrado na `main`, commit `0deb47c8`. CI de PR aprovado, e o workflow `Deploy P.O.R.C.A.R.I.A. to GitHub Pages` do commit concluiu com sucesso. O sprite de teste precisa ser importado manualmente pelo jogador, pois não foi incorporado ao repositório.
