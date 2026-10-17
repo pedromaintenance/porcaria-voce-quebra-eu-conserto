@@ -11,9 +11,10 @@
   const base=Number(baseScale)>0?Number(baseScale):0.7;
   const multiplier=Math.max(0.25,Number(presentation?.scaleMultiplier)||1);
   const uncapped=Math.min(310*base/w,220*base/h)*multiplier;
-  const bayWidth=Math.max(40,(bay?.hitWorld?.width||300)-8);
-  const ground=bay?.spriteWorld?.groundY??448;
-  const top=bay?.hitWorld?.y??130;
+  const placement=bay?.placementWorld||bay?.hitWorld;
+  const bayWidth=Math.max(40,(placement?.width||300)-6);
+  const ground=bay?.placementWorld?.groundY??bay?.spriteWorld?.groundY??448;
+  const top=bay?.placementWorld?.topY??bay?.hitWorld?.y??130;
   const bayHeight=Math.max(40,ground-top-14);
   const maximumWidth=Math.min(bayWidth,Number(presentation?.maximumWidth)||bayWidth);
   const maximumHeight=Math.min(bayHeight,Number(presentation?.maximumHeight)||bayHeight);
@@ -47,7 +48,7 @@
  // A full-frame photograph requires its own physical bay footprint boundaries.
  // An equipment's track/wheel support-point can be offset from its artwork center.
  function placeMachineInBay(anchorX,renderWidth,bay,presentation={},padding=5){
-  const region=bay?.hitWorld;
+  const region=bay?.placementWorld||bay?.hitWorld;
   if(!region||!(region.width>0))throw new Error('Invalid bay geometry');
   const width=Math.max(1,Number(renderWidth)||1);
   const supportRatio=Math.min(.85,Math.max(.15,Number(presentation.footprintAnchorX)||.5));
@@ -59,7 +60,7 @@
    width,fullyFits:min<=max,contained:x-width/2>=region.x-padding&&x+width/2<=region.x+region.width+padding};
  }
  function placeWorkerInBay(requestedX,bay,displayWidth=54,padding=2){
-  const region=bay?.hitWorld;
+  const region=bay?.placementWorld||bay?.hitWorld;
   if(!region||!(region.width>0))throw new Error('Invalid worker bay');
   const half=Math.max(1,Number(displayWidth)||54)/2;
   const min=region.x+half+padding,max=region.x+region.width-half-padding;
