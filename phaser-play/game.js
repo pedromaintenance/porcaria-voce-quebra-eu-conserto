@@ -732,7 +732,7 @@ class Workshop extends Phaser.Scene{
    const key=MACHINES[modelId];
    if(key&&this.textures.exists(key)){
      const renderKey=this.trimmedEquipment(key),texture=this.textures.get(renderKey);
-     texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
+     texture.setFilter(modelId==='EQ01' ? Phaser.Textures.FilterMode.LINEAR : Phaser.Textures.FilterMode.NEAREST);
      const src=texture.getSourceImage();
      const plan=window.PORCARIA_LAYOUT.equipmentSize(src.width,src.height,scale,MODEL_PRESENTATION[modelId]||{},bay);
      // The requested offset is preserved in scene-map.json; clipping protection is visual only.
