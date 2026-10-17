@@ -1,0 +1,26 @@
+name: P.O.R.C.A.R.I.A. — Phaser CI
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  phaser-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate JavaScript syntax
+        run: node --check engine.js && node --check phaser-play/game.js && node --check phaser-play/readiness.js && node --check scripts/test-readiness-navigation.cjs
+      - name: Full Phaser regression suite
+        run: |
+          node scripts/smoke-phaser.cjs
+          node scripts/test-shift-brief.cjs
+          node scripts/test-planning.cjs
+          node scripts/test-weekly.cjs
+          node scripts/test-shifts-productivity.cjs
+          node scripts/test-scene-profiles.cjs
+          node scripts/test-777-asset.cjs
+          node scripts/test-night-workshop.cjs
+          node scripts/test-readiness.cjs
+          node scripts/test-readiness-navigation.cjs

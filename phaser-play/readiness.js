@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. — Quadro de prontidão da oficina v0.8.5.
+/* P.O.R.C.A.R.I.A. — Quadro de prontidão da oficina v0.8.6.
  * Diagnóstico consultivo, determinístico, sem alterar o save.
  * Limiares são regras de jogo, NÃO critérios de saúde ocupacional.
  */
@@ -89,7 +89,7 @@
      .reduce((total,o)=>total+num(o.qty),0):0;
     const transitNote=inTransit>0?' · '+inTransit+' un. em trânsito (sem liberação antecipada).':'';
     push('box-'+b.id,'blocked','BOX '+(b.id+1)+' · '+b.label,
-      b.jobId+' · '+b.blocker+transitNote,{kind:'store',item:b.stockItem,label:'VER INSUMO'});
+      b.jobId+' · '+b.blocker+transitNote,{kind:'store',item:b.stockItem,jobId:b.jobId,label:'VER INSUMO'});
    }else if(b.kind==='unknown'){
     push('box-'+b.id,'blocked','BOX '+(b.id+1)+' · REVISAR OS',
       b.jobId+' está vinculada a serviço desconhecido.',{kind:'job',jobId:b.jobId,label:'ABRIR OS'});

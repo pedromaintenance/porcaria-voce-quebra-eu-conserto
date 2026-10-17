@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.5 — quadro consultivo de prontidão operacional, HH úteis, alertas de fadiga e bloqueios de OS; QA no navegador pendente.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.6 — consulta de insumos vinculada à OS, diagnóstico sem antecipação de peças e alertas expansíveis; testes automatizados no PR, QA visual e interativo ainda pendentes.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -526,6 +526,37 @@ Na versão 0.8.1, `hitWorld` controlava simultaneamente o clique, a largura máx
 
 **Critério de aceite:** leitura consistente e acionável do estado da oficina, sem prometer produtividade ou prever falhas; gestores conseguem identificar atenção de equipe e bloqueios com poucos cliques, sem regressões de save e cena.
 
+## Entrega 0.8.6 — Consulta de OS, estoque e decisões rastreáveis (P0)
+
+**Status:** implementado na branch `feature/phaser-stock-roundtrip-v086`. Publicar somente após testes do PR e validar visualmente no Pages.
+
+### Problema resolvido
+
+A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclusão das seis etapas de diagnóstico, embora a visão semanal evitasse revelar peças não confirmadas. Além disso, atalhos entre bloqueios e Almoxarifado não preservavam a OS que originou a consulta, e a Gestão limitava visualmente a lista aos seis primeiros alertas.
+
+### Implementação
+
+- [x] **Diagnóstico coerente:** antes da etapa 6, a prontidão da OS apresenta "Material a confirmar no diagnóstico"; a peça específica e o botão de consulta só aparecem após confirmar o diagnóstico. O motor mantém seus requisitos e a compra direta na OS não muda.
+- [x] **Navegação OS → estoque → OS:** o botão de ferramental abre a ferramenta exata, e o botão de peça confirmada abre o material exato; a origem fica somente na memória da interface (não no save). O Almoxarifado exibe "Voltar à OS" e valida se ela ainda está aberta.
+- [x] **Origem preservada nos alertas e briefing:** o bloqueio de peça/ferramenta do box traz o identificador da OS de origem. Atalhos de planejamento sem OS única continuam sem retorno associado.
+- [x] **Sem consultas com efeitos colaterais:** abrir o Almoxarifado, filtrar um material, expandir um alerta e voltar à OS não alteram estoque, compras, turnos ou energia; operações de compra dependem de clique explícito.
+- [x] **Alertas acessíveis:** os seis primeiros permanecem no quadro resumido, mas os demais são exibidos por controle "Mostrar mais" com `aria-expanded`; não são descartados.
+- [x] **PWA:** recursos `readiness.js` e `game.js` têm querystring 0.8.6; cache service-worker versionado e inclui o módulo de prontidão.
+- [x] **Automação:** teste `scripts/test-readiness-navigation.cjs`, atualização dos testes legados presos ao cache 0.8.5, suíte obrigatória de deploy e workflow de testes em pull requests.
+- [x] **Sem alterações no estado persistente:** nenhum campo novo no JSON do save. Os fundos, assets, hitboxes dos três boxes e motor da manutenção permanecem inalterados.
+
+### Homologação necessária no GitHub Pages
+
+- [ ] Selecionar OS no início de jogo e verificar que **não aparece o código/nome da peça ainda não diagnosticada** na área de prontidão; verificar ferramental.
+- [ ] Abrir ferramental da OS e confirmar filtro do código, identificação da OS e retorno exato à ordem original.
+- [ ] Concluir o diagnóstico de uma OS; verificar que agora a peça e a opção "Ver peça confirmada" aparecem, navegar ao Almoxarifado e retornar.
+- [ ] A partir de Gestão e Briefing, abrir alerta de box bloqueado e confirmar que o botão "Voltar à OS" leva ao serviço correto, mesmo que outra OS estivesse previamente selecionada.
+- [ ] Gerar sete ou mais alertas, expandir e recolher; verificar que alertas adicionais são legíveis em desktop e celular.
+- [ ] Confirmar que consultar insumo não dispara pedido, compra de ferramenta, passagem de turno ou alterações de save.
+- [ ] Verificar comportamento de modal, telas pequenas, modo PWA/offline e cenas diurna/noturna. Teste físico/visual **não está coberto** pelos testes Node.
+
+**Critério de aceite:** cada consulta mantém a referência do serviço; o diagnóstico não revela a peça antes da investigação; todos os alertas são acessíveis, sem regressões nas rotinas da oficina.
+
 ## Entrega 0.8 — Gestão avançada de manutenção (P1)
 
 - [x] **Etapa inicial (v0.7.8):** priorização por criticidade, idade da OS e bloqueio de insumos, com pontuação de jogo explícita. **Pendente:** modelagem calibrável de risco e impacto operacional.
@@ -557,7 +588,7 @@ Na versão 0.8.1, `hitWorld` controlava simultaneamente o clique, a largura máx
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.5
+## Plano de validação para a versão 0.8.6
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -606,6 +637,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.3:** substitui o sprite do 777E por arte frontal 3/4 sem logos e com fundo transparente (WebP + alpha), calibra escala/footprint e minificação, arquiva original PNG e mantém asset anterior como backup; adiciona manifesto, SHA-256 e testes obrigatórios no deploy. **QA visual pendente.**
 - **0.8.4:** arquivo original noturno otimizado publicado no repositório (AVIF de 1976×796, SHA-256 auditado), alternância automática por turno com perfil geométrico apropriado, origem exibida no menu Visual, personalizações opcionais e restauração do cenário oficial; testes binários e regressão em CI. **QA visual pendente.**
 - **0.8.5:** quadro consultivo de prontidão, capacidade nominal de 10,5 HH por mecânico e gargalo de três boxes, condição física/mental e moral, alertas de bloqueios e OS críticas, links de ação manual e resumo no briefing; testes de pureza e limites integrados ao Pages. **QA interativo pendente.**
+- **0.8.6:** retira spoiler da peça no detalhe antes do diagnóstico, cria consulta de insumos vinculada à OS com retorno validado, expande alertas além dos seis principais, mantém toda ação manual, atualiza cache e testes de PR/deploy; **QA interativo e visual pendente.**
 
 ### Organização recomendada
 
