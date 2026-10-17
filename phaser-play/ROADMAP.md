@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.12 — microajuste visual do BOX 3 (−5 px) e sombras de contato elevadas nos cenários diurno/noturno; CI e GitHub Pages aprovados, QA visual pendente.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.13 — cenário diurno original 1976×796 sem recorte usando exatamente a geometria fullFrame do noturno; testes automatizados e QA visual pendentes.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -628,6 +628,32 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
+## Entrega 0.8.13 — Unificar enquadramento original dia/noite (P0 / visual)
+
+**Solicitação:** o jogador percebeu que o dia estava ampliado/recortado, enquanto a noite mostrava a imagem completa. Enviou novamente a **imagem original de entardecer em 1976 × 796 px** e rejeitou corretamente a geração de uma arte substituta. O dia deve preservar integralmente essa arte e usar o mesmo `fullFrame` da noite.
+
+### Mudanças implementadas
+
+- [x] **Arte certa, sem geração:** `Oficina Industrial ao Entardecer (2).png` (1976 × 796 px, SHA-256 `98bba3ae2ae10a150ea0365c38e4b3ce7b56369b083f047779a6dc5b96b541d9`) enviada pelo usuário, sem redesenhar ou recortar. PNG convertido somente em AVIF otimizado (qualidade 55) para Pages.
+- [x] **Binário versionado:** `phaser-play/assets/oficina-diurna-fullframe.avif`, 181.346 bytes, 1976 × 796 px, SHA-256 `31453309223d11800e78276edd2e02b641a82eb4a2ffb52982dbc766e0a003c7`. O asset original de dia recortado (`oficina-base.avif`) continua no repositório como fallback.
+- [x] **Enquadramento idêntico:** `repoDayWorkshopBG` usa `fullFrame` no turno A; `repoNightWorkshopBG` já usava o mesmo `fullFrame` no turno B. Não há `crop`, `zoom` ou `stretch` que diferencie o perfil. O `setBackdrop()` desenha a fonte integral.
+- [x] **Geometria unificada:** ambos usam o perfil completo de `scene-map.json`, incluindo BOX 3 deslocado 5 px à esquerda, sombras recalibradas e as mesmas coordenadas do piso, HUD e zonas clicáveis. O perfil antigo `cropped` continua disponível **somente se falhar o carregamento AVIF diurno**, sem quebrar navegadores sem suporte.
+- [x] **Substituições manuais preservadas:** opção Visual de teste de cenário global e substituição do noturno ainda têm precedência sobre os respectivos fundos oficiais. Saves, mecânica, equipe e máquinas não foram modificados.
+- [x] **Rastreabilidade de asset:** manifesto `phaser-play/assets/OFICINA-DIURNA.md` registra fonte, dimensão, tamanho, hash e limite de fidelidade da codificação com perdas; geração artística anterior descartada.
+- [x] **QA de integração automatizado:** `scripts/test-day-night-fullframe.cjs` valida os dois AVIFs, SHA-256, dimensões originais, preload, perfil, ausência de crop e cache PWA; exigido em PR e deploy.
+- [x] **Cache:** build Phaser v0.8.13, Service Worker v093 e pré-cache dos dois cenários oficiais, invalidando a versão anterior.
+
+### Homologação pendente no Pages
+
+- [ ] Abrir um turno A e verificar que são visíveis todas as laterais do asset original, sem ampliação comparativamente ao turno B.
+- [ ] Avançar A → B → A, comparar posição das placas BOX 1/2/3, piso, equipamentos e mecânicos, confirmando ausência de salto de escala e de translação das hitboxes.
+- [ ] Conferir alinhamento do 777E com o piso em ambos turnos e a posição dos calços no equipamento bloqueado.
+- [ ] Testar desktop e Android (PWA instalada), atualização da imagem após troca de cache e funcionamento offline.
+- [ ] Testar backup/fallback legado apenas caso AVIF não carregue, sem exigir recorte nos navegadores com suporte.
+- [ ] Checar cenário personalizado/alternativo e restaurar o fundo oficial.
+
+**Critério de aceite:** alternar dia/noite muda somente a arte e iluminação, sem modificar a câmera nem o enquadramento. A imagem diurna é o original do usuário, não uma nova geração. Validação humana no navegador permanece necessária.
+
 ## Entrega 0.8.12 — Composição BOX 3 e sombras de contato (P0 / visual)
 
 **Publicação:** [PR #31](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/31) integrado à `main` no commit `fa7f4a2`. Todos os testes Node/CI, incluindo `test-bay-contact.cjs`, passaram; [GitHub Pages workflow #39066953314](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39066953314) concluído com sucesso. **Comparação visual no navegador, especialmente rodas/sombras de dia e noite, continua pendente.**
@@ -783,7 +809,7 @@ Sem alteração em `engine.js`, saves, códigos de cenário, economia, energia, 
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.12
+## Plano de validação para a versão 0.8.13
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -839,6 +865,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.10:** sprite oficial v3 em WebP lossless/alpha, pixel art aprovado sem logos e com calços na roda traseira visível; versão v2 preservada, chave de preview local renovada, cache PWA atualizado, arquivo/hash e geometria testados, manifesto atualizado. **QA visual do Pages pendente.**
 - **0.8.11:** histórico buscável de OS concluídas em Indicadores, dossiê individual com diagnóstico, autoria, aprendizado e indicadores reais do save; nova suíte de regressão e cache. **QA interativo e visual pendente.**
 - **0.8.12:** BOX 3 deslocado 5 px à esquerda em ambos os perfis geométricos; sombras principal/secundária sobem 3 px sem mudar o piso; testes de clamp, sprites, hitbox, HUD e PWA. **QA visual pendente.**
+- **0.8.13:** fundo diurno original completo 1976×796 derivado para AVIF, junto ao noturno no perfil fullFrame; fallback recortado preservado, hash e proveniência documentados e nova suíte dia/noite no CI. **QA visual pendente.**
 
 ### Organização recomendada
 

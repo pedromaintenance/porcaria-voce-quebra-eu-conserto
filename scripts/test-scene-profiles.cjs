@@ -76,11 +76,11 @@ assert.ok(script.includes('this.bayZones?.forEach(z=>z.destroy())'),'retire old 
 assert.ok(script.includes('this.bayZones=this.createBayZones()'),'recreate correct clickable zone');
 assert.ok(script.includes('const activeBays=this.activeBayLayout||BAY_LAYOUT'),'render with active profile');
 assert.ok(script.includes('activeBays.forEach('),'machines, mechanics and progress all share same profile');
-assert.ok(script.includes("key==='repoNightWorkshopBG'?'fullFrame':'cropped'"),'night/day choose correct mapping');
+assert.ok(script.includes("key==='repoWorkshopBG'?'cropped':'fullFrame'"),'both official day/night use fullFrame, cropped legacy fallback only');
 assert.ok(script.includes("scene.setBackdrop(img,'fullFrame')"),'manual full images use complete-image geometry');
 assert.ok(script.includes('ctx.drawImage(img,0,0,width,height,0,0,canvas.width,canvas.height)'),'background displayed without legacy hardcoded crop');
 assert.ok(!script.includes('if(aspect>2.42'),'remove fragile aspect-ratio decision');
-assert.ok(html.includes('game.js?v=0.8.12'),'new JS invalidates cache');
+assert.ok(html.includes('game.js?v=0.8.13'),'new JS invalidates cache');
 assert.ok(html.includes('layout-math.js?v=0.8.2'),'new geometry module invalidates cache');
 assert.ok(script.includes('const footer=b.footerWorld'),'footer layout comes from its own geometry');
 assert.ok(script.includes("const ground=placementWorld?.groundY"),'contact shadow uses raised floor');
