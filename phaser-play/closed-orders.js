@@ -32,7 +32,7 @@
     reworkHours:safeNum(j.reworkHours),
     blockedShifts:safeNum(j.blockedShifts),
     toolWait:safeNum(j.toolWait),
-    firstTime:j.firstTime===true,
+    firstTime:typeof j.firstTime==='boolean'?j.firstTime:null,
     diagnosticCount:Array.isArray(j.diagnosticLog)?j.diagnosticLog.length:null
    };
   });
@@ -48,7 +48,7 @@
    +(r.rows.length?'<div class="closedLedgerRows">'+r.rows.map(j=>
     '<button type="button" class="closedLedgerItem" data-closed-order="'+esc(j.id)+'">'
     +'<span class="closedLedgerHeader"><strong>'+esc(j.title)+' · '+esc(j.id)+'</strong>'
-    +'<small>'+esc(j.firstTime?'✓ Sem retrabalho registrado':'◷ Houve erro ou retrabalho')+'</small></span>'
+    +'<small>'+esc(j.firstTime===true?'✓ Sem retrabalho registrado':j.firstTime===false?'◷ Houve erro ou retrabalho':'Classificação sem registro')+'</small></span>'
     +'<span>'+esc(j.caseTitle)+'</span>'
     +'<small>Tempo decorrido: '+(j.elapsedHours===null?'—':fmt(j.elapsedHours)+' h')+
     ' · Mão de obra: '+(j.laborHours===null?'—':fmt(j.laborHours)+' HH')+
@@ -63,7 +63,7 @@
    +'<section class="closedDossier"><div class="closedDossierHeader"><small>DOSSIÊ TÉCNICO · ORDEM ENCERRADA</small>'
    +'<h3>'+esc(j.title)+' · '+esc(j.id)+'</h3><p>'+esc(j.caseTitle)+'</p><p>'+esc(j.report)+'</p>'
    +'<small>Encerramento no turno '+(j.finishedTick===null?'não registrado':j.finishedTick)+
-   ' · Diagnóstico '+j.stage+'/6 · '+(j.firstTime?'Sem retrabalho registrado':'Com erro ou retrabalho registrado')+'</small></div>'
+   ' · Diagnóstico '+j.stage+'/6 · '+(j.firstTime===true?'Sem retrabalho registrado':j.firstTime===false?'Com erro ou retrabalho registrado':'Classificação não registrada')+'</small></div>'
    +'<div class="closedMetrics">'
    +metric('Tempo decorrido',j.elapsedHours===null?'—':fmt(j.elapsedHours),'horas corridas')
    +metric('Esforço contabilizado',j.laborHours===null?'—':fmt(j.laborHours),'HH do serviço')
