@@ -17,8 +17,8 @@ assert.ok(phaserHtml.includes('data-panel="management"'),'painel de gestão inte
 assert.ok(phaserHtml.includes('data-panel="shift"'),'briefing pré-turno usa o mesmo overlay sem alterar os boxes');
 assert.ok(phaserScript.includes('function drawManagement(k)'),'métricas da gestão vêm da simulação');
 assert.ok(phaserScript.includes('window.PORCARIA_READINESS.compute(state,data)'),'gestão/briefing usam cálculo puro do quadro');
-assert.ok(phaserHtml.includes('readiness.js?v=0.8.6'),'módulo prontidão carregado');
-assert.ok(phaserHtml.indexOf('readiness.js?v=0.8.6')<phaserHtml.indexOf('game.js?v=0.8.6'),'prontidão entra antes do Phaser');
+assert.ok(phaserHtml.includes('readiness.js?v=0.8.7'),'módulo prontidão carregado');
+assert.ok(phaserHtml.indexOf('readiness.js?v=0.8.7')<phaserHtml.indexOf('game.js?v=0.8.7'),'prontidão entra antes do Phaser');
 assert.ok(phaserHtml.includes('.readinessBays'),'novo quadro tem CSS responsivo');
 
 assert.ok(phaserScript.includes('function drawShiftBrief()'),'briefing é renderizado com dados atuais');
@@ -48,7 +48,7 @@ assert.ok(phaserHtml.includes('overflow-x:auto'),'navegação responsiva roláve
 assert.ok(phaserScript.includes('function closeSceneMenu()'),'menu de cenário pode ser fechado');
 assert.ok(phaserScript.includes("sceneMenuBtn').addEventListener('click'"),'controle de abertura do menu presente');
 assert.ok(phaserScript.includes("if(!$('sceneMenu').hidden)"),'Escape fecha o dropdown antes do modal');
-assert.ok(phaserHtml.includes('game.js?v=0.8.6'),'script principal tem cache versionado');
+assert.ok(phaserHtml.includes('game.js?v=0.8.7'),'script principal tem cache versionado');
 assert.ok(phaserHtml.includes('shift-brief.js?v=0.7.7'),'módulo de briefing carregado junto ao jogo');
 assert.ok(phaserHtml.includes('planning.js?v=0.7.8'),'módulo do planejamento carregado no Pages');
 assert.ok(phaserHtml.includes('weekly.js?v=0.7.9'),'módulo semanal do PCM carregado');
