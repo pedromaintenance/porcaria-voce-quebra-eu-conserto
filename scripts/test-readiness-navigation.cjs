@@ -42,6 +42,6 @@ assert.ok(js.includes("extra.hidden=!extra.hidden"),'controle expansível não m
 assert.ok(html.includes('#readinessMore[hidden]{display:none!important}'),'alertas ocultos não vazam pelo CSS');
 assert.ok(html.includes('aria-controls="readinessMore"')===false,'controle é gerado pelo JS');
 assert.ok(html.includes('readiness.js?v=0.8.8')&&html.includes('game.js?v=0.8.8'),'cache atualizado');
-assert.ok(sw.includes('porcaria-vqec-20261017-v087'));
+assert.ok(sw.includes('porcaria-vqec-20261017-v088'));
 assert.ok(sw.includes("'./phaser-play/readiness.js'"),'módulo consultivo entra no cache PWA');
 console.log('OK: OS↔estoque, peça após diagnóstico, seis+ alertas acessíveis, cache atualizado.');
