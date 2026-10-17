@@ -1,5 +1,5 @@
 {
-  "version": "0.7.6",
+  "version": "0.8.1",
   "reference": {
     "file": "Oficina Industrial ao Entardecer.png",
     "width": 1976,
@@ -165,7 +165,10 @@
     "clickAreas": "Rectangles in world coordinates, no DOM click-through",
     "visualAnchoring": "Os deslocamentos afetam apenas spriteWorld, workerWorld e a sombra; hitWorld, progressWorld e labelWorld permanecem imóveis para manter a interação e a identificação dos boxes.",
     "cameraClipProtection": "O renderer limita o centro dos sprites e mecânicos aos limites da câmera sem alterar as posições nominais no JSON.",
-    "visualCalibration": "visualCalibrationX corrige deslocamento desejado mesmo em sprites anteriormente travados no limite do viewport: aplicar clamp sobre posição anterior (spriteWorld.x - visualCalibrationX), somar delta e reaplicar clamp; não deslocar hitWorld, progressWorld ou labelWorld."
+    "visualCalibration": "visualCalibrationX corrige deslocamento desejado mesmo em sprites anteriormente travados no limite do viewport: aplicar clamp sobre posição anterior (spriteWorld.x - visualCalibrationX), somar delta e reaplicar clamp; não deslocar hitWorld, progressWorld ou labelWorld.",
+    "backgroundProfileSelection": "preCropped = background asset already cropped to 1350×563. fullFrame = original workshop image in full 1976×796 (or aspect-preserving similar image) — never crop this source with legacy SCENE_REFERENCE.crop.",
+    "interaction": "Each layout profile owns hitWorld, progressWorld, spriteWorld and workerWorld, and must rebuild pointer zones upon profile switch.",
+    "worldPlacement": "fullFrame: clamp the full rendered sprite to corresponding physical bay limits after accounting for footprint anchor. cropped: retain exact v0.7.6 calibration that was previously accepted."
   },
   "assets": {
     "notes": "v0.7.6: BOX 1 +20 px (x427; mecânicos 330/559), BOX 2 -6 px (x842; mecânicos 719/971), BOX 3 preservado (x1223; mecânicos 1102/1345). A calibração de borda garante movimento visível no BOX 1 sem cortar sprites. HUD, hotspots e posição vertical preservados."
@@ -184,55 +187,208 @@
       "label": "CAT 777E",
       "scaleMultiplier": 1,
       "maximumWidth": 265,
-      "maximumHeight": 225
+      "maximumHeight": 225,
+      "footprintAnchorX": 0.52
     },
     "EQ02": {
       "label": "CAT 6030",
       "scaleMultiplier": 2,
       "maximumWidth": 272,
-      "maximumHeight": 282
+      "maximumHeight": 282,
+      "footprintAnchorX": 0.64
     },
     "EQ03": {
       "label": "CAT 395",
       "scaleMultiplier": 1,
       "maximumWidth": 260,
-      "maximumHeight": 234
+      "maximumHeight": 234,
+      "footprintAnchorX": 0.57
     },
     "EQ04": {
       "label": "CAT 336GC",
       "scaleMultiplier": 0.95,
       "maximumWidth": 256,
-      "maximumHeight": 228
+      "maximumHeight": 228,
+      "footprintAnchorX": 0.57
     },
     "EQ05": {
       "label": "Sandvik DR410i",
       "scaleMultiplier": 3,
       "maximumWidth": 252,
-      "maximumHeight": 310
+      "maximumHeight": 310,
+      "footprintAnchorX": 0.54
     },
     "EQ06": {
       "label": "Sandvik DI650i",
       "scaleMultiplier": 2.4,
       "maximumWidth": 248,
-      "maximumHeight": 302
+      "maximumHeight": 302,
+      "footprintAnchorX": 0.54
     },
     "EQ07": {
       "label": "CAT D9",
       "scaleMultiplier": 1.12,
       "maximumWidth": 258,
-      "maximumHeight": 230
+      "maximumHeight": 230,
+      "footprintAnchorX": 0.5
     },
     "EQ08": {
       "label": "CAT 966",
       "scaleMultiplier": 1,
       "maximumWidth": 258,
-      "maximumHeight": 230
+      "maximumHeight": 230,
+      "footprintAnchorX": 0.5
     },
     "EQ09": {
       "label": "CAT 16",
       "scaleMultiplier": 1,
       "maximumWidth": 258,
-      "maximumHeight": 230
+      "maximumHeight": 230,
+      "footprintAnchorX": 0.5
+    }
+  },
+  "backgroundProfiles": {
+    "cropped": {
+      "label": "Oficina HQ pré-recortada",
+      "description": "Asset padrão oficina-base.avif, 1350×563: preservar a geometria v0.7.6 homologada. Usa desenho direto da imagem, sem recorte adicional.",
+      "mode": "preCropped",
+      "bays": "base"
+    },
+    "fullFrame": {
+      "label": "Oficina completa (dia/noite)",
+      "description": "Imagem original com os três letreiros na composição completa; deve ser mostrada por inteiro. Coordenadas independentes alinhadas aos letreiros e faixas no piso; QA visual pendente.",
+      "mode": "fullFrame",
+      "sourceReference": {
+        "width": 1976,
+        "height": 796
+      },
+      "sourceLandmarks": {
+        "boxSignCentersX": [
+          540,
+          950,
+          1390
+        ],
+        "floorY": 710
+      },
+      "bays": [
+        {
+          "id": 0,
+          "label": "BOX 1",
+          "hitWorld": {
+            "x": 495,
+            "y": 130,
+            "width": 233,
+            "height": 356
+          },
+          "spriteWorld": {
+            "x": 611,
+            "y": 448,
+            "scale": 0.7,
+            "groundY": 448
+          },
+          "workerWorld": [
+            {
+              "x": 513,
+              "y": 448,
+              "facing": "right"
+            },
+            {
+              "x": 708,
+              "y": 448,
+              "facing": "left"
+            }
+          ],
+          "labelWorld": {
+            "x": 502,
+            "y": 447
+          },
+          "progressWorld": {
+            "x": 503,
+            "y": 217,
+            "width": 215
+          },
+          "compositionOffsetX": 0,
+          "visualCalibrationX": 0
+        },
+        {
+          "id": 1,
+          "label": "BOX 2",
+          "hitWorld": {
+            "x": 729,
+            "y": 130,
+            "width": 235,
+            "height": 356
+          },
+          "spriteWorld": {
+            "x": 846,
+            "y": 448,
+            "scale": 0.7,
+            "groundY": 448
+          },
+          "workerWorld": [
+            {
+              "x": 748,
+              "y": 448,
+              "facing": "right"
+            },
+            {
+              "x": 945,
+              "y": 448,
+              "facing": "left"
+            }
+          ],
+          "labelWorld": {
+            "x": 736,
+            "y": 447
+          },
+          "progressWorld": {
+            "x": 738,
+            "y": 217,
+            "width": 215
+          },
+          "compositionOffsetX": 0,
+          "visualCalibrationX": 0
+        },
+        {
+          "id": 2,
+          "label": "BOX 3",
+          "hitWorld": {
+            "x": 970,
+            "y": 130,
+            "width": 250,
+            "height": 356
+          },
+          "spriteWorld": {
+            "x": 1094,
+            "y": 448,
+            "scale": 0.7,
+            "groundY": 448
+          },
+          "workerWorld": [
+            {
+              "x": 989,
+              "y": 448,
+              "facing": "right"
+            },
+            {
+              "x": 1200,
+              "y": 448,
+              "facing": "left"
+            }
+          ],
+          "labelWorld": {
+            "x": 978,
+            "y": 447
+          },
+          "progressWorld": {
+            "x": 980,
+            "y": 217,
+            "width": 230
+          },
+          "compositionOffsetX": 0,
+          "visualCalibrationX": 0
+        }
+      ]
     }
   }
 }
