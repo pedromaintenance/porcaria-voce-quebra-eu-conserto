@@ -7,7 +7,12 @@
     ['Hidráulica','hidraulica'],['Motores','motor'],['Elétrica','eletrica'],
     ['Rodante','rodante'],['Perfuratrizes','perfuracao'],['Soldagem','solda'],['Multidisciplinar','geral']
   ];
-  const PERSONAS=[['Lia','👩🏽‍🔧'],['Davi','🧑🏻‍🔧'],['Rita','👩🏾‍🏭'],['Nico','🧑🏽‍🏭'],['Joana','👩🏻‍🔧'],['Zeca','👨🏿‍🔧'],['Ari','👩‍🔧'],['Mauro','👨‍🏭'],['Bia','👩🏽‍🏭'],['Theo','🧑‍🔧']];
+  // Identidades oficiais do jogo; contratações futuras são genéricas até receberem arte.
+  const INITIAL_TEAM=Object.freeze([
+    {name:'Isaias',avatar:'⚡',role:'eletrica',specialty:'Eletricista',sprite:'isaias'},
+    {name:'Pedro',avatar:'🧯',role:'geral',specialty:'Brigadista',sprite:'pedro'},
+    {name:'Geovane',avatar:'📋',role:'geral',specialty:'Instrutor',sprite:'geovane'}
+  ]);
   const clamp=(v,l=0,h=100)=>Math.min(h,Math.max(l,Math.round(v*10)/10));
   const SHIFT_HOURS=12, DDS_HOURS=0.5, MEAL_HOURS=1;
   const EFFECTIVE_HOURS=SHIFT_HOURS-DDS_HOURS-MEAL_HOURS;
@@ -46,13 +51,33 @@
   const employee=(s,id)=>s.team.find(x=>x.id===id);
   const job=(s,id)=>s.jobs.find(x=>x.id===id);
   const timeLabel=(s)=>`Dia ${s.day} • ${s.shift===0?'Turno A (dia)':'Turno B (noite)'} · 12h`;
-  function newMechanic(s,rng,role){
-    const [name,avatar]=PERSONAS[(s.nextPerson-1)%PERSONAS.length];
-    const spec=role||one(ROLES,rng)[1];
-    const m={id:`M${s.nextPerson++}`,name,avatar,role:spec,
+  function newMechanic(s,rng,identity=null){
+    const profile=identity||{name:'Mecânico',avatar:'🔧',role:one(ROLES,rng)[1],specialty:'Mecânico',sprite:null};
+    const m={id:`M${s.nextPerson++}`,name:profile.name,avatar:profile.avatar,role:profile.role,
+      specialty:profile.specialty,sprite:profile.sprite,
       skill:Math.round(54+rnd(rng)*35),mental:Math.round(72+rnd(rng)*25),
       physical:Math.round(70+rnd(rng)*27),morale:Math.round(74+rnd(rng)*20),
       assigned:null,restAt:null,completed:0,tenure:0};return m;
+  }
+  function normalizeRoster(s){
+    // Migração não destrutiva: preserva IDs, progresso, OS atribuídas e contratações.
+    // Saves legados podem ter um quarto profissional original; ele vira genérico.
+    if(!s||!Array.isArray(s.team))return s;
+    // Quarto personagem das campanhas antigas não era contratado: sai da equipe
+    // caso esteja ocioso. Se estiver numa OS, permanece genérico para não perder o serviço.
+    s.team=s.team.filter(m=>m.id!=='M4'||m.name!=='Nico'
+      ||!!m.assigned||s.jobs?.some(j=>j.assigned===m.id));
+    for(const m of s.team){
+      const index=/^M[123]$/.test(m.id)?Number(m.id.slice(1))-1:-1;
+      const identity=INITIAL_TEAM[index];
+      if(identity){
+        m.name=identity.name;m.avatar=identity.avatar;m.specialty=identity.specialty;
+        m.role=identity.role;m.sprite=identity.sprite;
+      }else{
+        m.name='Mecânico';m.avatar='🔧';m.specialty='Mecânico';m.sprite=null;
+      }
+    }
+    return s;
   }
   function options(d,sc,seed){
     const rng=mulberry32(seed);
@@ -89,7 +114,7 @@
       bays:3,closed:false};
     for(const [id,v] of Object.entries(data.items))s.stock[id]=v.initial;
     for(const [id,v] of Object.entries(data.tools))s.tools[id]=v.initial;
-    ['hidraulica','rodante','motor','eletrica'].forEach(r=>s.team.push(newMechanic(s,rng,r)));
+    INITIAL_TEAM.forEach(profile=>s.team.push(newMechanic(s,rng,profile)));
     spawn(s,data,3,rng);
     msg(s,'Oficina aberta! Separe os boxes, inspecione a fila e não condene uma peça sem diagnóstico.','ok');
     return s;
@@ -360,7 +385,7 @@
       pendingMaterials:s.jobs.filter(j=>j.status==='material').length, pendingTools:s.jobs.filter(j=>j.status==='ferramenta').length};
   }
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
-  return {create,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
+  return {create,normalizeRoster,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
     SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
     model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
 });

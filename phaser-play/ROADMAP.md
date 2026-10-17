@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.13 — cenário diurno original 1976×796 sem recorte usando exatamente a geometria fullFrame do noturno; CI e GitHub Pages aprovados, QA visual pendente.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.14 — sprites dos três profissionais oficiais, equipe inicial de três e Mecânicos genéricos sem sprite; testes de publicação/QA visual pendentes.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -628,6 +628,35 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
+## Entrega 0.8.14 — Equipe oficial e sprites por profissional (P0 / personagens)
+
+**Solicitação:** substituir as imagens antigas de mecânicos pelas três cartelas de poses enviadas pelo jogador, deixar somente **Isaias (Eletricista), Pedro (Brigadista) e Geovane (Instrutor, uniforme amarelo)** na equipe inicial e permitir contratações futuras com o nome **“Mecânico”**, sem sprite, até receberem novos assets.
+
+### Entrega implementada
+
+- [x] **Arquivos oficiais versionados:** três atlas WebP transparentes `assets/characters/{isaias,pedro,geovane}-4poses.webp`, 1160 × 1244 px, quadros 580 × 622 px, quatro poses. Derivação exclusiva das cartelas encaminhadas pelo usuário; sem nova geração ou alteração criativa.
+- [x] **Correspondência de identidades:** Isaias = roupa cinza/capacete amarelo, `eletrica`; Pedro = uniforme vermelho de brigadista, `geral`; Geovane = roupa amarela de instrutor, `geral`. O código separa **identidade/função visual** de especialidade mecânica simulada.
+- [x] **Equipe inicial reduzida:** M1 Isaias, M2 Pedro, M3 Geovane; três funcionários e três boxes. A capacidade nominal inicial passa a 31,5 HH úteis/turno (3 × 10,5), coerente com as regras já existentes.
+- [x] **Contratação genérica:** novos funcionários recebem `name:'Mecânico'`, `sprite:null`, ID próprio e especialidade simulada; custam R$ 1.050 e 18 de energia mental como antes. A interface os identifica pelo ID para evitar confusão e renderiza somente um rótulo textual no box, sem personagem.
+- [x] **Uma pessoa real por OS:** removida alternância artificial Lia/Rafael por slot; o box agora consulta o mecânico realmente alocado em `j.assigned` e usa somente seu conjunto de quatro poses (ou nome para genérico). A animação alterna frames da cartela; não cria mais dois mecânicos para uma única OS.
+- [x] **Equipe:** cards exibem retrato oficial e função com número identificador; contratados exibem “SEM SPRITE”. Ordem de Serviço e menu de alocação passam a distinguir contratados com nomes iguais usando ID.
+- [x] **Migração sem romper campanha:** `normalizeRoster` atualiza M1/M2/M3 no save antigo, preservando habilidade, energia, OS e materiais; antigo M4/Nico ocioso é retirado por se tratar de funcionário inicial legado; se ele ainda estiver atribuído a uma OS, permanece como Mecânico sem sprite para não cancelar trabalho. Contratados existentes permanecem genéricos. A versão do save é preservada.
+- [x] **PWA/cache:** versão de `game.js?v=0.8.14`, `sw.js` v094, pré-cache dos três WebP; assets Lia/Rafael não são mais solicitados, mas permanecem no Git para referência/rollback.
+- [x] **Validação técnica:** `scripts/test-worker-roster.cjs` confere novo time, contratações, IDs, save legado/OS em execução, hash, dimensões e 2×2 WebP, integração no Phaser; suíte de CI e deploy exige integridade dos três assets.
+- [x] **Documentação de proveniência:** `phaser-play/assets/characters/ROSTER.md` detalha cartelas, dimensões, compressão e regra de renderização.
+
+### Homologação manual pendente
+
+- [ ] Criar campanha nova, conferir Isaias, Pedro e Geovane — e apenas esses três — em **Equipe**.
+- [ ] Alocar os três em boxes diferentes; confirmar que cada sprite corresponde ao membro selecionado e que nenhuma cópia de Lia/Rafael aparece.
+- [ ] Verificar poses de ferramenta, confirmação, inspeção/prancheta e agachamento durante diagnóstico e reparo, sem pés flutuando nem vazamento de quadrantes.
+- [ ] Contratar um funcionário: aparece **Mecânico (M4)** na equipe e no seletor; em um box aparece apenas seu nome, sem imagem de personagem.
+- [ ] Importar um save anterior: conferir migração para o trio e preservação de OS com antigo M4 ainda designado.
+- [ ] Alternar dia/noite, conferir sombra, escala, transparência e legibilidade dos personagens em desktop e celular.
+- [ ] Confirmar que contratação, descanso, moral, produtividade, capacitação e plano de turno permanecem funcionais.
+
+**Critério de aceite:** o jogo inicial não possui personagens sem arte; somente três funcionários oficiais são renderizados; contratações usam placeholders textuais até aprovação de novos sprites. Testes automatizados não equivalem à homologação visual.
+
 ## Entrega 0.8.13 — Unificar enquadramento original dia/noite (P0 / visual)
 
 **Publicação:** [PR #32](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/32) integrado à `main` no commit `3e858327`. Sintaxe e suíte completa aprovadas, incluindo integridade SHA-256/dimensões do asset. [Workflow GitHub Pages #39076569324](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39076569324) concluído com sucesso. **Homologação visual e funcional em navegador/PWA ainda pendente.**
@@ -812,7 +841,7 @@ Sem alteração em `engine.js`, saves, códigos de cenário, economia, energia, 
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.13
+## Plano de validação para a versão 0.8.14
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -869,6 +898,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.11:** histórico buscável de OS concluídas em Indicadores, dossiê individual com diagnóstico, autoria, aprendizado e indicadores reais do save; nova suíte de regressão e cache. **QA interativo e visual pendente.**
 - **0.8.12:** BOX 3 deslocado 5 px à esquerda em ambos os perfis geométricos; sombras principal/secundária sobem 3 px sem mudar o piso; testes de clamp, sprites, hitbox, HUD e PWA. **QA visual pendente.**
 - **0.8.13:** fundo diurno original completo 1976×796 derivado para AVIF, junto ao noturno no perfil fullFrame; fallback recortado preservado, hash e proveniência documentados e nova suíte dia/noite no CI. **QA visual pendente.**
+- **0.8.14:** equipe inicial restrita a Isaias/Pedro/Geovane, três sprite sheets por personagem real alocado, contratação futura de Mecânico sem sprite e migração retrocompatível; testes de identidade/atlas e cache versionado. **QA visual pendente.**
 
 ### Organização recomendada
 

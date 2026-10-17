@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.13 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.14 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -10,16 +10,18 @@ const ASSETS={
  shovel:'./assets/equipment/cat6030.png',
  excavator:'./assets/equipment/cat395.png',
  drill:'./assets/equipment/sandvik_dr410i.png',
- worker_lia_idle:'./assets/characters/mec_lia/idle.png',
- worker_lia_inspect:'./assets/characters/mec_lia/inspect.png',
- worker_lia_point:'./assets/characters/mec_lia/point.png',
- worker_lia_clipboard:'./assets/characters/mec_lia/clipboard.png',
- worker_rafael_idle:'./assets/characters/mec_rafael/idle.png',
- worker_rafael_inspect:'./assets/characters/mec_rafael/inspect.png',
- worker_rafael_point:'./assets/characters/mec_rafael/point.png',
- worker_rafael_clipboard:'./assets/characters/mec_rafael/clipboard.png'
+ // Trabalhadores oficiais são carregados como sprite sheets independentes.
+ // As imagens antigas de Lia e Rafael permanecem no Git como arquivo histórico,
+ // mas não são solicitadas pela oficina Phaser.
 };
 const MACHINES={EQ01:'truck',EQ02:'shovel',EQ03:'excavator',EQ04:'excavator',EQ05:'drill',EQ06:'drill'};
+const WORKER_SHEETS=Object.freeze({
+ isaias:'./assets/characters/isaias-4poses.webp',
+ pedro:'./assets/characters/pedro-4poses.webp',
+ geovane:'./assets/characters/geovane-4poses.webp'
+});
+const WORKER_FRAME={width:580,height:622,poses:4};
+const WORKER_POSES={blocked:[0],diagnose:[0,2,1,2],repair:[0,3,2,3]};
 let MODEL_PRESENTATION={};
 let BACKGROUND_PROFILES=null;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -454,7 +456,7 @@ function drawUI(){
   const free=state.team.filter(x=>!busy.has(x.id)&&x.restAt!==state.tick);
   const bays=[0,1,2].filter(x=>!state.jobs.some(z=>z.bay===x));
   if(free.length&&bays.length){
-   out+=`<p class="muted">Escolha um profissional e um box para iniciar.</p><div class="actions"><select id="mechanic">${free.map(x=>`<option value="${x.id}">${esc(x.name)} · ${esc(x.role)}</option>`).join('')}</select><select id="bay">${bays.map(x=>`<option value="${x}">BOX ${x+1}</option>`).join('')}</select></div><div class="actions"><button class="act" data-do="assign">ALOCAR E INVESTIGAR</button></div>`;
+   out+=`<p class="muted">Escolha um profissional e um box para iniciar.</p><div class="actions"><select id="mechanic">${free.map(x=>`<option value="${x.id}">${esc(x.name)} (${esc(x.id)}) · ${esc(x.specialty||x.role)}</option>`).join('')}</select><select id="bay">${bays.map(x=>`<option value="${x}">BOX ${x+1}</option>`).join('')}</select></div><div class="actions"><button class="act" data-do="assign">ALOCAR E INVESTIGAR</button></div>`;
   }else out+='<p class="muted">Sem mecânicos ou boxes livres. Libere um serviço ou avance o turno.</p>';
  }else{
   const mech=E.employee(state,j.assigned);
@@ -488,7 +490,8 @@ function drawTeam(){
  $('teamPanel').innerHTML=`<p class="muted">Gerencie a energia física, mental e o moral dos profissionais. Contratações custam R$ 1.050 e 18 de energia mental do supervisor.</p><div class="actions"><button class="act" data-team-action="hire">+ CONTRATAR MECÂNICO</button></div><div class="resourceGrid">`+state.team.map(m=>{
  const current=state.jobs.find(j=>j.assigned===m.id);
  const resting=m.restAt===state.tick;
- return `<article class="resourceCard"><h3>${esc(m.avatar)} ${esc(m.name)} · ${esc(m.role)}</h3><p class="muted">${current?'Em serviço: '+esc(current.id)+' · Box '+(current.bay+1):resting?'Descanso programado neste turno':'Disponível'} · Habilidade ${Math.round(m.skill)}</p>${energyMeter('Mental',m.mental)}${energyMeter('Física',m.physical)}${energyMeter('Moral',m.morale)}<div class="actions"><button class="act secondary" data-team-action="motivate" data-person="${esc(m.id)}">MOTIVAR</button><button class="act secondary" data-team-action="rest" data-person="${esc(m.id)}" ${current||resting?'disabled':''}>DESCANSAR</button></div></article>`;
+ const portrait=m.sprite&&WORKER_SHEETS[m.sprite]?'<span class="teamPortrait" style="background-image:url('+esc(WORKER_SHEETS[m.sprite])+')" aria-hidden="true"></span>':'<span class="teamPortrait placeholder" aria-label="Sem sprite">SEM<br>SPRITE</span>';
+ return `<article class="resourceCard"><div class="teamIdentity">${portrait}<div><h3>${esc(m.avatar||'')} ${esc(m.name)} · ${esc(m.specialty||'Mecânico')} <small>${esc(m.id)}</small></h3><p class="muted">Especialidade simulada: ${esc(m.role)}</p></div></div><p class="muted">${current?'Em serviço: '+esc(current.id)+' · Box '+(current.bay+1):resting?'Descanso programado neste turno':'Disponível'} · Habilidade ${Math.round(m.skill)}</p>${energyMeter('Mental',m.mental)}${energyMeter('Física',m.physical)}${energyMeter('Moral',m.morale)}<div class="actions"><button class="act secondary" data-team-action="motivate" data-person="${esc(m.id)}">MOTIVAR</button><button class="act secondary" data-team-action="rest" data-person="${esc(m.id)}" ${current||resting?'disabled':''}>DESCANSAR</button></div></article>`;
  }).join('')+'</div>';
 }
 function drawStore(){
@@ -657,7 +660,7 @@ function events(){
    const candidate=JSON.parse(await file.text());
    if(!E.validate(candidate))throw Error('Save incompatível com a simulação atual.');
    if(!confirm('Importar save e substituir o progresso desta oficina? Exporte o save atual antes de continuar.'))return;
-   state=candidate;state.productivityTarget=E.productivityProfile(state.productivityTarget).target;selected=state.jobs[0]?.id||null;
+   state=E.normalizeRoster(candidate);state.productivityTarget=E.productivityProfile(state.productivityTarget).target;selected=state.jobs[0]?.id||null;
     completedOrderId=null;completedSearch='';$('closedOrderSearch').value='';
    action(null);notify('Save importado com sucesso.');
   }catch(error){notify('Falha ao importar: '+error.message)}
@@ -712,6 +715,9 @@ class Workshop extends Phaser.Scene{
  constructor(){super('Workshop');this.machineObjs=[];this.workerSprites=[];this.activeProfile='cropped';this.activeBayLayout=BAY_LAYOUT;}
  preload(){
   Object.entries(ASSETS).forEach(([key,url])=>this.load.image(key,url));
+  Object.entries(WORKER_SHEETS).forEach(([name,url])=>this.load.spritesheet('worker_'+name,url,{
+   frameWidth:WORKER_FRAME.width,frameHeight:WORKER_FRAME.height
+  }));
   // Preserva a versão recortada somente como fallback.
   this.load.image('repoWorkshopBG','./assets/oficina-base.avif?v=0.7.0');
   // Derivado do PNG original do usuário: composição integral, 1976×796.
@@ -788,7 +794,7 @@ class Workshop extends Phaser.Scene{
    for(const actor of this.workerSprites){
     if(!actor.sprite.active||actor.frames.length<2)continue;
     actor.index=(actor.index+1)%actor.frames.length;
-    actor.sprite.setTexture(actor.frames[actor.index]);
+    actor.sprite.setFrame(actor.frames[actor.index]);
    }
   }});
   this.backgroundDecor=this.children.list.filter(o=>o!==this.statusText&&!this.bayZones.includes(o));
@@ -938,35 +944,30 @@ class Workshop extends Phaser.Scene{
      this.machineObjs.push(g);
    }
  }
- worker(x,y,slot,{facing='right',mode='diagnose',visualCalibrationX=0,bay=null}={}){
+ worker(x,y,mechanic,{facing='right',mode='diagnose',visualCalibrationX=0,bay=null}={}){
   x=this.activeProfile==='fullFrame'&&bay
    ?window.PORCARIA_LAYOUT.placeWorkerInBay(x,bay,54,2)
    :window.PORCARIA_LAYOUT.calibratedCenter(x,54,SCENE_REFERENCE,visualCalibrationX,8);
-  // Poses reais do catálogo: idle/inspect/point/clipboard, sem caminhar nem saltar.
-  const person=slot%2===0?'lia':'rafael';
-  const poses=mode==='blocked'?['idle']:mode==='repair'?['idle','inspect','clipboard','inspect']:['idle','inspect','point','inspect'];
-  const keys=poses.map(p=>'worker_'+person+'_'+p).filter(k=>this.textures.exists(k));
-  if(keys.length){
-   for(const key of new Set(keys))this.textures.get(key).setFilter(Phaser.Textures.FilterMode.NEAREST);
-   const im=this.add.image(x,y,keys[0]).setOrigin(.5,1);
-   const src=this.textures.get(keys[0]).getSourceImage();
-   im.setScale(Math.min(54/src.width,64/src.height));
-   // Esquerda do equipamento olha para a direita; direita olha para a esquerda.
-   im.setFlipX(facing==='left');
-   this.workerSprites.push({sprite:im,frames:keys,index:0});
-   return im;
+  const person=mechanic?.sprite;
+  const texture=person&&WORKER_SHEETS[person]?'worker_'+person:null;
+  if(texture&&this.textures.exists(texture)){
+   this.textures.get(texture).setFilter(Phaser.Textures.FilterMode.NEAREST);
+   const poses=WORKER_POSES[mode]||WORKER_POSES.diagnose;
+   const actor=this.add.sprite(x,y,texture,poses[0]).setOrigin(.5,1);
+   actor.setScale(Math.min(54/WORKER_FRAME.width,64/WORKER_FRAME.height));
+   actor.setFlipX(facing==='left');
+   this.workerSprites.push({sprite:actor,frames:poses,index:0});
+   return actor;
   }
-  // Fallback quando houver falha de rede/asset: mecânico parado no piso.
-  const g=this.add.graphics();
-  g.fillStyle(0x172d43);g.fillRoundedRect(x-13,y-39,26,31,3);
-  g.fillStyle(0xf0b57a);g.fillCircle(x,y-48,11);
-  g.fillStyle(0xe7ac26);g.fillEllipse(x,y-60,28,12);
-  g.fillStyle(0x172d43);g.fillRect(x-11,y-8,9,9);g.fillRect(x+3,y-8,9,9);
-  g.lineStyle(4,0xf0b57a);g.lineBetween(x+(facing==='right'?9:-9),y-33,x+(facing==='right'?21:-21),y-22);
-  this.machineObjs.push(g);
-  return g;
+  // Contratado genérico ou indisponibilidade de imagem: sem avatar/silhueta.
+  // Identificação textual não é um sprite e não interfere nas ações da OS.
+  const label=this.add.text(x,y-17,'MECÂNICO',{
+   fontFamily:'monospace',fontSize:'10px',fontStyle:'bold',color:'#fff1cd',
+   backgroundColor:'#122e40cc',padding:{x:3,y:3}
+  }).setOrigin(.5,1);
+  this.machineObjs.push(label);
+  return label;
  }
-
  refresh(){
    if(this.selectedOutline){this.selectedOutline.destroy();this.selectedOutline=null}
    const activeBays=this.activeBayLayout||BAY_LAYOUT;
@@ -1004,13 +1005,17 @@ class Workshop extends Phaser.Scene{
         machineNode.on('pointerdown',()=>{if(!modalOpen())pick(j.id)});
        }
        const mode=j.status==='material'||j.status==='ferramenta'?'blocked':j.stage>=6?'repair':'diagnose';
-       workerWorld.forEach((w,idx)=>{
-        const actor=this.worker(w.x,w.y,i*2+idx,{facing:w.facing|| (idx?'left':'right'),mode,visualCalibrationX:activeBays[i].visualCalibrationX||0,bay:activeBays[i]});
-        if(actor?.type==='Image'){
+       // Uma OS possui UM profissional responsável; nunca duplicar rostos pelo slot.
+       const assigned=state.team.find(m=>m.id===j.assigned);
+       if(assigned){
+        const w=workerWorld[0];
+        const actor=this.worker(w.x,w.y,assigned,{facing:w.facing||'right',mode,
+         visualCalibrationX:activeBays[i].visualCalibrationX||0,bay:activeBays[i]});
+        if(actor?.type==='Sprite'){
          actor.setInteractive({useHandCursor:true});
          actor.on('pointerdown',()=>{if(!modalOpen())pick(j.id)});
         }
-       });
+       }
        // O HUD inferior já mostra equipamento e OS: evitar um segundo rótulo sobre as rodas.
        // Progresso visual da OS; diagnóstico e reparo são fases distintas.
        if(progressWorld){
@@ -1070,6 +1075,7 @@ async function boot(){
   }catch(error){console.warn('Mapeamento opcional:',error)}
   try{const raw=localStorage.getItem(SAVE);if(raw){const s=JSON.parse(raw);if(E.validate(s))state=s}}catch(e){console.warn(e)}
   if(!state)state=E.create(data);
+  E.normalizeRoster(state); // inclui campanhas antigas sem apagar OS nem contratações.
   state.productivityTarget=E.productivityProfile(state.productivityTarget).target;
   selected=state.jobs[0]?.id;events();drawUI();
   if(!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');

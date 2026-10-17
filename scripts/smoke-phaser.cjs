@@ -18,7 +18,7 @@ assert.ok(phaserHtml.includes('data-panel="shift"'),'briefing pré-turno usa o m
 assert.ok(phaserScript.includes('function drawManagement(k)'),'métricas da gestão vêm da simulação');
 assert.ok(phaserScript.includes('window.PORCARIA_READINESS.compute(state,data)'),'gestão/briefing usam cálculo puro do quadro');
 assert.ok(phaserHtml.includes('readiness.js?v=0.8.8'),'módulo prontidão carregado');
-assert.ok(phaserHtml.indexOf('readiness.js?v=0.8.8')<phaserHtml.indexOf('game.js?v=0.8.13'),'prontidão entra antes do Phaser');
+assert.ok(phaserHtml.indexOf('readiness.js?v=0.8.8')<phaserHtml.indexOf('game.js?v=0.8.14'),'prontidão entra antes do Phaser');
 assert.ok(phaserHtml.includes('.readinessBays'),'novo quadro tem CSS responsivo');
 
 assert.ok(phaserScript.includes('function drawShiftBrief()'),'briefing é renderizado com dados atuais');
@@ -48,7 +48,7 @@ assert.ok(phaserHtml.includes('overflow-x:auto'),'navegação responsiva roláve
 assert.ok(phaserScript.includes('function closeSceneMenu()'),'menu de cenário pode ser fechado');
 assert.ok(phaserScript.includes("sceneMenuBtn').addEventListener('click'"),'controle de abertura do menu presente');
 assert.ok(phaserScript.includes("if(!$('sceneMenu').hidden)"),'Escape fecha o dropdown antes do modal');
-assert.ok(phaserHtml.includes('game.js?v=0.8.13'),'script principal tem cache versionado');
+assert.ok(phaserHtml.includes('game.js?v=0.8.14'),'script principal tem cache versionado');
 assert.ok(phaserHtml.includes('shift-brief.js?v=0.7.7'),'módulo de briefing carregado junto ao jogo');
 assert.ok(phaserHtml.includes('planning.js?v=0.7.8'),'módulo do planejamento carregado no Pages');
 assert.ok(phaserHtml.includes('weekly.js?v=0.7.9'),'módulo semanal do PCM carregado');
@@ -60,7 +60,7 @@ assert.ok(phaserHtml.includes('layout-math.js?v=0.8.2'),'funções de geometria 
 const state=engine.create(data,()=>0.42);
 assert.ok(engine.validate(state),'save inicial válido');
 assert.equal(state.jobs.length,3,'iniciar com três OS');
-assert.equal(state.team.length,4,'iniciar com quatro profissionais');
+assert.equal(state.team.length,3,'iniciar com Isaias, Pedro e Geovane');
 assert.equal(engine.SHIFT_HOURS,12,'turnos de dia/noite de 12h');
 assert.equal(engine.EFFECTIVE_HOURS,10.5,'DDS 30min e almoço 1h');
 assert.equal(state.productivityTarget,60,'meta padrão de produtividade estável');
@@ -183,19 +183,15 @@ for(const sprite of equipment){
  }
  assert.ok(phaserScript.includes('./assets/equipment/'+sprite),'sprite de equipamento não referenciado: '+sprite);
 }
-for(const person of ['mec_lia','mec_rafael']){
- const dimensions=new Set();
- for(const pose of poses){
-  const file=path.join(root,'phaser-play','assets','characters',person,pose+'.png');
-  assert.ok(fs.existsSync(file),'pose ausente: '+person+'/'+pose);
-  const bytes=fs.readFileSync(file);
-  assert.ok(bytes.subarray(0,8).equals(pngHeader),'PNG da pose inválido: '+person+'/'+pose);
-  dimensions.add(bytes.readUInt32BE(16)+'x'+bytes.readUInt32BE(20));
- }
- assert.equal(dimensions.size,1,'poses do mesmo personagem devem ter as mesmas dimensões');
+for(const person of ['isaias','pedro','geovane']){
+ const file=path.join(root,'phaser-play','assets','characters',person+'-4poses.webp');
+ const bytes=fs.readFileSync(file);
+ assert.ok(bytes.length>100000&&bytes.toString('ascii',0,4)==='RIFF'&&bytes.toString('ascii',8,12)==='WEBP','cartela WebP válida: '+person);
+ assert.ok(phaserScript.includes(person+'-4poses.webp'),'referência de sprite: '+person);
 }
+assert.ok(!phaserScript.includes('worker_lia_idle')&&!phaserScript.includes('worker_rafael_idle'),'sprites antigos não são carregados');
 assert.ok(!phaserScript.includes('this.tweens.add('),'máquinas não podem flutuar via tween');
-assert.ok(phaserScript.includes('actor.sprite.setTexture(actor.frames[actor.index])'),'somente sprites dos mecânicos trocam textura');
+assert.ok(phaserScript.includes('actor.sprite.setFrame(actor.frames[actor.index])'),'os quadros dos personagens são animados sem trocar a textura');
 for(const bay of map.bays){
  const b=bay.hitWorld,m=bay.spriteWorld,w=bay.workerWorld;
  assert.equal(w.length,2,'dois profissionais em cada box');
