@@ -456,7 +456,7 @@ function drawUI(){
   const free=state.team.filter(x=>!busy.has(x.id)&&x.restAt!==state.tick);
   const bays=[0,1,2].filter(x=>!state.jobs.some(z=>z.bay===x));
   if(free.length&&bays.length){
-   out+=`<p class="muted">Escolha um profissional e um box para iniciar.</p><div class="actions"><select id="mechanic">${free.map(x=>`<option value="${x.id}">${esc(x.name)} · ${esc(x.role)}</option>`).join('')}</select><select id="bay">${bays.map(x=>`<option value="${x}">BOX ${x+1}</option>`).join('')}</select></div><div class="actions"><button class="act" data-do="assign">ALOCAR E INVESTIGAR</button></div>`;
+   out+=`<p class="muted">Escolha um profissional e um box para iniciar.</p><div class="actions"><select id="mechanic">${free.map(x=>`<option value="${x.id}">${esc(x.name)} (${esc(x.id)}) · ${esc(x.specialty||x.role)}</option>`).join('')}</select><select id="bay">${bays.map(x=>`<option value="${x}">BOX ${x+1}</option>`).join('')}</select></div><div class="actions"><button class="act" data-do="assign">ALOCAR E INVESTIGAR</button></div>`;
   }else out+='<p class="muted">Sem mecânicos ou boxes livres. Libere um serviço ou avance o turno.</p>';
  }else{
   const mech=E.employee(state,j.assigned);
