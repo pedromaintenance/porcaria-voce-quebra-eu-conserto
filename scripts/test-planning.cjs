@@ -82,7 +82,7 @@ const html=fs.readFileSync(path.join(root,'phaser-play','index.html'),'utf8');
 const js=fs.readFileSync(path.join(root,'phaser-play','game.js'),'utf8');
 assert.equal((html.match(/data-panel="planning"/g)||[]).length,1,'painel de planejamento único');
 assert.ok(html.includes('planning.js?v=0.7.8'),'módulo de planejamento com cache de versão');
-assert.ok(html.includes('game.js?v=0.8.12'),'jogo com cache de versão');
+assert.ok(html.includes('game.js?v=0.8.13'),'jogo com cache de versão');
 assert.ok(js.includes('function drawPlanning()'),'renderizador do painel presente');
 assert.ok(js.includes('PORCARIA_PLANNING.compute(state,data)'),'planejamento deriva diretamente do estado do motor');
 assert.ok(js.includes('data-plan-assign'),'sugestão exige ação explícita');
