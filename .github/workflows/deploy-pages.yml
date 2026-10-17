@@ -26,7 +26,7 @@ jobs:
       - name: Validate Phaser JavaScript syntax
         run: node --check phaser-play/layout-math.js && node --check phaser-play/game.js && node --check phaser-play/planning.js && node --check phaser-play/weekly.js && node --check phaser-play/shift-brief.js && node --check engine.js
       - name: Regression tests (engine and scene map)
-        run: node scripts/smoke-phaser.cjs && node scripts/test-shift-brief.cjs && node scripts/test-planning.cjs && node scripts/test-weekly.cjs && node scripts/test-shifts-productivity.cjs && node scripts/test-scene-profiles.cjs && node scripts/test-777-asset.cjs
+        run: node scripts/smoke-phaser.cjs && node scripts/test-shift-brief.cjs && node scripts/test-planning.cjs && node scripts/test-weekly.cjs && node scripts/test-shifts-productivity.cjs && node scripts/test-scene-profiles.cjs && node scripts/test-777-asset.cjs && node scripts/test-night-workshop.cjs
       - name: Check Pages entrypoints
         run: test -f phaser-play/assets/OFICINA-NOTURNA.md && test -f phaser-play/index.html && test -f phaser-play/game.js && test -f phaser-play/planning.js && test -f phaser-play/weekly.js && test -f phaser-play/scene-map.json && test -f game-data.json
       - name: Verify official workshop image
@@ -37,6 +37,10 @@ jobs:
         run: |
           test -s phaser-play/assets/equipment/cat777e_v2.webp
           echo "c0c304a84f7dad6e26e046877470d609c74148717ea355a2cd0beae0d33be7fd  phaser-play/assets/equipment/cat777e_v2.webp" | sha256sum --check
+      - name: Verify official night workshop image
+        run: |
+          test -s phaser-play/assets/oficina-noturna-hq.avif
+          echo "0637e55b3a1978842c7aa71e27c763b176ea7c8438a82ee5bc711140e1a72c15  phaser-play/assets/oficina-noturna-hq.avif" | sha256sum --check
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload website
