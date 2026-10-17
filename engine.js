@@ -63,6 +63,10 @@
     // Migração não destrutiva: preserva IDs, progresso, OS atribuídas e contratações.
     // Saves legados podem ter um quarto profissional original; ele vira genérico.
     if(!s||!Array.isArray(s.team))return s;
+    // Quarto personagem das campanhas antigas não era contratado: sai da equipe
+    // caso esteja ocioso. Se estiver numa OS, permanece genérico para não perder o serviço.
+    s.team=s.team.filter(m=>m.id!=='M4'||m.name!=='Nico'
+      ||!!m.assigned||s.jobs?.some(j=>j.assigned===m.id));
     for(const m of s.team){
       const index=/^M[123]$/.test(m.id)?Number(m.id.slice(1))-1:-1;
       const identity=INITIAL_TEAM[index];
