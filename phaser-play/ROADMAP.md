@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.11 — histórico consultável de OS concluídas com dossiê técnico, autoria do diagnóstico e indicadores registrados; CI e QA visual pendentes.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.11 — histórico consultável de OS concluídas com dossiê técnico, autoria do diagnóstico e indicadores registrados; CI/deploy aprovados, QA visual no navegador pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -629,6 +629,9 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
 ## Entrega 0.8.11 — Histórico de OS encerradas e dossiê de manutenção (P0 / jogo)
+
+**Publicação:** PR [#30](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/30) integrado em `main` (merge `4c75e7e`), suíte de CI aprovada e workflow [GitHub Pages #39065055500](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39065055500) concluído com sucesso. A homologação manual de navegação, dados e responsividade permanece aberta.
+
 
 **Problema:** na versão 0.8.10 o motor mantém OS concluídas em `state.done` (até 200), incluindo histórico de investigação, mas a tela Indicadores mostrava somente agregados. O diagnóstico e as descobertas técnicas desapareciam da interface quando a OS era concluída.
 
