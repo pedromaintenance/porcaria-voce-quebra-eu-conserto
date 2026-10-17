@@ -157,7 +157,7 @@ assert.ok(phaserScript.includes('const density=Math.min(2'),'backdrop mantém te
 assert.ok(phaserScript.includes('setDisplaySize(SCENE_REFERENCE.width,SCENE_REFERENCE.height)'),'backdrop preserva tamanho lógico no mundo');
 assert.ok(!phaserScript.includes('width:1080,height:450,resolution'),'configuração Phaser 3 não depende da opção resolution descontinuada');
 assert.ok(phaserScript.includes('roundPixels:true'),'posições inteiras reduzem borrado');
-assert.ok(phaserScript.includes('texture.setFilter(Phaser.Textures.FilterMode.NEAREST)'),'sprites preservam contorno');
+assert.ok(phaserScript.includes("modelId==='EQ01' ? Phaser.Textures.FilterMode.LINEAR : Phaser.Textures.FilterMode.NEAREST"),'CAT 777E usa minificação suave e demais sprites continuam nítidos com NEAREST');
 assert.ok(phaserScript.includes("FilterMode.LINEAR"),'fundo pintado usa suavização independente');
 // As áreas clicáveis continuam sem sobreposição; a apresentação visual é limitada por tipo de máquina.
 // v0.7.2 — sprites versionados e nenhuma flutuação do maquinário.
@@ -168,7 +168,11 @@ for(const sprite of equipment){
  const asset=path.join(root,'phaser-play','assets','equipment',sprite);
  assert.ok(fs.existsSync(asset),'equipamento local ausente: '+sprite);
  const bytes=fs.readFileSync(asset);
- assert.ok(bytes.length>10000&&bytes.subarray(0,8).equals(pngHeader),'PNG de equipamento inválido: '+sprite);
+ if(sprite.endsWith('.webp')){
+  assert.ok(bytes.length>10000&&bytes.toString('ascii',0,4)==='RIFF'&&bytes.toString('ascii',8,12)==='WEBP','WebP de equipamento inválido: '+sprite);
+ }else{
+  assert.ok(bytes.length>10000&&bytes.subarray(0,8).equals(pngHeader),'PNG de equipamento inválido: '+sprite);
+ }
  assert.ok(phaserScript.includes('./assets/equipment/'+sprite),'sprite de equipamento não referenciado: '+sprite);
 }
 for(const person of ['mec_lia','mec_rafael']){
