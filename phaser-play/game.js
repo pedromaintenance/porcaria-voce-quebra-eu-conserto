@@ -117,7 +117,7 @@ function drawShiftBrief(){
  const report=window.PORCARIA_SHIFT_BRIEF.compute(state,data);
  const metric=(title,value,tone)=>'<div class="shiftMetric '+(tone||'')+'"><small>'+esc(title)+'</small><strong>'+esc(value)+'</strong></div>';
  let out='<p class="shiftBriefIntro">DIA '+report.day+' · TURNO '+report.shift+' → '+report.nextShift
-   +' · Janela de 8 horas. Revise bloqueios antes de comprometer a próxima escala.</p>';
+   +' · Janela de 12 horas (10,5 HH úteis/mecânico). Revise bloqueios antes de comprometer a próxima escala.</p>';
  out+='<div class="shiftBriefMetrics">'
    +metric('Boxes ocupados',report.counts.assigned+'/'+report.bays.length)
    +metric('Diagnósticos',report.counts.diagnosis)
@@ -523,7 +523,7 @@ function events(){
   const file=ev.target.files?.[0];ev.target.value='';closeSceneMenu();if(!file)return;
   try{
    if(file.size>12_000_000)throw Error('Imagem acima de 12 MB');
-   if(!['image/png','image/jpeg','image/webp'].includes(file.type))throw Error('Formato não suportado');
+   if(!['image/png','image/jpeg','image/webp','image/avif'].includes(file.type))throw Error('Formato não suportado');
    await useBackground(file);await sceneStore('save',file);localStorage.setItem(CUSTOM_BACKGROUND_KEY,'1');
    notify('Cenário carregado. Para os sprites funcionarem sem duplicação, utilize uma imagem de fundo sem máquinas.');
   }catch(err){notify('Não foi possível carregar: '+err.message)}
