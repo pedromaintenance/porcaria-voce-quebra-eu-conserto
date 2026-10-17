@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.9 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.10 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -6,7 +6,7 @@ const E=window.PORCARIA_ENGINE;
 const STAGES=['Sistema','Grupo','Subgrupo','Componente','Dano','Causa'];
 const SAVE='porcaria.phaser.prototype.v01';
 const ASSETS={
- truck:'./assets/equipment/cat777e_v2.webp',
+ truck:'./assets/equipment/cat777e_v3.webp',
  shovel:'./assets/equipment/cat6030.png',
  excavator:'./assets/equipment/cat395.png',
  drill:'./assets/equipment/sandvik_dr410i.png',
