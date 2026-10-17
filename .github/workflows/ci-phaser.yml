@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Validate JavaScript syntax
-        run: node --check engine.js && node --check phaser-play/game.js && node --check phaser-play/readiness.js && node --check scripts/test-readiness-navigation.cjs
+        run: node --check engine.js && node --check phaser-play/game.js && node --check phaser-play/readiness.js && node --check phaser-play/diagnostic-board.js && node --check phaser-play/diagnostic-view.js && node --check scripts/test-readiness-navigation.cjs && node --check scripts/test-diagnostic.cjs
       - name: Full Phaser regression suite
         run: |
           node scripts/smoke-phaser.cjs
@@ -24,3 +24,4 @@ jobs:
           node scripts/test-night-workshop.cjs
           node scripts/test-readiness.cjs
           node scripts/test-readiness-navigation.cjs
+          node scripts/test-diagnostic.cjs
