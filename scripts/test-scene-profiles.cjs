@@ -13,16 +13,16 @@ assert.equal(map.backgroundProfiles.cropped.mode,'preCropped');
 assert.equal(map.backgroundProfiles.cropped.bays,'base');
 assert.equal(map.backgroundProfiles.fullFrame.mode,'fullFrame');
 assert.equal(map.backgroundProfiles.fullFrame.bays.length,3);
-assert.deepEqual(map.bays.map(x=>x.spriteWorld.x),[427,842,1223],'cenário oficial recortado preserva calibração anterior');
+assert.deepEqual(map.bays.map(x=>x.spriteWorld.x),[427,842,1218],'cenário oficial recortado preserva calibração anterior');
 const full=map.backgroundProfiles.fullFrame.bays;
 const source=map.backgroundProfiles.fullFrame.sourceReference;
 assert.equal(source.width,1976);
 assert.equal(source.height,796);
-assert.deepEqual(full.map(x=>x.spriteWorld.x),[568,852,1109],'bases dos sprites foram recalibradas dentro de cada envelope lateral');
+assert.deepEqual(full.map(x=>x.spriteWorld.x),[568,852,1104],'bases dos sprites foram recalibradas dentro de cada envelope lateral');
 assert.deepEqual(full.map(x=>x.placementWorld.groundY),[408,408,408],'linha vermelha de apoio: todos os boxes no mesmo plano');
 assert.deepEqual(full.map(x=>x.progressWorld.y),[441,441,441],'HUDs de diagnóstico posicionados na faixa azul inferior');
 assert.deepEqual(full.map(x=>x.footerWorld.y),[470,470,470],'rodapé da OS abaixo do HUD de progresso');
-assert.deepEqual(full.map(x=>x.placementWorld.x),[450,738,1008],'limites verdes esquerda convertidos da imagem para mundo Phaser');
+assert.deepEqual(full.map(x=>x.placementWorld.x),[450,738,1003],'limites verdes esquerda convertidos da imagem para mundo Phaser');
 assert.deepEqual(full.map(x=>x.placementWorld.width),[228,228,202],'larguras verdes calibradas sem usar seus tetos');
 for(const [label,bays] of [['cropped',map.bays],['fullFrame',full]]){
  assert.equal(bays.length,3);
@@ -80,7 +80,7 @@ assert.ok(script.includes("key==='repoNightWorkshopBG'?'fullFrame':'cropped'"),'
 assert.ok(script.includes("scene.setBackdrop(img,'fullFrame')"),'manual full images use complete-image geometry');
 assert.ok(script.includes('ctx.drawImage(img,0,0,width,height,0,0,canvas.width,canvas.height)'),'background displayed without legacy hardcoded crop');
 assert.ok(!script.includes('if(aspect>2.42'),'remove fragile aspect-ratio decision');
-assert.ok(html.includes('game.js?v=0.8.11'),'new JS invalidates cache');
+assert.ok(html.includes('game.js?v=0.8.12'),'new JS invalidates cache');
 assert.ok(html.includes('layout-math.js?v=0.8.2'),'new geometry module invalidates cache');
 assert.ok(script.includes('const footer=b.footerWorld'),'footer layout comes from its own geometry');
 assert.ok(script.includes("const ground=placementWorld?.groundY"),'contact shadow uses raised floor');

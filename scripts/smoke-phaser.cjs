@@ -18,7 +18,7 @@ assert.ok(phaserHtml.includes('data-panel="shift"'),'briefing pré-turno usa o m
 assert.ok(phaserScript.includes('function drawManagement(k)'),'métricas da gestão vêm da simulação');
 assert.ok(phaserScript.includes('window.PORCARIA_READINESS.compute(state,data)'),'gestão/briefing usam cálculo puro do quadro');
 assert.ok(phaserHtml.includes('readiness.js?v=0.8.8'),'módulo prontidão carregado');
-assert.ok(phaserHtml.indexOf('readiness.js?v=0.8.8')<phaserHtml.indexOf('game.js?v=0.8.11'),'prontidão entra antes do Phaser');
+assert.ok(phaserHtml.indexOf('readiness.js?v=0.8.8')<phaserHtml.indexOf('game.js?v=0.8.12'),'prontidão entra antes do Phaser');
 assert.ok(phaserHtml.includes('.readinessBays'),'novo quadro tem CSS responsivo');
 
 assert.ok(phaserScript.includes('function drawShiftBrief()'),'briefing é renderizado com dados atuais');
@@ -48,7 +48,7 @@ assert.ok(phaserHtml.includes('overflow-x:auto'),'navegação responsiva roláve
 assert.ok(phaserScript.includes('function closeSceneMenu()'),'menu de cenário pode ser fechado');
 assert.ok(phaserScript.includes("sceneMenuBtn').addEventListener('click'"),'controle de abertura do menu presente');
 assert.ok(phaserScript.includes("if(!$('sceneMenu').hidden)"),'Escape fecha o dropdown antes do modal');
-assert.ok(phaserHtml.includes('game.js?v=0.8.11'),'script principal tem cache versionado');
+assert.ok(phaserHtml.includes('game.js?v=0.8.12'),'script principal tem cache versionado');
 assert.ok(phaserHtml.includes('shift-brief.js?v=0.7.7'),'módulo de briefing carregado junto ao jogo');
 assert.ok(phaserHtml.includes('planning.js?v=0.7.8'),'módulo do planejamento carregado no Pages');
 assert.ok(phaserHtml.includes('weekly.js?v=0.7.9'),'módulo semanal do PCM carregado');
@@ -78,7 +78,7 @@ assert.ok(fs.existsSync(path.join(root,'phaser-play','assets','OFICINA-NOTURNA.m
 assert.ok(phaserHtml.includes('id="advance"')&&phaserHtml.includes('+12H'),'botão indica duração correta');
 assert.equal(map.bays.length,3,'mapeamento contém três boxes');
 assert.equal(map.backgroundProfiles.fullFrame.bays.length,3,'mapa adicional para fundo completo');
-assert.deepEqual(map.backgroundProfiles.fullFrame.bays.map(b=>b.spriteWorld.x),[568,852,1109],'centros recalibrados no cenário completo');
+assert.deepEqual(map.backgroundProfiles.fullFrame.bays.map(b=>b.spriteWorld.x),[568,852,1104],'centros recalibrados no cenário completo');
 assert.ok(phaserScript.includes('this.applyBayProfile(profile)'),'mapeamento acompanha modo da imagem');
 assert.ok(map.backgroundProfiles.fullFrame.bays.every(b=>b.placementWorld&&b.footerWorld),'geometrias visuais e HUD separadas por box');
 assert.ok(map.backgroundProfiles.fullFrame.bays.every(b=>b.progressWorld.y===441),'porcentagem de diagnóstico na faixa inferior');
@@ -121,8 +121,8 @@ for(const bay of map.bays){
 assert.equal(map.version,'0.8.3','mapeamento com placementWorld, progressWorld e footerWorld');
 assert.equal(map.modelPresentation.EQ02.scaleMultiplier,2,'CAT 6030 com proporção alvo 2x');
 assert.equal(map.modelPresentation.EQ05.scaleMultiplier,3,'DR410i com proporção alvo 3x');
-const expectedX=[427,842,1223];
-const expectedWorkers=[[330,559],[719,971],[1102,1345]];
+const expectedX=[427,842,1218];
+const expectedWorkers=[[330,559],[719,971],[1097,1340]];
 const expectedProgress=[402,695,1006];
 const expectedHits=[379,660,980];
 for(let i=0;i<3;i++){
@@ -133,17 +133,17 @@ for(let i=0;i<3;i++){
  assert.equal(b.progressWorld.x,expectedProgress[i],`BOX ${i+1}: progresso não se desloca do letreiro`);
 }
 assert.deepEqual(map.bays.map(b=>b.compositionOffsetX),[-74,34,104],'deslocamentos acumulados apos ajuste fino');
-assert.deepEqual(map.bays.map(b=>b.visualCalibrationX),[20,-6,0],'calibração visual apenas nos BOXES 1 e 2');
+assert.deepEqual(map.bays.map(b=>b.visualCalibrationX),[20,-6,-5],'calibração visual preservada e novo deslocamento BOX 3');
 assert.equal(layoutMath.calibratedCenter(330,54,map.viewport,20,8),374,'mecânico do box 1 se move efetivamente 20px mesmo quando limitado pela borda');
 assert.equal(layoutMath.calibratedCenter(427,265,map.viewport,20,8),480,'CAT 777E no BOX 1 efetivamente 20px mais à direita');
 assert.equal(layoutMath.calibratedCenter(842,265,map.viewport,-6,8),842,'BOX 2 move a máquina 6px para a esquerda');
 assert.equal(layoutMath.calibratedCenter(719,54,map.viewport,-6,8),719,'mecânico do BOX 2 segue translação');
-assert.equal(layoutMath.calibratedCenter(1223,230,map.viewport,0,8),1223,'BOX 3 mantém centro visual anterior');
+assert.equal(layoutMath.calibratedCenter(1218,230,map.viewport,-5,8),1218,'BOX 3 -5px para a esquerda no cenário diurno');
 assert.equal(layoutMath.calibratedCenter(427,272,map.viewport,20,8),483,'equipamento largo do BOX 1 mantém novo deslocamento e enquadramento');
-assert.equal(layoutMath.calibratedCenter(1345,54,map.viewport,0,8),1345,'mecânico do BOX 3 permanece inalterado');
+assert.equal(layoutMath.calibratedCenter(1340,54,map.viewport,-5,8),1340,'mecânico do BOX 3 também -5px');
 assert.ok(phaserScript.includes("machineNode.on('pointerdown'"),'clique na máquina seleciona a própria OS');
 assert.ok(phaserScript.includes("actor.on('pointerdown'"),'clique no mecânico seleciona a própria OS mesmo sobre região vizinha');
-assert.ok(phaserScript.includes('fillEllipse(machineX,ground'),'sombra acompanha centro efetivamente renderizado da máquina');
+assert.ok(phaserScript.includes('fillEllipse(machineX,shadowMainY,')&&phaserScript.includes('fillEllipse(machineX,shadowSoftY,'),'as duas sombras seguem o centro efetivamente renderizado da máquina');
 assert.ok(phaserScript.includes('calibratedCenter(x,54,SCENE_REFERENCE,visualCalibrationX'),'mecânicos usam deslocamento posterior ao clamp');
 assert.ok(phaserScript.includes('calibratedCenter(x,plan.width,SCENE_REFERENCE,bay?.visualCalibrationX'),'equipamentos usam deslocamento posterior ao clamp');
 assert.ok(phaserScript.includes('this.lastFallbackMachineX=x'),'fallback vetorial guarda sua posição efetivamente renderizada');

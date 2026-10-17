@@ -150,19 +150,19 @@
         "height": 356
       },
       "spriteWorld": {
-        "x": 1223,
+        "x": 1218,
         "y": 448,
         "scale": 0.7,
         "groundY": 448
       },
       "workerWorld": [
         {
-          "x": 1102,
+          "x": 1097,
           "y": 448,
           "facing": "right"
         },
         {
-          "x": 1345,
+          "x": 1340,
           "y": 448,
           "facing": "left"
         }
@@ -177,8 +177,8 @@
         "width": 225
       },
       "compositionOffsetX": 104,
-      "assetsNote": "BOX 3 aprovado em v0.7.5: nenhum deslocamento adicional em v0.7.6.",
-      "visualCalibrationX": 0,
+      "assetsNote": "BOX 3: −5 px em sprites e mecânicos a partir da v0.8.12 (dia); hitbox, HUD e plano de apoio preservados.",
+      "visualCalibrationX": -5,
       "placementWorld": {
         "x": 987,
         "width": 271,
@@ -437,19 +437,19 @@
             "height": 359
           },
           "spriteWorld": {
-            "x": 1109,
+            "x": 1104,
             "y": 408,
             "scale": 0.7,
             "groundY": 408
           },
           "workerWorld": [
             {
-              "x": 1027,
+              "x": 1022,
               "y": 408,
               "facing": "right"
             },
             {
-              "x": 1192,
+              "x": 1187,
               "y": 408,
               "facing": "left"
             }
@@ -466,7 +466,7 @@
           "compositionOffsetX": 0,
           "visualCalibrationX": 0,
           "placementWorld": {
-            "x": 1008,
+            "x": 1003,
             "width": 202,
             "topY": 101,
             "groundY": 408
@@ -476,7 +476,7 @@
             "y": 470,
             "width": 350
           },
-          "assetsNote": "0.8.2: largura delimitada pela zona verde, piso na linha vermelha, barra de diagnóstico dentro da faixa azul. Posição vertical dos assets subiu 40 unidades de mundo. BOX 3; hitbox permanece independente.",
+          "assetsNote": "0.8.12: assets do BOX 3 −5 px no cenário completo por translação das âncoras e envelope lateral; hitbox/HUD inalterados, plano de apoio vertical preservado.",
           "signageWorld": {
             "x": 1052,
             "y": 166,
