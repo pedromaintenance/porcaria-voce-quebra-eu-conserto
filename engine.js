@@ -240,6 +240,7 @@
   function advance(s,d,rng=Math.random){
     let hours=0;let completed=0;let blocks=0;
     const pressure=productivityProfile(s.productivityTarget);
+    const availableCrew=s.team.filter(m=>m.restAt!==s.tick).length;
     const operating=[...s.jobs];
     for(const j of operating){
       if(!j.assigned)continue;
@@ -283,7 +284,6 @@
       if(m.restAt===s.tick){m.mental=clamp(m.mental+17);m.physical=clamp(m.physical+20);m.morale=clamp(m.morale+5);m.restAt=null}
       if(m.mental<24||m.physical<24)m.morale=clamp(m.morale-6);
     }
-    const availableCrew=s.team.filter(m=>m.restAt!==s.tick).length;
     const nominalHH=availableCrew*EFFECTIVE_HOURS;
     s.metrics.hours+=nominalHH;s.metrics.productive+=hours;
     s.lastUtilization=nominalHH?Math.min(100,Math.round(hours/nominalHH*100)):0;
