@@ -31,13 +31,13 @@ assert.ok(w.repairEquivalentHours>0,'esforço de reparo separado dos diagnóstic
 const rested=state.team[0];
 rested.restAt=state.tick;
 w=weekly.calculate(state,data);
-assert.equal(w.ticks[0].grossHH,31.5,'4 mecânicos menos 1 descanso = 3 ativos para os boxes');
-assert.equal(w.capacityHH,441,'descanso de profissional excedente ao número de boxes não reduz HH úteis');
+assert.equal(w.ticks[0].grossHH,21,'três colaboradores menos um descanso deixam dois ativos');
+assert.equal(w.capacityHH,430.5,'descanso reduz capacidade útil do primeiro turno em 10,5 HH');
 state.team[1].restAt=state.tick;
 w=weekly.calculate(state,data);
-assert.equal(w.ticks[0].grossHH,21,'dois descansos: restam 2 mecânicos × 10,5 HH');
+assert.equal(w.ticks[0].grossHH,10.5,'dois descansos: resta um profissional por turno');
 assert.equal(w.ticks[1].grossHH,31.5,'descanso do turno atual não é projetado a turnos futuros');
-assert.equal(w.capacityHH,430.5,'perda de 10,5 HH por gargalo de equipe no primeiro turno');
+assert.equal(w.capacityHH,420,'dois descansos causam perda de 21 HH no primeiro turno');
 rested.restAt=null;
 state.team[1].restAt=null;
 state.shift=1;
