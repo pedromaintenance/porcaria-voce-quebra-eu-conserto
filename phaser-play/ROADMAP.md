@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.14 — sprites dos três profissionais oficiais, equipe inicial de três e Mecânicos genéricos sem sprite; testes de publicação/QA visual pendentes.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.14 — sprites dos três profissionais oficiais, equipe inicial de três e Mecânicos genéricos sem sprite; CI/Pages aprovados, QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -629,6 +629,9 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
 ## Entrega 0.8.14 — Equipe oficial e sprites por profissional (P0 / personagens)
+
+**Publicação:** [PR #33](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/33) integrado à `main` no commit `8667ef36`, com CI e suíte de regressão aprovados. [Workflow Pages #39079556189](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39079556189) concluiu com sucesso, inclusive verificação de integridade dos WebP. **Pendente apenas homologação visual/funcional no navegador.**
+
 
 **Solicitação:** substituir as imagens antigas de mecânicos pelas três cartelas de poses enviadas pelo jogador, deixar somente **Isaias (Eletricista), Pedro (Brigadista) e Geovane (Instrutor, uniforme amarelo)** na equipe inicial e permitir contratações futuras com o nome **“Mecânico”**, sem sprite, até receberem novos assets.
 
