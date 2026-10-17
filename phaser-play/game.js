@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.5 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.6 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -28,6 +28,7 @@ let data,state,selected,scene;
 const FILTER={queue:'all',query:'',store:'all',stockQuery:''};
 let toastTimeout;
 let planningHorizon='turn';
+let stockReturnJobId=null; // Contexto de navegação, não faz parte do save.
 
 const SCENE_REFERENCE={crop:{x:320,y:130,width:1350,height:563},sourceWidth:1976,sourceHeight:796,worldX:319,worldY:45,width:1080,height:450};
 const CUSTOM_BACKGROUND_KEY='porcaria.phaser.customBackdrop.official20261016';
@@ -110,6 +111,14 @@ function notify(t){const area=$('toast');if(!area)return;area.textContent=t;area
 function job(){return E.job(state,selected)||state.jobs[0]}
 function pick(id){selected=id;drawUI();if(scene)scene.refresh();openPanel('detail')}
 function showJob(id){const j=E.job(state,id);if(j)pick(j.id)}
+function focusStore(item,fromJob){
+ const source=fromJob?E.job(state,fromJob):null;
+ stockReturnJobId=source?.id||null;
+ FILTER.store='all';$('storeFilter').value='all';
+ FILTER.stockQuery=item&&(data.items[item]||data.tools[item])?item:'';
+ $('storeSearch').value=FILTER.stockQuery;
+ drawStore();openPanel('store');
+}
 function statusFor(j){
  if(!j)return {label:'LIVRE',css:'free'};
  if(j.status==='material')return {label:'AGUARDANDO PEÇA',css:'blocked'};
@@ -155,7 +164,7 @@ function drawShiftBrief(){
     +'<small>'+esc(b.assigned)+' · '+b.ageHours+'h na carteira</small>'
     +'<small>'+esc(reason)+'</small>'+tag
     +'<div class="shiftBoxActions"><button class="act secondary" data-pick="'+esc(b.id)+'">VER OS</button>'
-    +(store?'<button class="act" data-shift-stock="'+esc(store)+'">ALMOXARIFADO</button>':'')
+    +(store?'<button class="act" data-shift-stock="'+esc(store)+'" data-return-job="'+esc(b.id)+'">ALMOXARIFADO</button>':'')
     +'</div></article>';
  }).join('');
  out+='</div><div class="shiftBriefWarnings">';
@@ -322,6 +331,11 @@ function renderQueue(){
 function drawManagement(k){
  const pressure=E.productivityProfile(state.productivityTarget);
  const ready=window.PORCARIA_READINESS.compute(state,data);
+ const renderReadyAlert=a=>'<article class="readinessAlert '+esc(a.level)+'"><div><strong>'+esc(a.title)+'</strong><p>'+esc(a.detail)+'</p></div>'
+ +(a.action?.kind==='store'?'<button class="act secondary" data-plan-stock="'+esc(a.action.item)+'" data-return-job="'+esc(a.action.jobId||'')+'">'+esc(a.action.label)+'</button>'
+ :a.action?.kind==='job'?'<button class="act secondary" data-readiness-job="'+esc(a.action.jobId)+'">'+esc(a.action.label)+'</button>'
+ :a.action?.kind==='team'?'<button class="act secondary" data-open-panel="team">'+esc(a.action.label)+'</button>':'')
+ +'</article>';
  const assigned=state.jobs.filter(j=>j.assigned);
  const blocked=assigned.filter(j=>j.status==='material'||j.status==='ferramenta').length;
  const available=state.team.filter(m=>!state.jobs.some(j=>j.assigned===m.id)).length;
@@ -348,14 +362,9 @@ function drawManagement(k){
    +'</div>'
    +'<div class="readinessBays">'+ready.bays.map(b=>'<div class="readinessBay '+esc(b.kind)+'"><strong>BOX '+(b.id+1)+'</strong><span>'+esc(b.label)+'</span><small>'+esc(b.jobId?(b.model+' · '+b.jobId):'Disponível para alocação')+'</small></div>').join('')+'</div>'
    +'<div class="readinessAlertHeader"><h4>ALERTAS DE DECISÃO · '+ready.warnings.length+'</h4><small>Não executam ações automaticamente</small></div>'
-   +(ready.warnings.length?'<div class="readinessAlerts">'+ready.warnings.slice(0,6).map(a=>
-     '<article class="readinessAlert '+esc(a.level)+'"><div><strong>'+esc(a.title)+'</strong><p>'+esc(a.detail)+'</p></div>'
-     +(a.action?.kind==='store'?'<button class="act secondary" data-plan-stock="'+esc(a.action.item)+'">'+esc(a.action.label)+'</button>'
-       :a.action?.kind==='job'?'<button class="act secondary" data-readiness-job="'+esc(a.action.jobId)+'">'+esc(a.action.label)+'</button>'
-       :a.action?.kind==='team'?'<button class="act secondary" data-open-panel="team">'+esc(a.action.label)+'</button>':'')
-     +'</article>').join('')+'</div>'
-     +(ready.warnings.length>6?'<p class="muted">+'+(ready.warnings.length-6)+' alertas adicionais. Abra Equipe ou Planejamento para revisar.</p>':'')
-     :'<p class="readinessClear">Nenhuma condição de atenção detectada com os limiares atuais do jogo.</p>')
+   +(ready.warnings.length?'<div class="readinessAlerts">'+ready.warnings.slice(0,6).map(renderReadyAlert).join('')+'</div>'
+    +(ready.warnings.length>6?'<div class="readinessAlerts" id="readinessMore" hidden>'+ready.warnings.slice(6).map(renderReadyAlert).join('')+'</div><button class="act secondary readinessExpand" data-readiness-expand aria-expanded="false" aria-controls="readinessMore">MOSTRAR MAIS '+(ready.warnings.length-6)+' ALERTA(S)</button>':'')
+    :'<p class="readinessClear">Nenhuma condição de atenção detectada com os limiares atuais do jogo.</p>')
    +'<small class="readinessMethod">'+esc(ready.methodology)+'</small></section>'
    +'<section class="productivityControl"><h3>🎯 META DE PRODUTIVIDADE · '+pressure.target+'/100</h3>'
    +'<p>Estável em 60. Acima de 60, a energia mental e física é consumida exponencialmente por hora trabalhada; abaixo de 60, aumenta a perda de moral.</p>'
@@ -383,7 +392,10 @@ function drawUI(){
  const age=(state.tick-j.tickOpen)*E.SHIFT_HOURS;
  const inbound=state.orders.filter(p=>p.item===c.material).reduce((n,p)=>n+p.qty,0);
  const toolOK=!!state.tools[c.tool],stockOK=!!state.stock[c.material]||j.materialUsed;
- const resourceInfo=`<div class="readiness"><b>PRONTIDÃO PARA REPARO</b><span class="${toolOK?'ready':'warning'}">${toolOK?'✓':'!'} Ferramental: ${esc(tool?.name||c.tool)}</span><span class="${stockOK?'ready':'warning'}">${stockOK?'✓':'!'} Material: ${esc(part?.name||c.material)} (${state.stock[c.material]||0} em estoque · ${inbound} em trânsito)</span><button class="act secondary" data-do="openStore">ABRIR ALMOXARIFADO</button></div>`;
+ const resourceInfo=`<div class="readiness"><b>PRONTIDÃO PARA REPARO</b>
+ <span class="${toolOK?'ready':'warning'}">${toolOK?'✓':'!'} Ferramental: ${esc(tool?.name||c.tool)}</span>
+ <span class="${j.stage<6?'':stockOK?'ready':'warning'}">${j.stage<6?'🔎 Material a confirmar no diagnóstico':(stockOK?'✓':'!')+' Material: '+esc(part?.name||c.material)+' ('+(state.stock[c.material]||0)+' em estoque · '+inbound+' em trânsito)'}</span>
+ <div class="actions"><button class="act secondary" data-do="stockTool">VER FERRAMENTAL</button>${j.stage>=6?'<button class="act secondary" data-do="stockPart">VER PEÇA CONFIRMADA</button>':''}</div></div>`;
  let out=`<div style="font-size:20px;font-weight:900;color:#ffca6b">${esc(m?.title)} · ${esc(j.id)}</div><p class="muted">Prioridade: ${j.priority===3?'Crítica':j.priority===2?'Alta':'Moderada'} · Tempo desde abertura: ${age}h · OS ${esc(j.id)}</p><p class="muted">${esc(j.report)}</p><div class="progress"><i style="width:${Math.round(j.stage/6*100)}%"></i></div><p class="status">${j.stage}/6 etapas de diagnóstico · ${esc(j.status)}</p><div id="notice" style="display:none;background:#764b23;padding:9px;border-radius:8px;margin:8px 0"></div>`;
  if(!j.assigned){
   const busy=new Set(state.jobs.map(x=>x.assigned).filter(Boolean));
@@ -429,10 +441,13 @@ function drawTeam(){
 }
 function drawStore(){
  const q=FILTER.stockQuery.toLowerCase();
+ const returning=stockReturnJobId?E.job(state,stockReturnJobId):null;
+ if(stockReturnJobId&&!returning)stockReturnJobId=null;
+ const returnBanner=returning?'<div class="stockReturn"><span>CONSULTA DA <strong>'+esc(returning.id)+'</strong> · Compras são sempre manuais</span><button class="act secondary" data-stock-return="'+esc(returning.id)+'">↩ VOLTAR À OS</button></div>':'';
  const materials=Object.entries(data.items).filter(([id,it])=>FILTER.store!=='tools'&&(!q||(id+' '+it.name).toLowerCase().includes(q))&&(FILTER.store!=='shortage'||!(state.stock[id]>0)));
  const tools=Object.entries(data.tools).filter(([id,it])=>(FILTER.store!=='shortage'||!state.tools[id])&&(!q||(id+' '+it.name).toLowerCase().includes(q)));
  const inTransit=state.orders||[];
- $('storePanel').innerHTML=`<p class="muted">Caixa: R$ ${brl(state.cash)}. Compra normal tem prazo maior; pedido urgente custa 65% a mais. Recebimento ocorre ao avançar turnos.</p>
+ $('storePanel').innerHTML=returnBanner+`<p class="muted">Caixa: R$ ${brl(state.cash)}. Compra normal tem prazo maior; pedido urgente custa 65% a mais. Recebimento ocorre ao avançar turnos.</p>
  <h3 class="resourceSection">MATERIAIS · ${materials.length} ITENS</h3>`+
  materials.map(([id,item])=>{
  const transit=inTransit.filter(p=>p.item===id).reduce((sum,p)=>sum+p.qty,0);
@@ -484,7 +499,7 @@ function events(){
  document.addEventListener('click',ev=>{
   if(!ev.target.closest('.scene-tools'))closeSceneMenu();
   const submenu=ev.target.closest('[data-open-panel]');
-  if(submenu){openPanel(submenu.dataset.openPanel);return}
+  if(submenu){if(submenu.dataset.openPanel==='store'){stockReturnJobId=null;FILTER.stockQuery='';$('storeSearch').value='';drawStore()}openPanel(submenu.dataset.openPanel);return}
   const planHorizon=ev.target.closest('[data-planning-horizon]');
   if(planHorizon){
    planningHorizon=planHorizon.dataset.planningHorizon==='week'?'week':'turn';
@@ -505,12 +520,16 @@ function events(){
    return;
   }
   const planStock=ev.target.closest('[data-plan-stock]');
-  if(planStock){
-   FILTER.store='all';$('storeFilter').value='all';
-   FILTER.stockQuery=planStock.dataset.planStock;$('storeSearch').value=FILTER.stockQuery;
-   drawStore();openPanel('store');return;
-  }
-  const shiftAction=ev.target.closest('[data-shift-action]');
+ if(planStock){focusStore(planStock.dataset.planStock,planStock.dataset.returnJob);return}
+ const expand=ev.target.closest('[data-readiness-expand]');
+ if(expand){
+  const extra=$('readinessMore');if(!extra)return;
+  extra.hidden=!extra.hidden;
+  expand.setAttribute('aria-expanded',String(!extra.hidden));
+  expand.textContent=extra.hidden?'MOSTRAR ALERTAS ADICIONAIS':'OCULTAR ALERTAS ADICIONAIS';
+  return;
+ }
+ const shiftAction=ev.target.closest('[data-shift-action]');
   if(shiftAction){
    if(shiftAction.dataset.shiftAction==='cancel'){closePanel();$('advance').focus();return}
    if(shiftAction.dataset.shiftAction==='confirm'){
@@ -525,18 +544,19 @@ function events(){
    }
   }
   const stockShortcut=ev.target.closest('[data-shift-stock]');
-  if(stockShortcut){
-   FILTER.store='all';$('storeFilter').value='all';
-   FILTER.stockQuery=stockShortcut.dataset.shiftStock;
-   $('storeSearch').value=FILTER.stockQuery;
-   drawStore();openPanel('store');return;
-  }
-  const readinessJob=ev.target.closest('[data-readiness-job]');
+ if(stockShortcut){focusStore(stockShortcut.dataset.shiftStock,stockShortcut.dataset.returnJob);return}
+ const readinessJob=ev.target.closest('[data-readiness-job]');
   if(readinessJob){const target=E.job(state,readinessJob.dataset.readinessJob);
    if(!target){notify('Esta OS já não está na carteira.');return}
    pick(target.id);return;
   }
-  const p=ev.target.closest('[data-pick]');if(p){pick(p.dataset.pick);return}
+  const storeBack=ev.target.closest('[data-stock-return]');
+ if(storeBack){
+  const origin=E.job(state,storeBack.dataset.stockReturn);
+  if(!origin){stockReturnJobId=null;drawStore();notify('A OS de origem já saiu da carteira.');return}
+  stockReturnJobId=null;pick(origin.id);return;
+ }
+ const p=ev.target.closest('[data-pick]');if(p){pick(p.dataset.pick);return}
   const ans=ev.target.closest('[data-answer]');if(ans){
    const result=E.answer(state,data,selected,ans.dataset.answer);
    if(result.error){notify(result.error);return}
@@ -548,7 +568,11 @@ function events(){
   const st=ev.target.closest('[data-store-action]');
   if(st){const id=st.dataset.item,mode=st.dataset.storeAction;if(mode==='tool')action(E.buyTool(state,data,id));else{const qty=Number($('qty-'+id)?.value||1);action(E.orderMaterial(state,data,id,qty,mode==='rush'))}return}
   const b=ev.target.closest('[data-do]');if(!b)return;
-  if(b.dataset.do==='openStore'){openPanel('store');$('storeSearch').value='';FILTER.stockQuery='';drawStore();return}
+  if(['openStore','stockTool','stockPart'].includes(b.dataset.do)){
+  const source=job(),sc=source&&E.scenario(data,source.scene);
+  const item=b.dataset.do==='stockTool'?sc?.tool:b.dataset.do==='stockPart'&&source?.stage>=6?sc?.material:'';
+  focusStore(item,source?.id);return;
+ }
   const j=job();if(!j)return;const c=E.scenario(data,j.scene);
   if(b.dataset.do==='assign')action(E.attach(state,j.id,$('mechanic').value,Number($('bay').value),true));
   if(b.dataset.do==='release')action(E.release(state,j.id));
