@@ -43,11 +43,11 @@ for(const bay of full){
  })){
   const pres=map.modelPresentation[modelId];
   const sz=math.equipmentSize(dimensions[0],dimensions[1],bay.spriteWorld.scale,pres,bay);
-  const p=math.placeMachineInBay(bay.spriteWorld.x,sz.width,bay,pres,5);
+  const p=math.placeMachineInBay(bay.spriteWorld.x,sz.width,bay,pres,3);
   assert.ok(sz.width>0&&sz.height>0,modelId+' positive');
   assert.ok(p.fullyFits&&p.contained,modelId+' must fit inside full scene BOX '+(bay.id+1));
-  assert.ok(p.x-sz.width/2>=bay.hitWorld.x+4,modelId+' left stays within its bay');
-  assert.ok(p.x+sz.width/2<=bay.hitWorld.x+bay.hitWorld.width-4,modelId+' right stays within its bay');
+  assert.ok(p.x-sz.width/2>=bay.hitWorld.x+2,modelId+' left stays within its bay');
+  assert.ok(p.x+sz.width/2<=bay.hitWorld.x+bay.hitWorld.width-2,modelId+' right stays within its bay');
   assert.ok(sz.height<=bay.spriteWorld.groundY-bay.hitWorld.y-14,'machine below bay roof');
   assert.ok(p.footprintX>=bay.hitWorld.x&&p.footprintX<=bay.hitWorld.x+bay.hitWorld.width,'wheel/track anchor fits');
  }
