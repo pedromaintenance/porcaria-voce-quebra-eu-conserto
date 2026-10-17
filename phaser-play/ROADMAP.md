@@ -559,6 +559,9 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 
 ## Entrega 0.8.7 — Rastreamento e destaque da investigação (P0)
 
+**Publicação técnica:** PR [#26](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/26) integrado na `main` (commit `a1fdebde`); a suíte do CI de PR concluiu com sucesso. O push aciona o workflow de GitHub Pages; **conclusão do deploy e verificação no navegador permanecem não confirmadas**.
+
+
 **Problema:** a OS exibia somente o avanço numérico (`stage`), sem registrar o que foi confirmado e sem distinguir investigação guiada pelo jogador de descoberta automática do mecânico durante o turno.
 
 **Implementado:**
