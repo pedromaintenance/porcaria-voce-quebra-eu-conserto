@@ -1,0 +1,84 @@
+/* P.O.R.C.A.R.I.A. v0.8.11 — regressão do dossiê de OS concluídas. */
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const root=path.join(__dirname,'..');
+const E=require(path.join(root,'engine.js'));
+const D=require(path.join(root,'phaser-play','diagnostic-board.js'));
+const V=require(path.join(root,'phaser-play','diagnostic-view.js'));
+const C=require(path.join(root,'phaser-play','closed-orders.js'));
+const data=JSON.parse(fs.readFileSync(path.join(root,'game-data.json'),'utf8'));
+const state=E.create(data,()=>0.41);
+const j=state.jobs[0];
+const closed={...j,status:'concluida',stage:6,finishedTick:8,elapsedHours:96,
+ worked:7.5,costLabor:180,materialCost:210,revenue:2350,firstTime:false,
+ wrong:1,reworkHours:1.5,blockedShifts:2,toolWait:1,diagnosticLog:[
+ {tick:1,stage:0,outcome:'confirmed',source:'player',mechanicName:'Lia',value:'Sistema de teste'},
+ {tick:2,stage:1,outcome:'confirmed',source:'mechanic',mechanicName:'Rafael',value:'Grupo de teste'},
+ {tick:2,stage:2,outcome:'rejected',source:'player',value:'Hipótese inadequada'}]};
+state.done.unshift(closed);
+const before=JSON.stringify(state);
+let record=C.compute(state,data);
+assert.equal(record.total,1);
+assert.equal(record.matched,1);
+assert.equal(record.rows[0].id,j.id);
+assert.equal(record.rows[0].laborHours,7.5);
+assert.equal(record.rows[0].elapsedHours,96);
+assert.equal(record.rows[0].revenue,2350);
+assert.equal(record.rows[0].firstTime,false);
+assert.equal(record.rows[0].blockedShifts,2);
+assert.equal(record.selected,null);
+assert.ok(C.renderList(record).includes('data-closed-order="'+j.id+'"'));
+assert.ok(C.renderList(record).includes('Houve erro ou retrabalho'));
+record=C.compute(state,data,String(j.id).toLowerCase(),j.id);
+assert.equal(record.matched,1);
+assert.equal(record.selected.id,j.id);
+const details=C.renderDetail(record);
+assert.ok(details.includes('DOSSIÊ TÉCNICO'));
+assert.ok(details.includes('data-closed-back'));
+assert.ok(details.includes('Mão de obra')||details.includes('Custo de mão de obra'));
+assert.ok(details.includes('96'));
+assert.ok(details.includes('2.350'));
+assert.ok(details.includes('Receita registrada'));
+assert.ok(details.includes('sem deduzir margem ou lucro'));
+const board=D.compute(state,data,closed);
+assert.equal(board.complete,true);
+assert.equal(board.player.length,1);
+assert.equal(board.mechanic.length,1);
+assert.equal(board.unknown.length,4,'saves parciais completam histórico sem inventar autoria');
+assert.ok(V.render(board,j.id).includes('MECÂNICO DESCOBRIU'));
+assert.ok(V.render(board,j.id).includes('APRENDIZADO DO CASO'));
+assert.equal(JSON.stringify(state),before,'consulta não altera o save');
+assert.equal(JSON.stringify(C.compute(state,data)),JSON.stringify(C.compute(state,data)),'relatório determinístico');
+const noMatch=C.compute(state,data,'termo completamente inexistente');
+assert.equal(noMatch.matched,0);
+assert.ok(C.renderList(noMatch).includes('Nenhuma OS concluída'));
+const archive={...closed,id:'OS-LEGADA',firstTime:undefined,materialCost:undefined,
+ costLabor:undefined,worked:undefined,elapsedHours:undefined,finishedTick:undefined};
+state.done.unshift(archive);
+record=C.compute(state,data,'OS-LEGADA','OS-LEGADA');
+assert.equal(record.matched,1);
+assert.equal(record.selected.firstTime,null);
+assert.ok(C.renderDetail(record).includes('Classificação não registrada'));
+assert.ok(C.renderDetail(record).includes('—'));
+const injection={...closed,id:'<script>alert(1)</script>',report:'<img src=x onerror=alert(1)>'};
+state.done.unshift(injection);
+record=C.compute(state,data,'script',injection.id);
+assert.ok(C.renderList(record).includes('&lt;script&gt;'));
+assert.ok(!C.renderList(record).includes('<script>'));
+assert.ok(C.renderDetail(record).includes('&lt;img'));
+assert.ok(!C.renderDetail(record).includes('<img'));
+const game=fs.readFileSync(path.join(root,'phaser-play','game.js'),'utf8');
+const html=fs.readFileSync(path.join(root,'phaser-play','index.html'),'utf8');
+const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
+assert.ok(game.includes('function drawCompletedOrders()'));
+assert.ok(game.includes('PORCARIA_DIAGNOSTIC_VIEW.render(window.PORCARIA_DIAGNOSTIC.compute(state,data,result.selected.raw)'));
+assert.ok(game.includes('drawTeam();drawStore();drawCompletedOrders()'));
+assert.ok(game.includes('data-closed-back')&&game.includes('data-closed-order'));
+assert.ok(game.includes("completedOrderId=null;completedSearch='';$('closedOrderSearch').value=''"));
+assert.ok(html.includes('id="closedOrderSearch"'));
+assert.ok(html.includes('id="closedOrders"'));
+assert.ok(html.includes('closed-orders.js?v=0.8.11'));
+assert.ok(html.includes('game.js?v=0.8.11'));
+assert.ok(sw.includes("'./phaser-play/closed-orders.js'"));
+assert.ok(sw.includes('porcaria-vqec-20261017-v091'));
+console.log('OK: histórico concluído, filtros, dossiê técnico, autoria, histórico legado, XSS, save imutável e PWA.');
