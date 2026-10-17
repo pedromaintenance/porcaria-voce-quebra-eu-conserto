@@ -26,9 +26,9 @@ jobs:
       - name: Validate Phaser JavaScript syntax
         run: node --check phaser-play/game.js && node --check phaser-play/planning.js && node --check phaser-play/weekly.js && node --check phaser-play/shift-brief.js && node --check engine.js
       - name: Regression tests (engine and scene map)
-        run: node scripts/smoke-phaser.cjs && node scripts/test-shift-brief.cjs && node scripts/test-planning.cjs && node scripts/test-weekly.cjs
+        run: node scripts/smoke-phaser.cjs && node scripts/test-shift-brief.cjs && node scripts/test-planning.cjs && node scripts/test-weekly.cjs && node scripts/test-shifts-productivity.cjs
       - name: Check Pages entrypoints
-        run: test -f phaser-play/index.html && test -f phaser-play/game.js && test -f phaser-play/planning.js && test -f phaser-play/weekly.js && test -f phaser-play/scene-map.json && test -f game-data.json
+        run: test -f phaser-play/assets/OFICINA-NOTURNA.md && test -f phaser-play/index.html && test -f phaser-play/game.js && test -f phaser-play/planning.js && test -f phaser-play/weekly.js && test -f phaser-play/scene-map.json && test -f game-data.json
       - name: Verify official workshop image
         run: |
           test -s phaser-play/assets/oficina-base.avif
