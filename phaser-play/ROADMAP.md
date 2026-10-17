@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.10 — CAT 777E pixel art oficial v3 com calços e backup da textura anterior; CI/deploy e QA visual devem ser verificados.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.11 — histórico consultável de OS concluídas com dossiê técnico, autoria do diagnóstico e indicadores registrados; CI e QA visual pendentes.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -628,6 +628,35 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
+## Entrega 0.8.11 — Histórico de OS encerradas e dossiê de manutenção (P0 / jogo)
+
+**Problema:** na versão 0.8.10 o motor mantém OS concluídas em `state.done` (até 200), incluindo histórico de investigação, mas a tela Indicadores mostrava somente agregados. O diagnóstico e as descobertas técnicas desapareciam da interface quando a OS era concluída.
+
+### Implementação
+
+- [x] **Histórico de OS concluídas** em Indicadores, consultável inclusive quando não existem OS abertas, com busca por número de OS, modelo, título do caso e relato operacional.
+- [x] **Dossiê de encerramento** com título do equipamento, identificação da OS, relatório do operador, status, turno de encerramento e seis fases de investigação preservadas.
+- [x] **Reutilização do painel diagnóstico** para conferir o que o jogador confirmou, o que o mecânico descobriu e os registros legados sem atribuição inventada.
+- [x] **Indicadores por OS** apresentados com terminologia explícita: tempo decorrido (horas corridas), esforço registrado (HH), custo de mão de obra da simulação, valor unitário de material registrado, receita fictícia, retrabalho e bloqueios por peça/ferramental.
+- [x] **Sem margem fictícia:** receita e custos são apresentados separadamente; não há cálculo de lucro ou rentabilidade sem base completa.
+- [x] **Segurança de dados:** apresentação HTML escapada, filtro em memória e leitura pura; nenhuma alteração em `engine.js`, `state.version` ou formato do save.
+- [x] **Compatibilidade:** registros antigos sem campo de custo/classificação exibem informação não registrada, não conclusões inventadas; o histórico é limitado à retenção real de 200 OS já aplicada pelo motor.
+- [x] **Navegação reversível:** botão de retornar à listagem, pesquisa responsiva e limpeza de contexto após reiniciar/importar campanha.
+- [x] **Implementação modular:** `phaser-play/closed-orders.js` (projeção + apresentação), `scripts/test-closed-orders.cjs`, inclusão no CI de PR e no workflow de Pages.
+- [x] **Versões e cache:** script principal `game.js?v=0.8.11`, módulo do histórico `closed-orders.js?v=0.8.11` e PWA `porcaria-vqec-20261017-v091`.
+
+### Plano de homologação funcional (pendente)
+
+- [ ] Avançar turnos até concluir uma OS, entrar em **Indicadores → Histórico de OS concluídas** e localizar o serviço.
+- [ ] Abrir a OS encerrada; comparar etapa final, respostas confirmadas, autoria do mecânico e lição técnica com as etapas visualizadas durante a investigação.
+- [ ] Comparar horas trabalhadas e tempo decorrido, custo de mão de obra e valor unitário de material com o que o motor efetivamente registrou, sem exibir receita como lucro.
+- [ ] Confirmar busca parcial, sem correspondências e retorno à lista; testar teclado e celular.
+- [ ] Importar save antigo com OS concluídas sem histórico de autoria ou sem métrica de encerramento: informação faltante não deve ser inventada.
+- [ ] Reiniciar a campanha, conferir a limpeza de seleção e a inexistência de modificações no save apenas por consultar o histórico.
+- [ ] Abrir o histórico sem nenhuma OS ativa, incluindo cenário com apenas serviços encerrados.
+
+**Critério de aceite:** uma OS deixa de ocupar o box ao ser concluída, mas mantém consulta técnica a investigação, resultados e indicadores dentro da oficina; a navegação não altera nenhum dado operacional.
+
 ## Entrega 0.8.10 — Sprite oficial CAT 777E em pixel art (P0 / arte)
 
 **Status:** **publicado na `main`** por meio do [PR #29](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/29), merge `c6e346db` em 17/10/2026. CI de PR aprovado e workflow [Deploy P.O.R.C.A.R.I.A. to GitHub Pages](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39059085461) concluído com sucesso, incluindo verificação do SHA-256 da imagem e regressão. **Homologação visual e funcional no navegador ainda pendente.**
@@ -725,7 +754,7 @@ Sem alteração em `engine.js`, saves, códigos de cenário, economia, energia, 
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.10
+## Plano de validação para a versão 0.8.11
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -779,6 +808,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.8:** evidências orientativas sem revelar respostas, coach de investigação por etapa, explicações pós-confirmação com critérios de catálogo para dano/causa, lição de cenário apenas após 6/6, limpeza visual de dicas legadas e testes de segurança pedagógica. **QA visual/interativo pendente.**
 - **0.8.9:** permite carregar PNG/WebP do 777E localmente para comparação no Phaser, persistir em IndexedDB e restaurar o sprite oficial; código, PWA e regressões atualizados, sem substituição binária e **QA visual pendente**.
 - **0.8.10:** sprite oficial v3 em WebP lossless/alpha, pixel art aprovado sem logos e com calços na roda traseira visível; versão v2 preservada, chave de preview local renovada, cache PWA atualizado, arquivo/hash e geometria testados, manifesto atualizado. **QA visual do Pages pendente.**
+- **0.8.11:** histórico buscável de OS concluídas em Indicadores, dossiê individual com diagnóstico, autoria, aprendizado e indicadores reais do save; nova suíte de regressão e cache. **QA interativo e visual pendente.**
 
 ### Organização recomendada
 
