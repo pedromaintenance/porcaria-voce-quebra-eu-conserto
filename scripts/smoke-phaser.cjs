@@ -43,14 +43,14 @@ assert.ok(phaserHtml.includes('overflow-x:auto'),'navegação responsiva roláve
 assert.ok(phaserScript.includes('function closeSceneMenu()'),'menu de cenário pode ser fechado');
 assert.ok(phaserScript.includes("sceneMenuBtn').addEventListener('click'"),'controle de abertura do menu presente');
 assert.ok(phaserScript.includes("if(!$('sceneMenu').hidden)"),'Escape fecha o dropdown antes do modal');
-assert.ok(phaserHtml.includes('game.js?v=0.8.1'),'script principal tem cache versionado');
+assert.ok(phaserHtml.includes('game.js?v=0.8.2'),'script principal tem cache versionado');
 assert.ok(phaserHtml.includes('shift-brief.js?v=0.7.7'),'módulo de briefing carregado junto ao jogo');
 assert.ok(phaserHtml.includes('planning.js?v=0.7.8'),'módulo do planejamento carregado no Pages');
 assert.ok(phaserHtml.includes('weekly.js?v=0.7.9'),'módulo semanal do PCM carregado');
 assert.ok(phaserScript.includes('function drawWeekly()'),'visão semanal acessível no painel de planejamento');
 assert.ok(phaserHtml.includes('data-panel="planning"'),'menu de planejamento integrado sem adicionar botões ao header');
 assert.ok(phaserScript.includes('function drawPlanning()'),'planejamento renderizado do estado ativo');
-assert.ok(phaserHtml.includes('layout-math.js?v=0.8.1'),'funções de geometria carregam antes da oficina');
+assert.ok(phaserHtml.includes('layout-math.js?v=0.8.2'),'funções de geometria carregam antes da oficina');
 
 const state=engine.create(data,()=>0.42);
 assert.ok(engine.validate(state),'save inicial válido');
@@ -70,8 +70,14 @@ assert.ok(fs.existsSync(path.join(root,'phaser-play','assets','OFICINA-NOTURNA.m
 assert.ok(phaserHtml.includes('id="advance"')&&phaserHtml.includes('+12H'),'botão indica duração correta');
 assert.equal(map.bays.length,3,'mapeamento contém três boxes');
 assert.equal(map.backgroundProfiles.fullFrame.bays.length,3,'mapa adicional para fundo completo');
-assert.deepEqual(map.backgroundProfiles.fullFrame.bays.map(b=>b.spriteWorld.x),[611,846,1094],'três máquinas ancoradas na foto completa');
+assert.deepEqual(map.backgroundProfiles.fullFrame.bays.map(b=>b.spriteWorld.x),[568,852,1109],'centros recalibrados no cenário completo');
 assert.ok(phaserScript.includes('this.applyBayProfile(profile)'),'mapeamento acompanha modo da imagem');
+assert.ok(map.backgroundProfiles.fullFrame.bays.every(b=>b.placementWorld&&b.footerWorld),'geometrias visuais e HUD separadas por box');
+assert.ok(map.backgroundProfiles.fullFrame.bays.every(b=>b.progressWorld.y===441),'porcentagem de diagnóstico na faixa inferior');
+assert.ok(map.backgroundProfiles.fullFrame.bays.every(b=>b.spriteWorld.groundY===408),'pé das máquinas na marcação de apoio');
+assert.ok(phaserScript.includes('placementWorld?.groundY'),'sombra está ancorada no novo plano de apoio');
+assert.ok(phaserScript.includes('footerWorld||'),'badges independentes do clique e dos sprites');
+
 assert.ok(phaserScript.includes('this.activeBayLayout||BAY_LAYOUT'),'desenho usa mapa ativo');
 assert.ok(phaserScript.includes('this.bayZones=this.createBayZones()'),'reconstrói zonas clicáveis');
 assert.ok(!phaserScript.includes('if(aspect>2.42'),'fundo completo não é cortado por limiar de proporção');
@@ -104,7 +110,7 @@ for(const bay of map.bays){
  assert.ok(bay.progressWorld.x>=z.x&&bay.progressWorld.x+bay.progressWorld.width<=z.x+z.width,'barra de progresso dentro do box');
 }
 // v0.7.4 — escala específica por modelo com limites reais do espaço visual.
-assert.equal(map.version,'0.8.1','mapeamento com perfis de cenário distintos');
+assert.equal(map.version,'0.8.2','mapeamento com placementWorld, progressWorld e footerWorld');
 assert.equal(map.modelPresentation.EQ02.scaleMultiplier,2,'CAT 6030 com proporção alvo 2x');
 assert.equal(map.modelPresentation.EQ05.scaleMultiplier,3,'DR410i com proporção alvo 3x');
 const expectedX=[427,842,1223];
