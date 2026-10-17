@@ -30,6 +30,7 @@ let planningHorizon='turn';
 
 const SCENE_REFERENCE={crop:{x:320,y:130,width:1350,height:563},sourceWidth:1976,sourceHeight:796,worldX:319,worldY:45,width:1080,height:450};
 const CUSTOM_BACKGROUND_KEY='porcaria.phaser.customBackdrop.official20261016';
+const NIGHT_BACKGROUND_KEY='porcaria.phaser.nightBackdrop.20261016';
 let BAY_LAYOUT=[0,1,2].map(i=>({id:i,hitWorld:{x:324+i*355,y:155,width:337,height:323},spriteWorld:{x:490+i*355,y:395},workerWorld:[{x:376+i*355,y:442},{x:605+i*355,y:439}]}));
 function sceneDB(){
  return new Promise((resolve,reject)=>{
@@ -39,11 +40,11 @@ function sceneDB(){
   req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||Error('Falha no IndexedDB'));
  });
 }
-async function sceneStore(op,blob){
+async function sceneStore(op,blob,key='background'){
  const db=await sceneDB();
  return new Promise((resolve,reject)=>{
   const tx=db.transaction('scene',op==='read'?'readonly':'readwrite');
-  const req=op==='read'?tx.objectStore('scene').get('background'):op==='save'?tx.objectStore('scene').put(blob,'background'):tx.objectStore('scene').delete('background');
+  const req=op==='read'?tx.objectStore('scene').get(key):op==='save'?tx.objectStore('scene').put(blob,key):tx.objectStore('scene').delete(key);
   req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||Error('Falha ao salvar cenário'));
   tx.oncomplete=()=>db.close();tx.onerror=()=>db.close();
  });
@@ -418,6 +419,7 @@ function events(){
   if(opening){menu.hidden=false;$('sceneMenuBtn').setAttribute('aria-expanded','true')}
  });
  $('bgPickBtn').addEventListener('click',()=>$('bgPicker').click());
+ $('bgNightBtn').addEventListener('click',()=>$('nightPicker').click());
  $('queueSearch').addEventListener('input',ev=>{FILTER.query=ev.target.value;renderQueue()});
  $('queueFilter').addEventListener('change',ev=>{FILTER.queue=ev.target.value;renderQueue()});
  $('storeSearch').addEventListener('input',ev=>{FILTER.stockQuery=ev.target.value;drawStore()});
@@ -528,6 +530,23 @@ function events(){
    notify('Cenário carregado. Para os sprites funcionarem sem duplicação, utilize uma imagem de fundo sem máquinas.');
   }catch(err){notify('Não foi possível carregar: '+err.message)}
  });
+ $('nightPicker').addEventListener('change',async ev=>{
+  const file=ev.target.files?.[0];ev.target.value='';closeSceneMenu();if(!file)return;
+  try{
+   if(file.size>12_000_000)throw Error('Imagem acima de 12 MB');
+   if(!['image/png','image/jpeg','image/webp','image/avif'].includes(file.type))throw Error('Formato não suportado');
+   const img=await imageFromBlob(file);
+   await sceneStore('save',file,'night');localStorage.setItem(NIGHT_BACKGROUND_KEY,'1');
+   if(scene){scene.nightBackdropImage=img;if(state?.shift===1&&!scene.customBackdrop)scene.applyOfficialBackdrop()}
+   notify('Fundo noturno salvo neste navegador. Será utilizado automaticamente no Turno B.');
+  }catch(err){notify('Falha no cenário noturno: '+err.message)}
+ });
+ $('bgNightReset').addEventListener('click',async()=>{
+  closeSceneMenu();localStorage.removeItem(NIGHT_BACKGROUND_KEY);
+  try{await sceneStore('delete',null,'night')}catch(err){console.warn(err)}
+  if(scene){scene.nightBackdropImage=null;if(state?.shift===1&&!scene.customBackdrop)scene.applyOfficialBackdrop()}
+  notify('Cenário noturno personalizado removido; será usado o padrão disponível.');
+ });
  $('bgReset').addEventListener('click',async()=>{closeSceneMenu();localStorage.removeItem(CUSTOM_BACKGROUND_KEY);try{await sceneStore('delete')}catch(err){console.warn(err)}if(scene){scene.customBackdrop=false;scene.applyOfficialBackdrop()}notify('Cenário automático dia/noite restaurado.')});
   $('reset').addEventListener('click',()=>{if(!confirm('Reiniciar a campanha Phaser?'))return;state=E.create(data);selected=state.jobs[0]?.id;action(null);if(scene)scene.applyOfficialBackdrop()});
 }
@@ -619,10 +638,16 @@ class Workshop extends Phaser.Scene{
   this.customBackdrop=false;
   this.applyOfficialBackdrop();
   if(localStorage.getItem(CUSTOM_BACKGROUND_KEY)==='1')sceneStore('read').then(blob=>{if(blob)return useBackground(blob)}).catch(console.warn);
+  if(localStorage.getItem(NIGHT_BACKGROUND_KEY)==='1')sceneStore('read',null,'night').then(async blob=>{
+   if(!blob)return;
+   this.nightBackdropImage=await imageFromBlob(blob);
+   if(state?.shift===1&&!this.customBackdrop)this.applyOfficialBackdrop();
+  }).catch(console.warn);
  }
  applyOfficialBackdrop(){
   if(this.customBackdrop)return;
   const night=state?.shift===1;
+  if(night&&this.nightBackdropImage){this.setBackdrop(this.nightBackdropImage);return}
   const key=night&&this.textures.exists('repoNightWorkshopBG')?'repoNightWorkshopBG':'repoWorkshopBG';
   const img=this.textures.exists(key)?this.textures.get(key).getSourceImage():null;
   this.setBackdrop(img);
