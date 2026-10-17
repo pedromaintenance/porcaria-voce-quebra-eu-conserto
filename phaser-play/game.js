@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.1 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.2 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -279,8 +279,17 @@ function drawPlanning(){
  $('planning').innerHTML=out;
 }
 function drawBays(){
- $('bayHUD').innerHTML=[0,1,2].map(i=>{const j=state.jobs.find(x=>x.bay===i),st=statusFor(j);
- return `<div class="bayBadge ${st.css}"><b>BOX ${i+1}</b><span>${j?esc(E.model(data,j.modelId)?.title)+' · '+esc(j.id):'Disponível'}</span><b>${st.label}</b></div>`}).join('');
+ // Independent bottom OS badges: footerWorld is not a machine anchor nor a click zone.
+ const bays=scene?.activeBayLayout||BAY_LAYOUT;
+ const camera=SCENE_REFERENCE;
+ const xPct=x=>((x-camera.worldX)/camera.width*100).toFixed(4)+'%';
+ const yPct=y=>((y-camera.worldY)/camera.height*100).toFixed(4)+'%';
+ $('bayHUD').innerHTML=bays.map((b,i)=>{
+  const j=state.jobs.find(x=>x.bay===i),st=statusFor(j);
+  const footer=b.footerWorld||{x:camera.worldX+i*camera.width/3+4,width:camera.width/3-9,y:camera.worldY+camera.height-19};
+  const style='--bay-left:'+xPct(footer.x)+';--bay-top:'+yPct(footer.y)+';--bay-width:'+(footer.width/camera.width*100).toFixed(4)+'%';
+  return `<div class="bayBadge ${st.css}" style="${style}"><b>BOX ${i+1}</b><span>${j?esc(E.model(data,j.modelId)?.title)+' · '+esc(j.id):'Disponível'}</span><b>${st.label}</b></div>`;
+ }).join('');
 }
 function renderQueue(){
  $('queue').innerHTML=[...state.jobs].filter(j=>{
@@ -657,6 +666,7 @@ class Workshop extends Phaser.Scene{
   this.activeProfile=chosen;
   this.activeBayLayout=chosen==='fullFrame'?BACKGROUND_PROFILES.fullFrame.bays:BAY_LAYOUT;
   this.bayZones=this.createBayZones();
+  drawBays();
  }
  applyOfficialBackdrop(){
   if(this.customBackdrop)return;
@@ -812,18 +822,18 @@ class Workshop extends Phaser.Scene{
    this.workerSprites.forEach(a=>a.sprite.destroy());this.workerSprites=[];
    this.textObjects?.forEach(x=>x.destroy());this.textObjects=[];
    this.progressObjects?.forEach(x=>x.destroy());this.progressObjects=[];
-   activeBays.forEach(({id:i,hitWorld,spriteWorld,workerWorld,labelWorld,progressWorld})=>{
+   activeBays.forEach(({id:i,hitWorld,placementWorld,footerWorld,spriteWorld,workerWorld,labelWorld,progressWorld})=>{
      const j=state.jobs.find(z=>z.bay===i),cx=spriteWorld.x;
      if(j){
        const machineNode=this.machine(cx,spriteWorld.y,j.modelId,spriteWorld.scale||.72,activeBays[i]);
        // Track the actual (possibly edge-clamped) machine position, not its requested center.
        const machineX=machineNode?.type==='Image'?machineNode.x:this.lastFallbackMachineX??cx;
-       const ground=spriteWorld.groundY??(workerWorld[0].y-2);
+       const ground=placementWorld?.groundY??spriteWorld.groundY??(workerWorld[0].y-2);
        const shadow=this.add.graphics().setDepth(-0.15);
        shadow.fillStyle(0x04090b,0.31);
-       shadow.fillEllipse(machineX,ground,Math.min(205,(progressWorld?.width||225)*0.87),22);
+       shadow.fillEllipse(machineX,ground,Math.min(196,(placementWorld?.width||progressWorld?.width||225)*0.84),18);
        shadow.fillStyle(0x02070a,0.13);
-       shadow.fillEllipse(machineX,ground+3,245,30);
+       shadow.fillEllipse(machineX,ground+2,Math.min(223,(placementWorld?.width||245)*0.97),22);
        this.machineObjs.push(shadow);
        if(machineNode?.type==='Image'){
         machineNode.setInteractive({useHandCursor:true});
