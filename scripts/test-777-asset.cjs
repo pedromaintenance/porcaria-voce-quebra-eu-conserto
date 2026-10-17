@@ -45,5 +45,5 @@ for(const bay of map.backgroundProfiles.fullFrame.bays){
  assert.ok(size.width>100&&size.height>75,'sprite visible in workshop');
 }
 const html=fs.readFileSync(path.join(root,'phaser-play','index.html'),'utf8');
-assert.ok(html.includes('game.js?v=0.8.7'),'new rendering code bypasses old cached JS');
+assert.ok(html.includes('game.js?v=0.8.8'),'new rendering code bypasses old cached JS');
 console.log('OK: WebP 777E hash, alpha, 1100×781, original retained, camera placement and new render path.');
