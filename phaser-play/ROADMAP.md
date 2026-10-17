@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.11 — histórico consultável de OS concluídas com dossiê técnico, autoria do diagnóstico e indicadores registrados; CI/deploy aprovados, QA visual no navegador pendente.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.12 — microajuste visual do BOX 3 (−5 px) e sombras de contato elevadas nos cenários diurno/noturno; CI e QA visual pendentes.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -628,6 +628,29 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
+## Entrega 0.8.12 — Composição BOX 3 e sombras de contato (P0 / visual)
+
+**Origem:** captura do jogador de 17/10/2026. A máquina e os mecânicos do BOX 3 apareciam cerca de 5 px à direita do desejado, e as sombras estavam baixas em relação ao contato dos pneus/esteiras com o chão, criando aparência de flutuação. A solicitação contempla **dia e noite**, não apenas o fundo fotografado no print.
+
+### Mudanças implementadas
+- [x] **BOX 3 — dia (`preCropped`):** centro nominal da máquina de 1223 para 1218 px; mecânicos de 1102/1345 para 1097/1340 px; `visualCalibrationX: -5` para assegurar deslocamento visível mesmo com proteção de borda.
+- [x] **BOX 3 — noite (`fullFrame`):** centro nominal de 1109 para 1104 px; mecânicos de 1027/1192 para 1022/1187 px; envelope físico `placementWorld.x` de 1008 para 1003 px, mantendo tamanho da vaga e assegurando que o clamp translade efetivamente os assets em −5 px.
+- [x] **Sombras de contato de todas as máquinas:** sombra principal em `ground - 3` (antes `ground`) e secundária em `ground - 1` (antes `ground + 2`), mantendo intensidades, dimensões e a posição X derivada da máquina realmente renderizada. Isso vale para os dois perfis geométricos.
+- [x] **Planos de apoio preservados:** terreno/rodas/pés dos mecânicos mantidos em Y=448 (perfil diurno recortado) e Y=408 (perfil noturno completo); as sombras sobem sem alterar o posicionamento vertical de máquinas ou mecânicos.
+- [x] **Hitboxes, barras de diagnóstico, nomes, rodapés e demais boxes preservados.** Nenhum dado da campanha, regra do motor, duração de turno, sprite oficial ou arquivo de cenário foi substituído.
+- [x] **Testes geométricos:** `scripts/test-bay-contact.cjs` confirma translação horizontal efetiva de −5 px nos dois perfis (incluindo equipamentos limitados por envelope e dois mecânicos), contato vertical constante, sombras −3/−1, e preservação dos demais boxes. Testes de mapa/smoke atualizados.
+- [x] **Publicação preparada:** `game.js?v=0.8.12`, Service Worker `porcaria-vqec-20261017-v092`, e nova verificação obrigatória em CI/Deploy Pages.
+
+### Homologação visual após publicação
+- [ ] **Diurno:** abrir o BOX 3 com CAT 6030 (como na captura) e comparar sua composição com os boxes 1/2, verificando 5 px à esquerda.
+- [ ] **Noturno:** avançar até turno B e avaliar a mesma OS/equipamento no BOX 3; conferir que a composição equivalente também transladou.
+- [ ] Comparar a sombra de contato junto aos pneus/esteiras em ambos os períodos, com atenção ao risco de elipse excessivamente visível.
+- [ ] Testar CAT 777E, CAT 395 e perfuratriz nos três boxes e confirmar ausência de colisões visuais ou cortes no enquadramento.
+- [ ] Confirmar que clicar no caminhão, escavadeira ou mecânico seleciona a OS correta sem interferir nos menus; testar em desktop e celular.
+- [ ] Conferir com `?debugBoxes=1` que os marcadores técnicos e hitboxes seguem fixos, enquanto a composição da arte é ajustada.
+
+**Critério de aceite:** no BOX 3 os sprites se deslocam aproximadamente 5 pixels da coordenada de mundo Phaser para a esquerda em cada cenário, as sombras parecem ligadas ao piso, e a interface interativa/OS não muda. Os testes Node asseguram coordenadas e regras; **a qualidade perceptiva ainda exige validação no navegador.**
+
 ## Entrega 0.8.11 — Histórico de OS encerradas e dossiê de manutenção (P0 / jogo)
 
 **Publicação:** PR [#30](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/30) integrado em `main` (merge `4c75e7e`), suíte de CI aprovada e workflow [GitHub Pages #39065055500](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39065055500) concluído com sucesso. A homologação manual de navegação, dados e responsividade permanece aberta.
@@ -757,7 +780,7 @@ Sem alteração em `engine.js`, saves, códigos de cenário, economia, energia, 
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.11
+## Plano de validação para a versão 0.8.12
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -812,6 +835,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.9:** permite carregar PNG/WebP do 777E localmente para comparação no Phaser, persistir em IndexedDB e restaurar o sprite oficial; código, PWA e regressões atualizados, sem substituição binária e **QA visual pendente**.
 - **0.8.10:** sprite oficial v3 em WebP lossless/alpha, pixel art aprovado sem logos e com calços na roda traseira visível; versão v2 preservada, chave de preview local renovada, cache PWA atualizado, arquivo/hash e geometria testados, manifesto atualizado. **QA visual do Pages pendente.**
 - **0.8.11:** histórico buscável de OS concluídas em Indicadores, dossiê individual com diagnóstico, autoria, aprendizado e indicadores reais do save; nova suíte de regressão e cache. **QA interativo e visual pendente.**
+- **0.8.12:** BOX 3 deslocado 5 px à esquerda em ambos os perfis geométricos; sombras principal/secundária sobem 3 px sem mudar o piso; testes de clamp, sprites, hitbox, HUD e PWA. **QA visual pendente.**
 
 ### Organização recomendada
 
