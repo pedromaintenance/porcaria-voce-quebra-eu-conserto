@@ -65,7 +65,7 @@
    tick:state.tick,day:state.day,shift:state.shift?'B':'A',nextShift:state.shift?'A':'B',
    bays,counts,deliveries,fatigue,unattendedCritical,payroll,
    // Entregas são processadas APÓS o trabalho do turno pelo engine.advance.
-   deliveryNote:'Pedidos previstos para este avanço entram no estoque ao fim do turno; não desbloqueiam reparos durante as 8 horas.',
+   deliveryNote:'Pedidos previstos para este avanço entram no estoque ao fim do turno; não desbloqueiam reparos durante as 12 horas.',
    deterministic:false
   };
  }
