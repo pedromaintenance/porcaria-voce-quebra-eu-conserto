@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 16/10/2026 · versão de trabalho **Phaser 0.7.9** (visão semanal de capacidade nominal, 14 turnos e materiais diagnosticados; layout dos boxes preservado, homologação visual pendente).
+**Estado de referência:** 16/10/2026 · **Phaser 0.8.0 — turnos de 12h, 10,5 HH úteis, meta 20–100, arquivo noturno preservado; homologação visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -336,6 +336,43 @@ O motor `engine.js` resolve diagnósticos por etapas, com probabilidade de acert
 
 **Critério de aceite:** capacidade bruta e demandas de materiais conhecidas são apresentadas de forma clara, coerente com o motor e sem produzir falsas previsões ou alterar o jogo.
 
+## Entrega 0.8.0 — Turnos de 12 horas, metas e ativo noturno (implementada parcialmente; QA/asset público pendentes)
+
+### Escopo de tempo oficial
+
+- [x] **Dois turnos por dia:** `A = dia` e `B = noite`, **12 horas corridas por turno**.
+- [x] **Tempos indisponíveis por profissional em cada turno:** DDS **0,5h** e refeição **1h**; resultam em **10,5 HH úteis por mecânico por turno**. `engine.js` define `SHIFT_HOURS=12`, `DDS_HOURS=0.5`, `MEAL_HOURS=1` e `EFFECTIVE_HOURS=10.5`. Não contabilizar as 12 horas como mão de obra produtiva.
+- [x] **Capacidade versus utilização:** equipe total é contabilizada com até 10,5 HH/mecânico presente; quem está programado para descanso não integra as HH oferecidas naquele turno. Três boxes limitam serviços simultâneos. A capacidade da visão semanal usa `min(boxes,mecânicos disponíveis) × 10,5 HH`.
+- [x] **Horizonte PCM:** 14 turnos = **7 dias corridos**, ou **168 horas de calendário**. Para 3 boxes cobertos nos 14 turnos, são até **441 HH úteis de oportunidade** no horizonte, ainda sem ajustes por produtividade, falhas ou materiais.
+- [x] **Tempo desde abertura/MTTR:** contagem de períodos de 12h para idade das OS e horas corridas dos serviços concluídos. Datas/horas históricas salvas com a regra antiga podem precisar ser reprocessadas caso seja necessária comparabilidade de séries.
+- [x] **UI e briefings:** botão avançar turno `+12H`, painel de confirmação e planejamento do próximo turno `12H`, painel semanal `168h`, indicação de dia/noite na barra superior.
+
+### Meta de produtividade — regra de jogo explicitada
+
+- [x] **Controle em Gestão:** `20 ≤ meta ≤ 100` (passo 5), valor padrão e neutro **60**. A escolha pertence ao save; saves antigos recebem 60 se ainda não possuem o campo.
+- [x] **Produção esperada no simulador:** relação gradual, `speed = 1 − 0,25 × (60−meta)/40` abaixo de 60 e `speed = 1 + 0,20 × (meta−60)/40` acima de 60. Ritmo 75% na meta 20, 100% na 60 e 120% na 100; **não é produtividade industrial medida**.
+- [x] **Fadiga por HH efetivamente trabalhada:** se `h = max(0,(meta−60)/40)`, fator `F = 1 + 4 × (exp(3h)−1)/(exp(3)−1)`. Resulta em fator 1 na meta 60 e 5 na 100. Aplica-se ao desgaste mental e físico por HH. **Curva exponencial ficcional**, não uma recomendação de saúde ou ergonomia.
+- [x] **Moral por HH trabalhada:** se `l = max(0,(60−meta)/40)`, penalidade adicional por HH `M = 1,25 × l²`. Zero na meta 60, 1,25 ponto por HH na meta 20; somada à moral perdida por falhas, baixa energia e outros mecanismos já existentes.
+- [x] **Distinção entre esforço e HH trabalhada:** `repairRemaining` representa carga de reparo simulada, enquanto `j.worked`, `costLabor` e `metrics.productive` passam a somar HH de mão de obra efetivamente utilizadas, limitadas a 10,5 por mecânico por turno, mesmo com ganho de velocidade/apoio.
+- [x] **Regressão planejada:** testes `scripts/test-shifts-productivity.cjs` cobrem os limites 20/60/100, fadiga exponencial, moral, turno A→B→A, HH, salva/restaura meta e calendário de OS.
+
+### Cenário noturno — fonte preservada, publicação binária pendente
+
+- [x] **PNG original salvo na biblioteca pessoal**, em `/PORCARIA/Assets/Oficina/Hangar Industrial Noturno sob a Chuva.png`, 1976 × 796 px, SHA-256 `fd4711611b7f83ca6f3428b5bbc59ae855cc800ab26dcd481b8c2eaf0c89ceee`.
+- [x] **Derivativo AVIF de alta resolução guardado na biblioteca**, `/PORCARIA/Assets/Oficina/oficina-noturna-hq.avif`, 1976 × 796 px, SHA-256 `0637e55b3a1978842c7aa71e27c763b176ea7c8438a82ee5bc711140e1a72c15`.
+- [x] **Manifesto de preservação publicado:** `phaser-play/assets/OFICINA-NOTURNA.md` inclui origem, tamanho, dimensões, checksums, nomes, IDs de biblioteca e instruções de integração.
+- [x] **Alternância de cenário preparada no Phaser:** durante o turno A, o fundo padrão diurno; no B, tenta carregar `phaser-play/assets/oficina-noturna-hq.avif`. Quando ausente, usa **apenas uma tonalização noturna provisória** no fundo diurno (não corresponde ao PNG noturno fornecido). Fundo personalizado escolhido em `VISUAL` continua com prioridade, inclusive o PNG original carregado pelo jogador.
+- [ ] **Dependência:** copiar o AVIF binário preservado para `phaser-play/assets/oficina-noturna-hq.avif` na `main`, verificar SHA-256, testar o recorte e os três boxes à noite. O conector GitHub atual admite escrita textual e blobs informados em base64, mas não transferiu automaticamente os bytes do arquivo local. **Não declarar o asset como publicado antes dessa etapa.**
+- [ ] Confirmar que a troca A→B→A não reposiciona sprites nem interfere em menus, saves ou seleção de OS.
+
+### Homologação e balanceamento pendentes
+
+- [ ] Testar 20/60/100, verificar declínio exponencial de energia mental/física, perda de moral em metas baixas e recuperar meta 60 pelo controle.
+- [ ] Inspecionar dinâmica de fadiga, permanência de equipe, demissões e throughput por vários dias; **valores de balanceamento são provisórios**.
+- [ ] Confirmar que o motor de 12h mantém chegada de OS, custos de folha, ETA de materiais e prazo da campanha coerentes.
+- [ ] Testar o arquivo noturno **real** no browser, após integrar o binário. Até lá, a tonalização provisória serve apenas para distinguir períodos.
+- [ ] Validar responsividade em desktop/celular, continuidade dos saves e integridade das posições dos boxes aprovadas na v0.7.6.
+
 ## Entrega 0.8 — Gestão avançada de manutenção (P1)
 
 - [x] **Etapa inicial (v0.7.8):** priorização por criticidade, idade da OS e bloqueio de insumos, com pontuação de jogo explícita. **Pendente:** modelagem calibrável de risco e impacto operacional.
@@ -367,7 +404,7 @@ O motor `engine.js` resolve diagnósticos por etapas, com probabilidade de acert
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.7.9
+## Plano de validação para a versão 0.8.0
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -410,6 +447,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.7.7:** briefing pré-turno dentro do modal Phaser, com três boxes, bloqueios específicos, ETA ao fim do turno, fadiga, folha, OS crítica sem equipe e atalhos de OS/almoxarifado; fluxo confirmar/cancelar; testes puros de leitura do estado e CI. **Implementado; QA funcional/visual pendente.**
 - **0.7.8:** planejamento PCM de curto prazo, índice heurístico transparente, comparação de especialidades/capacidade de HH brutas, recomendações com alocação explicitamente autorizada, bloqueios por insumos e atalhos contextuais. Módulo puro e testes adicionados; **homologação funcional pendente**.
 - **0.7.9:** janela de capacidade de 14 turnos, HH brutas sem extrapolar produtividade, necessidades de peças apenas após diagnóstico, entregas no fim do turno, referência de folha fixa, hipóteses explícitas e testes automatizados; **QA visual e funcional pendente**.
+- **0.8.0:** 12h/turno, DDS 0,5h e almoço 1h, 10,5 HH/mecânico, meta 20–100 (60 estável; fadiga exponencial acima; moral abaixo), interface e PCM recalibrados. PNG noturno original e AVIF derivados arquivados, hashes no manifesto; **publicação do binário noturno ainda pendente**.
 
 ### Organização recomendada
 
