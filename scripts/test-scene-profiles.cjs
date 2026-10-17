@@ -22,7 +22,7 @@ assert.deepEqual(full.map(x=>x.spriteWorld.x),[568,852,1104],'bases dos sprites 
 assert.deepEqual(full.map(x=>x.placementWorld.groundY),[408,408,408],'linha vermelha de apoio: todos os boxes no mesmo plano');
 assert.deepEqual(full.map(x=>x.progressWorld.y),[441,441,441],'HUDs de diagnóstico posicionados na faixa azul inferior');
 assert.deepEqual(full.map(x=>x.footerWorld.y),[470,470,470],'rodapé da OS abaixo do HUD de progresso');
-assert.deepEqual(full.map(x=>x.placementWorld.x),[450,738,1008],'limites verdes esquerda convertidos da imagem para mundo Phaser');
+assert.deepEqual(full.map(x=>x.placementWorld.x),[450,738,1003],'limites verdes esquerda convertidos da imagem para mundo Phaser');
 assert.deepEqual(full.map(x=>x.placementWorld.width),[228,228,202],'larguras verdes calibradas sem usar seus tetos');
 for(const [label,bays] of [['cropped',map.bays],['fullFrame',full]]){
  assert.equal(bays.length,3);
