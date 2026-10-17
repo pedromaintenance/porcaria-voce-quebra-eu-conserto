@@ -726,14 +726,19 @@ class Workshop extends Phaser.Scene{
      const src=texture.getSourceImage();
      const plan=window.PORCARIA_LAYOUT.equipmentSize(src.width,src.height,scale,MODEL_PRESENTATION[modelId]||{},bay);
      // The requested offset is preserved in scene-map.json; clipping protection is visual only.
-     const visibleX=window.PORCARIA_LAYOUT.calibratedCenter(x,plan.width,SCENE_REFERENCE,bay?.visualCalibrationX||0,8);
+     const visibleX=this.activeProfile==='fullFrame'
+      ?window.PORCARIA_LAYOUT.placeMachineInBay(x,plan.width,bay,MODEL_PRESENTATION[modelId]||{},5).x
+      :window.PORCARIA_LAYOUT.calibratedCenter(x,plan.width,SCENE_REFERENCE,bay?.visualCalibrationX||0,8);
      const node=this.add.image(visibleX,Math.round(y),renderKey).setOrigin(.5,1);
      node.setDisplaySize(plan.width,plan.height);
      this.machineObjs.push(node);
      return node;
    }else{
      // Fallback machines obey the same viewport bounds as PNG sprites.
-     x=window.PORCARIA_LAYOUT.calibratedCenter(x,220*scale,SCENE_REFERENCE,bay?.visualCalibrationX||0,8);
+     x=this.activeProfile==='fullFrame'
+      ?window.PORCARIA_LAYOUT.placeMachineInBay(x,220*scale,bay,MODEL_PRESENTATION[modelId]||{},5).x
+      :window.PORCARIA_LAYOUT.calibratedCenter(x,220*scale,SCENE_REFERENCE,bay?.visualCalibrationX||0,8);
+     this.lastFallbackMachineX=x;
      // Trator de esteiras: silhueta industrial própria enquanto não existe PNG aprovado do D9.
      if(modelId==='EQ07'){
       const g=this.add.graphics(),u=scale;
@@ -763,8 +768,10 @@ class Workshop extends Phaser.Scene{
      this.machineObjs.push(g);
    }
  }
- worker(x,y,slot,{facing='right',mode='diagnose',visualCalibrationX=0}={}){
-  x=window.PORCARIA_LAYOUT.calibratedCenter(x,54,SCENE_REFERENCE,visualCalibrationX,8);
+ worker(x,y,slot,{facing='right',mode='diagnose',visualCalibrationX=0,bay=null}={}){
+  x=this.activeProfile==='fullFrame'&&bay
+   ?window.PORCARIA_LAYOUT.placeWorkerInBay(x,bay,54,2)
+   :window.PORCARIA_LAYOUT.calibratedCenter(x,54,SCENE_REFERENCE,visualCalibrationX,8);
   // Poses reais do catálogo: idle/inspect/point/clipboard, sem caminhar nem saltar.
   const person=slot%2===0?'lia':'rafael';
   const poses=mode==='blocked'?['idle']:mode==='repair'?['idle','inspect','clipboard','inspect']:['idle','inspect','point','inspect'];
@@ -792,9 +799,10 @@ class Workshop extends Phaser.Scene{
 
  refresh(){
    if(this.selectedOutline){this.selectedOutline.destroy();this.selectedOutline=null}
+   const activeBays=this.activeBayLayout||BAY_LAYOUT;
    const focus=state.jobs.find(z=>z.id===selected&&z.bay!==null);
    if(focus){
-     const bounds=BAY_LAYOUT[focus.bay].hitWorld;
+     const bounds=activeBays[focus.bay].hitWorld;
      const outline=this.add.graphics();
      outline.lineStyle(3,0xffc94b,0.9);
      outline.strokeRoundedRect(bounds.x+3,bounds.y+3,bounds.width-6,bounds.height-6,6);
@@ -804,12 +812,12 @@ class Workshop extends Phaser.Scene{
    this.workerSprites.forEach(a=>a.sprite.destroy());this.workerSprites=[];
    this.textObjects?.forEach(x=>x.destroy());this.textObjects=[];
    this.progressObjects?.forEach(x=>x.destroy());this.progressObjects=[];
-   BAY_LAYOUT.forEach(({id:i,hitWorld,spriteWorld,workerWorld,labelWorld,progressWorld})=>{
+   activeBays.forEach(({id:i,hitWorld,spriteWorld,workerWorld,labelWorld,progressWorld})=>{
      const j=state.jobs.find(z=>z.bay===i),cx=spriteWorld.x;
      if(j){
-       const machineNode=this.machine(cx,spriteWorld.y,j.modelId,spriteWorld.scale||.72,BAY_LAYOUT[i]);
+       const machineNode=this.machine(cx,spriteWorld.y,j.modelId,spriteWorld.scale||.72,activeBays[i]);
        // Track the actual (possibly edge-clamped) machine position, not its requested center.
-       const machineX=machineNode?.type==='Image'?machineNode.x:window.PORCARIA_LAYOUT.calibratedCenter(cx,220*(spriteWorld.scale||.72),SCENE_REFERENCE,BAY_LAYOUT[i].visualCalibrationX||0,8);
+       const machineX=machineNode?.type==='Image'?machineNode.x:this.lastFallbackMachineX??cx;
        const ground=spriteWorld.groundY??(workerWorld[0].y-2);
        const shadow=this.add.graphics().setDepth(-0.15);
        shadow.fillStyle(0x04090b,0.31);
@@ -823,7 +831,7 @@ class Workshop extends Phaser.Scene{
        }
        const mode=j.status==='material'||j.status==='ferramenta'?'blocked':j.stage>=6?'repair':'diagnose';
        workerWorld.forEach((w,idx)=>{
-        const actor=this.worker(w.x,w.y,i*2+idx,{facing:w.facing|| (idx?'left':'right'),mode,visualCalibrationX:BAY_LAYOUT[i].visualCalibrationX||0});
+        const actor=this.worker(w.x,w.y,i*2+idx,{facing:w.facing|| (idx?'left':'right'),mode,visualCalibrationX:activeBays[i].visualCalibrationX||0,bay:activeBays[i]});
         if(actor?.type==='Image'){
          actor.setInteractive({useHandCursor:true});
          actor.on('pointerdown',()=>{if(!modalOpen())pick(j.id)});
