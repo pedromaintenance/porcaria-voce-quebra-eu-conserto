@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Validate JavaScript syntax
-        run: node --check engine.js && node --check phaser-play/game.js && node --check phaser-play/readiness.js && node --check phaser-play/diagnostic-board.js && node --check phaser-play/diagnostic-view.js && node --check scripts/test-readiness-navigation.cjs && node --check scripts/test-diagnostic.cjs && node --check scripts/test-diagnostic-teaching.cjs && node --check scripts/test-777-override.cjs && node --check phaser-play/closed-orders.js && node --check scripts/test-closed-orders.cjs
+        run: node --check engine.js && node --check phaser-play/game.js && node --check phaser-play/readiness.js && node --check phaser-play/diagnostic-board.js && node --check phaser-play/diagnostic-view.js && node --check scripts/test-readiness-navigation.cjs && node --check scripts/test-diagnostic.cjs && node --check scripts/test-diagnostic-teaching.cjs && node --check scripts/test-777-override.cjs && node --check phaser-play/closed-orders.js && node --check scripts/test-closed-orders.cjs && node --check scripts/test-bay-contact.cjs
       - name: Full Phaser regression suite
         run: |
           node scripts/smoke-phaser.cjs
@@ -28,3 +28,4 @@ jobs:
           node scripts/test-diagnostic-teaching.cjs
           node scripts/test-777-override.cjs
           node scripts/test-closed-orders.cjs
+          node scripts/test-bay-contact.cjs
