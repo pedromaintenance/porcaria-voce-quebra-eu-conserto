@@ -204,7 +204,7 @@
     "worldPlacement": "0.8.2: assets e mecânicos do perfil fullFrame cabem nas laterais de placementWorld, sem usar as laterais amplas de hitWorld. Seus pés/contato usam placementWorld.groundY. Hud de progresso usa progressWorld próximo ao chão, footer usa footerWorld. Cropped preserva ancoragem original."
   },
   "assets": {
-    "notes": "v0.7.6: BOX 1 +20 px (x427; mecânicos 330/559), BOX 2 -6 px (x842; mecânicos 719/971), BOX 3 preservado (x1223; mecânicos 1102/1345). A calibração de borda garante movimento visível no BOX 1 sem cortar sprites. HUD, hotspots e posição vertical preservados.\nv0.8.3: CAT 777E = novo WebP transparente sem logos, filtro LINEAR isolado para minificação de arte detalhada, escala 1.10 e apoio horizontal 0.54; back-up PNG preservado; envelopes laterais de box e groundY sem mudanças."
+    "notes": "v0.7.6: BOX 1 +20 px (x427; mecânicos 330/559), BOX 2 -6 px (x842; mecânicos 719/971), BOX 3 preservado (x1223; mecânicos 1102/1345). A calibração de borda garante movimento visível no BOX 1 sem cortar sprites. HUD, hotspots e posição vertical preservados.\nv0.8.3: CAT 777E = novo WebP transparente sem logos, filtro LINEAR isolado para minificação de arte detalhada, escala 1.10 e apoio horizontal 0.54; back-up PNG preservado; envelopes laterais de box e groundY sem mudanças.\nv0.8.10: arte pixel art aprovada em WebP lossless 1100×781 (cat777e_v3.webp), marcas removidas, calços na frente e atrás da roda traseira visível. v2 permanece como backup; cálculo geométrico não alterado."
   },
   "rendering": {
     "backgroundFilter": "LINEAR",
@@ -222,14 +222,15 @@
       "maximumWidth": 265,
       "maximumHeight": 225,
       "footprintAnchorX": 0.54,
-      "texturePath": "assets/equipment/cat777e_v2.webp",
+      "texturePath": "assets/equipment/cat777e_v3.webp",
       "originalAssetPath": "assets/equipment/cat777e.png",
       "sourcePixelSize": {
         "width": 1100,
         "height": 781
       },
       "renderFilter": "LINEAR",
-      "visualBasis": "Vista frontal 3/4 reduzindo inclinação aparente da caçamba. Base das rodas ancorada no groundY do box ativo. Original PNG sem logos 1488×1057 arquivado; arte otimizada WebP transparente 1100×781."
+      "visualBasis": "Pixel art aprovado pelo usuário: perspectiva frontal 3/4 com câmera na altura da cabine, sem marcas CAT, calços dianteiro e traseiro na roda traseira visível; manter chão dos boxes como suporte e asset anterior v2 disponível para rollback.",
+      "publishedAssetSHA256": "bec258a0b4afb512cae047a0a3c10ff7072be2dba5156b826c57fb0ca137a4bd"
     },
     "EQ02": {
       "label": "CAT 6030",
