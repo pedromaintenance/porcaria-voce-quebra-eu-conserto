@@ -2,10 +2,38 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 18/10/2026 · **v0.8.21 — novo atlas Junior e pré-filtragem de sprites em implementação; QA visual pendente.**
+**Estado de referência:** 18/10/2026 · **v0.8.22 — canvas de alta densidade com câmera compensada e sprites ampliados; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.8.22 — Renderização de personagens em alta densidade (P0 / imagem)
+
+**Motivo:** o usuário confirmou que a v0.8.21 segue excessivamente pixelada. Alterar PNG para WebP não resolve: WebP é um contêiner; os sprites atuais são WebP sem perdas, mas o canvas lógico de 1080×450 é ampliado por CSS e os trabalhadores eram desenhados em cerca de 54×58 pixels de mundo.
+
+### Mudanças implementadas
+- [x] A resolução de rasterização passa a **2160×900 pixels no desktop** por padrão; mantém **1080×450 no celular** por padrão para reduzir GPU e consumo de bateria.
+- [x] Em Phaser 3.90 **não utilizar `GameConfig.resolution`**, removido no Phaser 3.50; em seu lugar, o zoom de câmera acompanha o multiplicador (2×/1×), com `centerOn` sobre o centro da janela original `(859,270)`. Preserva a área de mundo 1080×450, os três boxes, limites, posições de máquinas, sombras, HUD e as zonas de clique.
+- [x] `render.antialias=true` e `antialiasGL=true`, `pixelArt=false`; workers continuam LINEAR com pré-filtragem por quadro e máquinas com tratamento específico já existente.
+- [x] Trabalhadores passam a ocupar envelope máximo nominal **66×80** em vez de 54×64 (cerca de 22% mais largura). Mantêm `origin(.5,1)`; não há deslocamento manual do piso. A geometria de contenção usa a largura nova; verificar enquadramento especialmente em escavadeiras/perfuratrizes.
+- [x] Perfil isolado em `phaser-play/render-quality.js`, testável em Node, carregado antes do jogo. `?quality=low` ou `?quality=1` força 1080×450 para comparação/rollback; `?quality=high` ou `?quality=2` força 2160×900 inclusive no celular, sob responsabilidade do usuário.
+- [x] Novo cache PWA `porcaria-vqec-20261018-v102`, script `game.js?v=0.8.22` e regressões automatizadas; saves não são alterados.
+
+### Evidência e limitações
+- Conforme documentação do Phaser v3.90, Scale.FIT pode aplicar aumento CSS sem aumentar a resolução real; a câmera com zoom acompanha o canvas maior para manter a mesma área de mundo. O recurso legado de resolução foi removido da v3.
+- O ganho esperado decorre de **mais pixels rasterizados, personagens menos minúsculos e filtragem bilinear**. Isso não aumenta detalhe que não existe no asset, nem substitui aprovação visual.
+- Rendering HiDPI com tela maior usa até 4× pixels de framebuffer no desktop. O modo leve fica acessível para GPUs restritas, e a escolha automática no navegador é feita no carregamento (mudança de tamanho de janela pede reload).
+- Nenhuma alteração no formato WebP, na arte original, na geometria da oficina, no funcionamento das OS ou no arquivo de save.
+
+### Testes de homologação (pendentes no navegador)
+- [ ] Verificar que o fundo 2D exibe exatamente os mesmos limites nos modos `?quality=low` e `?quality=high`.
+- [ ] Clicar nos três boxes, selecionar OS via máquinas e mecânicos, alternar cenários dia/noite sem seleção deslocada.
+- [ ] Confirmar cabeças, óculos, EPIs e braços legíveis nos sprites; comparar captura desktop antes/depois em zoom 100%.
+- [ ] Conferir se os novos trabalhadores de 66 px permanecem dentro do box e não encobrem ferramentas, rodas ou HUD; observar poses ajoelhadas.
+- [ ] Rodar turno, importar/exportar save, abrir/fechar pop-ups e verificar responsividade no mobile.
+- [ ] Medir uso de GPU/desempenho desktop e validar modo leve `?quality=low` como fallback.
+
+**Aceite:** mais nitidez percebida sem mover equipamentos, afetar seleção de OS, reduzir FPS drasticamente ou introduzir incompatibilidade PWA.
 
 ## Entrega 0.8.21 — Junior em proporção chibi e pré-filtragem dos sprites (P0 / arte e renderização)
 
@@ -1111,6 +1139,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.16:** três mecânicos novos Silva/Santos/Moura + renomeação Isaias→Costa, atlas WebP em quatro poses, seis iniciais, genéricos sem sprite e migração sem reatribuir IDs de contratados; PWA/testes atualizados. **QA visual pendente.**
 - **0.8.17:** asset Sandvik DR410i fornecido pelo jogador (1536×1024) convertido para WebP transparente, com EQ05 desvinculado de EQ06 e arquivo anterior preservado; testes exclusivos de textura, integridade e geometria. **QA visual pendente.**
 - **0.8.18:** Junior Especialista com dois atlas de 4 poses (EPI/balaclava nas OS; camisa azul em Equipe/treinamento futuro), nova identidade sem sobrescrever M7 legado, 7 profissionais e 3 boxes preservados. **QA visual pendente.**
+- **0.8.22:** canvas interno 2160×900 no desktop (camera zoom2), 1080×450 no celular, trabalhadores 66×80 e modo leve `?quality=low`. **QA visual pendente.**
 - **0.8.21:** Junior recebe atlas chibi com pés/frames normalizados e WebP lossless; personagens recebem pré-filtragem 2×/LINEAR com geometria mantida. **QA visual pendente.**
 - **0.8.20:** equipe inicial de três, 10 contratáveis identificados, 6 atlas WebP lossless, filtro LINEAR e BOX 2 −5 px nos trabalhadores; CI e deploy concluídos. **QA visual pendente.**
 - **0.8.19:** CAT D9, CAT 966 e CAT 16 recebem sprites WebP pixel-art completos, com chaves próprias EQ07/EQ08/EQ09 no Phaser, fallback histórico, hashes e teste de enquadramento no CI. **QA visual pendente.**
