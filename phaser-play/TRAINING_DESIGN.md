@@ -98,7 +98,7 @@ Biblioteca versionada em `assets/characters/bia/`, com quatro atlas transparente
 
 O UI futuro consultará `manifest.json` por coleção/pose (não indexará nomes de arquivos duplicados). **Não carregar essas imagens na oficina Phaser durante partidas normais** até que o menu exista. Galeria temporária, somente visual: [Biblioteca da Bia](assets/characters/bia/index.html).
 
-**Estado de personagem:** Bia = facilitadora da interface, não contratável; Isaias/Pedro/Geovane continuam como a única equipe inicial até novos sprites serem aprovados. Os empregados genéricos "Mecânico" continuam sem sprite.
+**Estado de personagem (atualizado na v0.8.16):** Bia = facilitadora da interface, não contratável. A equipe inicial é formada por Costa (antes Isaias), Pedro, Geovane, Silva, Santos e Moura; o sistema ainda não concede competências de treinamento. Contratados futuros com o nome genérico "Mecânico" continuam sem sprite.
 
 ## 8. Modelo de dados, integração e migração futura
 
