@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.16 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.17 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -9,12 +9,14 @@ const ASSETS={
  truck:'./assets/equipment/cat777e_v3.webp',
  shovel:'./assets/equipment/cat6030.png',
  excavator:'./assets/equipment/cat395.png',
- drill:'./assets/equipment/sandvik_dr410i.png',
+ drill:'./assets/equipment/sandvik_dr410i.png', // mantém a textura legada da DI650i até arte própria.
+ dr410i:'./assets/equipment/sandvik_dr410i_v2.webp', // imagem DR410i fornecida pelo jogador.
+
  // Trabalhadores oficiais são carregados como sprite sheets independentes.
  // As imagens antigas de Lia e Rafael permanecem no Git como arquivo histórico,
  // mas não são solicitadas pela oficina Phaser.
 };
-const MACHINES={EQ01:'truck',EQ02:'shovel',EQ03:'excavator',EQ04:'excavator',EQ05:'drill',EQ06:'drill'};
+const MACHINES={EQ01:'truck',EQ02:'shovel',EQ03:'excavator',EQ04:'excavator',EQ05:'dr410i',EQ06:'drill'};
 const WORKER_SHEETS=Object.freeze({
  costa:'./assets/characters/costa-4poses.webp',
  silva:'./assets/characters/silva-4poses.webp',
