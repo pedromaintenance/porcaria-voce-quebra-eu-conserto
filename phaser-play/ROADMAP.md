@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.17 — imagem original da Sandvik DR410i integrada exclusivamente ao EQ05, mantendo DI650i e demais sprites; CI, Pages e QA visual pendentes.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.17 — imagem original da Sandvik DR410i integrada exclusivamente ao EQ05, mantendo DI650i e demais sprites; CI e Pages aprovados, QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -629,6 +629,9 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
 ## Entrega 0.8.17 — Substituição do asset Sandvik DR410i (P0 / equipamentos)
+
+**Publicação:** [PR #36](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/36) integrado à `main` no commit `df9b60d9`, com [CI #39087180090](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39087180090) aprovado e [Pages #39087216683](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39087216683) publicado com sucesso. **Homologação visual no navegador ainda pendente.**
+
 
 **Origem:** o usuário enviou `Plataforma de Perfuração Industrial Laranja(1).png` para **substituir somente a DR410i**. A imagem apresenta perfuratriz laranja/vermelha com cabine branca, guarda-corpos amarelos e esteiras pretas em vista 3/4 de cima. O novo asset deriva do arquivo recebido, sem nova geração, remoção de peças nem mudança de perspectiva.
 
