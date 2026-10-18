@@ -10,10 +10,15 @@ for(const [key,meta] of Object.entries(data.assets)){
  const raw=fs.readFileSync(file);assert.equal(raw.length,meta.size,key+': bytes');
  assert.equal(crypto.createHash('sha256').update(raw).digest('hex'),meta.sha256,key+': hash');
  assert.equal(raw.toString('ascii',0,4),'RIFF');assert.equal(raw.toString('ascii',8,12),'WEBP');
- assert.equal(raw.toString('ascii',12,16),'VP8X');
- assert.ok((raw[20]&16)!==0,key+': alpha');
- assert.equal(1+raw[24]+(raw[25]<<8)+(raw[26]<<16),1160);
- assert.equal(1+raw[27]+(raw[28]<<8)+(raw[29]<<16),1244);
+ // WebP lossless compacto usa VP8L; o lote anterior com perdas usava VP8X.
+ const kind=raw.toString('ascii',12,16);
+ assert.equal(kind,'VP8L',key+': formato WebP sem perdas esperado');
+ assert.equal(raw[20],0x2f,key+': assinatura VP8L');
+ const w=1+(raw[21]|((raw[22]&0x3f)<<8));
+ const h=1+((raw[22]>>6)|(raw[23]<<2)|((raw[24]&0x0f)<<10));
+ assert.equal(w,1160,key+': largura');
+ assert.equal(h,1244,key+': altura');
+ assert.ok((raw[24]&0x10)!==0,key+': sinalizador alfa VP8L');
  assert.ok(E.RECRUIT_POOL.some(p=>p.sprite===key));
 }
 console.log('OK: arquivos de Barbosa, Garcia, Braga, Almeida, Sousa e Pereira integrados.');

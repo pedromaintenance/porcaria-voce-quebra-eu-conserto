@@ -647,7 +647,7 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 
 **Evidência recebida:** screenshot mostrou detalhes perdidos nos funcionários e Junior aparentemente apoiado sobre a caçamba no BOX 2. O código usava filtro `NEAREST` para quadros de 580×622 reduzidos a aproximadamente 54×64, agravando o aliasing. O lote anterior de seis WebP também usava compressão com perdas.
 
-**Ações:** atlas dos seis novos personagens recompostos dos PNG originais e salvos em WebP **lossless**, canal alfa e grade 2×2 preservados; Phaser filtra spritesheets de profissionais com **LINEAR** na minificação, sem mudar equipamentos; offset `workerOffsetX=-5` somente no BOX 2, aplicado após posicionamento/clamp nos perfis fullFrame e cropped, sem alterações na sombra, chão, máquinas ou HUD. Novo teste de regressão: `scripts/test-worker-visual-quality.cjs`.
+**Ações:** atlas dos seis novos personagens recompostos dos PNG originais e salvos em WebP **lossless**, canal alfa e grade 2×2 preservados; Phaser filtra spritesheets de profissionais com **LINEAR** na minificação, sem mudar equipamentos; offset `workerOffsetX=-5` somente no BOX 2, aplicado após posicionamento/clamp nos perfis fullFrame e cropped, sem alterações na sombra, chão, máquinas ou HUD. Novo teste de regressão: `scripts/test-worker-visual-quality.cjs`. O teste `test-named-recruits.cjs` interpreta o cabeçalho VP8L para dimensões/alfa (diferente do VP8X com perdas).
 
 **Limite de validação:** reposicionar 5 px não demonstra sozinho que desapareça a percepção de flutuação; conferir visualmente a oclusão entre profissional e caçamba no Pages. O jogo mantém a âncora inferior `(0.5,1)` e o Y original, e o QA humano é necessário.
 
