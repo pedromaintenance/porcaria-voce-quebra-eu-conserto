@@ -372,6 +372,74 @@ body{min-height:100vh}
  background:#122739;color:#b4c9d6;font-size:9px;line-height:1.45;font-weight:900;text-align:center}
 @media(max-width:650px){.teamIdentity{gap:7px}.teamPortrait{flex-basis:55px;width:55px;height:55px}}
 
+
+/* v0.8.24: OS com fluxo rápido sem rolagem. Histórico e detalhes preservam scrolling. */
+#menuOverlay.quick-order{padding:8px;overflow:hidden}
+#menuOverlay.quick-order .modalShell{width:min(760px,100%);max-height:calc(100dvh - 16px);border-radius:10px}
+#menuOverlay.quick-order .modalTop{padding:7px 12px;font-size:14px}
+#menuOverlay.quick-order .modalContent{padding:9px 12px 10px;overflow:hidden;flex:0 1 auto}
+#menuOverlay.quick-order [data-panel="detail"]{padding:0;border:0;background:none;box-shadow:none}
+#menuOverlay.quick-order [data-panel="detail"]>h2{display:none}
+#menuOverlay.quick-order .closeModal{padding:6px 11px;font-size:0;min-width:36px;min-height:32px}
+#menuOverlay.quick-order .closeModal::before{content:"✕";font-size:16px}
+#menuOverlay.full-order .modalContent{overflow-y:auto;overscroll-behavior:contain}
+.orderDetailNav{margin:0 0 10px}
+.quickOrder{display:grid;gap:9px;font-size:12px;line-height:1.3;color:#e7f3fa}
+.quickIdentity{display:flex;flex-wrap:wrap;justify-content:space-between;gap:5px;align-items:center}
+.quickIdentity strong{color:#ffca66;font-size:14px}
+.quickIdentity span{font-size:11px;color:#a9e1f6}
+.quickReport{background:#142c3d;border:1px solid #446278;border-radius:7px;padding:8px 10px}
+.quickReport small{font-weight:800;font-size:10px;letter-spacing:.04em;color:#ffc879}
+.quickReport p{margin:4px 0 0;max-height:4.8em;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;line-clamp:4;overflow-wrap:anywhere}
+.quickAllocation{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.quickAllocation label{display:grid;gap:4px;font-size:11px;color:#aecde0;font-weight:700;min-width:0}
+.quickAllocation select{width:100%;font-size:12px;padding:8px;min-width:0}
+.quickActions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:1px}
+.quickActions .act{font-size:11px;padding:8px 12px}
+.quickSectionHeading{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#cde3f2;font-size:11px}
+.quickSectionHeading strong{color:#ffc66b}
+.quickSectionHeading span{color:#a5c9dc;font-size:10px}
+.quickSteps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:5px}
+.quickStep{display:flex;flex-direction:column;gap:3px;min-width:0;min-height:48px;padding:5px 7px;border:1px solid #50697c;border-radius:7px;background:#102737}
+.quickStep small{font-size:10px;color:#aac3d6;font-weight:800}
+.quickStep b{font-size:11px;display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:#e8f4fe}
+.quickStep.confirmed{border-color:#4a9a78;background:#113e34}.quickStep.confirmed b{color:#b8ffd9}
+.quickStep.current{border-color:#ffd078;background:#594324}.quickStep.current b{color:#fff4c6}
+.quickOptions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.quickOption{font-size:11px;text-align:left;line-height:1.25;min-width:0;min-height:34px;background:#1b3b53;border:1px solid #65839c;color:#edf7ff;border-radius:7px;padding:7px 9px;cursor:pointer;overflow-wrap:anywhere}
+.quickOption:hover{border-color:#ffc66b;background:#275470}
+.quickOption:focus-visible{outline:2px solid #ffcb6a;outline-offset:2px}
+.quickFeedback,.quickEvidence,.quickFinding,.quickMissingTool,.quickPart,.quickNotice{margin:0;padding:7px 9px;border-radius:7px;border:1px solid #446780;background:#132c40;font-size:11px;overflow-wrap:anywhere}
+.quickFeedback.ok{border-color:#4f9777;color:#c1f9d5}.quickFeedback.wrong{border-color:#bc6d55;color:#ffd0c5}
+.quickEvidence{max-height:4.2em;overflow:hidden;color:#d4e5f2}
+.quickEvidenceButton{width:max-content;font-size:11px!important;padding:8px 11px!important}
+.quickFinding{border-color:#408f73}.quickFinding strong{color:#a8f2be}
+.quickFinding p{margin:4px 0 0;line-height:1.25}
+.quickPart,.quickMissingTool{display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.quickPart .act,.quickMissingTool .act{font-size:11px;padding:7px 10px}
+.quickNotice{color:#ffc985}
+@media(max-width:640px){
+ #menuOverlay.quick-order{padding:4px}
+ #menuOverlay.quick-order .modalContent{padding:6px 8px}
+ #menuOverlay.quick-order .modalTop{padding:5px 9px}
+ .quickOrder{gap:6px;font-size:11px}
+ .quickIdentity strong{font-size:12px}
+ .quickReport{padding:5px 7px}
+ .quickReport p{-webkit-line-clamp:3;line-clamp:3;max-height:3.9em}
+ .quickStep{min-height:39px;padding:4px 5px}
+ .quickStep b{font-size:10px}
+ .quickSteps{gap:4px}
+ .quickOption{padding:5px 7px;min-height:32px}
+ .quickActions .act{padding:7px 9px}
+}
+@media(max-height:600px){
+ #menuOverlay.quick-order .quickOrder{gap:4px}
+ #menuOverlay.quick-order .quickStep{min-height:35px;padding:3px 5px}
+ #menuOverlay.quick-order .quickReport p{-webkit-line-clamp:2;line-clamp:2;max-height:2.6em}
+ #menuOverlay.quick-order .quickOption{padding:4px 6px;min-height:28px}
+ #menuOverlay.quick-order .quickEvidence{max-height:2.5em}
+}
+
 </style></head><body>
 <div id="layout">
 <header class="top" role="banner">
@@ -424,7 +492,8 @@ body{min-height:100vh}
 <div class="stageWrap"><div class="bayHUD" id="bayHUD" aria-live="polite"></div><div class="stageLabel">OFICINA CENTRAL · PROTÓTIPO PHASER</div><div id="game"></div></div>
 <div class="dashboard" id="menuOverlay" role="dialog" aria-modal="true" aria-label="Menu de manutenção" hidden><div class="modalShell"><div class="modalTop"><strong id="modalHeading">MENU DA OFICINA</strong><button type="button" class="closeModal" id="closePanel" aria-label="Fechar menu">✕ FECHAR</button></div><div class="modalContent"><section class="panel" data-panel="management"><h2>📋 Gestão da Oficina</h2><div id="management"></div></section><section class="panel" data-panel="queue"><h2>📻 Rádio da Operação · Fila de OS</h2><div class="planningShortcut"><span>Priorize e programe os serviços em boxes disponíveis.</span><button class="act secondary" type="button" data-open-panel="planning">🗓️ PLANEJAR OS</button></div><div class="queueToolbar"><input type="search" id="queueSearch" placeholder="Buscar OS, modelo ou sintoma…" aria-label="Pesquisar ordens"><select id="queueFilter" aria-label="Filtrar ordens"><option value="all">Todas</option><option value="critical">Críticas</option><option value="waiting">Aguardando</option><option value="assigned">Alocadas</option></select></div><div id="queue"></div><div class="hint">Selecione uma ordem aqui ou clique num box para abrir o serviço.</div></section>
 <section class="panel" data-panel="planning"><h2>🗓️ Planejamento PCM · Prioridades e capacidade</h2><div id="planning"></div></section>
-<section class="panel" data-panel="detail"><h2>🔧 Ordem selecionada</h2><div id="detail"></div></section>
+<section class="panel" data-panel="detail"><h2>🔧 Resumo da OS</h2><div id="detail"></div></section>
+<section class="panel" data-panel="full-detail"><h2>🔧 Detalhes completos da OS</h2><div class="orderDetailNav"><button class="act secondary" data-order-back type="button">← VOLTAR AO RESUMO</button></div><div id="detailFull"></div></section>
 <section class="panel" data-panel="team"><h2>👷 Gestão de equipe</h2><div id="teamPanel"></div></section><section class="panel" data-panel="store"><h2>📦 Estoque, compras e ferramentas</h2><div class="queueToolbar"><input type="search" id="storeSearch" placeholder="Buscar material ou ferramenta…" aria-label="Pesquisar almoxarifado"><select id="storeFilter" aria-label="Filtro de estoque"><option value="all">Todos</option><option value="shortage">Sem saldo</option><option value="tools">Ferramentas</option></select></div><div id="storePanel"></div></section><section class="panel" data-panel="shift"><h2>📋 Briefing do próximo turno</h2><div id="shiftBrief"></div></section><section class="panel" data-panel="help"><h2>❔ Como jogar</h2><div class="helpList"><p><b>1.</b> Escolha a OS na fila e aloque um mecânico a um box livre.</p><p><b>2.</b> Investigue os seis níveis do diagnóstico. Evidências consomem energia, erros causam retrabalho.</p><p><b>3.</b> Confirme ferramentas, materiais e equipe; avance turnos para executar.</p><p><b>4.</b> Acompanhe bloqueios, estoque, moral e caixa antes de avançar.</p><p><b>Cenário:</b> o galpão original é exibido em duas artes completas 1976×796, uma diurna e outra noturna, preservando o enquadramento e a geometria dos três boxes conforme o turno. O botão <strong>VISUAL</strong> informa qual imagem está ativa; fundos personalizados ficam apenas neste navegador e podem ser removidos. Se uma textura oficial falhar, o jogo recorre ao cenário padrão disponível.</p><p><b>Diagnóstico visível:</b> a tela da OS destaca a fase atual entre Sistema, Grupo, Subgrupo, Componente, Dano e Causa; mostra o que você confirmou, o que o mecânico descobriu ao avançar turnos, evidências solicitadas e o registro de tentativas inconclusivas. Saves anteriores preservam resultados confirmados, mas não permitem recuperar a autoria anterior. <b>Aprendizado técnico:</b> cada fase apresenta uma questão de investigação, orientação metodológica e evidência orientativa somente mediante solicitação. As respostas continuam ocultas até a confirmação. As justificativas do catálogo aparecem após cada fase; a verificação recomendada e a lição do cenário só aparecem após a sexta etapa. <b>Prontidão operacional:</b> em <strong>GESTÃO</strong>, consulte HH úteis nominais, limites de boxes, mecânicos com energia ou moral em atenção, bloqueios de peças/ferramentas e OS críticas não alocadas. Os botões levam à equipe, estoque ou OS; a consulta permite voltar à OS original. A peça específica só é revelada após a confirmação do diagnóstico. Alertas excedentes podem ser expandidos. Nenhuma decisão é aplicada automaticamente. <strong>25/45 de energia e 25/40 de moral</strong> são alertas de balanceamento do jogo, não limites de saúde ocupacional.</p><p><b>Teste do sprite do CAT 777E:</b> em VISUAL, use “Testar PNG/WebP do 777E” para comparar sua nova arte no box sem substituir o sprite oficial. A imagem fica somente neste navegador (IndexedDB) e persiste ao atualizar; “Restaurar 777E oficial” reverte. Caso nenhuma OS 777E esteja alocada, programe uma pelo menu Fila. <b>Novo caminhão 777E:</b> arte refeita no ângulo frontal 3/4, sem logos, fundo transparente e posicionamento das rodas recalibrado. O arquivo anterior permanece como backup para reversão.</p><p><b>Oficina viva:</b> equipamentos permanecem parados e os mecânicos usam poses de inspeção e reparo, mantendo a posição no piso. Use a preferência de movimento reduzido do sistema para desativar as trocas de pose.</p><p><b>Comandos:</b> os controles de Visual, Ajuda e Avançar turno ficam na barra abaixo dos menus; a ação de turno não cobre as ordens nos boxes.</p><p><b>Mapeamento de cenário:</b> a oficina recortada e a imagem completa usam perfis geométricos separados. Ao carregar um cenário completo em Visual, os boxes, equipamentos, mecânicos, barras de progresso e áreas clicáveis são recalibrados juntos, sem alterar as ordens de serviço. A conferência visual fina dos limites ainda depende do teste no navegador.</p><p><b>Turnos e meta:</b> Turno A (dia) e Turno B (noite) têm 12h cada; DDS de 30min e refeição de 1h deixam 10,5 HH úteis por mecânico. Em Gestão, ajuste a <strong>Meta de produtividade</strong> entre 20 e 100 (base 60). Acima de 60, cresce exponencialmente o desgaste mental/físico; abaixo de 60 cai a moral. As duas artes originais em quadro completo são oficiais e alternam automaticamente: <strong>Turno A = dia, Turno B = noite</strong>. O fundo real está disponível no Pages sem importação. Em <strong>VISUAL → Substituir noite</strong>, você ainda pode testar um cenário alternativo localmente; <strong>Restaurar noite oficial</strong> volta ao asset publicado.</p><p><b>Visão semanal:</b> dentro de <strong>Planejar OS</strong>, selecione <strong>Janela semanal · 14 turnos</strong> para acompanhar capacidade bruta, etapas de diagnóstico, esforço restante de reparo e entregas previstas. A projeção <strong>não</strong> simula conclusões ou novas OS, e as compras só entram no saldo ao término do turno indicado.</p><p><b>Planejamento PCM:</b> na Gestão ou Fila de OS, abra <strong>Planejar OS</strong> para comparar criticidade, tempo de espera, peças, ferramentas e disponibilidade de mecânicos/boxes. A sugestão é uma heurística transparente de jogo; clique em <strong>Alocar sugestão</strong> para confirmar a escolha, ou abra a OS para escolher manualmente. Nenhuma compra é feita automaticamente.</p><p><b>Briefing:</b> clique em <strong>Avançar turno</strong> para revisar os três boxes, as peças e ferramentas faltantes, os pedidos em trânsito e a energia da equipe. O jogo só avança depois de você confirmar no painel; pedidos recebidos no fim do turno não liberam reparos durante esse mesmo turno.</p><p><b>Atalhos:</b> <kbd>0</kbd> Gestão, <kbd>1</kbd> Fila, <kbd>2</kbd> Ordem, <kbd>3</kbd> Equipe, <kbd>4</kbd> Almoxarifado, <kbd>5</kbd> Indicadores, <kbd>Esc</kbd> Fechar.</p></div></section><section class="panel" data-panel="stats"><h2>📊 Operação e recursos</h2><div id="stats"></div><section class="closedLedger" aria-label="Histórico técnico de ordens concluídas">
 <h2>📚 Histórico de OS concluídas</h2>
 <p>Abra um serviço encerrado para consultar o diagnóstico, as descobertas do mecânico, a lição técnica e o esforço registrado. Busca limitada às últimas 200 OS preservadas pela campanha.</p>
@@ -434,4 +503,4 @@ body{min-height:100vh}
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="../engine.js"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.7.8"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./game.js?v=0.8.22"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
+<script src="../engine.js"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.7.8"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.24"></script><script src="./game.js?v=0.8.24"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
