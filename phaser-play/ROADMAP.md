@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.18 — Junior como sétimo colaborador, duas fardas (balaclava para OS, camisa azul para treinamento futuro) e migração de saves; CI/Pages e QA visual pendentes.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.18 — Junior como sétimo colaborador, balaclava nas OS e camisa azul em Equipe/treinamento futuro; CI e Pages aprovados, QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -629,6 +629,9 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
 ## Entrega 0.8.18 — Junior Especialista: duas identidades visuais por contexto (P0 / personagens)
+
+**Publicação:** [PR #37](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/37) integrado à `main` no commit `201ce9ee`, com [CI #39088898785](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39088898785) e [Pages #39088956397](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39088956397) concluídos com sucesso. **Homologação visual no navegador ainda aberta.**
+
 
 **Origem:** duas cartelas enviadas pelo usuário representam **a mesma pessoa, Junior (Especialista)**. No trabalho em máquinas deve vestir proteção com **balaclava**; nos menus futuros de treinamento deve usar **camisa social azul**. Nenhum personagem duplicado, nenhuma arte nova gerada.
 
