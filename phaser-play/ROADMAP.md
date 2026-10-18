@@ -2,10 +2,37 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 18/10/2026 · **v0.8.20 em validação: elenco contratável e sprites WebP lossless com filtro LINEAR; Box 2 −5 px para mecânicos; CI e QA visual pendentes.**
+**Estado de referência:** 18/10/2026 · **v0.8.21 — novo atlas Junior e pré-filtragem de sprites em implementação; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.8.21 — Junior em proporção chibi e pré-filtragem dos sprites (P0 / arte e renderização)
+
+**Implementação de 18/10/2026.** Status: código e novo WebP preparados para publicação; CI e inspeção visual no navegador não equivalem à aprovação artística.
+
+### Corrigido
+- [x] Substituir **somente o atlas de campo do Junior** (`assets/characters/junior/junior-work-4poses.webp`), preservando a arte de camisa azul exclusiva de Equipe/treinamento.
+- [x] Usar a imagem revisada com cabeça maior e tronco mais largo, mantendo as poses ferramenta, aprovação, rádio e reparo ajoelhado.
+- [x] Separar corretamente as quatro silhuetas antes da criação do atlas: a imagem original 1254×1254 tinha poses com pixels além do limite teórico dos quadrantes, causando recorte de botas. O novo atlas 1160×1244 contém quatro quadros independentes de 580×622.
+- [x] Ancoragem de cada pose pelo menor ponto opaco, com **12 px inferiores de margem**; nenhuma silhueta invade outro quadro. O ponto de apoio `origin(.5,1)`, a posição dos boxes e a altura visual nominal dos profissionais não mudam.
+- [x] WebP VP8L **lossless** com transparência, SHA-256 `e902b323ec39c8eb8ad7a9c54633b96c0ba2ba88c42b1a353d913d4f6c8eea54`, **922.708 bytes**; hashes e tamanho conferidos no teste `test-junior-specialist.cjs`.
+- [x] **Pré-filtragem única por personagem e por pose** no Phaser: reamostragem do atlas de 580×622 para **290×311 por frame** via Canvas 2D (`imageSmoothingQuality='high'`), depois filtro LINEAR. Evita a minificação direta ~10× realizada anteriormente. O atlas original permanece íntegro; cache de texturas derivadas não é recalculado a cada frame.
+- [x] Nenhum deslocamento de máquinas, sombras, HUD, hitboxes, pontos de apoio nem alteração de save ou regras econômicas.
+- [x] Invalidação de cache PWA (`porcaria-vqec-20261018-v101`) e script Phaser (`game.js?v=0.8.21`); regressões para dimensões, filtragem, geometria e compatibilidade.
+
+### Limite material da nitidez
+A oficina usa mundo Phaser **1080×450**, ampliado via CSS no desktop. A pré-filtragem melhora a amostragem dos **sprites individuais**, mas não aumenta a resolução física do canvas. Dobrar a resolução da câmera/viewport é uma evolução separada, pois exige validar transformações de clique, barras, fontes, desempenho mobile e as três hitboxes. Não declarar nitidez perfeita sem capturas comparativas.
+
+### Homologação obrigatória no GitHub Pages
+- [ ] Limpar preview/caches, carregar campanha nova com Junior; conferir capacete, proporção, braços e botas nas quatro poses.
+- [ ] Verificar Junior em BOX 1/2/3, com fundo diurno e noturno; conferir 12 px de transparência abaixo das botas e ausência de corte/teleporte entre poses.
+- [ ] Conferir que Geovane, Pedro e demais contratáveis mantêm a posição e que os novos sprites estão **mais legíveis** em telas 1366, 1920 e mobile.
+- [ ] Executar OS (diagnóstico→reparo), concluir serviço, importar save legado e verificar identidade e persistência.
+- [ ] Testar fallback de textura no Firefox/Chromium, exportação/importação, PWA e custo de memória.
+- [ ] Registrar comparação de captura **antes/depois** e, somente então, aprovar arte e renderização.
+
+**Critério de aceite:** Junior compacto, quatro quadros íntegros e ancorados pelo mesmo piso; detalhes de EPI legíveis sem alterar a oficina nem o estado simulado.
 
 ## Princípios do projeto
 
@@ -1084,6 +1111,8 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.16:** três mecânicos novos Silva/Santos/Moura + renomeação Isaias→Costa, atlas WebP em quatro poses, seis iniciais, genéricos sem sprite e migração sem reatribuir IDs de contratados; PWA/testes atualizados. **QA visual pendente.**
 - **0.8.17:** asset Sandvik DR410i fornecido pelo jogador (1536×1024) convertido para WebP transparente, com EQ05 desvinculado de EQ06 e arquivo anterior preservado; testes exclusivos de textura, integridade e geometria. **QA visual pendente.**
 - **0.8.18:** Junior Especialista com dois atlas de 4 poses (EPI/balaclava nas OS; camisa azul em Equipe/treinamento futuro), nova identidade sem sobrescrever M7 legado, 7 profissionais e 3 boxes preservados. **QA visual pendente.**
+- **0.8.21:** Junior recebe atlas chibi com pés/frames normalizados e WebP lossless; personagens recebem pré-filtragem 2×/LINEAR com geometria mantida. **QA visual pendente.**
+- **0.8.20:** equipe inicial de três, 10 contratáveis identificados, 6 atlas WebP lossless, filtro LINEAR e BOX 2 −5 px nos trabalhadores; CI e deploy concluídos. **QA visual pendente.**
 - **0.8.19:** CAT D9, CAT 966 e CAT 16 recebem sprites WebP pixel-art completos, com chaves próprias EQ07/EQ08/EQ09 no Phaser, fallback histórico, hashes e teste de enquadramento no CI. **QA visual pendente.**
 
 ### Organização recomendada

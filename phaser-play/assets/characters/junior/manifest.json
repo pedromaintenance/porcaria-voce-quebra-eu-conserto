@@ -7,10 +7,10 @@
   "field": {
     "file": "junior-work-4poses.webp",
     "purpose": "oficina-OS",
-    "clothes": "capacete branco, óculos escuros, balaclava, uniforme cinza/amarelo, luvas",
-    "sha256": "a4777757f79ae25f595b5736fb112cc102455452e95969b2a3b64c653303a229",
-    "bytes": 202152,
-    "source": "Imagem do ChatGPT 17 de out. de 2026, 22_12_33(1).png",
+    "clothes": "capacete branco, óculos escuros, balaclava bege, colete amarelo com refletivos, mangas azul-escuro, luvas, calça azul, botas",
+    "sha256": "e902b323ec39c8eb8ad7a9c54633b96c0ba2ba88c42b1a353d913d4f6c8eea54",
+    "bytes": 922708,
+    "source": "operário_chibi_em_quatro_poses.png (imagem aprovada em 18/10/2026)",
     "frames": [
       "tool",
       "approval",
@@ -46,7 +46,7 @@
     "width": 1254,
     "height": 1254
   },
-  "processing": "Quadrantes originais sem desenho novo; componentes isolados de quadros adjacentes removidos; alinhamento de pés e transparência; WebP qualidade 91",
+  "processing": "Quatro silhuetas extraídas individualmente da imagem 1254×1254; reorganizadas em atlas 2×2 1160×1244, sem invasão de quadros; reamostragem LANCZOS e piso a 12 px do final de cada quadro 580×622; WebP VP8L lossless com alfa. Renderização prefiltrada em 290×311 px/frame no navegador.",
   "state": {
     "activeRoster": true,
     "trainingModuleImplemented": false,
