@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "characterId": "bia",
+  "displayName": "Bia",
+  "purpose": "visual-training-instructor",
+  "status": "reserved-for-future-training-ui",
+  "activeRoster": false,
+  "assetUsage": "preview-only; not loaded by phaser-play/game.js, not hireable, no mechanic or training effects implemented",
+  "format": "image/webp",
+  "sheetGrid": {
+    "columns": 2,
+    "rows": 2,
+    "width": 1160,
+    "height": 1244,
+    "frameWidth": 580,
+    "frameHeight": 622,
+    "indexOrder": "row-major; 0 top-left, 1 top-right, 2 bottom-left, 3 bottom-right",
+    "groundOffsetPx": 12
+  },
+  "sourceGrid": {
+    "width": 1254,
+    "height": 1254,
+    "cellWidth": 627,
+    "cellHeight": 627
+  },
+  "processing": "quadrant split; delete foreign disconnected overflow pixels at cell seams; global uniform image scale; center horizontally and align at 12px from frame bottom; preserve alpha; WebP lossy quality 91",
+  "atlases": [
+    {
+      "id": "feedback",
+      "file": "bia-feedback-4poses.webp",
+      "bytes": 248788,
+      "sha256": "0fc4202e7093374536e1714f34167c1847764db0bc0a40c7f49c3586df021e4e",
+      "source": "Imagem do ChatGPT 17 de out. de 2026, 21_15_24-4(1).png",
+      "sourceSha256": "b9d609146ffb3d998a72f17aa82471feee7d9f338e360db4f4a3b2fd60a2a1f9",
+      "frames": [
+        {
+          "index": 0,
+          "pose": "clipboard_review",
+          "row": 0,
+          "column": 0
+        },
+        {
+          "index": 1,
+          "pose": "approval_smile",
+          "row": 0,
+          "column": 1
+        },
+        {
+          "index": 2,
+          "pose": "clipboard_review_alt",
+          "row": 1,
+          "column": 0
+        },
+        {
+          "index": 3,
+          "pose": "approval_relaxed",
+          "row": 1,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "id": "inspection",
+      "file": "bia-inspection-4poses.webp",
+      "bytes": 247284,
+      "sha256": "69100bdf99c0b1cbecdddbceb64f8ca4f0d8109602e3a5dd89fc6414811f1009",
+      "source": "Imagem do ChatGPT 17 de out. de 2026, 21_15_23-2.png",
+      "sourceSha256": "dce8685a73ac377d5e69e86baf7fcd55c742ccbc9da3da33a9120fb804f3bbfd",
+      "frames": [
+        {
+          "index": 0,
+          "pose": "inspection_notes",
+          "row": 0,
+          "column": 0
+        },
+        {
+          "index": 1,
+          "pose": "approval_feedback",
+          "row": 0,
+          "column": 1
+        },
+        {
+          "index": 2,
+          "pose": "kneel_inspect",
+          "row": 1,
+          "column": 0
+        },
+        {
+          "index": 3,
+          "pose": "kneel_feedback",
+          "row": 1,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "id": "field",
+      "file": "bia-field-4poses.webp",
+      "bytes": 224604,
+      "sha256": "f9af54e86ef4223a8566fe9cbfb7742c84cdce9f826b62f292c5afae85d26a99",
+      "source": "Imagem do ChatGPT 17 de out. de 2026, 21_15_23-3.png",
+      "sourceSha256": "f591cf0c2225285800f2ccd60f1867b8c4e09546a4ef0854b04f5557b1b2e4da",
+      "frames": [
+        {
+          "index": 0,
+          "pose": "field_notes",
+          "row": 0,
+          "column": 0
+        },
+        {
+          "index": 1,
+          "pose": "field_notes_alt",
+          "row": 0,
+          "column": 1
+        },
+        {
+          "index": 2,
+          "pose": "walk_notes",
+          "row": 1,
+          "column": 0
+        },
+        {
+          "index": 3,
+          "pose": "radio_contact",
+          "row": 1,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "id": "coaching",
+      "file": "bia-coaching-4poses.webp",
+      "bytes": 240912,
+      "sha256": "e420ea6b416d0f2a5037a95dc3068faf91dd7f4480377a8e515a14b596389b85",
+      "source": "Imagem do ChatGPT 17 de out. de 2026, 21_15_22-1.png",
+      "sourceSha256": "50d3235fb88fc70ecd4f220af7cd1af45adfd1ecd035da6487eead22280baf30",
+      "frames": [
+        {
+          "index": 0,
+          "pose": "point_instruction",
+          "row": 0,
+          "column": 0
+        },
+        {
+          "index": 1,
+          "pose": "walk_to_task",
+          "row": 0,
+          "column": 1
+        },
+        {
+          "index": 2,
+          "pose": "kneel_happy",
+          "row": 1,
+          "column": 0
+        },
+        {
+          "index": 3,
+          "pose": "kneel_check",
+          "row": 1,
+          "column": 1
+        }
+      ]
+    }
+  ]
+}
