@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Validate JavaScript syntax
-        run: node --check engine.js && node --check phaser-play/game.js && node --check phaser-play/readiness.js && node --check phaser-play/diagnostic-board.js && node --check phaser-play/diagnostic-view.js && node --check scripts/test-readiness-navigation.cjs && node --check scripts/test-diagnostic.cjs && node --check scripts/test-diagnostic-teaching.cjs && node --check scripts/test-777-override.cjs && node --check phaser-play/closed-orders.js && node --check scripts/test-closed-orders.cjs && node --check scripts/test-bay-contact.cjs && node --check scripts/test-day-night-fullframe.cjs && node --check scripts/test-worker-roster.cjs && node --check scripts/test-dr410i-asset.cjs && node --check scripts/test-loader-grader-dozer-asset.cjs && node --check scripts/test-junior-specialist.cjs && node --check scripts/test-bia-training-assets.cjs
+        run: node --check engine.js && node --check phaser-play/game.js && node --check phaser-play/readiness.js && node --check phaser-play/diagnostic-board.js && node --check phaser-play/diagnostic-view.js && node --check scripts/test-readiness-navigation.cjs && node --check scripts/test-diagnostic.cjs && node --check scripts/test-diagnostic-teaching.cjs && node --check scripts/test-777-override.cjs && node --check phaser-play/closed-orders.js && node --check scripts/test-closed-orders.cjs && node --check scripts/test-bay-contact.cjs && node --check scripts/test-day-night-fullframe.cjs && node --check scripts/test-worker-roster.cjs && node --check scripts/test-dr410i-asset.cjs && node --check scripts/test-loader-grader-dozer-asset.cjs && node --check scripts/test-junior-specialist.cjs && node --check scripts/test-bia-training-assets.cjs && node --check scripts/test-supervisor-assets.cjs
       - name: Full Phaser regression suite
         run: |
           node scripts/smoke-phaser.cjs
@@ -35,3 +35,4 @@ jobs:
           node scripts/test-loader-grader-dozer-asset.cjs
           node scripts/test-junior-specialist.cjs
           node scripts/test-bia-training-assets.cjs
+          node scripts/test-supervisor-assets.cjs

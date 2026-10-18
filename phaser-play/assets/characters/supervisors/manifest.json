@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "library": "future-supervisors",
+  "version": "0.8.23-assets",
+  "status": "registered-not-integrated",
+  "description": "Personagens de supervisão reservados para mecânicas e UI futuras; não carregados no Phaser nem disponíveis em contratação.",
+  "grid": {
+    "columns": 2,
+    "rows": 2,
+    "width": 1160,
+    "height": 1244,
+    "frameWidth": 580,
+    "frameHeight": 622,
+    "indexOrder": "row-major",
+    "groundOffsetPx": 12
+  },
+  "characters": [
+    {
+      "id": "major",
+      "displayName": "Major",
+      "role": "supervisor",
+      "usage": "future-only",
+      "activeRoster": false,
+      "availableForHire": false,
+      "spriteSheet": {
+        "file": "major-4poses.webp",
+        "format": "WebP lossless with alpha",
+        "bytes": 735168,
+        "sha256": "dfeb1a19057126b8a2792e188e7165069b09bca29eff234eaae5ea7d9276e58e",
+        "width": 1160,
+        "height": 1244,
+        "frames": [
+          {
+            "index": 0,
+            "row": 0,
+            "column": 0,
+            "pose": "arms_crossed",
+            "sourceBoundingBox": [
+              159,
+              42,
+              467,
+              602
+            ],
+            "frameOpaqueBounds": [
+              131,
+              27,
+              448,
+              608
+            ],
+            "marginBottomPx": 14
+          },
+          {
+            "index": 1,
+            "row": 0,
+            "column": 1,
+            "pose": "thumbs_up",
+            "sourceBoundingBox": [
+              789,
+              29,
+              1092,
+              602
+            ],
+            "frameOpaqueBounds": [
+              134,
+              13,
+              446,
+              608
+            ],
+            "marginBottomPx": 14
+          },
+          {
+            "index": 2,
+            "row": 1,
+            "column": 0,
+            "pose": "tablet_review",
+            "sourceBoundingBox": [
+              152,
+              672,
+              475,
+              1229
+            ],
+            "frameOpaqueBounds": [
+              123,
+              31,
+              456,
+              608
+            ],
+            "marginBottomPx": 14
+          },
+          {
+            "index": 3,
+            "row": 1,
+            "column": 1,
+            "pose": "kneeling_radio",
+            "sourceBoundingBox": [
+              787,
+              747,
+              1093,
+              1228
+            ],
+            "frameOpaqueBounds": [
+              132,
+              110,
+              446,
+              608
+            ],
+            "marginBottomPx": 14
+          }
+        ]
+      },
+      "original": {
+        "file": "major-original.png",
+        "format": "PNG RGBA",
+        "bytes": 949216,
+        "sha256": "972ad57213b68e1a036aa119c08d583385b921f02af8a559e457b32185bef558",
+        "width": 1254,
+        "height": 1254
+      },
+      "processing": {
+        "componentThresholdAlpha": 64,
+        "componentConnectivity": 8,
+        "connectedObjects": 4,
+        "scale": 1.04363,
+        "maxHeightPx": 573,
+        "maxWidthPx": 323,
+        "footMarginPx": 12,
+        "resample": "LANCZOS",
+        "sourceImageUnmodified": true
+      }
+    },
+    {
+      "id": "duarte",
+      "displayName": "Duarte",
+      "role": "supervisor",
+      "usage": "future-only",
+      "activeRoster": false,
+      "availableForHire": false,
+      "spriteSheet": {
+        "file": "duarte-4poses.webp",
+        "format": "WebP lossless with alpha",
+        "bytes": 758568,
+        "sha256": "2a803c2529babee680492eb76b079127ef61826cba754d0489807e354e8ff442",
+        "width": 1160,
+        "height": 1244,
+        "frames": [
+          {
+            "index": 0,
+            "row": 0,
+            "column": 0,
+            "pose": "clipboard_notes",
+            "sourceBoundingBox": [
+              225,
+              3,
+              589,
+              648
+            ],
+            "frameOpaqueBounds": [
+              124,
+              14,
+              456,
+              608
+            ],
+            "marginBottomPx": 14
+          },
+          {
+            "index": 1,
+            "row": 0,
+            "column": 1,
+            "pose": "thumbs_up",
+            "sourceBoundingBox": [
+              738,
+              4,
+              1078,
+              648
+            ],
+            "frameOpaqueBounds": [
+              134,
+              15,
+              445,
+              608
+            ],
+            "marginBottomPx": 14
+          },
+          {
+            "index": 2,
+            "row": 1,
+            "column": 0,
+            "pose": "radio_contact",
+            "sourceBoundingBox": [
+              224,
+              632,
+              551,
+              1211
+            ],
+            "frameOpaqueBounds": [
+              140,
+              75,
+              439,
+              610
+            ],
+            "marginBottomPx": 12
+          },
+          {
+            "index": 3,
+            "row": 1,
+            "column": 1,
+            "pose": "clipboard_checklist",
+            "sourceBoundingBox": [
+              746,
+              632,
+              1170,
+              1211
+            ],
+            "frameOpaqueBounds": [
+              96,
+              75,
+              484,
+              610
+            ],
+            "marginBottomPx": 12
+          }
+        ]
+      },
+      "original": {
+        "file": "duarte-original.png",
+        "format": "PNG RGBA",
+        "bytes": 1387239,
+        "sha256": "69c51815ab37e53bd90ca742e08083c7ae21dc91fc4d532c677ff5db2e4e8cfb",
+        "width": 1299,
+        "height": 1211
+      },
+      "processing": {
+        "componentThresholdAlpha": 64,
+        "componentConnectivity": 8,
+        "connectedObjects": 4,
+        "scale": 0.927132,
+        "maxHeightPx": 645,
+        "maxWidthPx": 424,
+        "footMarginPx": 12,
+        "resample": "LANCZOS",
+        "sourceImageUnmodified": true
+      }
+    }
+  ],
+  "notes": "Nomes Major e Duarte atribuídos conforme ordem dos dois arquivos apresentados pelo usuário. Nenhum bônus, lógica ou novo save implementados."
+}
