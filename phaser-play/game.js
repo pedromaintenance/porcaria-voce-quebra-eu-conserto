@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.22 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.24 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -46,6 +46,7 @@ let BACKGROUND_PROFILES=null;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const brl=n=>Math.round(n).toLocaleString('pt-BR');
 let data,state,selected,scene;
+let orderReturnPanel='workshop',preferredBay=null,quickFeedback=null; // Navegação temporária, nunca salva na campanha.
 let renderProfile={scale:1,width:1080,height:450,centerX:859,centerY:270};
 const FILTER={queue:'all',query:'',store:'all',stockQuery:''};
 let toastTimeout;
@@ -131,7 +132,7 @@ function updateSceneStatus(){
  status.textContent=label;
 }
 
-const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO ATUAL',stats:'📊 INDICADORES E RECURSOS',planning:'🗓️ PLANEJAMENTO PCM',shift:'📋 BRIEFING DE TURNO',team:'👷 EQUIPE DA OFICINA',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA',management:'📋 GESTÃO DA OFICINA'};
+const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO', 'full-detail':'🔧 DETALHES COMPLETOS DA OS',stats:'📊 INDICADORES E RECURSOS',planning:'🗓️ PLANEJAMENTO PCM',shift:'📋 BRIEFING DE TURNO',team:'👷 EQUIPE DA OFICINA',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA',management:'📋 GESTÃO DA OFICINA'};
 function closeSceneMenu(){
  const menu=$('sceneMenu'),trigger=$('sceneMenuBtn');
  if(menu)menu.hidden=true;
@@ -146,6 +147,8 @@ function openPanel(name){
  if(scene?.input)scene.input.enabled=false;
  closeSceneMenu();
  overlay.hidden=false;
+ overlay.classList.toggle('quick-order',name==='detail');
+ overlay.classList.toggle('full-order',name==='full-detail');
  $('modalHeading').textContent=PANEL_TITLES[name]||'MENU DA OFICINA';
  document.querySelectorAll('[data-panel]').forEach(el=>el.classList.toggle('is-open',el.dataset.panel===name));
  document.querySelectorAll('.primary-nav [data-open-panel]').forEach(btn=>{const active=btn.dataset.openPanel===name;btn.classList.toggle('is-active',active);btn.setAttribute('aria-expanded',active?'true':'false')});
@@ -158,12 +161,34 @@ function closePanel(){
  document.body.style.overflow='';
  if(scene?.input)scene.input.enabled=true;
 }
+function closeOrder(){
+ if(orderReturnPanel==='queue'){
+  openPanel('queue');
+  $('queueSearch')?.focus();
+ }else closePanel();
+}
+function closeActivePanel(){
+ const active=document.querySelector('[data-panel].is-open')?.dataset.panel;
+ if(active==='detail'||active==='full-detail')closeOrder();
+ else closePanel();
+}
+function openQueueForBay(bay){
+ preferredBay=bay;
+ FILTER.queue='waiting';FILTER.query='';
+ $('queueFilter').value='waiting';$('queueSearch').value='';
+ renderQueue();openPanel('queue');
+}
 function save(){try{localStorage.setItem(SAVE,JSON.stringify(state))}catch(e){console.warn('Save',e)}}
 function action(error){if(error)notify(error);else{save();drawUI();if(scene)scene.refresh()}}
 function notify(t){const area=$('toast');if(!area)return;area.textContent=t;area.hidden=false;clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>{area.hidden=true},4400)}
 function job(){return E.job(state,selected)||state.jobs[0]}
-function pick(id){selected=id;drawUI();if(scene)scene.refresh();openPanel('detail')}
-function showJob(id){const j=E.job(state,id);if(j)pick(j.id)}
+function pick(id,from='workshop'){
+ if(!E.job(state,id))return;
+ orderReturnPanel=from==='queue'?'queue':'workshop';
+ quickFeedback=null;
+ selected=id;drawUI();if(scene)scene.refresh();openPanel('detail');
+}
+function showJob(id){const j=E.job(state,id);if(j)pick(j.id,'workshop')}
 function focusStore(item,fromJob){
  const source=fromJob?E.job(state,fromJob):null;
  stockReturnJobId=source?.id||null;
@@ -450,9 +475,9 @@ function drawUI(){
  $('backlog').textContent=k.backlog;$('energy').textContent=Math.round(state.player.mental)+'/100';
  drawBays();
  renderQueue();
- const j=job(), d=$('detail');
+ const j=job(), d=$('detailFull');
  if(!j){
-  d.innerHTML='<p>Sem ordens de serviço abertas.</p>';drawTeam();drawStore();
+  d.innerHTML='<p>Sem ordens de serviço abertas.</p>';$('detail').innerHTML=d.innerHTML;drawTeam();drawStore();
   $('stats').innerHTML='<p class="muted">Nenhuma OS aberta. Consulte as OS concluídas abaixo.</p>';
   drawCompletedOrders();
   $('logs').innerHTML=state.logs.slice(0,5).map(l=>`<div class="log">D${l.day}: ${esc(l.text)}</div>`).join('');
@@ -469,14 +494,15 @@ function drawUI(){
  <span class="${j.stage<6?'':stockOK?'ready':'warning'}">${j.stage<6?'🔎 Material a confirmar no diagnóstico':(stockOK?'✓':'!')+' Material: '+esc(part?.name||c.material)+' ('+(state.stock[c.material]||0)+' em estoque · '+inbound+' em trânsito)'}</span>
  <div class="actions"><button class="act secondary" data-do="stockTool">VER FERRAMENTAL</button>${j.stage>=6?'<button class="act secondary" data-do="stockPart">VER PEÇA CONFIRMADA</button>':''}</div></div>`;
  let out=`<div class="diagnosticOsTitle">${esc(m?.title)} · ${esc(j.id)}</div><p class="muted">Prioridade: ${j.priority===3?'Crítica':j.priority===2?'Alta':'Moderada'} · Tempo desde abertura: ${age}h · OS ${esc(j.id)}</p><p class="muted">${esc(j.report)}</p>`;
- out+=window.PORCARIA_DIAGNOSTIC_VIEW.render(window.PORCARIA_DIAGNOSTIC.compute(state,data,j),j.id);
+ const diagnosis=window.PORCARIA_DIAGNOSTIC.compute(state,data,j);
+ out+=window.PORCARIA_DIAGNOSTIC_VIEW.render(diagnosis,j.id);
  out+='<div id="notice" style="display:none"></div>';
  if(!j.assigned){
   const busy=new Set(state.jobs.map(x=>x.assigned).filter(Boolean));
   const free=state.team.filter(x=>!busy.has(x.id)&&x.restAt!==state.tick);
   const bays=[0,1,2].filter(x=>!state.jobs.some(z=>z.bay===x));
   if(free.length&&bays.length){
-   out+=`<p class="muted">Escolha um profissional e um box para iniciar.</p><div class="actions"><select id="mechanic">${free.map(x=>`<option value="${x.id}">${esc(x.name)} (${esc(x.id)}) · ${esc(x.specialty||x.role)}</option>`).join('')}</select><select id="bay">${bays.map(x=>`<option value="${x}">BOX ${x+1}</option>`).join('')}</select></div><div class="actions"><button class="act" data-do="assign">ALOCAR E INVESTIGAR</button></div>`;
+   out+=`<p class="muted">Escolha um profissional e um box para iniciar.</p><div class="actions"><select id="mechanicFull">${free.map(x=>`<option value="${x.id}">${esc(x.name)} (${esc(x.id)}) · ${esc(x.specialty||x.role)}</option>`).join('')}</select><select id="bayFull">${bays.map(x=>`<option value="${x}">BOX ${x+1}</option>`).join('')}</select></div><div class="actions"><button class="act" data-do="assign">ALOCAR E INVESTIGAR</button></div>`;
   }else out+='<p class="muted">Sem mecânicos ou boxes livres. Libere um serviço ou avance o turno.</p>';
  }else{
   const mech=E.employee(state,j.assigned);
@@ -497,6 +523,9 @@ function drawUI(){
  }
  out+=resourceInfo;
  d.innerHTML=out;
+ $('detail').innerHTML=window.PORCARIA_ORDER_QUICK.render({
+  job:j,state,data,model:m,scenario:c,diagnostic:diagnosis,preferredBay,feedback:quickFeedback
+ });
  $('stats').innerHTML=`<div class="status">OS concluídas: <b>${k.done}</b> · Críticas: <b>${k.critical}</b></div><div class="status">Reputação: <b>${k.reputation}/100</b> · Utilização: <b>${k.utilization}%</b></div><div class="status">Mecânicos disponíveis: <b>${state.team.filter(x=>!x.assigned).length}</b></div><div class="progress"><i style="width:${k.reputation}%"></i></div><div class="legend">⚒ Clique nos boxes da oficina para selecionar uma OS.</div>`;
  drawTeam();drawStore();drawCompletedOrders();
  $('logs').innerHTML=state.logs.slice(0,5).map(l=>`<div class="log">D${l.day}: ${esc(l.text)}</div>`).join('');
@@ -577,21 +606,32 @@ function events(){
  $('queueFilter').addEventListener('change',ev=>{FILTER.queue=ev.target.value;renderQueue()});
  $('storeSearch').addEventListener('input',ev=>{FILTER.stockQuery=ev.target.value;drawStore()});
  $('storeFilter').addEventListener('change',ev=>{FILTER.store=ev.target.value;drawStore()});
- $('closePanel').addEventListener('click',closePanel);
- $('menuOverlay').addEventListener('click',ev=>{if(ev.target===$('menuOverlay'))closePanel()});
+ $('closePanel').addEventListener('click',closeActivePanel);
+ $('menuOverlay').addEventListener('click',ev=>{if(ev.target===$('menuOverlay'))closeActivePanel()});
  document.addEventListener('keydown',ev=>{
  if(ev.key==='Escape'){
   if(!$('sceneMenu').hidden){closeSceneMenu();$('sceneMenuBtn').focus();return}
-  closePanel();return;
+  closeActivePanel();return;
  }
  if(ev.altKey||ev.ctrlKey||ev.metaKey||['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName))return;
  const panels={'0':'management','1':'queue','2':'detail','3':'team','4':'store','5':'stats'};
- if(panels[ev.key]){ev.preventDefault();openPanel(panels[ev.key])}
+ if(panels[ev.key]){ev.preventDefault();if(panels[ev.key]==='detail'){orderReturnPanel='workshop';quickFeedback=null}if(panels[ev.key]==='queue')preferredBay=null;openPanel(panels[ev.key])}
  });
  document.addEventListener('click',ev=>{
   if(!ev.target.closest('.scene-tools'))closeSceneMenu();
+  const quickDetails=ev.target.closest('[data-order-details]');
+  if(quickDetails){openPanel('full-detail');return}
+  const quickBack=ev.target.closest('[data-order-back]');
+  if(quickBack){openPanel('detail');return}
+  const quickClose=ev.target.closest('[data-order-close]');
+  if(quickClose){closeOrder();return}
   const submenu=ev.target.closest('[data-open-panel]');
-  if(submenu){if(submenu.dataset.openPanel==='store'){stockReturnJobId=null;FILTER.stockQuery='';$('storeSearch').value='';drawStore()}openPanel(submenu.dataset.openPanel);return}
+  if(submenu){
+   if(submenu.dataset.openPanel==='store'){stockReturnJobId=null;FILTER.stockQuery='';$('storeSearch').value='';drawStore()}
+   if(submenu.dataset.openPanel==='detail'){orderReturnPanel='workshop';quickFeedback=null}
+   if(submenu.dataset.openPanel==='queue')preferredBay=null;
+   openPanel(submenu.dataset.openPanel);return;
+  }
   const planHorizon=ev.target.closest('[data-planning-horizon]');
   if(planHorizon){
    planningHorizon=planHorizon.dataset.planningHorizon==='week'?'week':'turn';
@@ -646,7 +686,7 @@ function events(){
  if(storeBack){
   const origin=E.job(state,storeBack.dataset.stockReturn);
   if(!origin){stockReturnJobId=null;drawStore();notify('A OS de origem já saiu da carteira.');return}
-  stockReturnJobId=null;pick(origin.id);return;
+  stockReturnJobId=null;pick(origin.id,orderReturnPanel);return;
  }
  const closedBack=ev.target.closest('[data-closed-back]');
  if(closedBack){completedOrderId=null;drawCompletedOrders();$('closedOrderSearch').focus();return}
@@ -656,10 +696,14 @@ function events(){
   if(!completed){notify('OS já não está no histórico da campanha.');drawCompletedOrders();return}
   completedOrderId=completed.id;drawCompletedOrders();return;
  }
- const p=ev.target.closest('[data-pick]');if(p){pick(p.dataset.pick);return}
+ const p=ev.target.closest('[data-pick]');if(p){pick(p.dataset.pick,p.closest('[data-panel="queue"]')?'queue':'workshop');return}
   const ans=ev.target.closest('[data-answer]');if(ans){
+   const current=job(),stage=current?.stage||0;
+   const label=current?.options?.[stage]?.find(o=>o.id===ans.dataset.answer)?.label||'Hipótese selecionada';
    const result=E.answer(state,data,selected,ans.dataset.answer);
    if(result.error){notify(result.error);return}
+   quickFeedback={jobId:selected,ok:result.ok,text:(result.ok?'✓ Confirmado: ':'✕ Hipótese rejeitada: ')+label+
+     (result.ok?' · etapa registrada.':' · haverá retrabalho e consumo de energia.')};
    action(null);if(!result.ok)notify('Hipótese incorreta: custo e retrabalho adicionados.');
    return;
   }
@@ -674,7 +718,11 @@ function events(){
   focusStore(item,source?.id);return;
  }
   const j=job();if(!j)return;const c=E.scenario(data,j.scene);
-  if(b.dataset.do==='assign')action(E.attach(state,j.id,$('mechanic').value,Number($('bay').value),true));
+  if(b.dataset.do==='assign'){
+   const full=!!b.closest('[data-panel="full-detail"]');
+   const mechanic=$(full?'mechanicFull':'mechanic'),bay=$(full?'bayFull':'bay');
+   if(mechanic&&bay)action(E.attach(state,j.id,mechanic.value,Number(bay.value),true));
+ }
   if(b.dataset.do==='release')action(E.release(state,j.id));
   if(b.dataset.do==='hint')action(E.hint(state,data,j.id));
   if(b.dataset.do==='tool')action(E.buyTool(state,data,c.tool));
@@ -850,7 +898,7 @@ class Workshop extends Phaser.Scene{
   return this.activeBayLayout.map(({id,hitWorld})=>{
    const hit=this.add.zone(hitWorld.x,hitWorld.y,hitWorld.width,hitWorld.height)
     .setOrigin(0).setInteractive({useHandCursor:true});
-   hit.on('pointerdown',()=>{if(modalOpen())return;const j=state.jobs.find(z=>z.bay===id);if(j)pick(j.id)});
+   hit.on('pointerdown',()=>{if(modalOpen())return;const j=state.jobs.find(z=>z.bay===id);if(j)pick(j.id,'workshop');else openQueueForBay(id)});
    return hit;
   });
  }
@@ -1144,7 +1192,7 @@ async function boot(){
   E.normalizeRoster(state); // inclui campanhas antigas sem apagar OS nem contratações.
   state.productivityTarget=E.productivityProfile(state.productivityTarget).target;
   selected=state.jobs[0]?.id;events();drawUI();
-  if(!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
+  if(!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
   if(!window.PORCARIA_RENDER_QUALITY)throw Error('Configuração de nitidez indisponível.');
   renderProfile=window.PORCARIA_RENDER_QUALITY.profile({
    viewportWidth:window.innerWidth,devicePixelRatio:window.devicePixelRatio,

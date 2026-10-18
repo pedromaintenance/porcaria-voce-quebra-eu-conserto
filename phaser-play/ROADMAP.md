@@ -2,10 +2,48 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 18/10/2026 · **v0.8.23 (assets-only) — Major e Duarte cadastrados como supervisores futuros, 8 poses; motor do jogo permanece na v0.8.22.**
+**Estado de referência:** 18/10/2026 · **v0.8.24 — resumo compacto de OS, alocação e diagnóstico contextual; menu completo apenas em Detalhes; homologação interativa pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.8.24 — Fluxo compacto de OS e diagnóstico sem rolagem (UX / P0)
+
+**Objetivo:** o jogador não deve ser obrigado a navegar por um modal longo para alocar uma OS ou investigar suas seis etapas. A interface distingue **resumo rápido** de **detalhes completos** sem modificar as funções, custos ou resultados do motor de manutenção.
+
+### Estados de interação
+
+| Gatilho/estado | Conteúdo do resumo | Encerramento |
+|---|---|---|
+| Clique em **box vazio** | Abre **Fila de OS** filtrada por **Aguardando**; o box escolhido fica pré-selecionado na alocação | X da fila retorna à oficina |
+| Clique em OS **não alocada** na fila | Relato operador/inspetor; selects **mecânico** e **box**, botão **Alocar**, **Detalhes** e **Fechar** | Fechar/X/Esc volta à lista, com pesquisa/filtro preservados |
+| Clique em OS **alocada** na fila | Relato; seis quadrinhos (Sistema, Grupo, Subgrupo, Componente, Dano, Causa); quatro hipóteses e **Solicitar evidência**; **Detalhes** | X/Esc retorna à lista |
+| Clique em **box ocupado** | Mesma tela de OS alocada | X/Esc retorna à oficina, sem passar pela lista |
+| Falta ferramenta com diagnóstico incompleto | Mostra seis quadrinhos e **somente Comprar ferramenta** em vez de hipóteses e evidência; **Detalhes** continua disponível | Mesma origem |
+| Após etapa 6 | Exibe resultados confirmados de **Componente / Dano / Causa**, informação de estoque e botão **Comprar peça** se peça confirmada estiver sem saldo; **Detalhes** | Mesma origem |
+| Botão **Detalhes** | Painel longo original, com todos os logs, explicações, recursos, controles e **Liberar box** | Voltar ao resumo ou X/Esc à origem |
+
+### Mudanças na implementação
+- [x] Criar `phaser-play/order-quick.js`: renderizador isolado, sem mutações do engine, HTML escapado, conteúdo condicionado a alocação/etapa/ferramental/estoque.
+- [x] Manter `data-panel="detail"` como resumo e criar `data-panel="full-detail"` para o menu integral já conhecido; todo botão **Liberar Box** fica exclusivamente dentro do painel integral.
+- [x] Recuperar origem na navegação (`queue` vs `workshop`) para X, Esc e Fechar; dados apenas de navegação em memória, não no save.
+- [x] No box vazio, abrir fila e pré-selecionar o box no formulário de alocação; a engine continua validando conflitos de mecânico, box e descanso.
+- [x] Mostrar feedback de hipótese escolhida **logo abaixo dos seis quadros**, sem antecipar a resposta antes do clique. Resposta correta/incorreta continua registrada por `E.answer`; custo de retrabalho e recuperação de energia permanecem iguais.
+- [x] Evidência da fase só aparece após `E.hint`; o custo de energia mental permanece, sem revelar a hipótese correta.
+- [x] Ferramenta faltante bloqueia a escolha de hipótese e a solicitação de evidência como já faz `engine.js`, agora refletindo também esse bloqueio no modal.
+- [x] Diagnóstico concluído mostra somente resultados já confirmados; `Comprar peça` usa a compra urgente atual (`E.orderMaterial`) e só aparece quando não há saldo nem uso confirmado.
+- [x] CSS compacto: modal de até 760 px, seis quadros em grade 3×2, quatro hipóteses 2×2; tamanhos, espaçamentos e botões reduzidos com regras responsivas (inclusive telas baixas); `overflow:hidden` exclusivo do resumo rápido, `overflow-y:auto` no menu de detalhes.
+- [x] Alterar HTML, scripts, cache PWA e adicionar regressão `scripts/test-order-quick.cjs` ao CI, validação de elenco e deploy.
+
+### Limites e homologação
+- O relato pode ser mais longo que o espaço disponível: o resumo limita linhas visuais para preservar a janela sem scroll, mas o texto completo permanece no menu Detalhes.
+- Fila, Gestão, Almoxarifado e demais painéis conservam seu próprio comportamento de rolagem, necessário para listas extensas; **a restrição sem scroll é dos modais rápidos de OS**.
+- [ ] Homologar no navegador desktop, Android e telas baixas: primeira seleção na fila, box vazio, box ocupado, retorno pelo X/Esc, box pré-selecionado e quatro hipóteses.
+- [ ] Conferir progressão de etapas com acerto/erro, registro de evidência, compra de ferramenta, falta de saldo/peça, pedido em trânsito, liberação somente nos Detalhes.
+- [ ] Verificar se textos longos de falha, nomes de recursos e labels das hipóteses cabem e permanecem acessíveis; testar navegação por teclado.
+- [ ] Testar importação/exportação de campanha anterior e exibir a mesma OS após retorno do menu completo.
+
+**Critério de aceite:** alocação e diagnóstico em no máximo uma tela sem rolagem do resumo, preservando o processo de manutenção e retorno contextual.
 
 ## Entrega 0.8.23 — Biblioteca de supervisores (apenas assets; sem gameplay)
 
