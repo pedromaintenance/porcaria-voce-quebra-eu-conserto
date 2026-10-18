@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.21 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.22 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -38,13 +38,15 @@ const WORKER_SHEETS=Object.freeze({
 // Uniforme de treinamento não é carregado como sprite da oficina.
 const TEAM_PORTRAITS=Object.freeze({junior:'./assets/characters/junior/junior-training-4poses.webp'});
 const WORKER_FRAME={width:580,height:622,poses:4};
-const WORKER_RENDER_FRAME={width:290,height:311}; // pré-filtragem 2×, sem alterar tamanho em cena
+const WORKER_RENDER_FRAME={width:290,height:311}; // amostragem intermediária independente por pose
+const WORKER_DISPLAY={width:66,height:80}; // 22% maior, mantendo âncora inferior e boxes
 const WORKER_POSES={blocked:[0],diagnose:[0,2,1,2],repair:[0,3,2,3]};
 let MODEL_PRESENTATION={};
 let BACKGROUND_PROFILES=null;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const brl=n=>Math.round(n).toLocaleString('pt-BR');
 let data,state,selected,scene;
+let renderProfile={scale:1,width:1080,height:450,centerX:859,centerY:270};
 const FILTER={queue:'all',query:'',store:'all',stockQuery:''};
 let toastTimeout;
 let planningHorizon='turn';
@@ -759,8 +761,9 @@ class Workshop extends Phaser.Scene{
  create(){
   scene=this;this.cameras.main.setBackgroundColor('#182838');
   if(modalOpen())this.input.enabled=false;
-  // Enquadramento solicitado: camera recorta o mundo, sem redimensionar sprites nem as zonas de clique.
-  this.cameras.main.setScroll(319,45);
+  // Canvas de 1×/2× e zoom correspondente: a camera SEMPRE mostra os mesmos
+  // 1080×450 pixels logicos da oficina; Phaser traduz o input pela camera.
+  this.cameras.main.setZoom(renderProfile.scale).centerOn(renderProfile.centerX,renderProfile.centerY);
   const g=this.add.graphics();const box=(x,y,w,h,fill,stroke)=>{g.fillStyle(fill);g.fillRect(x,y,w,h);if(stroke){g.lineStyle(2,stroke);g.strokeRect(x,y,w,h)}};
   // Camadas de oficina: fundo montanhoso, galpao, guindastes, pátio, ferramental.
   box(0,0,1440,650,0x293541);
@@ -1005,8 +1008,8 @@ class Workshop extends Phaser.Scene{
  }
  worker(x,y,mechanic,{facing='right',mode='diagnose',visualCalibrationX=0,bay=null}={}){
   x=this.activeProfile==='fullFrame'&&bay
-   ?window.PORCARIA_LAYOUT.placeWorkerInBay(x,bay,54,2)
-   :window.PORCARIA_LAYOUT.calibratedCenter(x,54,SCENE_REFERENCE,visualCalibrationX,8);
+   ?window.PORCARIA_LAYOUT.placeWorkerInBay(x,bay,WORKER_DISPLAY.width,2)
+   :window.PORCARIA_LAYOUT.calibratedCenter(x,WORKER_DISPLAY.width,SCENE_REFERENCE,visualCalibrationX,8);
   x+=Number(bay?.workerOffsetX)||0; // Ajuste visual somente do mecânico no BOX 2.
   const person=mechanic?.sprite;
   const texture=person&&WORKER_SHEETS[person]?'worker_'+person:null;
@@ -1017,7 +1020,7 @@ class Workshop extends Phaser.Scene{
    this.textures.get(renderKey).setFilter(Phaser.Textures.FilterMode.LINEAR);
    const poses=WORKER_POSES[mode]||WORKER_POSES.diagnose;
    const actor=this.add.sprite(x,y,renderKey,poses[0]).setOrigin(.5,1);
-   actor.setScale(Math.min(54/frame.width,64/frame.height));
+   actor.setScale(Math.min(WORKER_DISPLAY.width/frame.width,WORKER_DISPLAY.height/frame.height));
    actor.setFlipX(facing==='left');
    this.workerSprites.push({sprite:actor,frames:poses,index:0});
    return actor;
@@ -1142,8 +1145,13 @@ async function boot(){
   state.productivityTarget=E.productivityProfile(state.productivityTarget).target;
   selected=state.jobs[0]?.id;events();drawUI();
   if(!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
-  new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1080,height:450,
-   backgroundColor:'#182838',render:{pixelArt:false,antialias:false,roundPixels:true},
+  if(!window.PORCARIA_RENDER_QUALITY)throw Error('Configuração de nitidez indisponível.');
+  renderProfile=window.PORCARIA_RENDER_QUALITY.profile({
+   viewportWidth:window.innerWidth,devicePixelRatio:window.devicePixelRatio,
+   override:new URLSearchParams(window.location.search).get('quality'),sceneRef:SCENE_REFERENCE
+  });
+  new Phaser.Game({type:Phaser.AUTO,parent:'game',width:renderProfile.width,height:renderProfile.height,
+   backgroundColor:'#182838',render:{pixelArt:false,antialias:true,antialiasGL:true,roundPixels:true},
    scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_HORIZONTALLY},scene:[Workshop]});
  }catch(e){console.error(e);$('game').innerHTML='<div style="padding:60px;color:#ffc86a">Não foi possível iniciar a cena Phaser: '+esc(e.message)+'</div>'}
 }
