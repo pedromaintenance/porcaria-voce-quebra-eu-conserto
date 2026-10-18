@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Biblioteca 0.8.15 — Bia com 16 poses e projeto de treinamento por disciplina/equipamento documentado (sem efeitos no motor ou na equipe); CI/QA pendentes.**
+**Estado de referência:** 17/10/2026 · **Biblioteca 0.8.15 — Bia com 16 poses e projeto de treinamento por disciplina/equipamento documentado; CI/Pages aprovados, QA visual pendente; mecânica de treinamento ainda não implementada.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -629,6 +629,9 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
 ## Entrega 0.8.15 — Acervo da Bia e projeto de treinamento (P1 / base artística + planejamento)
+
+**Publicado:** [PR #34](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/34) integrado na `main` (commit `32c5107a`). [CI #39083803606](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39083803606) e [Pages #39083846517](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39083846517) aprovados, incluindo os quatro hashes. **A biblioteca visual aguarda homologação humana no navegador; T1–T5 continuam futuros.**
+
 
 **Escopo desta entrega:** organizar as quatro cartelas fornecidas para futura interface de capacitação e detalhar um projeto pedagógico que aumente capacidades de diagnóstico e reparo por **disciplina e equipamento**. **Não implementar ainda a compra de cursos, ganho de habilidade ou alteração de saves.**
 
