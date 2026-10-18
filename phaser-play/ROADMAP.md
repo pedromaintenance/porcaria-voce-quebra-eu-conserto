@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.16 — seis personagens na equipe inicial (Costa, Pedro, Geovane, Silva, Santos e Moura), migração de saves sem sobrescrever contratados; QA visual e CI pendentes.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.16 — seis personagens na equipe inicial (Costa, Pedro, Geovane, Silva, Santos e Moura), migração sem sobrescrever contratados; CI e Pages aprovados, QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -629,6 +629,9 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
 ## Entrega 0.8.16 — Costa, Silva, Santos e Moura: equipe inicial ampliada (P0 / personagens)
+
+**Publicação:** [PR #35](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/35) integrado à `main` (commit `bfaad3fb`), com [CI #39086221428](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39086221428) aprovado e [Pages #39086274259](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39086274259) publicado com sucesso. Os seis hashes de sprites e os testes de migração/HH passaram. **A avaliação visual das quatro poses por profissional no navegador permanece pendente.**
+
 
 **Origem:** o jogador enviou três cartelas novas para Silva, Santos e Moura e solicitou a mudança do nome Isaias para Costa. A ordem dos arquivos anexados determina a associação: Silva = marreta e óculos escuros; Santos = chave, óculos transparentes e lanterna vermelha; Moura = proteção facial e rádio. A arte da Bia continua exclusiva do futuro módulo de treinamento.
 
