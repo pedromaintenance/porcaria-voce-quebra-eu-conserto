@@ -35,7 +35,6 @@ jobs:
           echo "0fc4202e7093374536e1714f34167c1847764db0bc0a40c7f49c3586df021e4e  phaser-play/assets/characters/bia/bia-feedback-4poses.webp" | sha256sum --check
           echo "69100bdf99c0b1cbecdddbceb64f8ca4f0d8109602e3a5dd89fc6414811f1009  phaser-play/assets/characters/bia/bia-inspection-4poses.webp" | sha256sum --check
           echo "f9af54e86ef4223a8566fe9cbfb7742c84cdce9f826b62f292c5afae85d26a99  phaser-play/assets/characters/bia/bia-field-4poses.webp" | sha256sum --check
-          echo "e420ea6b416d0f2a5037a95dc3068faf91dd7f4480377a8e515a14b596389b85  phaser-play/assets/characters/bia/bia-coaching-4poses.webp"
           echo "e420ea6b416d0f2a5037a95dc3068faf91dd7f4480377a8e515a14b596389b85  phaser-play/assets/characters/bia/bia-coaching-4poses.webp" | sha256sum --check
       - name: Check Pages entrypoints
         run: test -f phaser-play/readiness.js && test -f phaser-play/diagnostic-board.js && test -f phaser-play/diagnostic-view.js && test -f phaser-play/closed-orders.js && test -f phaser-play/assets/OFICINA-NOTURNA.md && test -f phaser-play/index.html && test -f phaser-play/game.js && test -f phaser-play/planning.js && test -f phaser-play/weekly.js && test -f phaser-play/scene-map.json && test -f phaser-play/assets/oficina-diurna-fullframe.avif && test -f phaser-play/assets/characters/isaias-4poses.webp && test -f phaser-play/assets/characters/pedro-4poses.webp && test -f phaser-play/assets/characters/geovane-4poses.webp && test -f game-data.json
