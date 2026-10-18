@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.14 — sprites dos três profissionais oficiais, equipe inicial de três e Mecânicos genéricos sem sprite; CI/Pages aprovados, QA visual pendente.**
+**Estado de referência:** 17/10/2026 · **Biblioteca 0.8.15 — Bia com 16 poses e projeto de treinamento por disciplina/equipamento documentado (sem efeitos no motor ou na equipe); CI/QA pendentes.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -628,6 +628,43 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
+## Entrega 0.8.15 — Acervo da Bia e projeto de treinamento (P1 / base artística + planejamento)
+
+**Escopo desta entrega:** organizar as quatro cartelas fornecidas para futura interface de capacitação e detalhar um projeto pedagógico que aumente capacidades de diagnóstico e reparo por **disciplina e equipamento**. **Não implementar ainda a compra de cursos, ganho de habilidade ou alteração de saves.**
+
+### Assets e rastreabilidade — implementado
+
+- [x] **Quatro atlas WebP transparentes** da Bia, cada um com 4 quadros (16 poses). Diretório `phaser-play/assets/characters/bia/`. Atlas `1160 × 1244`, quadros `580 × 622`, mesma escala de personagem, pés alinhados e alpha preservado.
+- [x] **Coleções nomeadas:** `feedback` (prancheta/aprovação), `inspection` (anotações/ajoelhada), `field` (prancheta/rádio/caminhada), `coaching` (apontar/caminhar/avaliar ajoelhada).
+- [x] **Origem preservada:** quatro PNGs originais de 1254 × 1254 fornecidos na conversa, sem geração de personagens ou redesenho. Fragmentos provenientes de quadros vizinhos removidos na conversão mecânica. WebP qualidade 91.
+- [x] **Manifesto de poses** `assets/characters/bia/manifest.json` com quatro arquivos, origem, SHA-256, dimensões e índices de quadros.
+- [x] **Galeria independente** para homologação visual, sem carregar Bia na oficina: [Visualizar as 16 poses](assets/characters/bia/).
+- [x] **Guia de sprites** `assets/characters/bia/README.md`, com uso previsto no Phaser. `scripts/test-bia-training-assets.cjs` protege integridade, dimensões, número de quadros e Bia fora da equipe inicial.
+- [x] **Sem alteração do motor:** Isaias/Pedro/Geovane continuam equipe inicial, contratação genérica mantém `sprite:null`, UI operacional/diagnóstico e save não são alterados.
+
+### Sistema de treinamento — especificado, **ainda não implementado**
+
+O projeto completo está em [TRAINING_DESIGN.md](TRAINING_DESIGN.md). Ele abrange:
+
+- [x] **T0 / desenho:** fundamentos, diagnóstico e reparo independentes; disciplinas `motor`, `hidraulica`, `rodante`, `eletrica`, `perfuracao`, `solda`, `geral` e segurança (futuro), e as nove máquinas EQ01–EQ09 já cadastradas.
+- [x] **Matriz de progressão proposta** N0–N4 por disciplina e por modelo, separando especialização diagnóstica da capacidade de execução; limites de bônus configuráveis e sem atalhos que revelem respostas de OS.
+- [x] **Economia planejada:** teoria, simulador, prática e avaliação consomem turnos, recursos e disponibilidade do colaborador. Geovane poderá atuar como instrutor somente se o tempo dele for contabilizado; Bia é apenas apoio visual.
+- [x] **Integração prevista:** salvar competências com migração explícita, respeitar descanso e OS em andamento; medir custo, HH sacrificadas, MTTR, acerto, retrabalho e first-time fix sem atribuir indevidamente efeito a formação.
+- [ ] **T1 — Catálogo de cursos:** lista data-driven por disciplina/modelo, pré-requisitos, progressão, cursos e casos de treino sem spoilers.
+- [ ] **T2 — Motor de capacitação:** conflitos, turno, matrícula, custo, avaliação, certificados, impacto limitado no diagnóstico e reparo.
+- [ ] **T3 — UI de Gestão → Treinamentos:** Bia, inscrições, análise de custo/benefício, níveis e cursos; acessibilidade desktop/mobile.
+- [ ] **T4 — Prática e avaliações:** casos didáticos, feedback contextual e certificados, sem revelar causas ocultas de OS abertas.
+- [ ] **T5 — Métricas e balanceamento:** comparar turmas e OS, limites de ganho, testes de save, PWA e calibração.
+
+### Homologação
+
+- [ ] Conferir as 16 poses na página de galeria: cabelo, uniforme vermelho, capacete branco decorado, tatuagens, transparência, prancheta e pés sobre a mesma base.
+- [ ] Testar galeria e filtros em desktop e celular.
+- [ ] Confirmar equipe inicial e contratação inalteradas, sem Bia no seletor de OS.
+- [ ] Verificar se o novo acervo não afeta o tempo de carregamento inicial da oficina, nem os cenários dia/noite.
+
+**Critério de aceite:** assets e projeto documentados, quatro arquivos acessíveis no Pages e protegidos por teste automatizado; nenhum progresso de treinamento deve ser simulado antes da implementação de T1–T5.
+
 ## Entrega 0.8.14 — Equipe oficial e sprites por profissional (P0 / personagens)
 
 **Publicação:** [PR #33](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/33) integrado à `main` no commit `8667ef36`, com CI e suíte de regressão aprovados. [Workflow Pages #39079556189](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39079556189) concluiu com sucesso, inclusive verificação de integridade dos WebP. **Pendente apenas homologação visual/funcional no navegador.**
@@ -844,7 +881,7 @@ Sem alteração em `engine.js`, saves, códigos de cenário, economia, energia, 
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.14
+## Plano de validação para a versão 0.8.15
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -902,6 +939,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.12:** BOX 3 deslocado 5 px à esquerda em ambos os perfis geométricos; sombras principal/secundária sobem 3 px sem mudar o piso; testes de clamp, sprites, hitbox, HUD e PWA. **QA visual pendente.**
 - **0.8.13:** fundo diurno original completo 1976×796 derivado para AVIF, junto ao noturno no perfil fullFrame; fallback recortado preservado, hash e proveniência documentados e nova suíte dia/noite no CI. **QA visual pendente.**
 - **0.8.14:** equipe inicial restrita a Isaias/Pedro/Geovane, três sprite sheets por personagem real alocado, contratação futura de Mecânico sem sprite e migração retrocompatível; testes de identidade/atlas e cache versionado. **QA visual pendente.**
+- **0.8.15:** quatro atlas WebP/16 poses da Bia reservados para futuro menu de capacitação; galeria independente, manifesto com hashes e projeto detalhado de treinamento por disciplina e equipamento. **Mecânica futura explicitamente não implementada; QA de arte pendente.**
 
 ### Organização recomendada
 
