@@ -37,12 +37,15 @@ jobs:
           echo "f9af54e86ef4223a8566fe9cbfb7742c84cdce9f826b62f292c5afae85d26a99  phaser-play/assets/characters/bia/bia-field-4poses.webp" | sha256sum --check
           echo "e420ea6b416d0f2a5037a95dc3068faf91dd7f4480377a8e515a14b596389b85  phaser-play/assets/characters/bia/bia-coaching-4poses.webp" | sha256sum --check
       - name: Check Pages entrypoints
-        run: test -f phaser-play/readiness.js && test -f phaser-play/diagnostic-board.js && test -f phaser-play/diagnostic-view.js && test -f phaser-play/closed-orders.js && test -f phaser-play/assets/OFICINA-NOTURNA.md && test -f phaser-play/index.html && test -f phaser-play/game.js && test -f phaser-play/planning.js && test -f phaser-play/weekly.js && test -f phaser-play/scene-map.json && test -f phaser-play/assets/oficina-diurna-fullframe.avif && test -f phaser-play/assets/characters/isaias-4poses.webp && test -f phaser-play/assets/characters/pedro-4poses.webp && test -f phaser-play/assets/characters/geovane-4poses.webp && test -f game-data.json
-      - name: Verify official three worker sprites
+        run: test -f phaser-play/readiness.js && test -f phaser-play/diagnostic-board.js && test -f phaser-play/diagnostic-view.js && test -f phaser-play/closed-orders.js && test -f phaser-play/assets/OFICINA-NOTURNA.md && test -f phaser-play/index.html && test -f phaser-play/game.js && test -f phaser-play/planning.js && test -f phaser-play/weekly.js && test -f phaser-play/scene-map.json && test -f phaser-play/assets/oficina-diurna-fullframe.avif && test -f phaser-play/assets/characters/costa-4poses.webp && test -f phaser-play/assets/characters/silva-4poses.webp && test -f phaser-play/assets/characters/santos-4poses.webp && test -f phaser-play/assets/characters/moura-4poses.webp && test -f phaser-play/assets/characters/pedro-4poses.webp && test -f phaser-play/assets/characters/geovane-4poses.webp && test -f game-data.json
+      - name: Verify official six worker sprites
         run: |
-          echo "32b708ae3c33555e26602730644f6848daa49bbd168a51aa6b1e31de9a4edcd2  phaser-play/assets/characters/isaias-4poses.webp" | sha256sum --check
+          echo "32b708ae3c33555e26602730644f6848daa49bbd168a51aa6b1e31de9a4edcd2  phaser-play/assets/characters/costa-4poses.webp" | sha256sum --check
           echo "4942108bc9e3d4ab40a086acdcd702cd0ea684f298b2c7c8a242a44b684488ea  phaser-play/assets/characters/pedro-4poses.webp" | sha256sum --check
           echo "229f8caddeb6fc332972c94841342424f74da65dcd37479bd51a3524c888470a  phaser-play/assets/characters/geovane-4poses.webp" | sha256sum --check
+          echo "26f68b092d14bfb940a7e44577b1d117d14571b27bd69fc0a248124102c849eb  phaser-play/assets/characters/silva-4poses.webp" | sha256sum --check
+          echo "48105f1036d2b9693531abb349954f251e1c2d31c4a599e8cdd7ad9c0d5f89ce  phaser-play/assets/characters/santos-4poses.webp" | sha256sum --check
+          echo "eba522ff337b6838cd4e2f5f77043c7e410bf32a425d2dd243a143f9b64fd99d  phaser-play/assets/characters/moura-4poses.webp" | sha256sum --check
       - name: Verify official workshop image
         run: |
           test -s phaser-play/assets/oficina-base.avif

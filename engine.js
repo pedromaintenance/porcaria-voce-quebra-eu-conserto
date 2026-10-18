@@ -9,9 +9,12 @@
   ];
   // Identidades oficiais do jogo; contratações futuras são genéricas até receberem arte.
   const INITIAL_TEAM=Object.freeze([
-    {name:'Isaias',avatar:'⚡',role:'eletrica',specialty:'Eletricista',sprite:'isaias'},
+    {name:'Costa',avatar:'⚡',role:'eletrica',specialty:'Eletricista',sprite:'costa'},
     {name:'Pedro',avatar:'🧯',role:'geral',specialty:'Brigadista',sprite:'pedro'},
-    {name:'Geovane',avatar:'📋',role:'geral',specialty:'Instrutor',sprite:'geovane'}
+    {name:'Geovane',avatar:'📋',role:'geral',specialty:'Instrutor',sprite:'geovane'},
+    {name:'Silva',avatar:'🔨',role:'geral',specialty:'Mecânico',sprite:'silva'},
+    {name:'Santos',avatar:'🔧',role:'geral',specialty:'Mecânico',sprite:'santos'},
+    {name:'Moura',avatar:'🛠️',role:'geral',specialty:'Mecânico',sprite:'moura'}
   ]);
   const clamp=(v,l=0,h=100)=>Math.min(h,Math.max(l,Math.round(v*10)/10));
   const SHIFT_HOURS=12, DDS_HOURS=0.5, MEAL_HOURS=1;
@@ -60,21 +63,40 @@
       assigned:null,restAt:null,completed:0,tenure:0};return m;
   }
   function normalizeRoster(s){
-    // Migração não destrutiva: preserva IDs, progresso, OS atribuídas e contratações.
-    // Saves legados podem ter um quarto profissional original; ele vira genérico.
+    // Migração da v0.8.16: não sobrescrever contratações genéricas antigas.
+    // Só M1–M3 são identidades históricas reservadas; os três novos recebem
+    // IDs novos se M4/M5/... já pertencem a Mecânicos contratados.
     if(!s||!Array.isArray(s.team))return s;
-    // Quarto personagem das campanhas antigas não era contratado: sai da equipe
-    // caso esteja ocioso. Se estiver numa OS, permanece genérico para não perder o serviço.
+    const jobs=Array.isArray(s.jobs)?s.jobs:[];
+    // O quarto profissional inicial legado (Nico) pode ser descartado se ocioso,
+    // mas uma OS atribuída a ele deve ser preservada.
     s.team=s.team.filter(m=>m.id!=='M4'||m.name!=='Nico'
-      ||!!m.assigned||s.jobs?.some(j=>j.assigned===m.id));
+      ||!!m.assigned||jobs.some(j=>j.assigned===m.id));
+    let maxId=0;
+    const canonical=new Map(INITIAL_TEAM.slice(0,3).map((identity,i)=>['M'+(i+1),identity]));
+    const newProfiles=INITIAL_TEAM.slice(3);
     for(const m of s.team){
-      const index=/^M[123]$/.test(m.id)?Number(m.id.slice(1))-1:-1;
-      const identity=INITIAL_TEAM[index];
-      if(identity){
-        m.name=identity.name;m.avatar=identity.avatar;m.specialty=identity.specialty;
-        m.role=identity.role;m.sprite=identity.sprite;
+      const match=typeof m.id==='string'&&/^M[0-9]+$/.test(m.id)?Number(m.id.slice(1)):0;
+      maxId=Math.max(maxId,match);
+      const initial=canonical.get(m.id);
+      // Reconciliar nomes anteriores sem perder experiência, status nem OS.
+      const defined=initial||newProfiles.find(p=>m.sprite===p.sprite||m.name===p.name);
+      if(defined){
+        m.name=defined.name;m.avatar=defined.avatar;m.specialty=defined.specialty;
+        m.role=defined.role;m.sprite=defined.sprite;
       }else{
         m.name='Mecânico';m.avatar='🔧';m.specialty='Mecânico';m.sprite=null;
+        // Não sobrescrever m.role: a especialidade sorteada pelo contrato importa.
+      }
+    }
+    s.nextPerson=Math.max(1,Number.isInteger(s.nextPerson)?s.nextPerson:1,maxId+1);
+    const present=new Set(s.team.map(m=>m.sprite).filter(Boolean));
+    // Determinístico para evitar alterações aleatórias entre imports do mesmo save.
+    const rng=mulberry32((0x08160000+s.nextPerson+s.team.length*37)>>>0);
+    for(const profile of newProfiles){
+      if(!present.has(profile.sprite)){
+        s.team.push(newMechanic(s,rng,profile));
+        present.add(profile.sprite);
       }
     }
     return s;

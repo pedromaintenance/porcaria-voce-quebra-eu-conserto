@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.14 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.16 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -16,7 +16,10 @@ const ASSETS={
 };
 const MACHINES={EQ01:'truck',EQ02:'shovel',EQ03:'excavator',EQ04:'excavator',EQ05:'drill',EQ06:'drill'};
 const WORKER_SHEETS=Object.freeze({
- isaias:'./assets/characters/isaias-4poses.webp',
+ costa:'./assets/characters/costa-4poses.webp',
+ silva:'./assets/characters/silva-4poses.webp',
+ santos:'./assets/characters/santos-4poses.webp',
+ moura:'./assets/characters/moura-4poses.webp',
  pedro:'./assets/characters/pedro-4poses.webp',
  geovane:'./assets/characters/geovane-4poses.webp'
 });
