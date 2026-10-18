@@ -1,0 +1,37 @@
+{
+  "version": "0.8.20",
+  "dimensions": {
+    "width": 1160,
+    "height": 1244,
+    "columns": 2,
+    "rows": 2,
+    "frameWidth": 580,
+    "frameHeight": 622
+  },
+  "assets": {
+    "barbosa": {
+      "size": 191682,
+      "sha256": "c4fc627f7c6fe5789ce4440d5f8ba69cf644cedeb3d7f0199d01bfdce68b7a2b"
+    },
+    "garcia": {
+      "size": 189262,
+      "sha256": "e33245a51c1ee0af69783e0cb08871a6f8cb7515c6ae69f3fb457dad6d71ae58"
+    },
+    "braga": {
+      "size": 179028,
+      "sha256": "482f1f743be665e116f197dacf28eedfd172c53f141c63986f961c6b726e3df1"
+    },
+    "almeida": {
+      "size": 201902,
+      "sha256": "489ec7a24050f5215ebc4ca2b2c5d9279f180f3fd057db5965afc984aa278b16"
+    },
+    "sousa": {
+      "size": 197466,
+      "sha256": "261803a5ad92bfa33d9036f8df47e518abb8b6d88b288a92d1c0d7ea175cc192"
+    },
+    "pereira": {
+      "size": 198278,
+      "sha256": "b3ce5baa85d26980adc7c5a8a1d5cd249fdc2e9bbef3a59cbc822bc9f8c1bfc3"
+    }
+  }
+}

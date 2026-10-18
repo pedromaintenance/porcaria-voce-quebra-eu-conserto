@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 18/10/2026 · **Phaser 0.8.19 — CAT D9, CAT 966 e CAT 16 com sprites pixel-art próprios; CI e workflow de Pages aprovados, QA visual pendente.**
+**Estado de referência:** 18/10/2026 · **v0.8.20 em PR: equipe inicial de três, catálogo nominal de dez; assets binários e QA pendentes.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -627,6 +627,18 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 - [ ] Testar em desktop, mobile e PWA; conferir que fundo e boxes permanecem visualmente inalterados.
 
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
+
+
+## Entrega 0.8.20 — Contratação nominal e elenco completo (PR em preparação)
+
+- [x] Equipe inicial de campanhas novas: **Pedro, Geovane e Junior**.
+- [x] Dez contratações possíveis: **Costa, Silva, Santos, Moura, Barbosa, Garcia, Braga, Almeida, Sousa e Pereira**.
+- [x] Seleção individual de personagem com retrato, nome e custo, sem trabalhadores genéricos novos.
+- [x] Máximo de 13 personagens; três boxes e a mesma economia de contratação.
+- [x] Migração sem substituição, adição automática ou perda de OS nos saves anteriores.
+- [x] Seis imagens WebP preparadas, com hashes registrados e testes de integridade.
+- [ ] **Condição obrigatória para merge:** inserir os seis WebP no Git a partir do ZIP entregue ao usuário.
+- [ ] Verificar CI e homologar recrutamento, sprites no galpão, retratos, dia/noite e saves em desktop/mobile.
 
 ## Entrega 0.8.19 — Sprites da pá carregadeira, motoniveladora e trator (P0 / equipamentos)
 

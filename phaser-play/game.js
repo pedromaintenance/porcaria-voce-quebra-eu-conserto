@@ -21,6 +21,12 @@ const ASSETS={
 };
 const MACHINES={EQ01:'truck',EQ02:'shovel',EQ03:'excavator',EQ04:'excavator',EQ05:'dr410i',EQ06:'drill',EQ07:'dozer',EQ08:'loader',EQ09:'grader'};
 const WORKER_SHEETS=Object.freeze({
+ barbosa:'./assets/characters/barbosa-4poses.webp',
+ garcia:'./assets/characters/garcia-4poses.webp',
+ braga:'./assets/characters/braga-4poses.webp',
+ almeida:'./assets/characters/almeida-4poses.webp',
+ sousa:'./assets/characters/sousa-4poses.webp',
+ pereira:'./assets/characters/pereira-4poses.webp',
  costa:'./assets/characters/costa-4poses.webp',
  silva:'./assets/characters/silva-4poses.webp',
  santos:'./assets/characters/santos-4poses.webp',
@@ -497,12 +503,23 @@ function energyMeter(label,value){
  return `<div class="resourceMeter"><span>${label}</span><div class="progress"><i style="width:${Math.max(0,Math.min(100,value))}%"></i></div><b>${Math.round(value)}</b></div>`;
 }
 function drawTeam(){
- const busy=new Set(state.jobs.map(j=>j.assigned).filter(Boolean));
- $('teamPanel').innerHTML=`<p class="muted">Gerencie a energia física, mental e o moral dos profissionais. Contratações custam R$ 1.050 e 18 de energia mental do supervisor.</p><div class="actions"><button class="act" data-team-action="hire">+ CONTRATAR MECÂNICO</button></div><div class="resourceGrid">`+state.team.map(m=>{
+ const candidates=E.availableRecruits(state);
+ const space=state.team.length<E.MAX_TEAM;
+ const affordable=state.cash>=1050&&state.player.mental>=18;
+ const listing=candidates.map(m=>{
+  const portrait=WORKER_SHEETS[m.sprite];
+  return `<article class="resourceCard"><div class="teamIdentity"><span class="teamPortrait" style="background-image:url(${esc(portrait)})" aria-hidden="true"></span><div><h3>${esc(m.avatar)} ${esc(m.name)}</h3><p class="muted">${esc(m.specialty)} · Disciplina: ${esc(m.role)}</p></div></div><button class="act" data-team-action="hire" data-person="${esc(m.sprite)}" ${!space||!affordable?'disabled':''}>CONTRATAR · R$ 1.050</button></article>`;
+ }).join('');
+ $('teamPanel').innerHTML=`<p class="muted">Campanha nova: Pedro, Geovane e Junior. As contratações são individuais e nominais. Custo: R$ 1.050 e 18 de energia mental por pessoa. Limite de ${E.MAX_TEAM} profissionais; os três boxes continuam permitindo até três OS simultâneas.</p>
+ <h3 class="resourceSection">CATÁLOGO DE CONTRATAÇÃO · ${candidates.length} disponível(is)</h3>
+ ${candidates.length?'<div class="resourceGrid">'+listing+'</div>':'<p class="muted">Todo o elenco já foi contratado.</p>'}
+ ${!space?'<p class="status">Lotação máxima atingida.</p>':!affordable?'<p class="status">Verifique caixa e energia mental do supervisor.</p>':''}
+ <h3 class="resourceSection">EQUIPE ATIVA · ${state.team.length} profissional(is)</h3>
+ <div class="resourceGrid">`+state.team.map(m=>{
  const current=state.jobs.find(j=>j.assigned===m.id);
  const resting=m.restAt===state.tick;
  const portraitUrl=m.sprite&&(TEAM_PORTRAITS[m.sprite]||WORKER_SHEETS[m.sprite]);
- const portrait=portraitUrl?'<span class="teamPortrait" style="background-image:url('+esc(portraitUrl)+')" aria-hidden="true"></span>':'<span class="teamPortrait placeholder" aria-label="Sem sprite">SEM<br>SPRITE</span>';
+ const portrait=portraitUrl?'<span class="teamPortrait" style="background-image:url('+esc(portraitUrl)+')" aria-hidden="true"></span>':'<span class="teamPortrait placeholder" aria-label="Sem sprite">LEGADO</span>';
  return `<article class="resourceCard"><div class="teamIdentity">${portrait}<div><h3>${esc(m.avatar||'')} ${esc(m.name)} · ${esc(m.specialty||'Mecânico')} <small>${esc(m.id)}</small></h3><p class="muted">Especialidade simulada: ${esc(m.role)}</p></div></div><p class="muted">${current?'Em serviço: '+esc(current.id)+' · Box '+(current.bay+1):resting?'Descanso programado neste turno':'Disponível'} · Habilidade ${Math.round(m.skill)}</p>${energyMeter('Mental',m.mental)}${energyMeter('Física',m.physical)}${energyMeter('Moral',m.morale)}<div class="actions"><button class="act secondary" data-team-action="motivate" data-person="${esc(m.id)}">MOTIVAR</button><button class="act secondary" data-team-action="rest" data-person="${esc(m.id)}" ${current||resting?'disabled':''}>DESCANSAR</button></div></article>`;
  }).join('')+'</div>';
 }
@@ -644,7 +661,7 @@ function events(){
    return;
   }
   const tm=ev.target.closest('[data-team-action]');
-  if(tm){const id=tm.dataset.person;const mode=tm.dataset.teamAction;action(mode==='hire'?E.hire(state):mode==='rest'?E.rest(state,id):E.motivate(state,id));return}
+  if(tm){const id=tm.dataset.person;const mode=tm.dataset.teamAction;action(mode==='hire'?E.hire(state,id):mode==='rest'?E.rest(state,id):E.motivate(state,id));return}
   const st=ev.target.closest('[data-store-action]');
   if(st){const id=st.dataset.item,mode=st.dataset.storeAction;if(mode==='tool')action(E.buyTool(state,data,id));else{const qty=Number($('qty-'+id)?.value||1);action(E.orderMaterial(state,data,id,qty,mode==='rush'))}return}
   const b=ev.target.closest('[data-do]');if(!b)return;

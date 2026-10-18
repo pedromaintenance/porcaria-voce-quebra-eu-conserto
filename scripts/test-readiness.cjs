@@ -15,7 +15,7 @@ assert.deepEqual(R.compute(s,data),initial,'report is deterministic without cloc
 assert.equal(R.HH_PER_MECHANIC,10.5);
 assert.equal(initial.metrics.crewTotal,7);
 assert.equal(initial.metrics.availableCrew,7);
-assert.equal(initial.metrics.nominalCrewHH,73.5,'sete pessoas × 10,5 HH por turno');
+assert.equal(initial.metrics.nominalCrewHH,31.5,'três pessoas × 10,5 HH por turno');
 assert.equal(initial.metrics.boxLimitedHH,31.5,'only three bays limit work opportunity');
 assert.equal(initial.metrics.additionalHH,31.5,'três boxes e três profissionais');
 assert.equal(initial.metrics.freeCrew,7);
@@ -96,8 +96,8 @@ assert.equal(JSON.stringify(s),before,'repeated compute never mutates state, eve
 const html=fs.readFileSync(path.join(root,'phaser-play','index.html'),'utf8');
 const js=fs.readFileSync(path.join(root,'phaser-play','game.js'),'utf8');
 assert.ok(html.includes('readiness.js?v=0.8.8'),'new pure module loaded in browser');
-assert.ok(html.includes('game.js?v=0.8.19'),'game cache refreshed');
-assert.ok(html.indexOf('readiness.js?v=0.8.8')<html.indexOf('game.js?v=0.8.19'),'module loads before game');
+assert.ok(html.includes('game.js?v=0.8.20'),'game cache refreshed');
+assert.ok(html.indexOf('readiness.js?v=0.8.8')<html.indexOf('game.js?v=0.8.20'),'module loads before game');
 assert.ok(js.includes('function drawManagement(k)')&&js.includes('readinessBoard'),'readiness dashboard integrated');
 assert.ok(js.includes('function drawShiftBrief()')&&js.includes('shiftReadinessSummary'),'shift briefing includes readiness summary');
 assert.ok(js.includes("data-readiness-job"),'OS navigation button is validated');
