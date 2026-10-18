@@ -144,7 +144,7 @@ assert.equal(layoutMath.calibratedCenter(1340,54,map.viewport,-5,8),1340,'mecân
 assert.ok(phaserScript.includes("machineNode.on('pointerdown'"),'clique na máquina seleciona a própria OS');
 assert.ok(phaserScript.includes("actor.on('pointerdown'"),'clique no mecânico seleciona a própria OS mesmo sobre região vizinha');
 assert.ok(phaserScript.includes('fillEllipse(machineX,shadowMainY,')&&phaserScript.includes('fillEllipse(machineX,shadowSoftY,'),'as duas sombras seguem o centro efetivamente renderizado da máquina');
-assert.ok(phaserScript.includes('calibratedCenter(x,54,SCENE_REFERENCE,visualCalibrationX'),'mecânicos usam deslocamento posterior ao clamp');
+assert.ok(phaserScript.includes('calibratedCenter(x,WORKER_DISPLAY.width,SCENE_REFERENCE,visualCalibrationX'),'mecânicos usam deslocamento posterior ao clamp');
 assert.ok(phaserScript.includes('calibratedCenter(x,plan.width,SCENE_REFERENCE,bay?.visualCalibrationX'),'equipamentos usam deslocamento posterior ao clamp');
 assert.ok(phaserScript.includes('this.lastFallbackMachineX=x'),'fallback vetorial guarda sua posição efetivamente renderizada');
 assert.ok(phaserScript.includes('this.lastFallbackMachineX??cx'),'sombra do fallback acompanha o centro renderizado');
