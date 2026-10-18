@@ -50,3 +50,18 @@ Quatro atlas / 16 poses da Bia foram registrados em [`bia/`](bia/README.md) com 
 Junior é um único profissional, sétimo membro da equipe inicial, com a função visível **Especialista**. Quando trabalha em máquina usa **`junior/junior-work-4poses.webp`** (balaclava, capacete branco, óculos e uniforme amarelo); no retrato da Equipe e no futuro menu de Treinamentos usa **`junior/junior-training-4poses.webp`** (camisa azul e crachá, 213.964 bytes, SHA-256 `a652d9f9666e9cfaa4970cfbe3d6e51bafeef3f7a0e3963463fbdcf1fd5c2ab7`). [Manifesto](junior/manifest.json) · [Guia](junior/README.md).
 
 O papel mecânico segue `role:'geral'` até calibração do módulo de especialidades; a identificação **Especialista** não aumenta magicamente o acerto ou velocidade. M7 genérico em save antigo **não é sobrescrito**: Junior recebe próximo ID livre. Se a equipe antiga já possui 9 integrantes, não ultrapassar o teto de lotação automaticamente.
+
+## v0.8.20 — Equipe inicial e elenco contratável
+
+- Equipe inicial de nova campanha: **Pedro, Geovane e Junior**, nesta ordem.
+- Catálogo único para contratar: **Costa, Silva, Santos, Moura, Barbosa, Garcia, Braga, Almeida, Sousa e Pereira**.
+- Personagens únicos, custo fixo por contratação de R$ 1.050 e 18 pontos de energia mental.
+- Máximo de 13 integrantes simultâneos; os três boxes operacionais permanecem iguais.
+- As seis imagens novas são WebP RGBA 1160×1244, quatro poses 580×622; manifesto `recruits-0820.json`.
+- **Pendente de publicação:** copiar seis arquivos *-4poses.webp disponibilizados no pacote do usuário para esta pasta antes do merge do PR.
+- Saves anteriores preservam mecânicos previamente contratados e OS, inclusive os genéricos legados. Não existe mais contratação de mecânico genérico.
+- Todos os novos mecânicos têm inicialmente `role:'geral'`, sem bônus especial fictício.
+
+## Retificação visual v0.8.20
+
+Os seis novos personagens passaram de WebP com perdas para **WebP lossless**, preservando 1160×1244, grade 2×2 e alfa. O Phaser renderiza trabalhadores em escala ~54×64 usando filtro **LINEAR**, evitando redução serrilhada por NEAREST. No BOX 2, `workerOffsetX=-5` px ajusta somente o X final do mecânico nos dois perfis. Arquivos definitivos e hashes em `recruits-0820.json`.

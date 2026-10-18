@@ -1,0 +1,26 @@
+name: Validate P.O.R.C.A.R.I.A. recruitment
+on:
+  pull_request:
+    paths:
+      - 'engine.js'
+      - 'phaser-play/**'
+      - 'scripts/**'
+      - 'sw.js'
+      - '.github/workflows/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check syntax
+        run: node --check engine.js && node --check phaser-play/game.js && node --check scripts/test-worker-roster.cjs && node --check scripts/test-junior-specialist.cjs && node --check scripts/test-named-recruits.cjs && node --check scripts/test-worker-visual-quality.cjs
+      - name: Test simulation and recruitment
+        run: node scripts/smoke-phaser.cjs && node scripts/test-worker-roster.cjs && node scripts/test-junior-specialist.cjs && node scripts/test-readiness.cjs && node scripts/test-weekly.cjs && node scripts/test-shifts-productivity.cjs
+      - name: Verify six sprite files
+        run: node scripts/test-named-recruits.cjs && node scripts/test-worker-visual-quality.cjs

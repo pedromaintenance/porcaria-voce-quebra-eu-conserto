@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 18/10/2026 · **Phaser 0.8.19 — CAT D9, CAT 966 e CAT 16 com sprites pixel-art próprios; CI e workflow de Pages aprovados, QA visual pendente.**
+**Estado de referência:** 18/10/2026 · **v0.8.20 em validação: elenco contratável e sprites WebP lossless com filtro LINEAR; Box 2 −5 px para mecânicos; CI e QA visual pendentes.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -627,6 +627,29 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 - [ ] Testar em desktop, mobile e PWA; conferir que fundo e boxes permanecem visualmente inalterados.
 
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
+
+
+## Entrega 0.8.20 — Contratação nominal, qualidade visual e Box 2 (PR #39)
+
+- [x] Equipe inicial de campanhas novas: **Pedro, Geovane e Junior**.
+- [x] Dez contratações possíveis: **Costa, Silva, Santos, Moura, Barbosa, Garcia, Braga, Almeida, Sousa e Pereira**.
+- [x] Seleção individual de personagem com retrato, nome e custo, sem trabalhadores genéricos novos.
+- [x] Máximo de 13 personagens; três boxes e a mesma economia de contratação.
+- [x] Migração sem substituição, adição automática ou perda de OS nos saves anteriores.
+- [x] Seis imagens WebP preparadas, com hashes registrados e testes de integridade.
+- [x] **Seis WebP integrados:** arquivos de produção reexportados em modo lossless, com novos hashes verificados por teste.
+- [x] **Minificação:** LINEAR nos sprites de profissionais (escala aproximada 580×622 → 54×64).
+- [x] **Geometria:** deslocamento adicional de -5 px aplicado somente aos mecânicos do BOX 2 nos dois perfis, sem mover máquinas e HUD.
+- [ ] **Homologação visual:** conferir qualidade e oclusão do Junior perto da caçamba em dia/noite.
+- [ ] Verificar CI e homologar recrutamento, sprites no galpão, retratos, dia/noite e saves em desktop/mobile.
+
+### Correção visual da v0.8.20 — 18/10/2026
+
+**Evidência recebida:** screenshot mostrou detalhes perdidos nos funcionários e Junior aparentemente apoiado sobre a caçamba no BOX 2. O código usava filtro `NEAREST` para quadros de 580×622 reduzidos a aproximadamente 54×64, agravando o aliasing. O lote anterior de seis WebP também usava compressão com perdas.
+
+**Ações:** atlas dos seis novos personagens recompostos dos PNG originais e salvos em WebP **lossless**, canal alfa e grade 2×2 preservados; Phaser filtra spritesheets de profissionais com **LINEAR** na minificação, sem mudar equipamentos; offset `workerOffsetX=-5` somente no BOX 2, aplicado após posicionamento/clamp nos perfis fullFrame e cropped, sem alterações na sombra, chão, máquinas ou HUD. Novo teste de regressão: `scripts/test-worker-visual-quality.cjs`. O teste `test-named-recruits.cjs` interpreta o cabeçalho VP8L para dimensões/alfa (diferente do VP8X com perdas).
+
+**Limite de validação:** reposicionar 5 px não demonstra sozinho que desapareça a percepção de flutuação; conferir visualmente a oclusão entre profissional e caçamba no Pages. O jogo mantém a âncora inferior `(0.5,1)` e o Y original, e o QA humano é necessário.
 
 ## Entrega 0.8.19 — Sprites da pá carregadeira, motoniveladora e trator (P0 / equipamentos)
 

@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. v0.8.19 — CAT D9, CAT 966, CAT 16: assets oficiais e 3 boxes. */
+/* P.O.R.C.A.R.I.A. v0.8.20 — CAT D9, CAT 966, CAT 16: assets oficiais e 3 boxes. */
 'use strict';
 const assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
@@ -49,6 +49,6 @@ assert.ok(game.includes("const normalKey=MACHINES[modelId]"),'mesmo mecanismo de
 assert.ok(game.includes("if(modelId==='EQ07')"),'fallback histórico do trator preservado');
 assert.ok(game.includes("EQ05:'dr410i',EQ06:'drill'"),'perfuratrizes intactas');
 assert.ok(game.includes("EQ01:'truck',EQ02:'shovel',EQ03:'excavator',EQ04:'excavator'"),'máquinas anteriores intactas');
-assert.ok(html.includes('game.js?v=0.8.19'),'versão carregada');
-assert.ok(sw.includes('porcaria-vqec-20261018-v099'),'PWA atualizado');
+assert.ok(html.includes('game.js?v=0.8.20'),'versão carregada');
+assert.ok(sw.includes('porcaria-vqec-20261018-v100'),'PWA atualizado');
 console.log('OK: EQ07 D9, EQ08 966, EQ09 16 — hashes, alpha, dimensões, geometria 3 BOX, mapping, fallback e PWA.');

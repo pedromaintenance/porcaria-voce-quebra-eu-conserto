@@ -1,0 +1,45 @@
+{
+  "version": "0.8.20",
+  "dimensions": {
+    "width": 1160,
+    "height": 1244,
+    "columns": 2,
+    "rows": 2,
+    "frameWidth": 580,
+    "frameHeight": 622
+  },
+  "assets": {
+    "barbosa": {
+      "size": 909364,
+      "sha256": "243efe03981a66cd54e29f5201a64815b585a2248841f3c72887b223d9f324d8",
+      "encoding": "WebP lossless"
+    },
+    "garcia": {
+      "size": 912840,
+      "sha256": "477d86ae42f4d602da86714dad341637b7c01692511f204faba3f26927bc9f41",
+      "encoding": "WebP lossless"
+    },
+    "braga": {
+      "size": 777012,
+      "sha256": "7235b98c67ae7dca3c477583c9b7201334ab6e05daed5c9328e57af6cddf10c4",
+      "encoding": "WebP lossless"
+    },
+    "almeida": {
+      "size": 826184,
+      "sha256": "2e652b5b43eeedc35a2e8f49559405afa854209a286e6aa6478d0616c9bfde97",
+      "encoding": "WebP lossless"
+    },
+    "sousa": {
+      "size": 817824,
+      "sha256": "4e91a656c9e7c747402a71aa321ec8ee489378f9e2ce813a87dbc3da46200cdd",
+      "encoding": "WebP lossless"
+    },
+    "pereira": {
+      "size": 806196,
+      "sha256": "7897ba19b0affc8dac3ea23734991193fe7c2bb5f148693a746b2ef9df73152d",
+      "encoding": "WebP lossless"
+    }
+  },
+  "quality": "WebP lossless",
+  "workerRenderFilter": "LINEAR"
+}

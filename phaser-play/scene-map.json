@@ -87,7 +87,8 @@
         "x": 322,
         "y": 470,
         "width": 348
-      }
+      },
+      "workerOffsetX": 0
     },
     {
       "id": 1,
@@ -138,7 +139,8 @@
         "x": 678,
         "y": 470,
         "width": 348
-      }
+      },
+      "workerOffsetX": -5
     },
     {
       "id": 2,
@@ -189,7 +191,8 @@
         "x": 1034,
         "y": 470,
         "width": 365
-      }
+      },
+      "workerOffsetX": 0
     }
   ],
   "controls": {
@@ -201,7 +204,8 @@
     "visualCalibration": "visualCalibrationX corrige deslocamento desejado mesmo em sprites anteriormente travados no limite do viewport: aplicar clamp sobre posição anterior (spriteWorld.x - visualCalibrationX), somar delta e reaplicar clamp; não deslocar hitWorld, progressWorld ou labelWorld.",
     "backgroundProfileSelection": "preCropped = background asset already cropped to 1350×563. fullFrame = original workshop image in full 1976×796 (or aspect-preserving similar image) — never crop this source with legacy SCENE_REFERENCE.crop.",
     "interaction": "Zonas clicáveis usam exclusivamente hitWorld; colocar sprites por placementWorld sem fazer hitbox coincidir com a arte. Os cliques diretos dos sprites continuam selecionando sua OS, inclusive ao ultrapassar hitWorld.",
-    "worldPlacement": "0.8.2: assets e mecânicos do perfil fullFrame cabem nas laterais de placementWorld, sem usar as laterais amplas de hitWorld. Seus pés/contato usam placementWorld.groundY. Hud de progresso usa progressWorld próximo ao chão, footer usa footerWorld. Cropped preserva ancoragem original."
+    "worldPlacement": "0.8.2: assets e mecânicos do perfil fullFrame cabem nas laterais de placementWorld, sem usar as laterais amplas de hitWorld. Seus pés/contato usam placementWorld.groundY. Hud de progresso usa progressWorld próximo ao chão, footer usa footerWorld. Cropped preserva ancoragem original.",
+    "workerOffsetX": "v0.8.20: -5px apenas aos profissionais do BOX 2 em ambos os perfis, após clamp; equipamentos/HUD/hitboxes inalterados."
   },
   "assets": {
     "notes": "v0.7.6: BOX 1 +20 px (x427; mecânicos 330/559), BOX 2 -6 px (x842; mecânicos 719/971), BOX 3 preservado (x1223; mecânicos 1102/1345). A calibração de borda garante movimento visível no BOX 1 sem cortar sprites. HUD, hotspots e posição vertical preservados.\nv0.8.3: CAT 777E = novo WebP transparente sem logos, filtro LINEAR isolado para minificação de arte detalhada, escala 1.10 e apoio horizontal 0.54; back-up PNG preservado; envelopes laterais de box e groundY sem mudanças.\nv0.8.10: arte pixel art aprovada em WebP lossless 1100×781 (cat777e_v3.webp), marcas removidas, calços na frente e atrás da roda traseira visível. v2 permanece como backup; cálculo geométrico não alterado."
@@ -261,7 +265,10 @@
       "footprintAnchorX": 0.54,
       "texturePath": "assets/equipment/sandvik_dr410i_v2.webp",
       "originalAssetPath": "assets/equipment/sandvik_dr410i.png",
-      "sourcePixelSize": {"width": 1536, "height": 1024},
+      "sourcePixelSize": {
+        "width": 1536,
+        "height": 1024
+      },
       "renderFilter": "NEAREST",
       "visualBasis": "Arte aprovada pelo usuário: perfuratriz laranja, cabine branca e esteiras pretas em perspectiva elevada; PNG RGBA integral, sem recorte ou nova geração. Preservar imagem legada para DI650i e rollback.",
       "publishedAssetSHA256": "ccea0bbc7380d683dc44dcd06281b80af4150147fb6250ef8db6c009ec1da13a"
@@ -280,7 +287,10 @@
       "maximumHeight": 230,
       "footprintAnchorX": 0.5,
       "texturePath": "assets/equipment/catd9-dozer-v0819.webp",
-      "sourcePixelSize": {"width": 1448, "height": 1086},
+      "sourcePixelSize": {
+        "width": 1448,
+        "height": 1086
+      },
       "renderFilter": "NEAREST",
       "publishedAssetSHA256": "ca914d9882d5b6f7f8548a17152b3170dfa0906f2dc527446785d54255dbc952",
       "sourceFile": "bulldozer_amarelo_em_arte_pixel_art.png",
@@ -294,7 +304,10 @@
       "maximumHeight": 230,
       "footprintAnchorX": 0.5,
       "texturePath": "assets/equipment/cat966-loader-v0819.webp",
-      "sourcePixelSize": {"width": 1448, "height": 1086},
+      "sourcePixelSize": {
+        "width": 1448,
+        "height": 1086
+      },
       "renderFilter": "NEAREST",
       "publishedAssetSHA256": "044b425baf37f4836482c5b9cd28824f30b638b0504cde40b27117116d4de700",
       "sourceFile": "carregadeira_amarela_em_pixel_art.png",
@@ -308,7 +321,10 @@
       "maximumHeight": 230,
       "footprintAnchorX": 0.5,
       "texturePath": "assets/equipment/cat16-grader-v0819.webp",
-      "sourcePixelSize": {"width": 1448, "height": 1086},
+      "sourcePixelSize": {
+        "width": 1448,
+        "height": 1086
+      },
       "renderFilter": "NEAREST",
       "publishedAssetSHA256": "dd520eeca708c389235fd2c4707bfd42e99dff567fd79c5d4ecc2d56bb3c35de",
       "sourceFile": "motoniveladora_amarela_em_pixel_art.png",
@@ -395,7 +411,8 @@
             "y": 166,
             "width": 137,
             "height": 37
-          }
+          },
+          "workerOffsetX": 0
         },
         {
           "id": 1,
@@ -452,7 +469,8 @@
             "y": 166,
             "width": 118,
             "height": 37
-          }
+          },
+          "workerOffsetX": -5
         },
         {
           "id": 2,
@@ -509,7 +527,8 @@
             "y": 166,
             "width": 112,
             "height": 37
-          }
+          },
+          "workerOffsetX": 0
         }
       ]
     }

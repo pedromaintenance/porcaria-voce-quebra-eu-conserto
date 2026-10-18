@@ -3,20 +3,26 @@
   const E=factory(); if(typeof module!=='undefined'&&module.exports)module.exports=E; root.PORCARIA_ENGINE=E;
 })(typeof window!=='undefined'?window:globalThis,function(){
   'use strict';
-  const ROLES=[
-    ['Hidráulica','hidraulica'],['Motores','motor'],['Elétrica','eletrica'],
-    ['Rodante','rodante'],['Perfuratrizes','perfuracao'],['Soldagem','solda'],['Multidisciplinar','geral']
-  ];
-  // Identidades oficiais do jogo; contratações futuras são genéricas até receberem arte.
+  // Campanhas novas iniciam somente com tres personagens fixos.
   const INITIAL_TEAM=Object.freeze([
-    {name:'Costa',avatar:'⚡',role:'eletrica',specialty:'Eletricista',sprite:'costa'},
     {name:'Pedro',avatar:'🧯',role:'geral',specialty:'Brigadista',sprite:'pedro'},
     {name:'Geovane',avatar:'📋',role:'geral',specialty:'Instrutor',sprite:'geovane'},
+    {name:'Junior',avatar:'🧑‍💼',role:'geral',specialty:'Especialista',sprite:'junior',trainingSprite:'junior-training'}
+  ]);
+  // Contratacoes nomeadas, personagens unicos, sem criacao de mecanicos genericos.
+  const RECRUIT_POOL=Object.freeze([
+    {name:'Costa',avatar:'⚡',role:'eletrica',specialty:'Eletricista',sprite:'costa'},
     {name:'Silva',avatar:'🔨',role:'geral',specialty:'Mecânico',sprite:'silva'},
     {name:'Santos',avatar:'🔧',role:'geral',specialty:'Mecânico',sprite:'santos'},
     {name:'Moura',avatar:'🛠️',role:'geral',specialty:'Mecânico',sprite:'moura'},
-    {name:'Junior',avatar:'🧑‍💼',role:'geral',specialty:'Especialista',sprite:'junior',trainingSprite:'junior-training'}
+    {name:'Barbosa',avatar:'🔧',role:'geral',specialty:'Mecânico',sprite:'barbosa'},
+    {name:'Garcia',avatar:'🔧',role:'geral',specialty:'Mecânico',sprite:'garcia'},
+    {name:'Braga',avatar:'🔧',role:'geral',specialty:'Mecânico',sprite:'braga'},
+    {name:'Almeida',avatar:'🔧',role:'geral',specialty:'Mecânico',sprite:'almeida'},
+    {name:'Sousa',avatar:'🔧',role:'geral',specialty:'Mecânico',sprite:'sousa'},
+    {name:'Pereira',avatar:'🔧',role:'geral',specialty:'Mecânico',sprite:'pereira'}
   ]);
+  const MAX_TEAM=INITIAL_TEAM.length+RECRUIT_POOL.length;
   const clamp=(v,l=0,h=100)=>Math.min(h,Math.max(l,Math.round(v*10)/10));
   const SHIFT_HOURS=12, DDS_HOURS=0.5, MEAL_HOURS=1;
   const EFFECTIVE_HOURS=SHIFT_HOURS-DDS_HOURS-MEAL_HOURS;
@@ -56,7 +62,7 @@
   const job=(s,id)=>s.jobs.find(x=>x.id===id);
   const timeLabel=(s)=>`Dia ${s.day} • ${s.shift===0?'Turno A (dia)':'Turno B (noite)'} · 12h`;
   function newMechanic(s,rng,identity=null){
-    const profile=identity||{name:'Mecânico',avatar:'🔧',role:one(ROLES,rng)[1],specialty:'Mecânico',sprite:null};
+    const profile=identity;if(!profile)throw Error('Contratação exige personagem identificado.');
     const m={id:`M${s.nextPerson++}`,name:profile.name,avatar:profile.avatar,role:profile.role,
       specialty:profile.specialty,sprite:profile.sprite,trainingSprite:profile.trainingSprite||null,
       skill:Math.round(54+rnd(rng)*35),mental:Math.round(72+rnd(rng)*25),
@@ -64,43 +70,30 @@
       assigned:null,restAt:null,completed:0,tenure:0};return m;
   }
   function normalizeRoster(s){
-    // Migração da v0.8.18: jamais sobrescrever identidades/IDs de contratos anteriores.
-    // Só M1–M3 são identidades históricas reservadas; os novos perfis recebem
-    // IDs novos se M4/M5/... já pertencem a Mecânicos contratados.
+    // Saves antigos preservam nomes, IDs, atributos, contratados e suas OS.
+    // Nenhum funcionario adicional e injetado automaticamente.
     if(!s||!Array.isArray(s.team))return s;
-    const jobs=Array.isArray(s.jobs)?s.jobs:[];
-    // O quarto profissional inicial legado (Nico) pode ser descartado se ocioso,
-    // mas uma OS atribuída a ele deve ser preservada.
-    s.team=s.team.filter(m=>m.id!=='M4'||m.name!=='Nico'
-      ||!!m.assigned||jobs.some(j=>j.assigned===m.id));
+    const catalog=[...INITIAL_TEAM,...RECRUIT_POOL];
     let maxId=0;
-    const canonical=new Map(INITIAL_TEAM.slice(0,3).map((identity,i)=>['M'+(i+1),identity]));
-    const newProfiles=INITIAL_TEAM.slice(3);
     for(const m of s.team){
-      const match=typeof m.id==='string'&&/^M[0-9]+$/.test(m.id)?Number(m.id.slice(1)):0;
-      maxId=Math.max(maxId,match);
-      const initial=canonical.get(m.id);
-      // Reconciliar nomes anteriores sem perder experiência, status nem OS.
-      const defined=initial||newProfiles.find(p=>m.sprite===p.sprite||m.name===p.name);
-      if(defined){
-        m.name=defined.name;m.avatar=defined.avatar;m.specialty=defined.specialty;
-        m.role=defined.role;m.sprite=defined.sprite;m.trainingSprite=defined.trainingSprite||null;
+      const numeric=typeof m.id==='string'&&/^M[0-9]+$/.test(m.id)?Number(m.id.slice(1)):0;
+      maxId=Math.max(maxId,numeric);
+      const profile=catalog.find(p=>m.sprite===p.sprite||m.name===p.name);
+      if(profile){
+        m.name=profile.name;m.avatar=profile.avatar;m.specialty=profile.specialty;
+        m.role=profile.role;m.sprite=profile.sprite;m.trainingSprite=profile.trainingSprite||null;
       }else{
-        m.name='Mecânico';m.avatar='🔧';m.specialty='Mecânico';m.sprite=null;m.trainingSprite=null;
-        // Não sobrescrever m.role: a especialidade sorteada pelo contrato importa.
+        // Genericos previamente contratados persistem apenas em campanhas antigas.
+        m.sprite=m.sprite||null;
       }
     }
     s.nextPerson=Math.max(1,Number.isInteger(s.nextPerson)?s.nextPerson:1,maxId+1);
-    const present=new Set(s.team.map(m=>m.sprite).filter(Boolean));
-    // Determinístico para evitar alterações aleatórias entre imports do mesmo save.
-    const rng=mulberry32((0x08160000+s.nextPerson+s.team.length*37)>>>0);
-    for(const profile of newProfiles){
-      if(!present.has(profile.sprite)&&s.team.length<9){
-        s.team.push(newMechanic(s,rng,profile));
-        present.add(profile.sprite);
-      }
-    }
     return s;
+  }
+  function availableRecruits(s){
+    if(!s||!Array.isArray(s.team))return [];
+    const occupied=new Set(s.team.flatMap(m=>[m.sprite,m.name]).filter(Boolean));
+    return RECRUIT_POOL.filter(p=>!occupied.has(p.sprite)&&!occupied.has(p.name));
   }
   function options(d,sc,seed){
     const rng=mulberry32(seed);
@@ -272,11 +265,16 @@
     if(m.restAt===s.tick)return 'Descanso já programado neste turno.';
     m.restAt=s.tick;msg(s,`${m.name} foi liberado para descanso neste turno.`);return null;
   }
-  function hire(s,rng=Math.random){if(s.team.length>=9)return 'Lotação máxima de 9 mecânicos.';
+  function hire(s,spriteId,rng=Math.random){
+    const profile=RECRUIT_POOL.find(p=>p.sprite===spriteId);
+    if(!profile)return 'Selecione um personagem no catálogo de contratação.';
+    if(!availableRecruits(s).some(p=>p.sprite===spriteId))return profile.name+' já integra a equipe.';
+    if(s.team.length>=MAX_TEAM)return 'Lotação máxima de '+MAX_TEAM+' profissionais.';
     if(s.cash<1050)return 'São necessários R$1.050 para integração e contratação.';
     if(s.player.mental<18)return 'Contratação exige 18 de energia mental.';
     s.cash-=1050;s.player.mental=clamp(s.player.mental-18);
-    const m=newMechanic(s,rng);s.team.push(m);msg(s,`${m.name} chegou! Especialidade: ${m.role}. (-R$1.050, -18 mental)`,'ok');return null;
+    const m=newMechanic(s,rng,profile);s.team.push(m);
+    msg(s,profile.name+' foi contratado! (-R$1.050, -18 mental)','ok');return null;
   }
   function isMaterialReady(s,c){return (s.stock[c.material]||0)>0}
   function haveTool(s,c){return !!s.tools[c.tool]}
@@ -408,7 +406,7 @@
       pendingMaterials:s.jobs.filter(j=>j.status==='material').length, pendingTools:s.jobs.filter(j=>j.status==='ferramenta').length};
   }
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
-  return {create,normalizeRoster,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
+  return {create,normalizeRoster,availableRecruits,RECRUIT_POOL,MAX_TEAM,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
     SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
     model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
 });
