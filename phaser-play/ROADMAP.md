@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 18/10/2026 · **Phaser 0.8.19 — CAT D9, CAT 966 e CAT 16 agora usam sprites pixel-art individuais aprovados; CI/Pages e QA visual pendentes.**
+**Estado de referência:** 18/10/2026 · **Phaser 0.8.19 — CAT D9, CAT 966 e CAT 16 com sprites pixel-art próprios; CI e workflow de Pages aprovados, QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -629,6 +629,9 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
 ## Entrega 0.8.19 — Sprites da pá carregadeira, motoniveladora e trator (P0 / equipamentos)
+
+**Publicação:** [PR #38](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/38) integrado à `main` em `ff8f1615` (18/10/2026). [CI #39115279306](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39115279306) e [workflow Pages #39115333229](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39115333229) aprovados, inclusive hashes das três imagens e testes do motor. **QA visual em navegador ainda pendente.**
+
 
 **Solicitação:** o usuário forneceu referências para CAT 966, CAT 16 e CAT D9, avaliou as três artes pixel-art produzidas e solicitou a substituição dos assets no jogo, documentação e publicação no GitHub Pages.
 
