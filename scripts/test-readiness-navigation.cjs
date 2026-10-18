@@ -30,7 +30,7 @@ assert.ok(js.includes("function focusStore(item,fromJob)"),'atalho preserva OS d
 assert.ok(js.includes('stockReturnJobId=source?.id||null'),'somente OS existente vira contexto');
 assert.ok(js.includes('data-stock-return'),'retorno renderizado no estoque');
 assert.ok(js.includes("if(!origin){stockReturnJobId=null;drawStore();notify("),'retorno obsoleto é tratado');
-assert.ok(js.includes("stockReturnJobId=null;pick(origin.id)"),'retorno abre OS original');
+assert.ok(js.includes("stockReturnJobId=null;pick(origin.id,orderReturnPanel)"),'retorno abre OS original e preserva o contexto');
 assert.ok(js.includes("j.stage<6?'🔎 Material a confirmar no diagnóstico'"),'detalhe não revela peça não confirmada');
 assert.ok(js.includes("j.stage>=6?'<button class="),'peça confirmada é consultável');
 assert.ok(js.includes("data-do=\"stockTool\""),'ferramenta consultável');
@@ -41,7 +41,7 @@ assert.ok(js.includes("ready.warnings.slice(6).map(renderReadyAlert)"),'nenhum a
 assert.ok(js.includes("extra.hidden=!extra.hidden"),'controle expansível não muda o motor');
 assert.ok(html.includes('#readinessMore[hidden]{display:none!important}'),'alertas ocultos não vazam pelo CSS');
 assert.ok(html.includes('aria-controls="readinessMore"')===false,'controle é gerado pelo JS');
-assert.ok(html.includes('readiness.js?v=0.8.8')&&html.includes('game.js?v=0.8.24'),'cache atualizado');
-assert.ok(sw.includes('porcaria-vqec-20261018-v103'));
+assert.ok(html.includes('readiness.js?v=0.8.8')&&html.includes('game.js?v=0.8.22'),'cache atualizado');
+assert.ok(sw.includes('porcaria-vqec-20261018-v102'));
 assert.ok(sw.includes("'./phaser-play/readiness.js'"),'módulo consultivo entra no cache PWA');
 console.log('OK: OS↔estoque, peça após diagnóstico, seis+ alertas acessíveis, cache atualizado.');
