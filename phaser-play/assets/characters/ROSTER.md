@@ -30,3 +30,7 @@ O mesmo asset é renderizado por quadro com amostragem NEAREST em escala pequena
 - `scripts/test-worker-roster.cjs` verifica nomes, contratação genérica, ausência de sprite, compatibilidade de save e SHA-256 das três cartelas.
 - O CI e o workflow Pages bloqueiam publicação se um sprite estiver faltando ou apresentar hash divergente.
 - Homologação visual ainda necessária em cada box, dia/noite, modos diagnóstico/reparo, escala dos pés e transparência.
+
+## Biblioteca da Bia — futura interface de treinamento (v0.8.15)
+
+Quatro atlas / 16 poses da Bia foram registrados em [`bia/`](bia/README.md) com [manifesto](bia/manifest.json) e [galeria de verificação](bia/index.html). **Bia não é funcionária contratável e não possui vínculo de OS ou motor de simulação.** Seu uso está reservado ao futuro menu **Gestão → Treinamentos**. O projeto de capacitação por disciplina e modelo, incluindo custos/HH, avaliação e ganhos limitados em diagnóstico e reparo, está em [`TRAINING_DESIGN.md`](../../TRAINING_DESIGN.md); não há mecânica implementada nesta versão.
