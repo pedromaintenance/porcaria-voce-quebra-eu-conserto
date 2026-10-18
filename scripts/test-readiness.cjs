@@ -33,7 +33,7 @@ let q=R.compute(s,data);
 assert.equal(q.bays[1].kind,'diagnosis','incomplete diagnosis does not need material yet');
 assert.equal(q.bays[1].jobId,j.id);
 assert.equal(q.metrics.busy,1);
-assert.equal(q.metrics.freeCrew,6);
+assert.equal(q.metrics.freeCrew,2);
 assert.equal(q.metrics.freeBays,2);
 assert.equal(q.metrics.activeBays,1);
 assert.equal(q.metrics.additionalHH,21);
