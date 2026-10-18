@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Biblioteca 0.8.15 — Bia com 16 poses e projeto de treinamento por disciplina/equipamento documentado; CI/Pages aprovados, QA visual pendente; mecânica de treinamento ainda não implementada.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.16 — seis personagens na equipe inicial (Costa, Pedro, Geovane, Silva, Santos e Moura), migração de saves sem sobrescrever contratados; QA visual e CI pendentes.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -628,6 +628,34 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
+## Entrega 0.8.16 — Costa, Silva, Santos e Moura: equipe inicial ampliada (P0 / personagens)
+
+**Origem:** o jogador enviou três cartelas novas para Silva, Santos e Moura e solicitou a mudança do nome Isaias para Costa. A ordem dos arquivos anexados determina a associação: Silva = marreta e óculos escuros; Santos = chave, óculos transparentes e lanterna vermelha; Moura = proteção facial e rádio. A arte da Bia continua exclusiva do futuro módulo de treinamento.
+
+### Implementação
+
+- [x] **Costa:** M1 deixa de se chamar Isaias; mantém perfil eletricista e o mesmo sprite visual. Um novo caminho `costa-4poses.webp` referencia os bytes aprovados do arquivo histórico `isaias-4poses.webp`, preservado para rollback.
+- [x] **Novos atlas:** `silva-4poses.webp` (287.544 B, SHA-256 `26f68b092d14bfb940a7e44577b1d117d14571b27bd69fc0a248124102c849eb`), `santos-4poses.webp` (281.232 B, `48105f1036d2b9693531abb349954f251e1c2d31c4a599e8cdd7ad9c0d5f89ce`) e `moura-4poses.webp` (313.970 B, `eba522ff337b6838cd4e2f5f77043c7e410bf32a425d2dd243a143f9b64fd99d`). Todos têm 1160 × 1244 px, transparência e quatro quadros 580 × 622 px. Arte original fornecida pelo jogador, sem geração adicional.
+- [x] **Equipe inicial:** M1 Costa, M2 Pedro, M3 Geovane, M4 Silva, M5 Santos e M6 Moura; os três novos recebem função inicial `Mecânico` e `role:'geral'` até definição da disciplina. Profissionais da equipe continuam com energia, moral e trabalho individual.
+- [x] **Contratação genérica:** continua habilitada, nome “Mecânico”, ID individual e `sprite:null`. Em campanha nova, o primeiro contratado passa a ser M7; nunca usar a arte dos seis personagens oficiais para contratados.
+- [x] **Migração idempotente:** `normalizeRoster` troca Isaias por Costa, adiciona os três nomes somente se ausentes e usa IDs livres. Mecânicos M4/M5/etc. contratados antes desta atualização permanecem genéricos, conservando especialidade, skill, energia, OS e dinheiro. Nico/M4 legado ocioso continua removível; Nico designado mantém sua OS. Nenhuma versão/schema de save é alterada.
+- [x] **Limites físicos e econômicos:** permanecem três boxes e 10,5 HH úteis/pessoa/turno. Seis disponíveis equivalem a **63 HH nominais da equipe**, mas somente **31,5 HH por turno podem trabalhar simultaneamente nos boxes**; equipe extra cobre descanso, fila e flexibilidade. O custo fixo de pessoal acompanha os seis empregados (nenhuma redução artificial de folha).
+- [x] **Phaser/UI:** `WORKER_SHEETS` carrega os seis arquivos corretos e desenha exclusivamente o funcionário atribuído à OS; cards de Equipe exibem retrato/nome/função. Os fundos diurno/noturno e equipamentos aprovados não mudaram.
+- [x] **Integridade e cache:** testes de nomes, arquivos, quatro quadros e migração sem colisões; teste de planejamento/prontidão/semanal atualizado para seis; cache PWA `v096`, `game.js?v=0.8.16`.
+- [x] **Documentação:** [ROSTER.md](assets/characters/ROSTER.md) registra associação de arquivos, hashes, sprites legados e comportamentos.
+
+### Homologação manual (pendente)
+
+- [ ] Reiniciar uma campanha, verificar em Equipe somente os seis perfis oficiais iniciais na ordem Costa, Pedro, Geovane, Silva, Santos e Moura.
+- [ ] Conferir que Costa usa o mesmo visual elétrico anteriormente chamado Isaias e que cada novo uniforme/ferramenta corresponde à pessoa correta.
+- [ ] Alocar Silva, Santos e Moura individualmente no BOX 1/2/3; observar quatro poses, transparência e apoio de botas no piso no dia e à noite.
+- [ ] Contratar um profissional e verificar “Mecânico (M7)” sem sprite; não alterar o rol de seis identidades.
+- [ ] Importar save antigo com M4 já contratado ou trabalhando. Seu número não pode ser reutilizado para Silva, e todas as OS atribuídas precisam permanecer intactas.
+- [ ] Confirmar nas telas de planejamento e prontidão que 63 HH nominais não se confundem com teto de execução simultânea de 31,5 HH dos três boxes.
+- [ ] Validar o desempenho no celular/PWA e a carga de imagens (sprites da Bia continuam fora do preload do jogo).
+
+**Critério de aceite:** seis pessoas reais cadastradas, identidades e imagens sem trocas, migração sem perda de OS ou IDs, limites operacionais realistas, nenhum sprite genérico inventado. Testes automáticos não substituem QA visual.
+
 ## Entrega 0.8.15 — Acervo da Bia e projeto de treinamento (P1 / base artística + planejamento)
 
 **Publicado:** [PR #34](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/34) integrado na `main` (commit `32c5107a`). [CI #39083803606](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39083803606) e [Pages #39083846517](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39083846517) aprovados, incluindo os quatro hashes. **A biblioteca visual aguarda homologação humana no navegador; T1–T5 continuam futuros.**
@@ -884,7 +912,7 @@ Sem alteração em `engine.js`, saves, códigos de cenário, economia, energia, 
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.15
+## Plano de validação para a versão 0.8.16
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -943,6 +971,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.13:** fundo diurno original completo 1976×796 derivado para AVIF, junto ao noturno no perfil fullFrame; fallback recortado preservado, hash e proveniência documentados e nova suíte dia/noite no CI. **QA visual pendente.**
 - **0.8.14:** equipe inicial restrita a Isaias/Pedro/Geovane, três sprite sheets por personagem real alocado, contratação futura de Mecânico sem sprite e migração retrocompatível; testes de identidade/atlas e cache versionado. **QA visual pendente.**
 - **0.8.15:** quatro atlas WebP/16 poses da Bia reservados para futuro menu de capacitação; galeria independente, manifesto com hashes e projeto detalhado de treinamento por disciplina e equipamento. **Mecânica futura explicitamente não implementada; QA de arte pendente.**
+- **0.8.16:** três mecânicos novos Silva/Santos/Moura + renomeação Isaias→Costa, atlas WebP em quatro poses, seis iniciais, genéricos sem sprite e migração sem reatribuir IDs de contratados; PWA/testes atualizados. **QA visual pendente.**
 
 ### Organização recomendada
 
