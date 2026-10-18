@@ -22,7 +22,7 @@ const html=fs.readFileSync(path.join(root,'phaser-play','index.html'),'utf8');
 const game=fs.readFileSync(path.join(root,'phaser-play','game.js'),'utf8');
 const map=JSON.parse(fs.readFileSync(path.join(root,'phaser-play','scene-map.json'),'utf8'));
 const manifest=fs.readFileSync(path.join(root,'phaser-play','assets','OFICINA-NOTURNA.md'),'utf8');
-assert.ok(html.includes('game.js?v=0.8.18'),'entrypoint updated for browser cache');
+assert.ok(html.includes('game.js?v=0.8.19'),'entrypoint updated for browser cache');
 assert.ok(html.includes('id="sceneState"'),'current background source is visible to user');
 assert.ok(html.includes('Substituir noite (opcional)'),'local night override described as optional');
 assert.ok(html.includes('Restaurar noite oficial'),'night reset returns to repository asset');
