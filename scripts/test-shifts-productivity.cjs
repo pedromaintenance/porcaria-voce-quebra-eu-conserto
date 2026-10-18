@@ -38,7 +38,7 @@ const z20=testState(20),z60=testState(60),z100=testState(100);
 assert.equal(z60.s.tick,1,'12h shift tick progressed');
 assert.equal(z60.s.shift,1,'A day -> B night');
 assert.ok(E.timeLabel(z60.s).includes('noite'),'night label');
-assert.equal(z60.s.metrics.hours,63,'6 profissionais × 10,5 HH de disponibilidade nominal');
+assert.equal(z60.s.metrics.hours,73.5,'7 profissionais × 10,5 HH de disponibilidade nominal');
 for(const t of [z20,z60,z100]){
  assert.ok(t.j.worked<=10.5+1e-8,'mechanic cannot work more than 10.5HH in one shift');
  assert.ok(t.s.metrics.productive<=10.5+1e-8,'one allocated mechanic contributes up to 10.5HH');
