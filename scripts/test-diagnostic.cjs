@@ -84,7 +84,7 @@ const html=fs.readFileSync(path.join(root,'phaser-play','index.html'),'utf8');
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
 assert.ok(game.includes('PORCARIA_DIAGNOSTIC_VIEW.render(window.PORCARIA_DIAGNOSTIC.compute(state,data,j),j.id)'));
 assert.ok(html.includes('diagnostic-board.js?v=0.8.8')&&html.includes('diagnostic-view.js?v=0.8.8'));
-assert.ok(html.includes('game.js?v=0.8.16'));
+assert.ok(html.includes('game.js?v=0.8.17'));
 assert.ok(html.includes('.diagnosticStep.current')&&html.includes('.diagnosticGroups'));
 assert.ok(sw.includes("'./phaser-play/diagnostic-board.js'"));
 assert.ok(sw.includes("'./phaser-play/diagnostic-view.js'"));
