@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "characterId": "junior",
+  "displayName": "Junior",
+  "visibleRole": "Especialista",
+  "simulationRole": "geral",
+  "field": {
+    "file": "junior-work-4poses.webp",
+    "purpose": "oficina-OS",
+    "clothes": "capacete branco, óculos escuros, balaclava, uniforme cinza/amarelo, luvas",
+    "sha256": "a4777757f79ae25f595b5736fb112cc102455452e95969b2a3b64c653303a229",
+    "bytes": 202152,
+    "source": "Imagem do ChatGPT 17 de out. de 2026, 22_12_33(1).png",
+    "frames": [
+      "tool",
+      "approval",
+      "radio",
+      "kneeling-repair"
+    ]
+  },
+  "training": {
+    "file": "junior-training-4poses.webp",
+    "purpose": "futuro menu de treinamento; retrato na Equipe",
+    "clothes": "camisa social azul, calça azul e crachá",
+    "sha256": "a652d9f9666e9cfaa4970cfbe3d6e51bafeef3f7a0e3963463fbdcf1fd5c2ab7",
+    "bytes": 213964,
+    "source": "Sprite de Trabalhador Cartoon em Quatro Poses(2).png",
+    "frames": [
+      "clipboard-notes",
+      "approval",
+      "radio",
+      "training-clipboard"
+    ]
+  },
+  "grid": {
+    "columns": 2,
+    "rows": 2,
+    "sheetWidth": 1160,
+    "sheetHeight": 1244,
+    "frameWidth": 580,
+    "frameHeight": 622,
+    "indexOrder": "row-major",
+    "footMarginPx": 12
+  },
+  "sourceDimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "processing": "Quadrantes originais sem desenho novo; componentes isolados de quadros adjacentes removidos; alinhamento de pés e transparência; WebP qualidade 91",
+  "state": {
+    "activeRoster": true,
+    "trainingModuleImplemented": false,
+    "balanceBonusImplemented": false
+  },
+  "note": "Não carregar asset da camisa azul como trabalhador nos boxes; não confundir papel Especialista com bônus mecânico ainda não projetado."
+}

@@ -1,4 +1,4 @@
-# Equipe visual — P.O.R.C.A.R.I.A. v0.8.16
+# Equipe visual — P.O.R.C.A.R.I.A. v0.8.18
 
 **Fonte artística:** cartelas encaminhadas pelo usuário nesta conversa, com quatro poses por personagem. O jogo utiliza **essas artes**, sem redesenho nem personagens adicionais. Para distribuição, cada cartela foi segmentada em quatro quadrantes, ajustada em células uniformes com a base dos pés alinhada e codificada como WebP de qualidade 85, preservando transparência. A compactação tem perdas leves; arquivos originais permanecem nesta conversa.
 
@@ -10,6 +10,7 @@
 | Silva | Mecânico com marreta, capacete amarelo e uniforme azul/amarelo | `silva-4poses.webp` | 287.544 | `26f68b092d14bfb940a7e44577b1d117d14571b27bd69fc0a248124102c849eb` |
 | Santos | Mecânico com chave, capacete amarelo e uniforme cinza/amarelo | `santos-4poses.webp` | 281.232 | `48105f1036d2b9693531abb349954f251e1c2d31c4a599e8cdd7ad9c0d5f89ce` |
 | Moura | Mecânico com proteção facial, rádio e uniforme amarelo/cinza | `moura-4poses.webp` | 313.970 | `eba522ff337b6838cd4e2f5f77043c7e410bf32a425d2dd243a143f9b64fd99d` |
+| Junior | Especialista; balaclava e uniforme de campo | `junior/junior-work-4poses.webp` | 202.152 | `a4777757f79ae25f595b5736fb112cc102455452e95969b2a3b64c653303a229` |
 
 Todas as cartelas são WebP com transparência **1160 × 1244 px**, organizadas em **2 colunas × 2 linhas**, cada quadro com **580 × 622 px**:
 
@@ -43,3 +44,9 @@ Os três novos permanecem classificados como Mecânico (`role:'geral'`) por falt
 ## Biblioteca da Bia — futura interface de treinamento (v0.8.15)
 
 Quatro atlas / 16 poses da Bia foram registrados em [`bia/`](bia/README.md) com [manifesto](bia/manifest.json) e [galeria de verificação](bia/index.html). **Bia não é funcionária contratável e não possui vínculo de OS ou motor de simulação.** Seu uso está reservado ao futuro menu **Gestão → Treinamentos**. O projeto de capacitação por disciplina e modelo, incluindo custos/HH, avaliação e ganhos limitados em diagnóstico e reparo, está em [`TRAINING_DESIGN.md`](../../TRAINING_DESIGN.md); não há mecânica implementada nesta versão.
+
+## Junior — duas fardas por contexto (v0.8.18)
+
+Junior é um único profissional, sétimo membro da equipe inicial, com a função visível **Especialista**. Quando trabalha em máquina usa **`junior/junior-work-4poses.webp`** (balaclava, capacete branco, óculos e uniforme amarelo); no retrato da Equipe e no futuro menu de Treinamentos usa **`junior/junior-training-4poses.webp`** (camisa azul e crachá, 213.964 bytes, SHA-256 `a652d9f9666e9cfaa4970cfbe3d6e51bafeef3f7a0e3963463fbdcf1fd5c2ab7`). [Manifesto](junior/manifest.json) · [Guia](junior/README.md).
+
+O papel mecânico segue `role:'geral'` até calibração do módulo de especialidades; a identificação **Especialista** não aumenta magicamente o acerto ou velocidade. M7 genérico em save antigo **não é sobrescrito**: Junior recebe próximo ID livre. Se a equipe antiga já possui 9 integrantes, não ultrapassar o teto de lotação automaticamente.

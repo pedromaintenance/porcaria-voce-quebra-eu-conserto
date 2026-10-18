@@ -14,7 +14,8 @@
     {name:'Geovane',avatar:'📋',role:'geral',specialty:'Instrutor',sprite:'geovane'},
     {name:'Silva',avatar:'🔨',role:'geral',specialty:'Mecânico',sprite:'silva'},
     {name:'Santos',avatar:'🔧',role:'geral',specialty:'Mecânico',sprite:'santos'},
-    {name:'Moura',avatar:'🛠️',role:'geral',specialty:'Mecânico',sprite:'moura'}
+    {name:'Moura',avatar:'🛠️',role:'geral',specialty:'Mecânico',sprite:'moura'},
+    {name:'Junior',avatar:'🧑‍💼',role:'geral',specialty:'Especialista',sprite:'junior',trainingSprite:'junior-training'}
   ]);
   const clamp=(v,l=0,h=100)=>Math.min(h,Math.max(l,Math.round(v*10)/10));
   const SHIFT_HOURS=12, DDS_HOURS=0.5, MEAL_HOURS=1;
@@ -57,14 +58,14 @@
   function newMechanic(s,rng,identity=null){
     const profile=identity||{name:'Mecânico',avatar:'🔧',role:one(ROLES,rng)[1],specialty:'Mecânico',sprite:null};
     const m={id:`M${s.nextPerson++}`,name:profile.name,avatar:profile.avatar,role:profile.role,
-      specialty:profile.specialty,sprite:profile.sprite,
+      specialty:profile.specialty,sprite:profile.sprite,trainingSprite:profile.trainingSprite||null,
       skill:Math.round(54+rnd(rng)*35),mental:Math.round(72+rnd(rng)*25),
       physical:Math.round(70+rnd(rng)*27),morale:Math.round(74+rnd(rng)*20),
       assigned:null,restAt:null,completed:0,tenure:0};return m;
   }
   function normalizeRoster(s){
-    // Migração da v0.8.16: não sobrescrever contratações genéricas antigas.
-    // Só M1–M3 são identidades históricas reservadas; os três novos recebem
+    // Migração da v0.8.18: jamais sobrescrever identidades/IDs de contratos anteriores.
+    // Só M1–M3 são identidades históricas reservadas; os novos perfis recebem
     // IDs novos se M4/M5/... já pertencem a Mecânicos contratados.
     if(!s||!Array.isArray(s.team))return s;
     const jobs=Array.isArray(s.jobs)?s.jobs:[];
@@ -83,9 +84,9 @@
       const defined=initial||newProfiles.find(p=>m.sprite===p.sprite||m.name===p.name);
       if(defined){
         m.name=defined.name;m.avatar=defined.avatar;m.specialty=defined.specialty;
-        m.role=defined.role;m.sprite=defined.sprite;
+        m.role=defined.role;m.sprite=defined.sprite;m.trainingSprite=defined.trainingSprite||null;
       }else{
-        m.name='Mecânico';m.avatar='🔧';m.specialty='Mecânico';m.sprite=null;
+        m.name='Mecânico';m.avatar='🔧';m.specialty='Mecânico';m.sprite=null;m.trainingSprite=null;
         // Não sobrescrever m.role: a especialidade sorteada pelo contrato importa.
       }
     }
@@ -94,7 +95,7 @@
     // Determinístico para evitar alterações aleatórias entre imports do mesmo save.
     const rng=mulberry32((0x08160000+s.nextPerson+s.team.length*37)>>>0);
     for(const profile of newProfiles){
-      if(!present.has(profile.sprite)){
+      if(!present.has(profile.sprite)&&s.team.length<9){
         s.team.push(newMechanic(s,rng,profile));
         present.add(profile.sprite);
       }

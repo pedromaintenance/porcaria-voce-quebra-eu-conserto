@@ -48,10 +48,10 @@ for(const bay of map.backgroundProfiles.fullFrame.bays){
  assert.ok(size.width>100&&size.height>75,'sprite visible in workshop');
 }
 const html=fs.readFileSync(path.join(root,'phaser-play','index.html'),'utf8');
-assert.ok(html.includes('game.js?v=0.8.17'),'new rendering code bypasses old cached JS');
+assert.ok(html.includes('game.js?v=0.8.18'),'new rendering code bypasses old cached JS');
 console.log('OK: WebP 777E hash, alpha, 1100×781, original retained, camera placement and new render path.');
 
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
-assert.ok(sw.includes('porcaria-vqec-20261017-v097'),'cache PWA invalidado');
+assert.ok(sw.includes('porcaria-vqec-20261017-v098'),'cache PWA invalidado');
 assert.ok(sw.includes("'./phaser-play/assets/equipment/cat777e_v3.webp'"),'sprite oficial disponível offline');
 assert.equal(model.publishedAssetSHA256,'bec258a0b4afb512cae047a0a3c10ff7072be2dba5156b826c57fb0ca137a4bd');

@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.17 — imagem original da Sandvik DR410i integrada exclusivamente ao EQ05, mantendo DI650i e demais sprites; CI e Pages aprovados, QA visual pendente.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.18 — Junior como sétimo colaborador, duas fardas (balaclava para OS, camisa azul para treinamento futuro) e migração de saves; CI/Pages e QA visual pendentes.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -628,6 +628,31 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
+## Entrega 0.8.18 — Junior Especialista: duas identidades visuais por contexto (P0 / personagens)
+
+**Origem:** duas cartelas enviadas pelo usuário representam **a mesma pessoa, Junior (Especialista)**. No trabalho em máquinas deve vestir proteção com **balaclava**; nos menus futuros de treinamento deve usar **camisa social azul**. Nenhum personagem duplicado, nenhuma arte nova gerada.
+
+### Implementado
+- [x] **Arquivos aprovados:** `assets/characters/junior/junior-work-4poses.webp` — 202.152 B, SHA-256 `a4777757f79ae25f595b5736fb112cc102455452e95969b2a3b64c653303a229`; `assets/characters/junior/junior-training-4poses.webp` — 213.964 B, SHA-256 `a652d9f9666e9cfaa4970cfbe3d6e51bafeef3f7a0e3963463fbdcf1fd5c2ab7`. Ambos transparentes, 1160×1244 px, grade 2×2, quatro quadros de 580×622 px, pés alinhados. Fontes PNG 1254×1254 e processo detalhados no [manifesto](assets/characters/junior/manifest.json).
+- [x] **Equipe inicial:** Junior adicionado como sétimo membro, normalmente M7 numa campanha nova, com `specialty:'Especialista'`, `sprite:'junior'` e `trainingSprite:'junior-training'`. Os seis nomes anteriores permanecem na mesma ordem. O campo `role:'geral'` permanece intencionalmente até regras específicas de especialização serem desenhadas, sem bônus fictício.
+- [x] **Oficina:** motor Phaser exibe exclusivamente a cartela com balaclava quando Junior está atribuído à OS, inclusive dia/noite e nos três boxes; participa das quatro poses no mesmo código de animação dos demais funcionários.
+- [x] **Equipe e futura capacitação:** retrato do Junior usa **camisa azul** na tela Equipe, e a cartela equivalente está versionada para o futuro menu **Gestão → Treinamentos**. O menu de treinamento ainda **não existe**; nenhuma certificação/progressão foi ativada.
+- [x] **Migração segura:** `normalizeRoster` preserva os contratos e OS existentes, inclusive o antigo “Mecânico M7”, adicionando Junior em outro ID livre. Evita ultrapassar a lotação máxima atual de 9 profissionais em saves antigos completos. A migração é idempotente.
+- [x] **Capacidade:** 7 × 10,5 = **73,5 HH nominais de equipe**; somente **31,5 HH simultâneas** cabem nos três boxes. A folha total acompanha o tamanho da equipe; contratação continua por R$ 1.050 e com limite máximo 9.
+- [x] **Versionamento:** build `0.8.18`, PWA `v098`, preload do EPI de oficina, pré-cache das duas fardas, arquivos legados preservados.
+- [x] **Testes:** `scripts/test-junior-specialist.cjs` cobre dois hashes, alpha, quadros, separação de contexto, M7 legado, função e save idempotente; incluído no CI e no deploy Pages.
+- [x] **Documentação:** [Junior README](assets/characters/junior/README.md), [ROSTER.md](assets/characters/ROSTER.md), projeto de treinamento alinhado ao papel de especialista.
+
+### Homologação visual pendente
+- [ ] Confirmar Junior de balaclava (e NUNCA de camisa azul) numa OS de equipamento, em cenário diurno e noturno.
+- [ ] Confirmar o retrato com camisa azul em Equipe; mais tarde, validá-lo no futuro menu de Treinamentos.
+- [ ] Verificar prancheta, positivo, rádio e trabalho ajoelhado nos quadros adequados, sem sobreposição de quadrantes, recorte ou flutuação.
+- [ ] Criar nova campanha e verificar os sete nomes, contratação do genérico M8 sem sprite e capacidade de três boxes.
+- [ ] Importar save antigo com M7 contratado/alocado; garantir que Junior receba outro ID e não altere a OS existente.
+- [ ] Verificar comportamento com campanha já lotada (nove profissionais), responsividade móvel e atualização PWA.
+
+**Critério de aceite:** contextos visuais distintos respeitados, dados e campanha preservados, nenhum bônus de Especialista aplicado sem futura especificação, testes automáticos aprovados e homologação visual no Pages.
+
 ## Entrega 0.8.17 — Substituição do asset Sandvik DR410i (P0 / equipamentos)
 
 **Publicação:** [PR #36](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/36) integrado à `main` no commit `df9b60d9`, com [CI #39087180090](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39087180090) aprovado e [Pages #39087216683](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39087216683) publicado com sucesso. **Homologação visual no navegador ainda pendente.**
@@ -941,7 +966,7 @@ Sem alteração em `engine.js`, saves, códigos de cenário, economia, energia, 
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.17
+## Plano de validação para a versão 0.8.18
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -1002,6 +1027,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.15:** quatro atlas WebP/16 poses da Bia reservados para futuro menu de capacitação; galeria independente, manifesto com hashes e projeto detalhado de treinamento por disciplina e equipamento. **Mecânica futura explicitamente não implementada; QA de arte pendente.**
 - **0.8.16:** três mecânicos novos Silva/Santos/Moura + renomeação Isaias→Costa, atlas WebP em quatro poses, seis iniciais, genéricos sem sprite e migração sem reatribuir IDs de contratados; PWA/testes atualizados. **QA visual pendente.**
 - **0.8.17:** asset Sandvik DR410i fornecido pelo jogador (1536×1024) convertido para WebP transparente, com EQ05 desvinculado de EQ06 e arquivo anterior preservado; testes exclusivos de textura, integridade e geometria. **QA visual pendente.**
+- **0.8.18:** Junior Especialista com dois atlas de 4 poses (EPI/balaclava nas OS; camisa azul em Equipe/treinamento futuro), nova identidade sem sobrescrever M7 legado, 7 profissionais e 3 boxes preservados. **QA visual pendente.**
 
 ### Organização recomendada
 
