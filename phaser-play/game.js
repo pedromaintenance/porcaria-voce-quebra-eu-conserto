@@ -977,10 +977,12 @@ class Workshop extends Phaser.Scene{
   x=this.activeProfile==='fullFrame'&&bay
    ?window.PORCARIA_LAYOUT.placeWorkerInBay(x,bay,54,2)
    :window.PORCARIA_LAYOUT.calibratedCenter(x,54,SCENE_REFERENCE,visualCalibrationX,8);
+  x+=Number(bay?.workerOffsetX)||0; // Ajuste visual somente do mecânico no BOX 2.
   const person=mechanic?.sprite;
   const texture=person&&WORKER_SHEETS[person]?'worker_'+person:null;
   if(texture&&this.textures.exists(texture)){
-   this.textures.get(texture).setFilter(Phaser.Textures.FilterMode.NEAREST);
+   // Em redução ~10x, LINEAR preserva mais contornos do que NEAREST.
+   this.textures.get(texture).setFilter(Phaser.Textures.FilterMode.LINEAR);
    const poses=WORKER_POSES[mode]||WORKER_POSES.diagnose;
    const actor=this.add.sprite(x,y,texture,poses[0]).setOrigin(.5,1);
    actor.setScale(Math.min(54/WORKER_FRAME.width,64/WORKER_FRAME.height));

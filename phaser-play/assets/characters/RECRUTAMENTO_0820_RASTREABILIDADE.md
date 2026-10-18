@@ -78,3 +78,14 @@ O workflow [Validate P.O.R.C.A.R.I.A. recruitment](https://github.com/pedromaint
 - **Homologação no navegador:** pendente após CI totalmente aprovado.
 
 Este documento existe para impedir que “asset não versionado no GitHub” seja confundido novamente com “arquivo não enviado pelo usuário”.
+
+### Correção visual da v0.8.20 — 18/10/2026
+
+**Evidência recebida:** screenshot mostrou detalhes perdidos nos funcionários e Junior aparentemente apoiado sobre a caçamba no BOX 2. O código usava filtro `NEAREST` para quadros de 580×622 reduzidos a aproximadamente 54×64, agravando o aliasing. O lote anterior de seis WebP também usava compressão com perdas.
+
+**Ações:** atlas dos seis novos personagens recompostos dos PNG originais e salvos em WebP **lossless**, canal alfa e grade 2×2 preservados; Phaser filtra spritesheets de profissionais com **LINEAR** na minificação, sem mudar equipamentos; offset `workerOffsetX=-5` somente no BOX 2, aplicado após posicionamento/clamp nos perfis fullFrame e cropped, sem alterações na sombra, chão, máquinas ou HUD. Novo teste de regressão: `scripts/test-worker-visual-quality.cjs`.
+
+**Limite de validação:** reposicionar 5 px não demonstra sozinho que desapareça a percepção de flutuação; conferir visualmente a oclusão entre profissional e caçamba no Pages. O jogo mantém a âncora inferior `(0.5,1)` e o Y original, e o QA humano é necessário.
+
+
+**Aviso de versionamento:** os hashes na primeira tabela de WebP deste documento representam o lote **anterior com perdas**. Os seis hashes vigentes e testados pertencem ao manifesto `recruits-0820.json` atualizado para WebP lossless. A arte de origem foi integralmente recebida; nenhuma imagem precisou ser reenviada.

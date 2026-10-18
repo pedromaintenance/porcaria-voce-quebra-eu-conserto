@@ -61,3 +61,7 @@ O papel mecânico segue `role:'geral'` até calibração do módulo de especiali
 - **Pendente de publicação:** copiar seis arquivos *-4poses.webp disponibilizados no pacote do usuário para esta pasta antes do merge do PR.
 - Saves anteriores preservam mecânicos previamente contratados e OS, inclusive os genéricos legados. Não existe mais contratação de mecânico genérico.
 - Todos os novos mecânicos têm inicialmente `role:'geral'`, sem bônus especial fictício.
+
+## Retificação visual v0.8.20
+
+Os seis novos personagens passaram de WebP com perdas para **WebP lossless**, preservando 1160×1244, grade 2×2 e alfa. O Phaser renderiza trabalhadores em escala ~54×64 usando filtro **LINEAR**, evitando redução serrilhada por NEAREST. No BOX 2, `workerOffsetX=-5` px ajusta somente o X final do mecânico nos dois perfis. Arquivos definitivos e hashes em `recruits-0820.json`.
