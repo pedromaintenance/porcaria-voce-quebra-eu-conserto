@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.18 — Junior como sétimo colaborador, balaclava nas OS e camisa azul em Equipe/treinamento futuro; CI e Pages aprovados, QA visual pendente.**
+**Estado de referência:** 18/10/2026 · **Phaser 0.8.19 — CAT D9, CAT 966 e CAT 16 agora usam sprites pixel-art individuais aprovados; CI/Pages e QA visual pendentes.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -628,6 +628,33 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
+## Entrega 0.8.19 — Sprites da pá carregadeira, motoniveladora e trator (P0 / equipamentos)
+
+**Solicitação:** o usuário forneceu referências para CAT 966, CAT 16 e CAT D9, avaliou as três artes pixel-art produzidas e solicitou a substituição dos assets no jogo, documentação e publicação no GitHub Pages.
+
+### Implementação
+
+- [x] **CAT D9 / EQ07:** substituído o desenho provisório de trator de esteiras por `assets/equipment/catd9-dozer-v0819.webp` (273.480 bytes; SHA-256 `ca914d9882d5b6f7f8548a17152b3170dfa0906f2dc527446785d54255dbc952`). O fallback vetorial permanece apenas para falha do carregamento.
+- [x] **CAT 966 / EQ08:** substituído o desenho genérico da carregadeira por `assets/equipment/cat966-loader-v0819.webp` (231.356 bytes; SHA-256 `044b425baf37f4836482c5b9cd28824f30b638b0504cde40b27117116d4de700`).
+- [x] **CAT 16 / EQ09:** substituído o desenho genérico de motoniveladora por `assets/equipment/cat16-grader-v0819.webp` (245.206 bytes; SHA-256 `dd520eeca708c389235fd2c4707bfd42e99dff567fd79c5d4ecc2d56bb3c35de`).
+- [x] **Conversão:** as três artes consolidadas em PNG RGBA foram convertidas para WebP RGBA de qualidade 92, **1448 × 1086 px**, sem recorte da composição nem nova geração durante a integração. Transparência preservada.
+- [x] **Mapeamento Phaser:** `MACHINES` agora associa explicitamente `EQ07:'dozer'`, `EQ08:'loader'`, `EQ09:'grader'`. Modelos EQ01–EQ06 e DR410i/DI650i continuam com as mesmas texturas, sem alterações no motor de OS.
+- [x] **Geometria e piso:** `scene-map.json` registra origem, tamanho, hashes e filtro NEAREST. A versão mantém limites dos boxes, escala, posição de contato com o piso e recorte somente das margens transparentes pelo Phaser; preserva os alinhamentos anteriores de dia/noite e os offsets do BOX 3.
+- [x] **PWA:** atualizado `game.js?v=0.8.19` e `sw.js` `porcaria-vqec-20261018-v099`, com pré-cache das três novas imagens.
+- [x] **Teste automatizado de integridade:** `scripts/test-loader-grader-dozer-asset.cjs` verifica tamanho, canal alpha, hash, vínculo por ID, geometria dos três boxes, condições de fallback e PWA; registrado no CI e deploy Pages.
+- [x] **Documentação de ativos:** [ASSET-PACK-0819.md](assets/equipment/ASSET-PACK-0819.md) detalha arquivo original, SHA-256, dimensões, otimização, rollback e homologação.
+
+### Homologação visual pendente
+
+- [ ] Abrir OS para **CAT D9**, **CAT 966** e **CAT 16**, conferir correspondência e definição dos sprites novos.
+- [ ] Verificar perspectiva e alinhamento de rodas/esteiras, sombra de contato com piso e escala em cada BOX 1/2/3.
+- [ ] Alternar dia → noite → dia e verificar que não há salto de escala nem deslocamento indevido.
+- [ ] Verificar que diagnósticos, placas BOX, HUD de OS e mecânicos não ficam encobertos indevidamente.
+- [ ] Testar carregamento desktop e mobile/PWA com cache atualizado, inclusive rede lenta e retorno offline.
+- [ ] Garantir que CAT 777E, CAT 6030, escavadeiras, DR410i e DI650i não tenham regressão visual.
+
+**Critério de aceite:** as três máquinas aparecem com as imagens aprovadas no modelo correto, cabem no box e tocam o piso, mantendo integralmente as regras do jogo. **Testes geométricos e CI não substituem QA visual de navegador.**
+
 ## Entrega 0.8.18 — Junior Especialista: duas identidades visuais por contexto (P0 / personagens)
 
 **Publicação:** [PR #37](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/37) integrado à `main` no commit `201ce9ee`, com [CI #39088898785](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39088898785) e [Pages #39088956397](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39088956397) concluídos com sucesso. **Homologação visual no navegador ainda aberta.**
@@ -969,7 +996,7 @@ Sem alteração em `engine.js`, saves, códigos de cenário, economia, energia, 
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.18
+## Plano de validação para a versão 0.8.19
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -1031,6 +1058,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.16:** três mecânicos novos Silva/Santos/Moura + renomeação Isaias→Costa, atlas WebP em quatro poses, seis iniciais, genéricos sem sprite e migração sem reatribuir IDs de contratados; PWA/testes atualizados. **QA visual pendente.**
 - **0.8.17:** asset Sandvik DR410i fornecido pelo jogador (1536×1024) convertido para WebP transparente, com EQ05 desvinculado de EQ06 e arquivo anterior preservado; testes exclusivos de textura, integridade e geometria. **QA visual pendente.**
 - **0.8.18:** Junior Especialista com dois atlas de 4 poses (EPI/balaclava nas OS; camisa azul em Equipe/treinamento futuro), nova identidade sem sobrescrever M7 legado, 7 profissionais e 3 boxes preservados. **QA visual pendente.**
+- **0.8.19:** CAT D9, CAT 966 e CAT 16 recebem sprites WebP pixel-art completos, com chaves próprias EQ07/EQ08/EQ09 no Phaser, fallback histórico, hashes e teste de enquadramento no CI. **QA visual pendente.**
 
 ### Organização recomendada
 

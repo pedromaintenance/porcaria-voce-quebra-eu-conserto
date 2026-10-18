@@ -278,21 +278,42 @@
       "scaleMultiplier": 1.12,
       "maximumWidth": 258,
       "maximumHeight": 230,
-      "footprintAnchorX": 0.5
+      "footprintAnchorX": 0.5,
+      "texturePath": "assets/equipment/catd9-dozer-v0819.webp",
+      "sourcePixelSize": {"width": 1448, "height": 1086},
+      "renderFilter": "NEAREST",
+      "publishedAssetSHA256": "ca914d9882d5b6f7f8548a17152b3170dfa0906f2dc527446785d54255dbc952",
+      "sourceFile": "bulldozer_amarelo_em_arte_pixel_art.png",
+      "visualBasis": "Trator de esteiras com lâmina frontal, sem alteração da perspectiva do sprite aprovado",
+      "originalRendering": "fallback vetorial v0.8.18, preservado apenas quando a textura não carregar"
     },
     "EQ08": {
       "label": "CAT 966",
       "scaleMultiplier": 1,
       "maximumWidth": 258,
       "maximumHeight": 230,
-      "footprintAnchorX": 0.5
+      "footprintAnchorX": 0.5,
+      "texturePath": "assets/equipment/cat966-loader-v0819.webp",
+      "sourcePixelSize": {"width": 1448, "height": 1086},
+      "renderFilter": "NEAREST",
+      "publishedAssetSHA256": "044b425baf37f4836482c5b9cd28824f30b638b0504cde40b27117116d4de700",
+      "sourceFile": "carregadeira_amarela_em_pixel_art.png",
+      "visualBasis": "Pá carregadeira com caçamba frontal, perspectiva 3/4 aprovada",
+      "originalRendering": "fallback vetorial v0.8.18, preservado apenas quando a textura não carregar"
     },
     "EQ09": {
       "label": "CAT 16",
       "scaleMultiplier": 1,
       "maximumWidth": 258,
       "maximumHeight": 230,
-      "footprintAnchorX": 0.5
+      "footprintAnchorX": 0.5,
+      "texturePath": "assets/equipment/cat16-grader-v0819.webp",
+      "sourcePixelSize": {"width": 1448, "height": 1086},
+      "renderFilter": "NEAREST",
+      "publishedAssetSHA256": "dd520eeca708c389235fd2c4707bfd42e99dff567fd79c5d4ecc2d56bb3c35de",
+      "sourceFile": "motoniveladora_amarela_em_pixel_art.png",
+      "visualBasis": "Motoniveladora articulada 6x4 com lâmina central, vista 3/4 aprovada",
+      "originalRendering": "fallback vetorial v0.8.18, preservado apenas quando a textura não carregar"
     }
   },
   "backgroundProfiles": {

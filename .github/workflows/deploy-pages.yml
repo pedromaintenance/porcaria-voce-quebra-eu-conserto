@@ -24,9 +24,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Validate Phaser JavaScript syntax
-        run: node --check phaser-play/readiness.js && node --check phaser-play/diagnostic-board.js && node --check phaser-play/diagnostic-view.js && node --check scripts/test-diagnostic-teaching.cjs && node --check phaser-play/layout-math.js && node --check phaser-play/game.js && node --check phaser-play/planning.js && node --check phaser-play/weekly.js && node --check phaser-play/shift-brief.js && node --check engine.js && node --check scripts/test-777-override.cjs && node --check phaser-play/closed-orders.js && node --check scripts/test-closed-orders.cjs && node --check scripts/test-bay-contact.cjs && node --check scripts/test-day-night-fullframe.cjs && node --check scripts/test-worker-roster.cjs && node --check scripts/test-dr410i-asset.cjs && node --check scripts/test-junior-specialist.cjs && node --check scripts/test-bia-training-assets.cjs
+        run: node --check phaser-play/readiness.js && node --check phaser-play/diagnostic-board.js && node --check phaser-play/diagnostic-view.js && node --check scripts/test-diagnostic-teaching.cjs && node --check phaser-play/layout-math.js && node --check phaser-play/game.js && node --check phaser-play/planning.js && node --check phaser-play/weekly.js && node --check phaser-play/shift-brief.js && node --check engine.js && node --check scripts/test-777-override.cjs && node --check phaser-play/closed-orders.js && node --check scripts/test-closed-orders.cjs && node --check scripts/test-bay-contact.cjs && node --check scripts/test-day-night-fullframe.cjs && node --check scripts/test-worker-roster.cjs && node --check scripts/test-dr410i-asset.cjs && node --check scripts/test-loader-grader-dozer-asset.cjs && node --check scripts/test-junior-specialist.cjs && node --check scripts/test-bia-training-assets.cjs
       - name: Regression tests (engine and scene map)
-        run: node scripts/smoke-phaser.cjs && node scripts/test-shift-brief.cjs && node scripts/test-planning.cjs && node scripts/test-weekly.cjs && node scripts/test-shifts-productivity.cjs && node scripts/test-scene-profiles.cjs && node scripts/test-777-asset.cjs && node scripts/test-night-workshop.cjs && node scripts/test-readiness.cjs && node scripts/test-readiness-navigation.cjs && node scripts/test-diagnostic.cjs && node scripts/test-diagnostic-teaching.cjs && node scripts/test-777-override.cjs && node scripts/test-closed-orders.cjs && node scripts/test-bay-contact.cjs && node scripts/test-day-night-fullframe.cjs && node scripts/test-worker-roster.cjs && node scripts/test-dr410i-asset.cjs && node scripts/test-junior-specialist.cjs && node scripts/test-bia-training-assets.cjs
+        run: node scripts/smoke-phaser.cjs && node scripts/test-shift-brief.cjs && node scripts/test-planning.cjs && node scripts/test-weekly.cjs && node scripts/test-shifts-productivity.cjs && node scripts/test-scene-profiles.cjs && node scripts/test-777-asset.cjs && node scripts/test-night-workshop.cjs && node scripts/test-readiness.cjs && node scripts/test-readiness-navigation.cjs && node scripts/test-diagnostic.cjs && node scripts/test-diagnostic-teaching.cjs && node scripts/test-777-override.cjs && node scripts/test-closed-orders.cjs && node scripts/test-bay-contact.cjs && node scripts/test-day-night-fullframe.cjs && node scripts/test-worker-roster.cjs && node scripts/test-dr410i-asset.cjs && node scripts/test-loader-grader-dozer-asset.cjs && node scripts/test-junior-specialist.cjs && node scripts/test-bia-training-assets.cjs
       - name: Verify Bia training library files
         run: |
           test -f phaser-play/assets/characters/bia/manifest.json
@@ -59,6 +59,11 @@ jobs:
         run: |
           test -s phaser-play/assets/oficina-diurna-fullframe.avif
           echo "31453309223d11800e78276edd2e02b641a82eb4a2ffb52982dbc766e0a003c7  phaser-play/assets/oficina-diurna-fullframe.avif" | sha256sum --check
+      - name: Verify new CAT D9 CAT 966 CAT 16 sprites
+        run: |
+          echo "ca914d9882d5b6f7f8548a17152b3170dfa0906f2dc527446785d54255dbc952  phaser-play/assets/equipment/catd9-dozer-v0819.webp" | sha256sum --check
+          echo "044b425baf37f4836482c5b9cd28824f30b638b0504cde40b27117116d4de700  phaser-play/assets/equipment/cat966-loader-v0819.webp" | sha256sum --check
+          echo "dd520eeca708c389235fd2c4707bfd42e99dff567fd79c5d4ecc2d56bb3c35de  phaser-play/assets/equipment/cat16-grader-v0819.webp" | sha256sum --check
       - name: Verify DR410i official new asset
         run: |
           test -s phaser-play/assets/equipment/sandvik_dr410i_v2.webp

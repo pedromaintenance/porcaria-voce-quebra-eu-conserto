@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.18 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.19 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -11,12 +11,15 @@ const ASSETS={
  excavator:'./assets/equipment/cat395.png',
  drill:'./assets/equipment/sandvik_dr410i.png', // mantém a textura legada da DI650i até arte própria.
  dr410i:'./assets/equipment/sandvik_dr410i_v2.webp', // imagem DR410i fornecida pelo jogador.
+ dozer:'./assets/equipment/catd9-dozer-v0819.webp',
+ loader:'./assets/equipment/cat966-loader-v0819.webp',
+ grader:'./assets/equipment/cat16-grader-v0819.webp',
 
  // Trabalhadores oficiais são carregados como sprite sheets independentes.
  // As imagens antigas de Lia e Rafael permanecem no Git como arquivo histórico,
  // mas não são solicitadas pela oficina Phaser.
 };
-const MACHINES={EQ01:'truck',EQ02:'shovel',EQ03:'excavator',EQ04:'excavator',EQ05:'dr410i',EQ06:'drill'};
+const MACHINES={EQ01:'truck',EQ02:'shovel',EQ03:'excavator',EQ04:'excavator',EQ05:'dr410i',EQ06:'drill',EQ07:'dozer',EQ08:'loader',EQ09:'grader'};
 const WORKER_SHEETS=Object.freeze({
  costa:'./assets/characters/costa-4poses.webp',
  silva:'./assets/characters/silva-4poses.webp',
@@ -924,7 +927,7 @@ class Workshop extends Phaser.Scene{
       ?window.PORCARIA_LAYOUT.placeMachineInBay(x,220*scale,bay,MODEL_PRESENTATION[modelId]||{},3).x
       :window.PORCARIA_LAYOUT.calibratedCenter(x,220*scale,SCENE_REFERENCE,bay?.visualCalibrationX||0,8);
      this.lastFallbackMachineX=x;
-     // Trator de esteiras: silhueta industrial própria enquanto não existe PNG aprovado do D9.
+     // Fallback legado do D9 usado apenas se a textura homologada falhar.
      if(modelId==='EQ07'){
       const g=this.add.graphics(),u=scale;
       g.fillStyle(0x26313a);g.fillRoundedRect(x-98*u,y-33*u,195*u,31*u,13*u);

@@ -93,6 +93,6 @@ assert.ok(game.includes('this.worker(w.x,w.y,assigned'));
 assert.ok(game.includes("return label;"),'generic workers stay without sprite');
 assert.ok(game.includes('state=E.normalizeRoster(candidate)'));
 assert.ok(game.includes('E.normalizeRoster(state)'));
-assert.ok(html.includes('game.js?v=0.8.18'));
-assert.ok(sw.includes('porcaria-vqec-20261017-v098'));
+assert.ok(html.includes('game.js?v=0.8.19'));
+assert.ok(sw.includes('porcaria-vqec-20261018-v099'));
 console.log('OK: 6 approved workers, Costa rename, ID-safe old saves, generic hiring, 6 valid atlases and Phaser/PWA.');
