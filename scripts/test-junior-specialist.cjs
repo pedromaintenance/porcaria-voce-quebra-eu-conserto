@@ -31,6 +31,7 @@ for(const key of ['field','training']){
  assert.equal(bytes.length,item.bytes);
  assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),item.sha256);
  assert.equal(bytes.toString('ascii',0,4),'RIFF');assert.equal(bytes.toString('ascii',8,12),'WEBP');
+ assert.equal(bytes.toString('ascii',12,16),'VP8X','cabeçalho WebP estendido para largura, altura e alfa');
  assert.ok((bytes[20]&16)!==0,'alpha');assert.equal(1+bytes[24]+(bytes[25]<<8)+(bytes[26]<<16),1160);
  assert.equal(1+bytes[27]+(bytes[28]<<8)+(bytes[29]<<16),1244);
  assert.equal(item.frames.length,4);

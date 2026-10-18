@@ -16,7 +16,7 @@
 - [x] Usar a imagem revisada com cabeça maior e tronco mais largo, mantendo as poses ferramenta, aprovação, rádio e reparo ajoelhado.
 - [x] Separar corretamente as quatro silhuetas antes da criação do atlas: a imagem original 1254×1254 tinha poses com pixels além do limite teórico dos quadrantes, causando recorte de botas. O novo atlas 1160×1244 contém quatro quadros independentes de 580×622.
 - [x] Ancoragem de cada pose pelo menor ponto opaco, com **12 px inferiores de margem**; nenhuma silhueta invade outro quadro. O ponto de apoio `origin(.5,1)`, a posição dos boxes e a altura visual nominal dos profissionais não mudam.
-- [x] WebP VP8L **lossless** com transparência, SHA-256 `e902b323ec39c8eb8ad7a9c54633b96c0ba2ba88c42b1a353d913d4f6c8eea54`, **922.708 bytes**; hashes e tamanho conferidos no teste `test-junior-specialist.cjs`.
+- [x] WebP VP8X/VP8L **lossless** com transparência, SHA-256 `752ac264efe56c7a93d80780b94f9a344c4562c8a4ac7b82615aa82c0ed4e5b2`, **922.726 bytes**; hashes e tamanho conferidos no teste `test-junior-specialist.cjs`.
 - [x] **Pré-filtragem única por personagem e por pose** no Phaser: reamostragem do atlas de 580×622 para **290×311 por frame** via Canvas 2D (`imageSmoothingQuality='high'`), depois filtro LINEAR. Evita a minificação direta ~10× realizada anteriormente. O atlas original permanece íntegro; cache de texturas derivadas não é recalculado a cada frame.
 - [x] Nenhum deslocamento de máquinas, sombras, HUD, hitboxes, pontos de apoio nem alteração de save ou regras econômicas.
 - [x] Invalidação de cache PWA (`porcaria-vqec-20261018-v101`) e script Phaser (`game.js?v=0.8.21`); regressões para dimensões, filtragem, geometria e compatibilidade.
