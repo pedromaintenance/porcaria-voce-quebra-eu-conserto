@@ -258,7 +258,13 @@
       "scaleMultiplier": 3,
       "maximumWidth": 252,
       "maximumHeight": 310,
-      "footprintAnchorX": 0.54
+      "footprintAnchorX": 0.54,
+      "texturePath": "assets/equipment/sandvik_dr410i_v2.webp",
+      "originalAssetPath": "assets/equipment/sandvik_dr410i.png",
+      "sourcePixelSize": {"width": 1536, "height": 1024},
+      "renderFilter": "NEAREST",
+      "visualBasis": "Arte aprovada pelo usuário: perfuratriz laranja, cabine branca e esteiras pretas em perspectiva elevada; PNG RGBA integral, sem recorte ou nova geração. Preservar imagem legada para DI650i e rollback.",
+      "publishedAssetSHA256": "ccea0bbc7380d683dc44dcd06281b80af4150147fb6250ef8db6c009ec1da13a"
     },
     "EQ06": {
       "label": "Sandvik DI650i",

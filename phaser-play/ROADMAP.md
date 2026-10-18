@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 17/10/2026 · **Phaser 0.8.16 — seis personagens na equipe inicial (Costa, Pedro, Geovane, Silva, Santos e Moura), migração sem sobrescrever contratados; CI e Pages aprovados, QA visual pendente.**
+**Estado de referência:** 17/10/2026 · **Phaser 0.8.17 — imagem original da Sandvik DR410i integrada exclusivamente ao EQ05, mantendo DI650i e demais sprites; CI, Pages e QA visual pendentes.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
@@ -628,6 +628,29 @@ A versão 0.8.5 mostrava o nome da peça na tela de detalhes **antes** da conclu
 
 **Critério de aceite:** o sistema ensina por que uma confirmação importa, mas só revela a solução técnica completa depois da investigação, sem afetar os dados nem as regras de manutenção.
 
+## Entrega 0.8.17 — Substituição do asset Sandvik DR410i (P0 / equipamentos)
+
+**Origem:** o usuário enviou `Plataforma de Perfuração Industrial Laranja(1).png` para **substituir somente a DR410i**. A imagem apresenta perfuratriz laranja/vermelha com cabine branca, guarda-corpos amarelos e esteiras pretas em vista 3/4 de cima. O novo asset deriva do arquivo recebido, sem nova geração, remoção de peças nem mudança de perspectiva.
+
+### Entrega
+- [x] **Imagem original:** PNG RGBA **1536 × 1024 px**, 2.115.371 bytes, SHA-256 `353782cf7ec99fe4f0fe35aa5f5e57f3f0818bbf0bb63e269e4e39c71d7df0f8`. Transparência confirmada; sem recorte.
+- [x] **Asset de produção:** `phaser-play/assets/equipment/sandvik_dr410i_v2.webp`, **1536 × 1024 px**, 339.938 bytes; WebP qualidade 92 com canal alpha, SHA-256 `ccea0bbc7380d683dc44dcd06281b80af4150147fb6250ef8db6c009ec1da13a`. Otimização com perdas leves de codificação, sem alteração criativa.
+- [x] **Separação por modelo:** `EQ05` (Sandvik DR410i) referencia a nova textura `dr410i`; `EQ06` (Sandvik DI650i) mantém a chave e a imagem legadas `drill` / `sandvik_dr410i.png`. Isso evita substituir indevidamente as duas máquinas, que compartilhavam um sprite.
+- [x] **Geometria:** renderização Phaser respeita proporção original, origem inferior do equipamento e limites de `placementWorld` nos três boxes, com perfil único `fullFrame` para dia/noite. `scene-map.json` registra novo arquivo, dimensões, origem histórica e hash.
+- [x] **Rollback:** arquivo `sandvik_dr410i.png` antigo mantido no repositório; CAT 777E, 6030, 395, DI650i, mecânicos, saves e regras não foram modificados.
+- [x] **Versão/cache:** `game.js?v=0.8.17` e Service Worker `porcaria-vqec-20261017-v097` com pré-cache do novo sprite para reduzir a chance de clientes PWA exibirem imagem desatualizada.
+- [x] **Testes de regressão:** `scripts/test-dr410i-asset.cjs` verifica integridade SHA-256, 1536×1024, transparência, uso exclusivo em EQ05 e geometria dos três boxes. CI e Pages exigem esse teste e o hash do asset.
+
+### Homologação
+- [ ] Iniciar/carregar OS da Sandvik DR410i (EQ05), verificar forma, cores, sem corte de mastro/esteiras e alinhamento no piso.
+- [ ] Alternar turnos diurno/noturno, verificar mesmo tamanho, posição e sombra.
+- [ ] Conferir que a DI650i (EQ06) **não** recebeu o novo desenho da DR410i.
+- [ ] Testar equipamento nos boxes 1, 2 e 3 e em largura desktop/mobile; confirmar sem sobreposição de outras máquinas e HUD.
+- [ ] Testar PWA instalada ou recarregar após troca de cache.
+- [ ] Revisar qualidade e proporção visual em comparação com os outros equipamentos.
+
+**Critério de aceite:** DR410i mostra somente o PNG fornecido convertido para WebP sem redesenho; DI650i e demais equipamentos preservados; máquina plenamente enquadrada nos boxes e sem quebra de navegação. **QA visual humana pendente.**
+
 ## Entrega 0.8.16 — Costa, Silva, Santos e Moura: equipe inicial ampliada (P0 / personagens)
 
 **Publicação:** [PR #35](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/pull/35) integrado à `main` (commit `bfaad3fb`), com [CI #39086221428](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39086221428) aprovado e [Pages #39086274259](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39086274259) publicado com sucesso. Os seis hashes de sprites e os testes de migração/HH passaram. **A avaliação visual das quatro poses por profissional no navegador permanece pendente.**
@@ -915,7 +938,7 @@ Sem alteração em `engine.js`, saves, códigos de cenário, economia, energia, 
 | Teste de sintaxe e motor sem navegador | Bugs interativos ainda passam pelo deploy | Adicionar Playwright e teste mobile em CI |
 | Dependência do CDN Phaser | Falha offline | Vendor/bundle local e definir política de licença |
 
-## Plano de validação para a versão 0.8.16
+## Plano de validação para a versão 0.8.17
 
 1. Acessar **Oficina 2D** pelo GitHub Pages.
 2. Confirmar que o HUD e os três boxes aparecem sem dados inesperados.
@@ -975,6 +998,7 @@ O workflow `.github/workflows/deploy-pages.yml` executa `node --check` e `node s
 - **0.8.14:** equipe inicial restrita a Isaias/Pedro/Geovane, três sprite sheets por personagem real alocado, contratação futura de Mecânico sem sprite e migração retrocompatível; testes de identidade/atlas e cache versionado. **QA visual pendente.**
 - **0.8.15:** quatro atlas WebP/16 poses da Bia reservados para futuro menu de capacitação; galeria independente, manifesto com hashes e projeto detalhado de treinamento por disciplina e equipamento. **Mecânica futura explicitamente não implementada; QA de arte pendente.**
 - **0.8.16:** três mecânicos novos Silva/Santos/Moura + renomeação Isaias→Costa, atlas WebP em quatro poses, seis iniciais, genéricos sem sprite e migração sem reatribuir IDs de contratados; PWA/testes atualizados. **QA visual pendente.**
+- **0.8.17:** asset Sandvik DR410i fornecido pelo jogador (1536×1024) convertido para WebP transparente, com EQ05 desvinculado de EQ06 e arquivo anterior preservado; testes exclusivos de textura, integridade e geometria. **QA visual pendente.**
 
 ### Organização recomendada
 
