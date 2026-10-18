@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.17 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.18 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -23,8 +23,11 @@ const WORKER_SHEETS=Object.freeze({
  santos:'./assets/characters/santos-4poses.webp',
  moura:'./assets/characters/moura-4poses.webp',
  pedro:'./assets/characters/pedro-4poses.webp',
- geovane:'./assets/characters/geovane-4poses.webp'
+ geovane:'./assets/characters/geovane-4poses.webp',
+ junior:'./assets/characters/junior/junior-work-4poses.webp'
 });
+// Uniforme de treinamento não é carregado como sprite da oficina.
+const TEAM_PORTRAITS=Object.freeze({junior:'./assets/characters/junior/junior-training-4poses.webp'});
 const WORKER_FRAME={width:580,height:622,poses:4};
 const WORKER_POSES={blocked:[0],diagnose:[0,2,1,2],repair:[0,3,2,3]};
 let MODEL_PRESENTATION={};
@@ -495,7 +498,8 @@ function drawTeam(){
  $('teamPanel').innerHTML=`<p class="muted">Gerencie a energia física, mental e o moral dos profissionais. Contratações custam R$ 1.050 e 18 de energia mental do supervisor.</p><div class="actions"><button class="act" data-team-action="hire">+ CONTRATAR MECÂNICO</button></div><div class="resourceGrid">`+state.team.map(m=>{
  const current=state.jobs.find(j=>j.assigned===m.id);
  const resting=m.restAt===state.tick;
- const portrait=m.sprite&&WORKER_SHEETS[m.sprite]?'<span class="teamPortrait" style="background-image:url('+esc(WORKER_SHEETS[m.sprite])+')" aria-hidden="true"></span>':'<span class="teamPortrait placeholder" aria-label="Sem sprite">SEM<br>SPRITE</span>';
+ const portraitUrl=m.sprite&&(TEAM_PORTRAITS[m.sprite]||WORKER_SHEETS[m.sprite]);
+ const portrait=portraitUrl?'<span class="teamPortrait" style="background-image:url('+esc(portraitUrl)+')" aria-hidden="true"></span>':'<span class="teamPortrait placeholder" aria-label="Sem sprite">SEM<br>SPRITE</span>';
  return `<article class="resourceCard"><div class="teamIdentity">${portrait}<div><h3>${esc(m.avatar||'')} ${esc(m.name)} · ${esc(m.specialty||'Mecânico')} <small>${esc(m.id)}</small></h3><p class="muted">Especialidade simulada: ${esc(m.role)}</p></div></div><p class="muted">${current?'Em serviço: '+esc(current.id)+' · Box '+(current.bay+1):resting?'Descanso programado neste turno':'Disponível'} · Habilidade ${Math.round(m.skill)}</p>${energyMeter('Mental',m.mental)}${energyMeter('Física',m.physical)}${energyMeter('Moral',m.morale)}<div class="actions"><button class="act secondary" data-team-action="motivate" data-person="${esc(m.id)}">MOTIVAR</button><button class="act secondary" data-team-action="rest" data-person="${esc(m.id)}" ${current||resting?'disabled':''}>DESCANSAR</button></div></article>`;
  }).join('')+'</div>';
 }
