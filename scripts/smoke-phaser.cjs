@@ -60,7 +60,7 @@ assert.ok(phaserHtml.includes('layout-math.js?v=0.8.2'),'funções de geometria 
 const state=engine.create(data,()=>0.42);
 assert.ok(engine.validate(state),'save inicial válido');
 assert.equal(state.jobs.length,3,'iniciar com três OS');
-assert.equal(state.team.length,6,'iniciar com Costa Pedro Geovane Silva Santos Moura');
+assert.equal(state.team.length,7,'iniciar com Costa Pedro Geovane Silva Santos Moura Junior');
 assert.equal(engine.SHIFT_HOURS,12,'turnos de dia/noite de 12h');
 assert.equal(engine.EFFECTIVE_HOURS,10.5,'DDS 30min e almoço 1h');
 assert.equal(state.productivityTarget,60,'meta padrão de produtividade estável');
