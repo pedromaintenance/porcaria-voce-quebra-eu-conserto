@@ -41,7 +41,7 @@ jobs:
       - name: Verify both Junior sprite atlases
         run: |
           test -f phaser-play/assets/characters/junior/manifest.json
-          echo "a4777757f79ae25f595b5736fb112cc102455452e95969b2a3b64c653303a229  phaser-play/assets/characters/junior/junior-work-4poses.webp" | sha256sum --check
+          echo "752ac264efe56c7a93d80780b94f9a344c4562c8a4ac7b82615aa82c0ed4e5b2  phaser-play/assets/characters/junior/junior-work-4poses.webp" | sha256sum --check
           echo "a652d9f9666e9cfaa4970cfbe3d6e51bafeef3f7a0e3963463fbdcf1fd5c2ab7  phaser-play/assets/characters/junior/junior-training-4poses.webp" | sha256sum --check
       - name: Verify official six worker sprites
         run: |
