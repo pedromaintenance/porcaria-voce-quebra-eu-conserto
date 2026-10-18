@@ -61,8 +61,8 @@ assert.ok(g.includes("const TEAM_PORTRAITS=Object.freeze({junior:'./assets/chara
 assert.ok(g.includes("const texture=person&&WORKER_SHEETS[person]?'worker_'+person:null"));
 assert.ok(g.includes('TEAM_PORTRAITS[m.sprite]||WORKER_SHEETS[m.sprite]'));
 assert.ok(!g.includes("this.load.spritesheet('junior-training'"),'sem carregar uniforme azul como campo');
-assert.ok(html.includes('game.js?v=0.8.18'));
-assert.ok(sw.includes('porcaria-vqec-20261017-v098'));
+assert.ok(html.includes('game.js?v=0.8.19'));
+assert.ok(sw.includes('porcaria-vqec-20261018-v099'));
 for(const key of ['field','training'])assert.ok(sw.includes(manifest[key].file));
 assert.equal(manifest.state.trainingModuleImplemented,false);
 assert.equal(manifest.state.balanceBonusImplemented,false);
