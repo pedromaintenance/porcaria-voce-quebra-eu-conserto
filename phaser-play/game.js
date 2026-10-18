@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.19 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.21 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -38,6 +38,7 @@ const WORKER_SHEETS=Object.freeze({
 // Uniforme de treinamento não é carregado como sprite da oficina.
 const TEAM_PORTRAITS=Object.freeze({junior:'./assets/characters/junior/junior-training-4poses.webp'});
 const WORKER_FRAME={width:580,height:622,poses:4};
+const WORKER_RENDER_FRAME={width:290,height:311}; // pré-filtragem 2×, sem alterar tamanho em cena
 const WORKER_POSES={blocked:[0],diagnose:[0,2,1,2],repair:[0,3,2,3]};
 let MODEL_PRESENTATION={};
 let BACKGROUND_PROFILES=null;
@@ -973,6 +974,35 @@ class Workshop extends Phaser.Scene{
      this.machineObjs.push(g);
    }
  }
+ workerRenderTexture(texture){
+  const renderKey=texture+'_prefilter_v0821';
+  if(this.textures.exists(renderKey))return renderKey;
+  const src=this.textures.get(texture).getSourceImage();
+  if(!src||src.width!==WORKER_FRAME.width*2||src.height!==WORKER_FRAME.height*2)return texture;
+  // Reduzir cada frame separadamente evita vazamento de pixels entre poses.
+  // Canvas pré-filtra em alta qualidade antes da última redução feita pelo GPU.
+  const canvas=document.createElement('canvas');
+  canvas.width=WORKER_RENDER_FRAME.width*2;
+  canvas.height=WORKER_RENDER_FRAME.height*2;
+  const ctx=canvas.getContext('2d',{alpha:true});
+  if(!ctx)return texture;
+  ctx.imageSmoothingEnabled=true;
+  ctx.imageSmoothingQuality='high';
+  for(let i=0;i<4;i++){
+   ctx.drawImage(src,(i%2)*WORKER_FRAME.width,Math.floor(i/2)*WORKER_FRAME.height,
+    WORKER_FRAME.width,WORKER_FRAME.height,
+    (i%2)*WORKER_RENDER_FRAME.width,Math.floor(i/2)*WORKER_RENDER_FRAME.height,
+    WORKER_RENDER_FRAME.width,WORKER_RENDER_FRAME.height);
+  }
+  const sheet=this.textures.addCanvas(renderKey,canvas);
+  if(!sheet)return texture;
+  for(let i=0;i<4;i++){
+   sheet.add(i,0,(i%2)*WORKER_RENDER_FRAME.width,Math.floor(i/2)*WORKER_RENDER_FRAME.height,
+    WORKER_RENDER_FRAME.width,WORKER_RENDER_FRAME.height);
+  }
+  sheet.setFilter(Phaser.Textures.FilterMode.LINEAR);
+  return renderKey;
+ }
  worker(x,y,mechanic,{facing='right',mode='diagnose',visualCalibrationX=0,bay=null}={}){
   x=this.activeProfile==='fullFrame'&&bay
    ?window.PORCARIA_LAYOUT.placeWorkerInBay(x,bay,54,2)
@@ -981,11 +1011,13 @@ class Workshop extends Phaser.Scene{
   const person=mechanic?.sprite;
   const texture=person&&WORKER_SHEETS[person]?'worker_'+person:null;
   if(texture&&this.textures.exists(texture)){
-   // Em redução ~10x, LINEAR preserva mais contornos do que NEAREST.
-   this.textures.get(texture).setFilter(Phaser.Textures.FilterMode.LINEAR);
+   // Pré-filtra cada pose em 2× antes da minificação final, sem mexer no ponto de apoio.
+   const renderKey=this.workerRenderTexture(texture);
+   const frame=renderKey===texture?WORKER_FRAME:WORKER_RENDER_FRAME;
+   this.textures.get(renderKey).setFilter(Phaser.Textures.FilterMode.LINEAR);
    const poses=WORKER_POSES[mode]||WORKER_POSES.diagnose;
-   const actor=this.add.sprite(x,y,texture,poses[0]).setOrigin(.5,1);
-   actor.setScale(Math.min(54/WORKER_FRAME.width,64/WORKER_FRAME.height));
+   const actor=this.add.sprite(x,y,renderKey,poses[0]).setOrigin(.5,1);
+   actor.setScale(Math.min(54/frame.width,64/frame.height));
    actor.setFlipX(facing==='left');
    this.workerSprites.push({sprite:actor,frames:poses,index:0});
    return actor;
