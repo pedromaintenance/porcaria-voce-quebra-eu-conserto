@@ -19,8 +19,8 @@ jobs:
         with:
           node-version: 22
       - name: Check syntax
-        run: node --check engine.js && node --check phaser-play/game.js && node --check scripts/test-worker-roster.cjs && node --check scripts/test-junior-specialist.cjs && node --check scripts/test-named-recruits.cjs && node --check scripts/test-worker-visual-quality.cjs
+        run: node --check engine.js && node --check phaser-play/game.js && node --check scripts/test-worker-roster.cjs && node --check scripts/test-junior-specialist.cjs && node --check scripts/test-named-recruits.cjs && node --check scripts/test-worker-visual-quality.cjs && node --check scripts/test-supervisor-assets.cjs
       - name: Test simulation and recruitment
         run: node scripts/smoke-phaser.cjs && node scripts/test-worker-roster.cjs && node scripts/test-junior-specialist.cjs && node scripts/test-readiness.cjs && node scripts/test-weekly.cjs && node scripts/test-shifts-productivity.cjs
       - name: Verify six sprite files
-        run: node scripts/test-named-recruits.cjs && node scripts/test-worker-visual-quality.cjs
+        run: node scripts/test-named-recruits.cjs && node scripts/test-worker-visual-quality.cjs && node scripts/test-supervisor-assets.cjs

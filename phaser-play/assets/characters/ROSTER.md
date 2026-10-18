@@ -1,5 +1,7 @@
 # Equipe visual — P.O.R.C.A.R.I.A. v0.8.18
 
+> **Biblioteca futura de supervisores (18/10/2026, v0.8.23):** Major e Duarte foram registrados em [supervisors/](supervisors/) com PNGs originais, WebPs lossless (4 poses cada), manifesto e galeria. **Eles não integram a equipe inicial, contratação ou oficina nesta versão.** A documentação abaixo conserva o histórico das versões anteriores.
+
 **Fonte artística:** cartelas encaminhadas pelo usuário nesta conversa, com quatro poses por personagem. O jogo utiliza **essas artes**, sem redesenho nem personagens adicionais. Para distribuição, cada cartela foi segmentada em quatro quadrantes, ajustada em células uniformes com a base dos pés alinhada e codificada como WebP de qualidade 85, preservando transparência. A compactação tem perdas leves; arquivos originais permanecem nesta conversa.
 
 | Funcionário | Identidade visível | Arquivo oficial | Bytes | SHA-256 |

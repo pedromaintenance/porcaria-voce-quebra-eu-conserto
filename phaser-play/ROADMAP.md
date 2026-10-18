@@ -2,10 +2,39 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 18/10/2026 · **v0.8.22 — canvas de alta densidade com câmera compensada e sprites ampliados; QA visual pendente.**
+**Estado de referência:** 18/10/2026 · **v0.8.23 (assets-only) — Major e Duarte cadastrados como supervisores futuros, 8 poses; motor do jogo permanece na v0.8.22.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.8.23 — Biblioteca de supervisores (apenas assets; sem gameplay)
+
+**Origem:** duas imagens enviadas pelo usuário em 18/10/2026, identificadas na ordem como **Major** (primeira imagem) e **Duarte** (segunda imagem). O usuário confirmou que a nova renderização 2× da v0.8.22 apresentou qualidade visual excelente. Esta entrega não modifica a renderização, o sistema de OS, a equipe nem o save.
+
+### Arquivos e transformações
+
+- [x] Registrar Major e Duarte em `phaser-play/assets/characters/supervisors/manifest.json`, com papéis visuais de **supervisor**, IDs exclusivos, origem, poses, SHA-256 e metadados de processamento.
+- [x] Preservar as cartelas PNG originais sem qualquer alteração nos arquivos `major-original.png` e `duarte-original.png`.
+- [x] Gerar spritesheets **WebP lossless com alfa**, `major-4poses.webp` e `duarte-4poses.webp`, layout padronizado **1160×1244**, quadros **580×622**, quatro poses por personagem (2 colunas × 2 linhas).
+- [x] Corrigir a separação vertical de Duarte: a imagem de origem possuía personagens dos quadros superiores que ultrapassavam a divisória; segmentação por componente conexo do canal alfa evita cortar botas ou contaminar as poses inferiores.
+- [x] Ajustar uma escala consistente por personagem, centralizar as silhuetas e manter **margem de solo de ao menos 12 px** sob o ponto opaco mais baixo, preservando proporção e poses.
+- [x] Expor [galeria de supervisores](assets/characters/supervisors/index.html) com visualização de cada pose e links diretos para WebP e originais.
+- [x] Registrar teste `scripts/test-supervisor-assets.cjs` para integridade, dimensões, hash, formato lossless, transparência, grade e não participação na simulação. Acrescentar validação no CI e workflow de publicação.
+
+### Poses cadastradas
+
+| Personagem | Quadro 0 | Quadro 1 | Quadro 2 | Quadro 3 |
+| --- | --- | --- | --- | --- |
+| **Major** | Braços cruzados | Positivo | Tablet | Ajoelhado com rádio |
+| **Duarte** | Anotação em prancheta | Positivo | Rádio | Checklist |
+
+### Fronteira funcional
+
+- **Não implementado:** contratação de supervisores, supervisão em OS, gestão de escala, animação deles na oficina, bônus de produtividade ou custos associados. Não alterar `engine.js`, `game-data.json`, `game.js`, `WORKER_SHEETS`, `INITIAL_TEAM` ou `RECRUIT_POOL` nesta entrega.
+- [ ] Futuro: detalhar a mecânica de supervisão e sua capacidade/energia antes de ativar sprites na cena, mantendo separada a figura do supervisor dos HH produtivos das ordens.
+- [ ] Homologação visual: conferir galeria publicada em desktop/mobile e reconhecer as quatro poses de ambos; registrar aprovação artística.
+
+**Critério de aceite desta entrega:** quatro arquivos de imagem versionados (dois originais + dois atlas) e dois supervisores disponíveis no catálogo futuro sem qualquer efeito na campanha existente.
 
 ## Entrega 0.8.22 — Renderização de personagens em alta densidade (P0 / imagem)
 
