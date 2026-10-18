@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0c1c2b">
+<title>Bia — Biblioteca de sprites de treinamento | P.O.R.C.A.R.I.A.</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#091924;color:#e8f3fa}
+*{box-sizing:border-box}body{margin:0;line-height:1.5;background:linear-gradient(150deg,#102c40,#091924 45%);min-height:100vh}
+header,main,footer{max-width:1120px;margin:auto;padding:18px}
+header{border-bottom:1px solid #3b627c}h1{color:#ffd072;margin:4px 0 8px;font-size:clamp(22px,4vw,34px)}
+h2{font-size:18px;margin:30px 0 10px;color:#ffda91}.meta{color:#a9c8d8;font-size:13px}
+a{color:#85cef7}a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid #ffc466;outline-offset:3px}
+.notice{border-left:3px solid #e9b153;padding:12px 15px;background:#183247;border-radius:0 8px 8px 0;max-width:840px}
+.toolbar{margin:20px 0;display:flex;align-items:center;flex-wrap:wrap;gap:12px}
+select{background:#153349;color:#eef4f9;border:1px solid #6088a5;border-radius:7px;padding:10px;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.pose{border:1px solid #3a627c;border-radius:12px;background:#162c3f;overflow:hidden}
+.frame{aspect-ratio:580/622;background-size:200% 200%;background-repeat:no-repeat;background-color:#22374a;width:100%}
+.info{padding:10px 12px}.info strong{display:block;font-size:13px;color:#ffddab;overflow-wrap:anywhere}
+.info small{color:#abc8d5;font-size:11px}
+section[hidden]{display:none}footer{color:#a7bdc9;font-size:12px;padding-bottom:40px}
+</style>
+</head>
+<body>
+<header><a href="../../../../phaser-play/">← Oficina</a><h1>BIA · Biblioteca de poses</h1>
+<p class="meta">P.O.R.C.A.R.I.A. v0.8.15 — 4 atlas / 16 poses / imagens existentes, sem novas gerações</p>
+<p class="notice"><strong>Pré-visualização técnica.</strong> Bia está reservada para o futuro sistema de treinamento. Não integra a equipe contratável e ainda não modifica habilidade, diagnóstico, reparo ou saves.</p></header>
+<main>
+<div class="toolbar"><label for="filter">Coleção:</label>
+<select id="filter"><option value="all">Todas as poses</option><option value="feedback">Feedback e avaliação</option><option value="inspection">Inspeção em campo</option><option value="field">Comunicação e registros</option><option value="coaching">Orientação e acompanhamento</option></select>
+<span class="meta" id="counter">Carregando atlas...</span></div>
+<div id="collection" aria-live="polite"></div>
+</main>
+<footer>Quadros 580 × 622 px, atlas 1160 × 1244 px; piso alinhado em cada pose. <a href="../../../../phaser-play/TRAINING_DESIGN.md">Projeto de treinamento</a> · <a href="./manifest.json">Manifesto de arquivos</a>.</footer>
+<script>
+(async()=>{
+ const target=document.getElementById('collection'),filter=document.getElementById('filter'),count=document.getElementById('counter');
+ const groups={feedback:'Feedback e avaliação',inspection:'Inspeção em campo',field:'Comunicação e registros',coaching:'Orientação e acompanhamento'};
+ try{
+  const response=await fetch('./manifest.json',{cache:'no-store'});
+  if(!response.ok)throw new Error('HTTP '+response.status);
+  const library=await response.json();
+  if(library.characterId!=='bia'||!Array.isArray(library.atlases))throw new Error('Catálogo incompatível');
+  const sections=[];
+  library.atlases.forEach(a=>{
+   if(!/^[a-z]+$/.test(a.id)||!/^bia-[a-z]+-4poses\.webp$/.test(a.file)||!Array.isArray(a.frames))throw new Error('Dados de atlas inválidos');
+   const section=document.createElement('section');
+   const heading=document.createElement('h2');heading.textContent=groups[a.id]||a.id;section.append(heading);
+   const grid=document.createElement('div');grid.className='grid';section.append(grid);
+   a.frames.forEach(f=>{
+    if(!Number.isInteger(f.index)||f.index<0||f.index>3)return;
+    const card=document.createElement('article');card.className='pose';
+    const art=document.createElement('div');art.className='frame';art.setAttribute('role','img');art.setAttribute('aria-label',f.pose.replaceAll('_',' '));
+    art.style.backgroundImage='url("./'+a.file+'")';
+    art.style.backgroundPosition=(f.column===0?'0%':'100%')+' '+(f.row===0?'0%':'100%');
+    const info=document.createElement('div');info.className='info';
+    const title=document.createElement('strong');title.textContent=f.pose.replaceAll('_',' ');
+    const foot=document.createElement('small');foot.textContent='Quadro '+f.index+' · '+a.file;
+    info.append(title,foot);card.append(art,info);grid.append(card);
+   });
+   sections.push({section,id:a.id,count:a.frames.length});target.append(section);
+  });
+  const apply=()=>{let visible=0;sections.forEach(x=>{x.section.hidden=filter.value!=='all'&&filter.value!==x.id;if(!x.section.hidden)visible+=x.count});count.textContent=visible+' poses disponíveis para o menu futuro'};
+  filter.addEventListener('change',apply);apply();
+ }catch(error){count.textContent='Falha ao carregar biblioteca';const p=document.createElement('p');p.textContent='Não foi possível abrir os sprites: '+error.message;target.append(p)}
+})();
+</script>
+</body>
+</html>
