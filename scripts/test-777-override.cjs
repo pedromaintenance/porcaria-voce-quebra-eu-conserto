@@ -26,9 +26,9 @@ assert.ok(!g.includes("state.truckSprite"),'asset não é incorporado ao estado 
 assert.ok(html.includes('id="truckPicker"')&&html.includes('id="truckPickBtn"'));
 assert.ok(html.includes('id="truckReset"')&&html.includes('id="truckAssetState"'));
 assert.ok(html.includes('id="truckAssetThumb"'));
-assert.ok(html.includes('game.js?v=0.8.18'));
+assert.ok(html.includes('game.js?v=0.8.19'));
 assert.ok(html.includes('.scene-menu{max-height:min(78vh,630px)'),'menu de preview rolável');
-assert.ok(sw.includes('porcaria-vqec-20261017-v098'));
+assert.ok(sw.includes('porcaria-vqec-20261018-v099'));
 assert.equal(map.bays.length,3);
 assert.ok(html.includes('Não altera o save nem publica a imagem.'));
 console.log('OK: override 777E opt-in, persistência local, fallback original e interface de revisão sem mudanças no save.');
