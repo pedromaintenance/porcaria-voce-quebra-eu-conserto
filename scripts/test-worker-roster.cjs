@@ -45,10 +45,10 @@ const html=fs.readFileSync(path.join(root,'phaser-play/index.html'),'utf8');
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
 for(const key of [...keys,'pedro','geovane','junior']){
  assert.ok(game.includes(key+':\'./assets/characters/'),'sprite no Phaser: '+key);
- assert.ok(sw.includes(key==='junior'?'junior-work-4poses.webp':key+'-4poses.webp'),'sprite no PWA: '+key);
+ assert.ok(sw.includes(key==='junior'?'junior-work-4poses.webp':key==='pedro'?'pedro-v0829-4poses.png':key+'-4poses.webp'),'sprite no PWA: '+key);
 }
 assert.ok(game.includes('E.availableRecruits(state)'));
 assert.ok(game.includes('E.hire(state,id)'));
-assert.ok(html.includes('game.js?v=0.8.28'));
-assert.ok(sw.includes('porcaria-vqec-20261018-v107'));
+assert.ok(html.includes('game.js?v=0.8.29'));
+assert.ok(sw.includes('porcaria-vqec-20261019-v108'));
 console.log('OK: contratação nominal, campanha inicial 3, limite 13, saves preservados.');

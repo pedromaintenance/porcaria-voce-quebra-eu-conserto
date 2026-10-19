@@ -2,10 +2,22 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 18/10/2026 · **v0.8.28 — treinamento interno/externo com evolução garantida e saldo fracionário; DI650i com asset próprio lossless; testes e QA visual pendentes.**
+**Estado de referência:** 19/10/2026 · **v0.8.29 — substituição exclusivamente visual do Pedro por novo atlas RGBA 2×2; testes automatizados e homologação visual pendentes.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.8.29 — Nova arte do Pedro (somente asset)
+
+- [x] Recebida e preservada a cartela original `pedro-v0829-original.png`, fornecida pelo usuário (1254×1254 RGBA).
+- [x] Convertida para atlas `pedro-v0829-4poses.png`, transparente, 1160×1244 px, quatro quadros de 580×622 px, sem perdas.
+- [x] Ajustados os recortes da imagem original em x=635/y=665 para não cortar as botas superiores; escala uniforme aproximada de 0,93, silhuetas centralizadas e pés alinhados a 12 px da base do quadro.
+- [x] Atualizado apenas `WORKER_SHEETS.pedro`, sem mudar frame, envelope 66×80, câmera, Box 2, ordem das poses, engine, OS, habilidades, treinamento ou saves.
+- [x] Cache PWA `v108`, versão JS `0.8.29`, rastreabilidade SHA-256 em [PEDRO_ASSET_0829.md](assets/characters/PEDRO_ASSET_0829.md) e regressão dedicada.
+- [ ] Conferir visualmente as quatro poses em oficina, nos três boxes, em dia/noite, e o retrato do menu Equipe.
+- [ ] Verificar carregamento da arte nova em PWA previamente instalado.
+
+**Aceite da publicação:** CI aprovado e deploy GitHub Pages concluído. **QA visual permanece pendente** até teste no navegador.
 
 ## Entrega 0.8.28 — Treinamentos determinísticos e asset Sandvik DI650i
 
