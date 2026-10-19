@@ -33,6 +33,7 @@ const WORKER_SHEETS=Object.freeze({
  moura:'./assets/characters/moura-4poses.webp',
  pedro:'./assets/characters/pedro-v0829-4poses.png',
  geovane:'./assets/characters/geovane-4poses.webp',
+ acassio:'./assets/characters/acassio-4poses.png',
  junior:'./assets/characters/junior/junior-work-4poses.webp'
 });
 // Uniforme de treinamento não é carregado como sprite da oficina.

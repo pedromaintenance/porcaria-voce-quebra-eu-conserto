@@ -5,7 +5,7 @@ const root=path.join(__dirname,'..'),dir=path.join(root,'phaser-play/assets/char
 const manifest=JSON.parse(fs.readFileSync(path.join(dir,'manifest.json'),'utf8'));
 const E=require(path.join(root,'engine.js')),data=JSON.parse(fs.readFileSync(path.join(root,'game-data.json'),'utf8'));
 const fresh=E.create(data,()=>0.42);
-assert.deepEqual(fresh.team.map(x=>x.name),['Pedro','Geovane','Junior']);
+assert.deepEqual(fresh.team.map(x=>x.name),['Pedro','Geovane','Junior','Acassio']);
 const junior=fresh.team[2];assert.equal(junior.id,'M3');
 assert.equal(junior.role,'geral');assert.equal(junior.specialty,'Especialista');
 assert.equal(junior.sprite,'junior');assert.equal(junior.trainingSprite,'junior-training');

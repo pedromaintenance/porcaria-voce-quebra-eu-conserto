@@ -57,7 +57,7 @@ const engine=fs.readFileSync(path.join(root,'engine.js'),'utf8');
 assert.ok(!game.includes('worker_major')&&!game.includes('worker_duarte'),'no sprite loading in game scene');
 assert.ok(!engine.includes("sprite:'major'")&&!engine.includes("sprite:'duarte'"),'not in initial roster/recruit pool');
 const fresh=E.create(data,()=>0.42);
-assert.deepEqual(fresh.team.map(m=>m.name),['Pedro','Geovane','Junior']);
+assert.deepEqual(fresh.team.map(m=>m.name),['Pedro','Geovane','Junior','Acassio']);
 const gallery=fs.readFileSync(path.join(dir,'index.html'),'utf8');
 assert.ok(gallery.includes("fetch('./manifest.json'"));
 assert.ok(gallery.includes('background-size:200% 200%'));
