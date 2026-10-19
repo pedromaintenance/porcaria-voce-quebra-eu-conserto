@@ -96,8 +96,8 @@ assert.equal(JSON.stringify(s),before,'repeated compute never mutates state, eve
 const html=fs.readFileSync(path.join(root,'phaser-play','index.html'),'utf8');
 const js=fs.readFileSync(path.join(root,'phaser-play','game.js'),'utf8');
 assert.ok(html.includes('readiness.js?v=0.8.8'),'new pure module loaded in browser');
-assert.ok(html.includes('game.js?v=0.8.28'),'game cache refreshed');
-assert.ok(html.indexOf('readiness.js?v=0.8.8')<html.indexOf('game.js?v=0.8.28'),'module loads before game');
+assert.ok(html.includes('game.js?v=0.8.29'),'game cache refreshed');
+assert.ok(html.indexOf('readiness.js?v=0.8.8')<html.indexOf('game.js?v=0.8.29'),'module loads before game');
 assert.ok(js.includes('function drawManagement(k)')&&js.includes('readinessBoard'),'readiness dashboard integrated');
 assert.ok(js.includes('function drawShiftBrief()')&&js.includes('shiftReadinessSummary'),'shift briefing includes readiness summary');
 assert.ok(js.includes("data-readiness-job"),'OS navigation button is validated');

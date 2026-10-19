@@ -18,7 +18,7 @@ assert.ok(phaserHtml.includes('data-panel="shift"'),'briefing pré-turno usa o m
 assert.ok(phaserScript.includes('function drawManagement(k)'),'métricas da gestão vêm da simulação');
 assert.ok(phaserScript.includes('window.PORCARIA_READINESS.compute(state,data)'),'gestão/briefing usam cálculo puro do quadro');
 assert.ok(phaserHtml.includes('readiness.js?v=0.8.8'),'módulo prontidão carregado');
-assert.ok(phaserHtml.indexOf('readiness.js?v=0.8.8')<phaserHtml.indexOf('game.js?v=0.8.28'),'prontidão entra antes do Phaser');
+assert.ok(phaserHtml.indexOf('readiness.js?v=0.8.8')<phaserHtml.indexOf('game.js?v=0.8.29'),'prontidão entra antes do Phaser');
 assert.ok(phaserHtml.includes('.readinessBays'),'novo quadro tem CSS responsivo');
 
 assert.ok(phaserScript.includes('function drawShiftBrief()'),'briefing é renderizado com dados atuais');
@@ -48,7 +48,7 @@ assert.ok(phaserHtml.includes('overflow-x:auto'),'navegação responsiva roláve
 assert.ok(phaserScript.includes('function closeSceneMenu()'),'menu de cenário pode ser fechado');
 assert.ok(phaserScript.includes("sceneMenuBtn').addEventListener('click'"),'controle de abertura do menu presente');
 assert.ok(phaserScript.includes("if(!$('sceneMenu').hidden)"),'Escape fecha o dropdown antes do modal');
-assert.ok(phaserHtml.includes('game.js?v=0.8.28'),'script principal tem cache versionado');
+assert.ok(phaserHtml.includes('game.js?v=0.8.29'),'script principal tem cache versionado');
 assert.ok(phaserHtml.includes('shift-brief.js?v=0.7.7'),'módulo de briefing carregado junto ao jogo');
 assert.ok(phaserHtml.includes('planning.js?v=0.8.27'),'módulo do planejamento carregado no Pages');
 assert.ok(phaserHtml.includes('weekly.js?v=0.7.9'),'módulo semanal do PCM carregado');
@@ -184,10 +184,16 @@ for(const sprite of equipment){
  assert.ok(phaserScript.includes('./assets/equipment/'+sprite),'sprite de equipamento não referenciado: '+sprite);
 }
 for(const person of ['costa','pedro','geovane','silva','santos','moura']){
- const file=path.join(root,'phaser-play','assets','characters',person+'-4poses.webp');
+ const name=person==='pedro'?'pedro-v0829-4poses.png':person+'-4poses.webp';
+ const file=path.join(root,'phaser-play','assets','characters',name);
  const bytes=fs.readFileSync(file);
- assert.ok(bytes.length>100000&&bytes.toString('ascii',0,4)==='RIFF'&&bytes.toString('ascii',8,12)==='WEBP','cartela WebP válida: '+person);
- assert.ok(phaserScript.includes(person+'-4poses.webp'),'referência de sprite: '+person);
+ if(person==='pedro'){
+  assert.ok(bytes.length>100000&&bytes.subarray(0,8).equals(pngHeader),'cartela RGBA válida: '+person);
+  assert.equal(bytes.readUInt32BE(16),1160);assert.equal(bytes.readUInt32BE(20),1244);
+ }else{
+  assert.ok(bytes.length>100000&&bytes.toString('ascii',0,4)==='RIFF'&&bytes.toString('ascii',8,12)==='WEBP','cartela WebP válida: '+person);
+ }
+ assert.ok(phaserScript.includes(name),'referência de sprite: '+person);
 }
 assert.ok(!phaserScript.includes('worker_lia_idle')&&!phaserScript.includes('worker_rafael_idle'),'sprites antigos não são carregados');
 assert.ok(!phaserScript.includes('this.tweens.add('),'máquinas não podem flutuar via tween');

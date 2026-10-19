@@ -1,3 +1,5 @@
+> **Atualização 19/10/2026 — v0.8.29:** nova cartela de Pedro enviada pelo usuário; o arquivo original e o procedimento de separação, escala e alinhamento estão registrados em [PEDRO_ASSET_0829.md](PEDRO_ASSET_0829.md). Nenhum atributo de personagem ou OS foi modificado.
+
 # Equipe visual — P.O.R.C.A.R.I.A. v0.8.18
 
 > **Biblioteca futura de supervisores (18/10/2026, v0.8.23):** Major e Duarte foram registrados em [supervisors/](supervisors/) com PNGs originais, WebPs lossless (4 poses cada), manifesto e galeria. **Eles não integram a equipe inicial, contratação ou oficina nesta versão.** A documentação abaixo conserva o histórico das versões anteriores.
@@ -7,18 +9,18 @@
 | Funcionário | Identidade visível | Arquivo oficial | Bytes | SHA-256 |
 |---|---|---|---:|---|
 | Costa | Eletricista, uniforme cinza com capacete amarelo; antigo Isaias | `costa-4poses.webp` | 171.914 | `32b708ae3c33555e26602730644f6848daa49bbd168a51aa6b1e31de9a4edcd2` |
-| Pedro | Brigadista, capacete e colete vermelhos | `pedro-4poses.webp` | 165.916 | `4942108bc9e3d4ab40a086acdcd702cd0ea684f298b2c7c8a242a44b684488ea` |
+| Pedro | Brigadista de resgate, capacete vermelho, chave de tubo e furadeira | `pedro-v0829-4poses.png` | 1.136.848 | `ba160e74d97ab8a469b26b524049f625f89ff08bf6997a6427efb79b4b637d44` |
 | Geovane | Instrutor, uniforme amarelo | `geovane-4poses.webp` | 175.328 | `229f8caddeb6fc332972c94841342424f74da65dcd37479bd51a3524c888470a` |
 | Silva | Mecânico com marreta, capacete amarelo e uniforme azul/amarelo | `silva-4poses.webp` | 287.544 | `26f68b092d14bfb940a7e44577b1d117d14571b27bd69fc0a248124102c849eb` |
 | Santos | Mecânico com chave, capacete amarelo e uniforme cinza/amarelo | `santos-4poses.webp` | 281.232 | `48105f1036d2b9693531abb349954f251e1c2d31c4a599e8cdd7ad9c0d5f89ce` |
 | Moura | Mecânico com proteção facial, rádio e uniforme amarelo/cinza | `moura-4poses.webp` | 313.970 | `eba522ff337b6838cd4e2f5f77043c7e410bf32a425d2dd243a143f9b64fd99d` |
 | Junior | Especialista; balaclava e uniforme de campo | `junior/junior-work-4poses.webp` | 202.152 | `a4777757f79ae25f595b5736fb112cc102455452e95969b2a3b64c653303a229` |
 
-Todas as cartelas são WebP com transparência **1160 × 1244 px**, organizadas em **2 colunas × 2 linhas**, cada quadro com **580 × 622 px**:
+As cartelas atuais usam transparência e **1160 × 1244 px**, organizadas em **2 colunas × 2 linhas**, cada quadro com **580 × 622 px**. A partir da v0.8.29, **Pedro usa PNG RGBA sem perdas**; os demais permanecem WebP:
 
 1. Ferramenta, em pé
 2. Positivo, em pé
-3. Prancheta (Pedro usa ferramenta)
+3. Prancheta ou ferramenta (Pedro usa furadeira)
 4. Trabalho ajoelhado
 
 O mesmo asset é renderizado por quadro com amostragem NEAREST em escala pequena; não gerar frames novos dinamicamente. A animação alterna somente poses da pessoa alocada, sem movimentar a máquina.
