@@ -55,6 +55,6 @@ assert.equal(JSON.stringify(s.jobs),initialJobs,'OS intactas após contrataçõe
 const snapshot=JSON.stringify(s);E.normalizeRoster(s);
 assert.equal(JSON.stringify(s),snapshot,'normalização idempotente com 39 pessoas');
 const ui=fs.readFileSync(path.join(root,'phaser-play/game.js'),'utf8');
-assert.ok(ui.includes("data-person=\"\\${esc(m.sprite)}\"")||ui.includes("data-person=\"${esc(m.sprite)}\""),'UI oferece contratação avulsa');
+assert.ok(ui.includes('data-person="${esc(m.sprite)}"'),'UI oferece contratação avulsa');
 assert.ok(!ui.includes("E.MAX_TEAM"),'UI não bloqueia lotação');
 console.log('OK: 24 tentativas por turno, save legado e 39 mecânicos sem lotação máxima.');
