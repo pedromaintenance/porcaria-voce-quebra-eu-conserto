@@ -184,10 +184,16 @@ for(const sprite of equipment){
  assert.ok(phaserScript.includes('./assets/equipment/'+sprite),'sprite de equipamento não referenciado: '+sprite);
 }
 for(const person of ['costa','pedro','geovane','silva','santos','moura']){
- const file=path.join(root,'phaser-play','assets','characters',person+'-4poses.webp');
+ const name=person==='pedro'?'pedro-v0829-4poses.png':person+'-4poses.webp';
+ const file=path.join(root,'phaser-play','assets','characters',name);
  const bytes=fs.readFileSync(file);
- assert.ok(bytes.length>100000&&bytes.toString('ascii',0,4)==='RIFF'&&bytes.toString('ascii',8,12)==='WEBP','cartela WebP válida: '+person);
- assert.ok(phaserScript.includes(person+'-4poses.webp'),'referência de sprite: '+person);
+ if(person==='pedro'){
+  assert.ok(bytes.length>100000&&bytes.subarray(0,8).equals(pngHeader),'cartela RGBA válida: '+person);
+  assert.equal(bytes.readUInt32BE(16),1160);assert.equal(bytes.readUInt32BE(20),1244);
+ }else{
+  assert.ok(bytes.length>100000&&bytes.toString('ascii',0,4)==='RIFF'&&bytes.toString('ascii',8,12)==='WEBP','cartela WebP válida: '+person);
+ }
+ assert.ok(phaserScript.includes(name),'referência de sprite: '+person);
 }
 assert.ok(!phaserScript.includes('worker_lia_idle')&&!phaserScript.includes('worker_rafael_idle'),'sprites antigos não são carregados');
 assert.ok(!phaserScript.includes('this.tweens.add('),'máquinas não podem flutuar via tween');
