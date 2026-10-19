@@ -50,7 +50,7 @@ assert.ok(phaserScript.includes("sceneMenuBtn').addEventListener('click'"),'cont
 assert.ok(phaserScript.includes("if(!$('sceneMenu').hidden)"),'Escape fecha o dropdown antes do modal');
 assert.ok(phaserHtml.includes('game.js?v=0.8.27'),'script principal tem cache versionado');
 assert.ok(phaserHtml.includes('shift-brief.js?v=0.7.7'),'módulo de briefing carregado junto ao jogo');
-assert.ok(phaserHtml.includes('planning.js?v=0.7.8'),'módulo do planejamento carregado no Pages');
+assert.ok(phaserHtml.includes('planning.js?v=0.8.27'),'módulo do planejamento carregado no Pages');
 assert.ok(phaserHtml.includes('weekly.js?v=0.7.9'),'módulo semanal do PCM carregado');
 assert.ok(phaserScript.includes('function drawWeekly()'),'visão semanal acessível no painel de planejamento');
 assert.ok(phaserHtml.includes('data-panel="planning"'),'menu de planejamento integrado sem adicionar botões ao header');
