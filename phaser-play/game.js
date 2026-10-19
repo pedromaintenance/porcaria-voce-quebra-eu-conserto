@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.26 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.27 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -365,7 +365,7 @@ function drawPlanning(){
     const m=j.mechanics.find(x=>x.id===j.recommended.mechanicId);
     html+='<p><strong>Sugestão:</strong> '+esc(j.recommended.mechanicName)
      +' · BOX '+(j.recommended.bay+1)
-     +' · habilidade '+Math.round(m?.skill||0)
+     +' · proficiência '+Math.round(m?.proficiency||0)
      +(j.recommended.roleMatch?' · especialidade compatível':m?.general?' · multidisciplinar':' · especialidade diferente')
      +(j.recommended.fatigued?' · ⚠ fadiga':'')+'</p>';
    }else{
@@ -587,7 +587,7 @@ function drawTeam(){
  const training=E.TRAINING.active(state,m);
  const portraitUrl=m.sprite&&(TEAM_PORTRAITS[m.sprite]||WORKER_SHEETS[m.sprite]);
  const portrait=portraitUrl?'<span class="teamPortrait" style="background-image:url('+esc(portraitUrl)+')" aria-hidden="true"></span>':'<span class="teamPortrait placeholder" aria-label="Sem sprite">LEGADO</span>';
- return `<article class="resourceCard"><div class="teamIdentity">${portrait}<div><h3>${esc(m.avatar||'')} ${esc(m.name)} · ${esc(m.specialty||'Mecânico')} <small>${esc(m.id)}</small></h3><p class="muted">Especialidade simulada: ${esc(m.role)}</p></div></div><p class="muted">${current?'Em serviço: '+esc(current.id)+' · Box '+(current.bay+1):resting?'Descanso programado neste turno':training?(m.normativeUntil>state.tick?'Treinamento normativo · '+(m.normativeUntil-state.tick)+' turno(s)':'Em capacitação neste turno'):'Disponível'} · Habilidade geral legada ${Math.round(m.skill)}</p>${energyMeter('Mental',m.mental)}${energyMeter('Física',m.physical)}${energyMeter('Moral',m.morale)}<details class="abilitiesCard"><summary>📊 VER HABILIDADES</summary>${renderSkills(E.skillsFor(m))}</details><div class="actions"><button class="act secondary" data-team-action="motivate" data-person="${esc(m.id)}">MOTIVAR</button><button class="act secondary" data-team-action="rest" data-person="${esc(m.id)}" ${current||resting||training?'disabled':''}>DESCANSAR</button></div></article>`;
+ return `<article class="resourceCard"><div class="teamIdentity">${portrait}<div><h3>${esc(m.avatar||'')} ${esc(m.name)} · ${esc(m.specialty||'Mecânico')} <small>${esc(m.id)}</small></h3><p class="muted">Especialidade simulada: ${esc(m.role)}</p></div></div><p class="muted">${current?'Em serviço: '+esc(current.id)+' · Box '+(current.bay+1):resting?'Descanso programado neste turno':training?(m.normativeUntil>state.tick?'Treinamento normativo · '+(m.normativeUntil-state.tick)+' turno(s)':'Em capacitação neste turno'):'Disponível'} · Índice geral histórico ${Math.round(m.skill)}</p>${energyMeter('Mental',m.mental)}${energyMeter('Física',m.physical)}${energyMeter('Moral',m.morale)}<details class="abilitiesCard"><summary>📊 VER HABILIDADES</summary>${renderSkills(E.skillsFor(m))}</details><div class="actions"><button class="act secondary" data-team-action="motivate" data-person="${esc(m.id)}">MOTIVAR</button><button class="act secondary" data-team-action="rest" data-person="${esc(m.id)}" ${current||resting||training?'disabled':''}>DESCANSAR</button></div></article>`;
  }).join('')+'</div>';
 }
 function drawStore(){
