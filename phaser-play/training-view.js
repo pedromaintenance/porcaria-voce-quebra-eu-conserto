@@ -96,7 +96,7 @@
    '</aside>'+
    '<div class="trainingDesk"><header class="trainingDeskHead"><small>📚 PASTA DE DESENVOLVIMENTO · OFICINA</small>'+
    '<h2>SETOR DE TREINAMENTOS</h2>'+
-   '<p>Bia organiza inscrições, registros e avisos da Segurança do Trabalho. Os instrutores são mecânicos ou profissionais externos.</p></header>'+
+   '<p><strong>Bia é a Analista Administrativa do Setor de Treinamentos.</strong> Ela organiza inscrições, registros e avisos da Segurança do Trabalho. Os instrutores são mecânicos ou profissionais externos.</p></header>'+
    '<div class="trainingFolderTabs" role="tablist" aria-label="Áreas do setor de Treinamentos">'+navigation+'</div>'+
    '<div class="trainingMeta">Turno '+s.tick+' · '+free.length+' disponível(is) · '+booked.length+' em capacitação/normativo · Caixa R$ '+money(s.cash)+'</div>'+
    '<div id="trainingTabContent" role="tabpanel" aria-labelledby="trainingTab-'+tab+'" class="trainingTabContent" data-training-active="'+tab+'">'+
