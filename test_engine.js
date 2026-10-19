@@ -48,7 +48,7 @@ assert(s.done.length>=1);
 assert(s.done[0].elapsedHours>0);
 assert(E.kpis(s).mttr>0);
 for(let i=0;i<30;i++)E.advance(s,D,rng);
-assert(s.day>=17);
+assert.equal(s.day,Math.floor(s.tick/2)+1,'calendário avança um dia a cada dois turnos');
 assert(s.kpi.length>0);
 assert(s.cash<10000000 && Number.isFinite(s.cash));
 assert(E.validate(JSON.parse(JSON.stringify(s))));
