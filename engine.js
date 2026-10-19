@@ -22,6 +22,86 @@
     {name:'Sousa',avatar:'🔧',role:'geral',specialty:'Mecânico',sprite:'sousa'},
     {name:'Pereira',avatar:'🔧',role:'geral',specialty:'Mecânico',sprite:'pereira'}
   ]);
+  // Matriz de competencias v0.8.25, independente da antiga habilidade global "skill".
+  // Atribuicoes sao pedagogicas e ainda NAO alteram velocidade, acerto ou alocacao.
+  const SKILL_CATALOG=Object.freeze({
+    disciplines:Object.freeze([
+      ['hydraulics','Hidráulica'],['electrical','Elétrica'],['electronics','Eletrônica'],
+      ['lubrication','Lubrificação'],['welding','Soldagem'],['machining','Usinagem'],
+      ['pneumatics','Pneumática'],['maintenance_mechanics','Mecânica de manutenção'],
+      ['materials_mechanics','Mecânica dos materiais'],['fluid_mechanics','Mecânica dos fluidos'],
+      ['thermodynamics','Termodinâmica'],['heat_transfer','Transferência de calor'],
+      ['dynamics','Dinâmica'],['statics','Estática'],['vibrations','Vibrações mecânicas'],
+      ['tribology','Tribologia'],['metrology','Metrologia'],['technical_drawing','Desenho técnico'],
+      ['instrumentation','Instrumentação'],['automation','Automação e controle'],
+      ['strength_of_materials','Resistência dos materiais'],['electromagnetism','Eletromagnetismo']
+    ].map(([id,label])=>Object.freeze({id,label}))),
+    systems:Object.freeze([
+      ['undercarriage','Material rodante'],['fps','FPS'],
+      ['engines','Motores'],['tires','Pneus'],['hydraulic_cylinders','Cilindros hidráulicos'],
+      ['hoses','Mangueiras'],['valves','Válvulas'],['embedded_electronics','Eletrônica embarcada'],
+      ['transmission','Transmissão'],['final_drives','Comandos finais'],
+      ['steering','Direção'],['brakes','Freios'],['suspension','Suspensão'],
+      ['cooling','Arrefecimento'],['fuel','Combustível e injeção'],
+      ['air_intake','Admissão e escape'],['lubrication_system','Sistema de lubrificação'],
+      ['hydraulic_circuit','Circuitos hidráulicos'],['electric_circuit','Sistema elétrico'],
+      ['pumps','Bombas'],['rotary_drives','Redutores de giro'],
+      ['drilling','Perfuração'],['compressors','Compressores'],
+      ['air_conditioning','Ar-condicionado'],['structures','Estruturas e soldas']
+    ].map(([id,label])=>Object.freeze({id,label}))),
+    machines:Object.freeze([
+      ['EQ01','CAT 777E'],['EQ02','CAT 6030'],['EQ03','CAT 395'],
+      ['EQ04','CAT 336GC'],['EQ05','Sandvik DR410i'],['EQ06','Sandvik DI650i'],
+      ['EQ07','CAT D9'],['EQ08','CAT 966'],['EQ09','CAT 16']
+    ].map(([id,label])=>Object.freeze({id,label})))
+  });
+  const SKILL_GROUPS=Object.freeze(['disciplines','systems','machines']);
+  const fixedAbility=(identity,group,key,min=30,max=70)=>{
+    let hash=2166136261;
+    for(const ch of identity+'|'+group+'|'+key){hash=Math.imul(hash^ch.charCodeAt(0),16777619)}
+    return min+(hash>>>0)%(max-min+1);
+  };
+  function baselineSkills(identity='legacy'){
+    const key=String(identity||'legacy').toLowerCase();
+    const output={};
+    for(const group of SKILL_GROUPS){
+      output[group]={};
+      for(const entry of SKILL_CATALOG[group]){
+        let score;
+        if(key==='junior')score=group==='disciplines'&&entry.id==='lubrication'?100:group==='machines'?70:90;
+        else if(key==='geovane')score=group==='machines'?(['EQ05','EQ06'].includes(entry.id)?50:100):group==='disciplines'?80:90;
+        else if(key==='pedro'){
+          const byDiscipline={lubrication:40,materials_mechanics:40,electrical:30,electronics:40};
+          const bySystem={fps:30,engines:30,tires:60};
+          const byMachine={EQ01:30,EQ02:50,EQ05:40,EQ06:40};
+          score=group==='disciplines'?(byDiscipline[entry.id]??20):group==='systems'?(bySystem[entry.id]??20):(byMachine[entry.id]??20);
+        }else{
+          const heavy=group==='machines'&&['EQ02','EQ05','EQ06'].includes(entry.id);
+          score=fixedAbility(key,group,entry.id,30,heavy?39:70);
+        }
+        output[group][entry.id]=score;
+      }
+    }
+    return output;
+  }
+  function normalizeSkills(existing,identity){
+    const base=baselineSkills(identity);
+    if(!existing||typeof existing!=='object')return base;
+    for(const group of SKILL_GROUPS){
+      const saved=existing[group];
+      if(!saved||typeof saved!=='object')continue;
+      for(const {id} of SKILL_CATALOG[group]){
+        const value=saved[id];
+        if(typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=100)
+          base[group][id]=Math.round(value);
+      }
+    }
+    return base;
+  }
+  function skillsFor(member){
+    const identity=member?.sprite||member?.name||member?.id||'legacy';
+    return normalizeSkills(member?.competencies,identity);
+  }
   const MAX_TEAM=INITIAL_TEAM.length+RECRUIT_POOL.length;
   const clamp=(v,l=0,h=100)=>Math.min(h,Math.max(l,Math.round(v*10)/10));
   const SHIFT_HOURS=12, DDS_HOURS=0.5, MEAL_HOURS=1;
@@ -65,7 +145,7 @@
     const profile=identity;if(!profile)throw Error('Contratação exige personagem identificado.');
     const m={id:`M${s.nextPerson++}`,name:profile.name,avatar:profile.avatar,role:profile.role,
       specialty:profile.specialty,sprite:profile.sprite,trainingSprite:profile.trainingSprite||null,
-      skill:Math.round(54+rnd(rng)*35),mental:Math.round(72+rnd(rng)*25),
+      skill:Math.round(54+rnd(rng)*35),competencies:baselineSkills(profile.sprite),mental:Math.round(72+rnd(rng)*25),
       physical:Math.round(70+rnd(rng)*27),morale:Math.round(74+rnd(rng)*20),
       assigned:null,restAt:null,completed:0,tenure:0};return m;
   }
@@ -86,6 +166,9 @@
         // Genericos previamente contratados persistem apenas em campanhas antigas.
         m.sprite=m.sprite||null;
       }
+      // Migra apenas competencias ausentes. Nenhuma OS, energia, experiencia ou skill global muda.
+      const identity=profile?.sprite||m.sprite||m.name||m.id;
+      m.competencies=normalizeSkills(m.competencies,identity);
     }
     s.nextPerson=Math.max(1,Number.isInteger(s.nextPerson)?s.nextPerson:1,maxId+1);
     return s;
@@ -406,7 +489,7 @@
       pendingMaterials:s.jobs.filter(j=>j.status==='material').length, pendingTools:s.jobs.filter(j=>j.status==='ferramenta').length};
   }
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
-  return {create,normalizeRoster,availableRecruits,RECRUIT_POOL,MAX_TEAM,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
+  return {create,normalizeRoster,availableRecruits,RECRUIT_POOL,MAX_TEAM,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
     SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
     model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
 });

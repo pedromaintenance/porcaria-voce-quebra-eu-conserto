@@ -440,6 +440,27 @@ body{min-height:100vh}
  #menuOverlay.quick-order .quickEvidence{max-height:2.5em}
 }
 
+
+/* v0.8.25 — matriz consultiva de habilidades, sem impacto no motor de manutencao */
+.abilitiesCard{margin:10px 0;border:1px solid #4c728a;border-radius:9px;background:#0c2536;overflow:hidden}
+.abilitiesCard>summary{cursor:pointer;padding:9px 11px;font-size:12px;font-weight:850;color:#ffcf80;list-style-position:inside}
+.abilitiesCard>summary:hover,.abilityGroup>summary:hover{background:#234257}
+.abilitiesCard>summary:focus-visible,.abilityGroup>summary:focus-visible{outline:2px solid #ffce7c;outline-offset:-2px}
+.abilitySummary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:4px 9px 8px}
+.abilityMean{display:grid;gap:4px;padding:8px 6px;border:1px solid #365d75;border-radius:6px;text-align:center;background:#15364b}
+.abilityMean small{font-size:9px;color:#b8d2e3;line-height:1.3}
+.abilityMean strong{font-size:15px;color:#ffca6b;font-variant-numeric:tabular-nums}
+.abilityGroups{padding:0 9px 10px;display:grid;gap:5px}
+.abilityGroup{border:1px solid #33556e;border-radius:7px;background:#112e42}
+.abilityGroup>summary{cursor:pointer;padding:8px 9px;font-size:11px;font-weight:800;color:#deebf6}
+.abilityGroup>summary span{font-size:10px;color:#a6c3d6;font-weight:500;margin-left:4px}
+.abilityRows{display:grid;gap:5px;padding:9px}
+.abilityRow{display:grid;grid-template-columns:minmax(90px,1.5fr) minmax(40px,1fr) 28px;align-items:center;gap:9px;min-height:22px;font-size:11px}
+.abilityRow>span{overflow-wrap:anywhere;color:#d1e3f2}
+.abilityRow b{font-size:11px;text-align:right;font-variant-numeric:tabular-nums;color:#ffe0a4}
+.abilityTrack{height:8px;background:#091b2b;border:1px solid #406079;border-radius:999px;overflow:hidden}
+.abilityTrack>i{display:block;height:100%;background:linear-gradient(90deg,#4677aa,#71d1bc);border-radius:999px}
+@media(max-width:600px){.abilitySummary{grid-template-columns:repeat(3,minmax(0,1fr))}.abilityMean small{font-size:8px}.abilityRow{gap:5px;grid-template-columns:minmax(85px,1.3fr) minmax(32px,1fr) 25px}}
 </style></head><body>
 <div id="layout">
 <header class="top" role="banner">
@@ -503,4 +524,4 @@ body{min-height:100vh}
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="../engine.js"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.7.8"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.24"></script><script src="./game.js?v=0.8.24"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
+<script src="../engine.js"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.7.8"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.24"></script><script src="./game.js?v=0.8.25"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>

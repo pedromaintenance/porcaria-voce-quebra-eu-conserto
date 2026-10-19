@@ -2,10 +2,44 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 18/10/2026 · **v0.8.24 — resumo compacto de OS, alocação e diagnóstico contextual; menu completo apenas em Detalhes; homologação interativa pendente.**
+**Estado de referência:** 18/10/2026 · **v0.8.25 — matriz de habilidades por disciplina, sistema e equipamento para 13 personagens (perfil consultivo, sem efeitos de jogo); homologação visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.8.25 — Matriz de habilidades da equipe (dados + interface consultiva)
+
+### Objetivo e taxonomia
+Os atributos técnicos da equipe foram separados em **três categorias**, com notas inteiras de **0 a 100**. O sistema registra as competências para uso futuro sem introduzir vantagens inventadas na simulação:
+- **Disciplinas (22):** hidráulica, elétrica, eletrônica, lubrificação, soldagem, usinagem, pneumática, mecânica de manutenção, mecânica dos materiais, mecânica dos fluidos, termodinâmica, transferência de calor, dinâmica, estática, vibrações mecânicas, tribologia, metrologia, desenho técnico, instrumentação, automação e controle, resistência dos materiais e eletromagnetismo.
+- **Sistemas (25):** material rodante, FPS, motores, pneus, cilindros hidráulicos, mangueiras, válvulas, eletrônica embarcada, transmissão, comandos finais, direção, freios, suspensão, arrefecimento, combustível e injeção, admissão e escape, sistema de lubrificação, circuitos hidráulicos, sistema elétrico, bombas, redutores de giro, perfuração, compressores, ar-condicionado e estruturas e soldas.
+- **Máquinas (9, por ID EQ01..EQ09):** CAT 777E, CAT 6030, CAT 395, CAT 336GC, Sandvik DR410i, Sandvik DI650i, CAT D9, CAT 966 e CAT 16. A matriz é explicitamente validada contra `game-data.json` no CI; novos modelos deverão receber novos IDs/perfis.
+
+### Perfis de personagem
+| Perfil | Disciplinas | Sistemas | Máquinas |
+| --- | --- | --- | --- |
+| Junior | Lubrificação = **100**; outras = **90** | Todas = **90** | Todas = **70** |
+| Geovane | Todas = **80** | Todas = **90** | Todas as CAT = **100**; DR410i/DI650i = **50** |
+| Pedro | Lubrificação **40**, Mecânica dos materiais **40**, Elétrica **30**, Eletrônica **40**, demais **20** | FPS **30**, Motores **30**, Pneus **60**, demais **20** | CAT 6030 **50**, CAT 777E **30**, Sandvik DR410i e DI650i **40**, demais **20** |
+| 10 contratáveis nomeados | Cada atributo **30–70** | Cada atributo **30–70** | CAT 6030 e Sandvik **30–39**; demais **30–70** |
+
+### Arquitetura, UI e saves
+- [x] Catálogo e valores-base definidos no `engine.js` como `SKILL_CATALOG`, `baselineSkills`, `skillsFor`, `SKILL_GROUPS`; os metadados estão disponíveis no módulo de simulação e podem ser acessados por outras telas futuramente.
+- [x] Cada personagem recebe `competencies.disciplines`, `competencies.systems` e `competencies.machines`, separados do atributo **`skill` preexistente**.
+- [x] Contratáveis possuem perfis individuais **determinísticos** por identidade e habilidade: nomes iguais entre novas campanhas têm os mesmos pontos, sem consumo do gerador de aleatoriedade de turnos; em CAT 6030 e Sandvik o limite estrito é **menos de 40**.
+- [x] `normalizeRoster` adiciona as competências ausentes em saves antigos sem substituir os valores já válidos de habilidades, sem alterar as OS, a equipe, a energia, a moral e o atributo `skill`. O formato de save permanece `1.1.0` por compatibilidade.
+- [x] No menu **Equipe**, tanto os candidatos quanto os profissionais ativos têm **Ver habilidades**, três categorias expansíveis, médias consultivas e barras por atributo. O painel é recolhido por padrão.
+- [x] Acrescentar `scripts/test-skills.cjs` à suíte de CI, validação e deploy; verificar perfis, intervalos, modelos de frota, contratação determinística e migração idempotente.
+- [x] Atualização de cache PWA para `porcaria-vqec-20261018-v104` e arquivo de interface `game.js?v=0.8.25`.
+
+### Limite funcional explícito
+**Estas habilidades ainda NÃO influenciam** chance de sucesso, HH, rendimento de diagnóstico, reparo, custo, fadiga, requisitos de alocação ou evolução do personagem. O jogo ainda usa o **antigo `skill` geral**, no motor de turnos. Substituir essa regra exigirá proposta independente para relacionar tarefas a múltiplas competências sem contar três vezes a mesma habilidade (disciplina + sistema + máquina).
+
+### Próxima evolução sugerida (não implementada)
+1. Vincular cada tarefa/OS a uma disciplina, um sistema e um modelo, com mapeamento explícito de atributos e exclusões.
+2. Definir fórmula de proficiência composta, esforço em HH, confiabilidade de diagnóstico e aprendizado após serviço/treinamento.
+3. Incluir ganhos por experiência e capacitação, sem retroagir sobre saves antigos nem desequilibrar os especialistas.
+4. Homologar visualmente o painel de habilidades em mobile/desktop e navegar pelas 56 habilidades dos personagens.
 
 ## Entrega 0.8.24 — Fluxo compacto de OS e diagnóstico sem rolagem (UX / P0)
 
