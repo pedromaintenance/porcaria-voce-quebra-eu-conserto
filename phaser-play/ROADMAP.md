@@ -2,7 +2,7 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 18/10/2026 · **v0.8.27 — habilidades conjugadas influenciam diagnóstico/reparo, progressão prática até 90, planejamento por competência; CI e homologação visual pendentes.**
+**Estado de referência:** 18/10/2026 · **v0.8.27 — habilidades conjugadas aplicadas ao diagnóstico/reparo, aprendizagem por prática até 90 e planejamento por competência; CI aprovado, QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
