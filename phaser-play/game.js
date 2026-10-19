@@ -579,24 +579,25 @@ function drawTraining(preserveDom=true){
 }
 function drawTeam(){
  const candidates=E.availableRecruits(state);
- const space=state.team.length<E.MAX_TEAM;
  const affordable=state.cash>=1050&&state.player.mental>=18;
  const listing=candidates.map(m=>{
   const portrait=WORKER_SHEETS[m.sprite];
-  return `<article class="resourceCard"><div class="teamIdentity"><span class="teamPortrait" style="background-image:url(${esc(portrait)})" aria-hidden="true"></span><div><h3>${esc(m.avatar)} ${esc(m.name)}</h3><p class="muted">${esc(m.specialty)} · Disciplina: ${esc(m.role)}</p></div></div><details class="abilitiesCard"><summary>📊 VER HABILIDADES</summary>${renderSkills(E.baselineSkills(m.sprite))}</details><button class="act" data-team-action="hire" data-person="${esc(m.sprite)}" ${!space||!affordable?'disabled':''}>CONTRATAR · R$ 1.050</button></article>`;
+  const portraitTag=portrait?'<span class="teamPortrait" style="background-image:url('+esc(portrait)+')" aria-hidden="true"></span>':'<span class="teamPortrait placeholder" aria-hidden="true">🔧</span>';
+  const abilities=m.sprite==='generic'?'<p class="muted">Proficiências individuais definidas na contratação.</p>':'<details class="abilitiesCard"><summary>📊 VER HABILIDADES</summary>'+renderSkills(E.baselineSkills(m.sprite))+'</details>';
+  return `<article class="resourceCard"><div class="teamIdentity">${portraitTag}<div><h3>${esc(m.avatar)} ${esc(m.name)}</h3><p class="muted">${esc(m.specialty)} · Disciplina: ${esc(m.role)}</p></div></div>${abilities}<button class="act" data-team-action="hire" data-person="${esc(m.sprite)}" ${!affordable?'disabled':''}>CONTRATAR · R$ 1.050</button></article>`;
  }).join('');
- $('teamPanel').innerHTML=`<p class="muted">Campanha nova: Pedro, Geovane e Junior. As contratações são individuais e nominais. Custo: R$ 1.050 e 18 de energia mental por pessoa. Limite de ${E.MAX_TEAM} profissionais; os três boxes continuam permitindo até três OS simultâneas.</p>
- <h3 class="resourceSection">CATÁLOGO DE CONTRATAÇÃO · ${candidates.length} disponível(is)</h3>
- ${candidates.length?'<div class="resourceGrid">'+listing+'</div>':'<p class="muted">Todo o elenco já foi contratado.</p>'}
- ${!space?'<p class="status">Lotação máxima atingida.</p>':!affordable?'<p class="status">Verifique caixa e energia mental do supervisor.</p>':''}
+ $('teamPanel').innerHTML=`<p class="muted">Campanha nova: Pedro, Geovane, Junior e Acassio. Contrate personagens únicos ou mecânicos avulsos sem limite fixo de equipe. Custo: R$ 1.050 e 18 de energia mental por contratação. Os três boxes continuam permitindo até três OS simultâneas.</p>
+ <h3 class="resourceSection">CATÁLOGO DE CONTRATAÇÃO · ${candidates.length-1} nomeado(s) + mecânico avulso</h3>
+ <div class="resourceGrid">${listing}</div>
+ ${!affordable?'<p class="status">Verifique caixa e energia mental do supervisor.</p>':''}
  <h3 class="resourceSection">EQUIPE ATIVA · ${state.team.length} profissional(is)</h3>
  <div class="resourceGrid">`+state.team.map(m=>{
- const current=state.jobs.find(j=>j.assigned===m.id);
- const resting=m.restAt===state.tick;
- const training=E.TRAINING.active(state,m);
- const portraitUrl=m.sprite&&(TEAM_PORTRAITS[m.sprite]||WORKER_SHEETS[m.sprite]);
- const portrait=portraitUrl?'<span class="teamPortrait" style="background-image:url('+esc(portraitUrl)+')" aria-hidden="true"></span>':'<span class="teamPortrait placeholder" aria-label="Sem sprite">LEGADO</span>';
- return `<article class="resourceCard"><div class="teamIdentity">${portrait}<div><h3>${esc(m.avatar||'')} ${esc(m.name)} · ${esc(m.specialty||'Mecânico')} <small>${esc(m.id)}</small></h3><p class="muted">Especialidade simulada: ${esc(m.role)}</p></div></div><p class="muted">${current?'Em serviço: '+esc(current.id)+' · Box '+(current.bay+1):resting?'Descanso programado neste turno':training?(m.normativeUntil>state.tick?'Treinamento normativo · '+(m.normativeUntil-state.tick)+' turno(s)':'Em capacitação neste turno'):'Disponível'} · Índice geral histórico ${Math.round(m.skill)}</p>${energyMeter('Mental',m.mental)}${energyMeter('Física',m.physical)}${energyMeter('Moral',m.morale)}<details class="abilitiesCard"><summary>📊 VER HABILIDADES</summary>${renderSkills(E.skillsFor(m))}</details><div class="actions"><button class="act secondary" data-team-action="motivate" data-person="${esc(m.id)}">MOTIVAR</button><button class="act secondary" data-team-action="rest" data-person="${esc(m.id)}" ${current||resting||training?'disabled':''}>DESCANSAR</button></div></article>`;
+  const current=state.jobs.find(j=>j.assigned===m.id);
+  const resting=m.restAt===state.tick;
+  const training=E.TRAINING.active(state,m);
+  const portraitUrl=m.sprite&&(TEAM_PORTRAITS[m.sprite]||WORKER_SHEETS[m.sprite]);
+  const portrait=portraitUrl?'<span class="teamPortrait" style="background-image:url('+esc(portraitUrl)+')" aria-hidden="true"></span>':'<span class="teamPortrait placeholder" aria-label="Sem sprite">MEC.</span>';
+  return `<article class="resourceCard"><div class="teamIdentity">${portrait}<div><h3>${esc(m.avatar||'')} ${esc(m.name)} · ${esc(m.specialty||'Mecânico')} <small>${esc(m.id)}</small></h3><p class="muted">Especialidade simulada: ${esc(m.role)}</p></div></div><p class="muted">${current?'Em serviço: '+esc(current.id)+' · Box '+(current.bay+1):resting?'Descanso programado neste turno':training?(m.normativeUntil>state.tick?'Treinamento normativo · '+(m.normativeUntil-state.tick)+' turno(s)':'Em capacitação neste turno'):'Disponível'} · Índice geral histórico ${Math.round(m.skill)}</p>${energyMeter('Mental',m.mental)}${energyMeter('Física',m.physical)}${energyMeter('Moral',m.morale)}<details class="abilitiesCard"><summary>📊 VER HABILIDADES</summary>${renderSkills(E.skillsFor(m))}</details><div class="actions"><button class="act secondary" data-team-action="motivate" data-person="${esc(m.id)}">MOTIVAR</button><button class="act secondary" data-team-action="rest" data-person="${esc(m.id)}" ${current||resting||training?'disabled':''}>DESCANSAR</button></div></article>`;
  }).join('')+'</div>';
 }
 function drawStore(){
