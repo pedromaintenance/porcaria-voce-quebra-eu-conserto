@@ -7,6 +7,85 @@
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
 
+## Planejamento aprovado — Treinamentos, habilidades ativas e aprendizagem (18/10/2026)
+
+**Regra de execução:** registrar este plano integralmente no roadmap, incorporá-lo à \`main\` e **somente depois** iniciar as mudanças de código. O projeto será entregue em etapas verificáveis: \`v0.8.26\` (Setor de Treinamentos), \`v0.8.27\` (habilidades aplicadas às OS e prática). Os coeficientes seguintes são **hipóteses de balanceamento de jogo**, não probabilidades observadas ou procedimentos técnicos reais. O design vigente usa a matriz da v0.8.25, sem adicionar habilidades nesta fase.
+
+### Identidade e fronteira de responsabilidades
+
+**Bia é Analista Administrativa do Setor de Treinamentos**, não instrutora, mecânica, nem coordenadora técnica. Ela organiza agendas, registra resultados e certificações, apresenta exigências comunicadas pela Segurança do Trabalho, promove vagas de cursos externos e informa a gestão. Seu sprite existente será usado na interface, sem atribuir-lhe HH de manutenção, proficiência técnica, bônus, nem incluí-la na equipe contratável. Treinadores internos são **mecânicos da equipe**; treinadores externos são recursos de um curso pago.
+
+Treinamentos normativos são **requisitos simulados no jogo**: não concedem habilitação legal, não correspondem a certificados NR reais e não substituem capacitação exigida na operação.
+
+### Etapa 1 — v0.8.26: setor de Treinamentos (implementar primeiro)
+
+**Interface e direção de arte:** novo menu **📚 TREINAMENTOS** junto à Equipe; pasta administrativa sobre mesa, divisórias coloridas, cartões com cantos de post-it, clipes, etiquetas, marcadores de status e fichário de histórico; cabeçalho com sprite da Bia em uma das poses existentes, retratada como **Analista Administrativa**. Usar CSS/DOM sem gerar novos sprites. Áreas da pasta:
+1. **Bia informa:** avisos de integração de recém-contratados, pendências normativas e oferta externa vigente; explicações curtas e contextualizadas.
+2. **Treinamento interno:** selecionar treinador livre, aprendiz livre, grupo (disciplina/sistema/máquina) e habilidade; exibir notas T/A, diferença, chance, ganho possível e ocupação do turno; confirmar para reservar **ambos** por **12 h / 1 turno**, sem custo financeiro.
+3. **Treinamento externo:** Bia disponibiliza periodicamente uma oferta aleatória para **uma habilidade**; custo explícito, instrutor simulado em **100**, participante livre e ocupação por **1 turno**; **oferta premium rara** pode atingir 100, comum até 97; dinheiro debitado na inscrição.
+4. **Normativos / integração:** pasta de pendências da Segurança do Trabalho, equipe bloqueada, tempo restante, avisos do dia e registro da conclusão.
+5. **Histórico organizado:** fichas por turno/funcionário/habilidade com resultado, antes/depois, valores e custo (se aplicável), disponíveis em save.
+
+**Regras operacionais de simultaneidade:** nenhum mecânico em OS, descanso ou curso ativo pode ser inscrito. O treinador interno também fica indisponível. Cada profissional entra em no máximo **um compromisso por turno**. A duração é contabilizada em turnos reais da simulação, não em tempo de relógio do navegador. Professores internos precisam ter nível **ao menos 5 pontos superior** ao do aprendiz naquela habilidade; treinamento não reduz nota quando não há ganho. Um curso iniciado antes do avanço do turno entrega resultado na conclusão daquele turno, sem permitir que o mecânico trabalhe simultaneamente. Recursos livres não devem ser silenciosamente alocados em tarefas de OS.
+
+**Equação interna (T = professor; A = aprendiz; gap = T−A, gap ≥5):**
+\[
+p_{\rm interno}=\operatorname{clamp}(0{,}20+0{,}005\cdot gap,\;0{,}20,\;0{,}70)
+\]
+Se passar no sorteio: **+1** ou **+2 se gap ≥30**; teto **mín(95,T−2)**. Caso a regra do teto já esteja atingida, apresentar curso como ineficaz e impedir agendamento. A diferença sempre é **na habilidade ensinada**, não no cargo ou senioridade. **Mecânicos também podem treinar capacidades acima de 90**, dentro do teto de 95 e do conhecimento do instrutor.
+
+**Equação externa (T = 100; A = participante):**
+\[
+p_{\rm externo}=\operatorname{clamp}(0{,}35+0{,}005(100-A),\;0{,}35,\;0{,}85)
+\]
+Ganho simulado +1 ou +2 (chance eventual de +3 nos níveis baixos), respeitando teto **97 no comum / 100 no premium**. Proposta de custos parametrizados: R$ 600–1.500 por curso comum; premium mais caro. Oferta ocasional (faixa proposta 20–30% por turno), no máximo uma vigente, expira após prazo informado; nenhum custo para treinamento interno. **Ofertas são aleatórias, não garantidas a cada turno.**
+
+**Normativo inicial:** ao **contratar** qualquer mecânico do catálogo, a Bia gera aviso e coloca a pessoa em **integração normativa obrigatória por dois avanços de turno**. A pessoa já aparece no cadastro/folha, mas **não entra em OS, treinamento interno, externo nem capacidade disponível** até encerrar os dois turnos (próximo dia operacional). Treinamento é automático, sem botão de pular. Para trabalhadores já contratados, a Segurança do Trabalho pode demandar periodicamente treinamento normativo individual: aviso da Bia, reserva/bloqueio por duração definida (1–2 turnos) e registro de cumprimento; não inventar punições por recusa nesta etapa. Exigências simuladas não usam números de NRs para fingir conformidade.
+
+**Modelo de estado:** \`state.training={version,assignments,offers,history,notices,...}\`, \`member.competencies\` preservado, \`trainingUntilTick\` ou compromisso equivalente explícito. Migração idempotente de saves \`1.1.0\` sem reter pessoas antigas compulsoriamente em novo onboarding, sem alterar OS, caixa e energia; novas contratações entram no novo fluxo. Eventos e gastos entram no save. Ao término do turno, processar primeiro compromisso e conclusão; o funcionário só volta à disponibilidade após conclusão.
+
+**QA obrigatório:** contratação bloqueada por dois turnos; preservação dos saves antigos; ausência de simultaneidade OS × aula, instrutor × OS e aula × descanso; teste de T/A e teto; compra externa desconta valor certo e não gera curso grátis; chance com RNG injetável; Bia não integra a equipe; histórico persistido; interface responsiva desktop/mobile; casos sem vagas e indisponibilidade tratados.
+
+### Etapa 2 — v0.8.27: habilidades governam diagnóstico, reparo e prática
+
+Vincular cada OS às competências **pertinentes do catálogo existente**: **uma disciplina** + **um sistema** + **o modelo de equipamento**. Usar primeiro as informações de \`game-data.json\` (\`scenarios\`, \`paths\`, \`modelId\`, \`category\`); mapeamento explícito de códigos conhecidos, fallback documentado para sistemas não mapeados. Não aumentar agora o catálogo das 56 habilidades. **Não revelar causa/componente real ao jogador antes de confirmar o diagnóstico** por causa do mapeamento interno.
+
+**Proficiência conjugada**:
+\[
+P=0{,}40 D+0{,}35 S+0{,}25 M
+\]
+onde D = disciplina, S = sistema, M = máquina (0–100), preservando precisão por especialidade e evitando usar uma média global indiscriminada.
+
+**Chance de sucesso nas tentativas autônomas do mecânico:**
+\[
+p_{\rm diag}=\operatorname{clamp}(0{,}25+0{,}006P+\text{bônus situacionais}-\text{penalidades},\;0{,}20,\;0{,}98).
+\]
+Calibrar bônus/penalidades atuais sem somar novamente o \`skill\` global da v0.8.25. Respeitar ferramentas, fadiga, moral e chance de investigação; **não automatizar o acerto de escolhas feitas pelo jogador**. Diagnóstico incorreto mantém retrabalho.
+
+**Multiplicador proposto da velocidade de reparo:**
+\[
+V_{\rm reparo}=\operatorname{clamp}(0{,}75+0{,}007P,\;0{,}75,\;1{,}40).
+\]
+Aplicar exclusivamente às HH simuladas de reparo do trabalhador ativo, mantendo jornada de 12h, DDS, almoço (10,5 HH úteis), consumo de peças, ferramentas, bloqueios, turnos, recursos, risco e saves. Não reduzir artificialmente as 12h do turno nem permitir ultrapassar o limite de HH úteis por funcionário.
+
+**Aprendizagem por prática:** ao efetivamente atuar em OS, sortear progressão para **disciplina pertinente**, **sistema pertinente** e **modelo da máquina**, no máximo uma tentativa por dimensão por turno trabalhado; só praticar **enquanto habilidade <90**. Chance:
+\[
+p_{\rm prática}=\operatorname{clamp}(0{,}30-0{,}003H,\;0{,}03,\;0{,}30)
+\]
+(H = habilidade atual). Acerto gera **+1**, eventual +2 em eventos relevantes, sem ultrapassar **90** pela prática. Habilidades já em 90 ou acima **não crescem por serviço**, somente por treinamento. Ganhos registrados com origem, turno e OS, e nunca concedidos sem atuação concreta.
+
+**QA:** verificação de P dos três personagens em máquinas contrastantes; especialista ganha mais chance e velocidade no domínio específico; nada acima de 90 por trabalho; treino consegue ultrapassar 90 dentro dos tetos; importação de save legado não perde histórico; cálculos de HH e fadiga não duplicam bônus; RNG determinístico nas regressões; relatórios/diagnóstico sem spoilers.
+
+### Etapas futuras — registrar, mas NÃO implementar agora
+
+- **Variedade ampliada de modos de falha e cenários** para cobrir mais disciplinas, sistemas e modelos da matriz. Só criar com desenho pedagógico, classificação e testes próprios; **não aumentar o número de tipos de falha nem a lista das 56 habilidades agora**.
+- Especializações por modelo, cursos sequenciais com pré-requisitos, avaliação e certificação, simuladores de diagnóstico, instrutores externos especializados e controle de efetividade baseado em indicadores, preservando o escopo da Bia como analista administrativa.
+- Balanceamento com dados de partidas, análise de convergência das notas próximas de 90, efeito financeiro das capacitações, saturação de especialistas e risco de contratar trabalhadores sem disponibilidade.
+
+**Nota de precedência:** o documento \`phaser-play/TRAINING_DESIGN.md\` contém um design exploratório da v0.8.15 com níveis N0–N4 e elenco da época. As **regras numéricas e personagens desta seção**, articuladas com a matriz 0–100 da v0.8.25, **substituem** aqueles trechos quando conflitantes; preservar o documento anterior apenas como histórico até sua atualização coordenada na execução.
+
+---
+
 ## Entrega 0.8.25 — Matriz de habilidades da equipe (dados + interface consultiva)
 
 ### Objetivo e taxonomia
