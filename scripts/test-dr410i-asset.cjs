@@ -1,4 +1,4 @@
-/* Regressão v0.8.17: DR410i original aprovado, sem contaminar DI650i. */
+/* Regressão v0.8.17: DR410i original aprovado, sem contaminar a arte própria da DI650i. */
 'use strict';
 const assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
@@ -16,14 +16,14 @@ const width=1+b[24]+(b[25]<<8)+(b[26]<<16);
 const height=1+b[27]+(b[28]<<8)+(b[29]<<16);
 assert.deepEqual([width,height],[1536,1024],'dimensões originais, sem recorte');
 const legacy=path.join(root,'phaser-play/assets/equipment/sandvik_dr410i.png');
-assert.ok(fs.existsSync(legacy),'arquivo anterior preservado para DI650i e rollback');
+assert.ok(fs.existsSync(legacy),'arquivo anterior preservado apenas para rollback');
 const g=fs.readFileSync(path.join(root,'phaser-play/game.js'),'utf8');
 const html=fs.readFileSync(path.join(root,'phaser-play/index.html'),'utf8');
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
 const map=JSON.parse(fs.readFileSync(path.join(root,'phaser-play/scene-map.json'),'utf8'));
 const math=require(path.join(root,'phaser-play/layout-math.js'));
 assert.ok(g.includes("dr410i:'./assets/equipment/sandvik_dr410i_v2.webp'"),'DR410i carrega arquivo fornecido');
-assert.ok(g.includes("drill:'./assets/equipment/sandvik_dr410i.png'"),'DI650i mantém textura anterior');
+assert.ok(g.includes("drill:'./assets/equipment/sandvik_di650i_v0828.webp'"),'DI650i usa asset próprio');
 assert.ok(g.includes("EQ05:'dr410i',EQ06:'drill'"),'modelos usam chaves distintas');
 assert.ok(g.includes('const normalKey=MACHINES[modelId]'),'seleção visual por modelo real');
 assert.equal(map.modelPresentation.EQ05.texturePath,'assets/equipment/sandvik_dr410i_v2.webp');
@@ -31,9 +31,10 @@ assert.equal(map.modelPresentation.EQ05.originalAssetPath,'assets/equipment/sand
 assert.deepEqual(map.modelPresentation.EQ05.sourcePixelSize,{width:1536,height:1024});
 assert.equal(map.modelPresentation.EQ05.publishedAssetSHA256,sha);
 assert.equal(map.modelPresentation.EQ06.label,'Sandvik DI650i');
-assert.ok(!map.modelPresentation.EQ06.texturePath,'DI650i não foi alterada');
-assert.ok(html.includes('game.js?v=0.8.27'),'bypass do cache JS anterior');
-assert.ok(sw.includes('porcaria-vqec-20261018-v106'),'cache PWA atualizado');
+assert.equal(map.modelPresentation.EQ06.texturePath,'assets/equipment/sandvik_di650i_v0828.webp');
+assert.equal(map.modelPresentation.EQ06.publishedAssetSHA256,'371ba7f11dca88fcb29e29fc876747c5231f1c14614512c36240b8b9a908f36d');
+assert.ok(html.includes('game.js?v=0.8.28'),'bypass do cache JS anterior');
+assert.ok(sw.includes('porcaria-vqec-20261018-v107'),'cache PWA atualizado');
 assert.ok(sw.includes('sandvik_dr410i_v2.webp'),'PWA inclui o novo asset');
 for(const bay of map.backgroundProfiles.fullFrame.bays){
  const size=math.equipmentSize(width,height,bay.spriteWorld.scale,map.modelPresentation.EQ05,bay);
@@ -44,4 +45,4 @@ for(const bay of map.backgroundProfiles.fullFrame.bays){
  assert.ok(pos.fullyFits&&pos.contained,'DR410i cabe no BOX '+(bay.id+1));
 }
 assert.ok(!g.includes('ctx.drawImage(img,320,130,'),'cenários completos continuam sem crop legado');
-console.log('OK: DR410i original WebP RGBA 1536x1024, somente EQ05, DI650i intacta, 3 boxes, PWA e hash.');
+console.log('OK: DR410i original WebP RGBA 1536x1024, somente EQ05, DI650i independente, 3 boxes, PWA e hash.');

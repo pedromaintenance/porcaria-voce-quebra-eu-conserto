@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. v0.8.26 — Setor de Treinamentos: lógica de turnos, sem DOM. */
+/* P.O.R.C.A.R.I.A. v0.8.28 — Setor de Treinamentos: lógica de turnos, sem DOM. */
 (function(root,factory){
  const mod=factory();
  if(typeof module!=='undefined'&&module.exports)module.exports=mod;
@@ -9,10 +9,31 @@
  const rand=rng=>Math.min(.9999999,Math.max(0,Number(rng())||0));
  const validGroups=new Set(['disciplines','systems','machines']);
  const TRAINING_HOURS=12;
+
+ // Curva de ganho GARANTIDO por 12h: metade da curva aprovada,
+ // interpolação linear contínua: A30→5; A40→3,5; A50→2; A60→1; A70+→0,5.
+ // A conversão de crédito fracionário em habilidade é determinística.
+ const baseGain=A=>A<=30?5:A<50?5-.15*(A-30):A<60?2-.1*(A-50):A<70?1-.05*(A-60):.5;
+ const progressKey=(group,key)=>group+':'+key;
+ const creditOf=(m,group,key)=>{
+  const v=Number(m?.trainingProgress?.[progressKey(group,key)]??0);
+  return Number.isFinite(v)?chance(v,0,.999999):0;
+ };
+ const projected=(member,group,key,teacherLevel,cap,A=level(member,group,key))=>{
+  const T=Number(teacherLevel),gap=Math.max(0,T-A),limit=Math.min(100,cap);
+  const raw=gap>0&&A<100?baseGain(A)*(gap/(100-A)):0;
+  const beforeCredit=creditOf(member,group,key);
+  const earned=Math.max(0,Math.min(limit-A-beforeCredit,raw));
+  const total=beforeCredit+earned;
+  const points=Math.max(0,Math.min(limit-A,Math.floor(total+1e-9)));
+  const remainder=Math.max(0,Math.round((total-points)*1e6)/1e6);
+  return {baseGain:baseGain(A),earned:Math.round(earned*1e6)/1e6,points,remainder,beforeCredit};
+ };
+
  const normal=(s)=>{
   if(!s.training||typeof s.training!=='object')s.training={};
   const t=s.training;
-  t.version=1;
+  t.version=2;
   for(const k of ['assignments','offers','history','notices'])if(!Array.isArray(t[k]))t[k]=[];
   if(!Number.isInteger(t.nextId)||t.nextId<1)t.nextId=1;
   if(!Number.isInteger(t.lastOfferTick))t.lastOfferTick=-1;
@@ -57,8 +78,8 @@
   const cap=Math.min(95,T-2);
   if(gap<5)return {error:'Treinador precisa superar o aprendiz em pelo menos 5 pontos.'};
   if(A>=cap)return {error:'O aprendiz já atingiu o teto ensinável por este treinador.'};
-  return {trainer,learner,group,key,T,A,gap,cap,chance:chance(.2+.005*gap,.2,.7),
-   potentialGain:gap>=30?2:1};
+  const improvement=projected(learner,group,key,T,cap,A);
+  return {trainer,learner,group,key,T,A,gap,cap, ...improvement};
  }
  function internal(s,trainerId,learnerId,group,key,catalog){
   const info=inspectInternal(s,trainerId,learnerId,group,key,catalog);
@@ -66,7 +87,7 @@
   const t=normal(s);
   t.assignments.push({id:'T'+t.nextId++,kind:'internal',startTick:s.tick,untilTick:s.tick+1,
    trainerId,learnerId,group,key,initial:info.A,teacherLevel:info.T,
-   chance:info.chance,cap:info.cap,potentialGain:info.potentialGain,cost:0});
+   cap:info.cap,plannedCredit:info.earned,cost:0});
   return null;
  }
  function courseCost(group,key,premium=false){
@@ -85,10 +106,11 @@
   if(s.cash<offer.cost)return 'Caixa insuficiente para a inscrição.';
   s.cash-=offer.cost;
   t.offers=t.offers.filter(o=>o.id!==offerId);
+  const improvement=projected(member,offer.group,offer.key,100,cap,current);
   t.assignments.push({id:'T'+t.nextId++,kind:'external',startTick:s.tick,untilTick:s.tick+1,
    trainerId:null,learnerId:personId,group:offer.group,key:offer.key,
-   initial:current,teacherLevel:100,cap,chance:chance(.35+.005*(100-current),.35,.85),
-   potentialGain:current<45?3:current<75?2:1,cost:offer.cost,premium:!!offer.premium});
+   initial:current,teacherLevel:100,cap,plannedCredit:improvement.earned,
+   cost:offer.cost,premium:!!offer.premium});
   return null;
  }
  function afterShift(s,catalog,rng=Math.random,log=()=>{}){
@@ -98,14 +120,27 @@
    if(a.untilTick>today){left.push(a);continue}
    const learner=s.team.find(m=>m.id===a.learnerId);
    const current=learner?level(learner,a.group,a.key):a.initial;
-   const succeeded=!!learner&&rand(rng)<a.chance&&current<a.cap;
-   const gain=succeeded?Math.max(0,Math.min(a.cap-current,a.potentialGain)):0;
-   if(learner&&gain>0)learner.competencies[a.group][a.key]=current+gain;
+   const cap=Math.min(100,Number(a.cap)||100);
+   const improvement=learner?projected(learner,a.group,a.key,a.teacherLevel,cap,Number(a.initial)):
+     {earned:0,points:0,remainder:0,beforeCredit:0};
+   // Snapshot no começo da aula. Para compromissos de saves antigos sem
+   // plannedCredit, recalcula deterministicamente a mesma curva.
+   const intended=Number.isFinite(a.plannedCredit)?a.plannedCredit:improvement.earned;
+   const beforeCredit=learner?creditOf(learner,a.group,a.key):0;
+   const total=Math.max(0,Math.min(cap-current,beforeCredit+intended));
+   const gain=learner?Math.max(0,Math.floor(total+1e-9)):0;
+   const remainder=learner?Math.max(0,Math.round((total-gain)*1e6)/1e6):0;
+   if(learner){
+    learner.competencies[a.group][a.key]=current+gain;
+    if(!learner.trainingProgress||typeof learner.trainingProgress!=='object')learner.trainingProgress={};
+    learner.trainingProgress[progressKey(a.group,a.key)]=remainder;
+   }
    t.history.unshift({id:a.id,kind:a.kind,tick:today,personId:a.learnerId,
     trainerId:a.trainerId,group:a.group,key:a.key,before:current,after:current+gain,
-    gain,cost:a.cost,premium:!!a.premium,success:gain>0,hours:TRAINING_HOURS});
+    gain,earned:Math.round(intended*1e6)/1e6,creditBefore:beforeCredit,creditAfter:remainder,
+    cost:a.cost,premium:!!a.premium,success:!!learner,hours:TRAINING_HOURS});
    log((learner?.name||'Funcionário')+' concluiu treinamento '+(a.kind==='internal'?'interno':'externo')+
-    ' de '+a.key+' ('+current+' → '+(current+gain)+').');
+    ' de '+a.key+' ('+current+' → '+(current+gain)+', saldo '+remainder.toFixed(2)+').');
   }
   t.assignments=left;
   for(const m of s.team){
@@ -145,5 +180,5 @@
   }
   t.notices=t.notices.slice(0,40);
  }
- return Object.freeze({normal,active,reason,onboard,inspectInternal,internal,courseCost,external,afterShift,TRAINING_HOURS});
+ return Object.freeze({normal,active,reason,onboard,inspectInternal,internal,courseCost,external,afterShift,baseGain,projected,creditOf,TRAINING_HOURS});
 });

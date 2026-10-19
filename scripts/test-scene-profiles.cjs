@@ -80,7 +80,7 @@ assert.ok(script.includes("key==='repoWorkshopBG'?'cropped':'fullFrame'"),'both 
 assert.ok(script.includes("scene.setBackdrop(img,'fullFrame')"),'manual full images use complete-image geometry');
 assert.ok(script.includes('ctx.drawImage(img,0,0,width,height,0,0,canvas.width,canvas.height)'),'background displayed without legacy hardcoded crop');
 assert.ok(!script.includes('if(aspect>2.42'),'remove fragile aspect-ratio decision');
-assert.ok(html.includes('game.js?v=0.8.27'),'new JS invalidates cache');
+assert.ok(html.includes('game.js?v=0.8.28'),'new JS invalidates cache');
 assert.ok(html.includes('layout-math.js?v=0.8.2'),'new geometry module invalidates cache');
 assert.ok(script.includes('const footer=b.footerWorld'),'footer layout comes from its own geometry');
 assert.ok(script.includes("const ground=placementWorld?.groundY"),'contact shadow uses raised floor');
