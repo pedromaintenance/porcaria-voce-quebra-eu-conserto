@@ -33,8 +33,8 @@ assert.equal(map.modelPresentation.EQ05.publishedAssetSHA256,sha);
 assert.equal(map.modelPresentation.EQ06.label,'Sandvik DI650i');
 assert.equal(map.modelPresentation.EQ06.texturePath,'assets/equipment/sandvik_di650i_v0828.webp');
 assert.equal(map.modelPresentation.EQ06.publishedAssetSHA256,'371ba7f11dca88fcb29e29fc876747c5231f1c14614512c36240b8b9a908f36d');
-assert.ok(html.includes('game.js?v=0.8.30'),'bypass do cache JS anterior');
-assert.ok(sw.includes('porcaria-vqec-20261019-v109'),'cache PWA atualizado');
+assert.ok(html.includes('game.js?v=0.8.31'),'bypass do cache JS anterior');
+assert.ok(sw.includes('porcaria-vqec-20261019-v110'),'cache PWA atualizado');
 assert.ok(sw.includes('sandvik_dr410i_v2.webp'),'PWA inclui o novo asset');
 for(const bay of map.backgroundProfiles.fullFrame.bays){
  const size=math.equipmentSize(width,height,bay.spriteWorld.scale,map.modelPresentation.EQ05,bay);

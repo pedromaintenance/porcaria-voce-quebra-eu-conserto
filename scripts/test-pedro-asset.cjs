@@ -27,9 +27,9 @@ assert.ok(!game.includes("pedro:'./assets/characters/pedro-4poses.webp'"),'arte 
 assert.ok(game.includes("const WORKER_FRAME={width:580,height:622,poses:4}"),'frames legados');
 assert.ok(game.includes("const WORKER_DISPLAY={width:66,height:80}"),'envelope do personagem inalterado');
 assert.ok(game.includes("const WORKER_RENDER_FRAME={width:290,height:311}"),'prefiltragem de alta densidade');
-assert.ok(sw.includes('porcaria-vqec-20261019-v109'),'cache novo');
+assert.ok(sw.includes('porcaria-vqec-20261019-v110'),'cache novo');
 assert.ok(sw.includes('./phaser-play/assets/characters/pedro-v0829-4poses.png'),'PWA inclui novo Pedro');
-assert.ok(html.includes('game.js?v=0.8.30'),'bust de cache do Phaser');
+assert.ok(html.includes('game.js?v=0.8.31'),'bust de cache do Phaser');
 assert.ok(road.includes('Entrega 0.8.29'),'roadmap documenta a entrega');
 assert.ok(doc.includes('12 px'),'alinhamento vertical rastreável');
 console.log('OK: Pedro RGBA 2x2, original preservado, atlas 1160x1244, PWA e gameplay inalterado.');
