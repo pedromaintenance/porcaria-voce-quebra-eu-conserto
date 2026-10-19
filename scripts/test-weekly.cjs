@@ -83,7 +83,7 @@ assert.equal(JSON.stringify(state),before,'leituras repetidas são imutáveis');
 const html=fs.readFileSync(path.join(root,'phaser-play/index.html'),'utf8');
 const game=fs.readFileSync(path.join(root,'phaser-play/game.js'),'utf8');
 assert.ok(html.includes('weekly.js?v=0.7.9'),'módulo carregado no Pages');
-assert.ok(html.includes('game.js?v=0.8.29'),'JS principal versionado');
+assert.ok(html.includes('game.js?v=0.8.30'),'JS principal versionado');
 assert.ok(html.includes('weeklyScroll'),'layout horizontal responsivo presente');
 assert.ok(game.includes("function drawWeekly()"),'quadro semanal implementado');
 assert.ok(game.includes("planningHorizon='turn'"),'aba por padrão mantém planejamento do próximo turno');

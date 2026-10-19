@@ -78,7 +78,7 @@ assert.ok(game.includes("completedOrderId=null;completedSearch='';$('closedOrder
 assert.ok(html.includes('id="closedOrderSearch"'));
 assert.ok(html.includes('id="closedOrders"'));
 assert.ok(html.includes('closed-orders.js?v=0.8.11'));
-assert.ok(html.includes('game.js?v=0.8.29'));
+assert.ok(html.includes('game.js?v=0.8.30'));
 assert.ok(sw.includes("'./phaser-play/closed-orders.js'"));
-assert.ok(sw.includes('porcaria-vqec-20261019-v108'));
+assert.ok(sw.includes('porcaria-vqec-20261019-v109'));
 console.log('OK: histórico concluído, filtros, dossiê técnico, autoria, histórico legado, XSS, save imutável e PWA.');
