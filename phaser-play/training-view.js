@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. v0.8.26 — pasta administrativa da Bia (visual consultivo). */
+/* P.O.R.C.A.R.I.A. v0.8.28 — pasta administrativa da Bia (visual consultivo). */
 (function(root,factory){
  const api=factory();
  if(typeof module!=='undefined'&&module.exports)module.exports=api;
@@ -20,11 +20,13 @@
    '<option value="'+esc(value)+'"'+(value===v?' selected':'')+'>'+esc(text)+'</option>').join('')+'</select>';
   const employees=free.map(m=>[m.id,m.name+' · '+m.id]);
   const evaluation=T.inspectInternal(s,trainerId,learnerId,group,key,E.SKILL_CATALOG);
+  const decimal=v=>Number(v||0).toLocaleString('pt-BR',{maximumFractionDigits:2,minimumFractionDigits:0});
   const internalNote=evaluation.error?'<div class="trainingIssue">'+esc(evaluation.error)+'</div>':
    '<div class="trainingEstimate"><b>'+esc(evaluation.trainer.name)+' '+evaluation.T+'/100</b> → <b>'+esc(evaluation.learner.name)+' '+evaluation.A+'/100</b>'+
-   '<span>Diferença '+evaluation.gap+' · chance '+Math.round(evaluation.chance*100)+'% · ganho possível +'+evaluation.potentialGain+' · limite '+evaluation.cap+'</span></div>';
+   '<span>Diferença '+evaluation.gap+' · <strong>ganho garantido: +'+decimal(evaluation.earned)+' crédito</strong> ('+
+   '+'+evaluation.points+' ponto(s) agora; saldo final '+decimal(evaluation.remainder)+') · teto '+evaluation.cap+'</span></div>';
   const internal='<section class="trainingSticky trainingGreen"><h3>📎 TREINAMENTO INTERNO</h3>'+
-    '<p>Dois mecânicos livres estudam uma habilidade durante 12h. Sem custo financeiro; ambos ficam fora das OS neste turno.</p>'+
+    '<p>Dois mecânicos livres estudam uma habilidade durante 12h. Ganho garantido, sem sorteio; notas inteiras com saldo fracionário acumulado. Sem custo financeiro; ambos ficam fora das OS neste turno.</p>'+
     '<div class="trainingControls"><label>Instrutor'+select('trainingTeacher',employees,trainerId)+'</label>'+
     '<label>Aprendiz'+select('trainingLearner',employees,learnerId)+'</label>'+
     '<label>Categoria'+select('trainingGroup',Object.entries(groups),group)+'</label>'+
@@ -32,14 +34,18 @@
     internalNote+'<button class="act" data-training-action="internal"'+(evaluation.error?' disabled':'')+'>RESERVAR 12H · GRATUITO</button></section>';
   const offers=t.offers.map(o=>{
    const participants=free.filter(m=>Number(m.competencies?.[o.group]?.[o.key]||0)<(o.premium?100:97));
+   const selectedId=chosen.offerPeople?.[o.id];
+   const selected=participants.find(m=>m.id===selectedId)||participants[0];
+   const projection=selected?T.projected(selected,o.group,o.key,100,o.premium?100:97):null;
    return '<div class="trainingOffer"><b>'+esc(o.premium?'⭐ ESPECIALIZAÇÃO PREMIUM':'🎟️ CURSO EXTERNO')+'</b>'+
     '<strong>'+esc(label(E.SKILL_CATALOG,o.group,o.key))+'</strong>'+
     '<span>Professor 100 · '+(o.premium?'teto 100':'teto 97')+' · 12 horas · até o turno '+o.untilTick+'</span>'+
-    '<div class="trainingOfferEnroll">'+select('trainingPerson-'+esc(o.id),participants.map(m=>[m.id,m.name+' · atual '+m.competencies[o.group][o.key]]),participants[0]?.id||'')+
+    (projection?'<div class="trainingEstimate">Ganho garantido: +'+decimal(projection.earned)+' crédito (+'+projection.points+' ponto(s) agora; saldo '+decimal(projection.remainder)+')</div>':'')+
+    '<div class="trainingOfferEnroll">'+select('trainingPerson-'+esc(o.id),participants.map(m=>[m.id,m.name+' · atual '+m.competencies[o.group][o.key]]),selected?.id||'')+
     '<button class="act" data-training-action="external" data-offer="'+esc(o.id)+'"'+(!participants.length||s.cash<o.cost?' disabled':'')+'>INSCRIÇÃO · R$ '+money(o.cost)+'</button></div></div>';
   }).join('');
   const external='<section class="trainingSticky trainingYellow"><h3>🎫 CURSOS EXTERNOS</h3>'+
-   '<p>Bia administra inscrições pagas. O instrutor do curso equivale a 100 na habilidade; são 12h fora da operação. Oferta ocasional.</p>'+
+   '<p>Bia administra inscrições pagas e com ganho garantido. O instrutor equivale a 100 na habilidade; são 12h fora da operação. Oferta ocasional.</p>'+
    (offers||'<div class="trainingBlank">Nenhuma oferta disponível agora. Bia avisará quando receber novas vagas.</div>')+'</section>';
   const norm=s.team.filter(m=>Number.isFinite(m.normativeUntil)&&m.normativeUntil>s.tick).map(m=>
    '<div class="trainingNorm"><b>'+esc(m.name)+'</b><span>'+esc(m.normativeReason||'Treinamento normativo obrigatório')+'</span>'+
@@ -53,6 +59,7 @@
    const title=h.kind==='practice'?'Prática na OS '+esc(h.jobId||'')+' · '+esc(label(E.SKILL_CATALOG,h.group,h.key)):h.key?label(E.SKILL_CATALOG,h.group,h.key):'Treinamento obrigatório';
    return '<li><strong>'+esc(name)+' · '+esc(desc)+'</strong><span>'+esc(title)+' · turno '+h.tick+
     (h.before!==null&&h.before!==undefined?' · '+h.before+' → '+h.after:'')+
+    (Number.isFinite(h.earned)?' · +'+decimal(h.earned)+' crédito (saldo '+decimal(h.creditAfter)+')':'')+
     (h.cost?' · R$ '+money(h.cost):'')+'</span></li>';
   }).join('');
   const current=t.assignments.map(a=>{

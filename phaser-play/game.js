@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.27 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.28 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -9,7 +9,7 @@ const ASSETS={
  truck:'./assets/equipment/cat777e_v3.webp',
  shovel:'./assets/equipment/cat6030.png',
  excavator:'./assets/equipment/cat395.png',
- drill:'./assets/equipment/sandvik_dr410i.png', // mantém a textura legada da DI650i até arte própria.
+ drill:'./assets/equipment/sandvik_di650i_v0828.webp', // DI650i: arte original do usuário, WebP VP8L lossless com alfa.
  dr410i:'./assets/equipment/sandvik_dr410i_v2.webp', // imagem DR410i fornecida pelo jogador.
  dozer:'./assets/equipment/catd9-dozer-v0819.webp',
  loader:'./assets/equipment/cat966-loader-v0819.webp',
@@ -564,7 +564,8 @@ function drawTraining(){
   trainerId:$('trainingTeacher')?.value,
   learnerId:$('trainingLearner')?.value,
   group:$('trainingGroup')?.value,
-  key:$('trainingSkill')?.value
+  key:$('trainingSkill')?.value,
+  offerPeople:Object.fromEntries([...document.querySelectorAll('[id^="trainingPerson-"]')].map(x=>[x.id.slice('trainingPerson-'.length),x.value]))
  };
  host.innerHTML=window.PORCARIA_TRAINING_VIEW.render(state,E,prev);
 }
@@ -619,14 +620,15 @@ function events(){
   if(impact)impact.textContent='Ritmo '+Math.round(p.speed*100)+'% · Fadiga '+p.fatigueMultiplier.toFixed(2)+'× · Moral −'+p.moraleLossPerHour.toFixed(2)+' pts/HH';
  });
  document.addEventListener('change',ev=>{
-  if(['trainingTeacher','trainingLearner','trainingGroup','trainingSkill'].includes(ev.target?.id)){
+  if(['trainingTeacher','trainingLearner','trainingGroup','trainingSkill'].includes(ev.target?.id)||ev.target?.id?.startsWith('trainingPerson-')){
    // Alterar categoria invalida a habilidade anterior; a view seleciona a primeira válida.
    const current=ev.target?.id==='trainingGroup';
    const kept={
     trainerId:$('trainingTeacher')?.value,
     learnerId:$('trainingLearner')?.value,
     group:$('trainingGroup')?.value,
-    key:current?null:$('trainingSkill')?.value
+    key:current?null:$('trainingSkill')?.value,
+    offerPeople:Object.fromEntries([...document.querySelectorAll('[id^="trainingPerson-"]')].map(x=>[x.id.slice('trainingPerson-'.length),x.value]))
    };
    $('trainingPanel').innerHTML=window.PORCARIA_TRAINING_VIEW.render(state,E,kept);
    return;

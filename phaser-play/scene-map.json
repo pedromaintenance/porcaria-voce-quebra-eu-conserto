@@ -270,7 +270,7 @@
         "height": 1024
       },
       "renderFilter": "NEAREST",
-      "visualBasis": "Arte aprovada pelo usuário: perfuratriz laranja, cabine branca e esteiras pretas em perspectiva elevada; PNG RGBA integral, sem recorte ou nova geração. Preservar imagem legada para DI650i e rollback.",
+      "visualBasis": "Arte aprovada pelo usuário: perfuratriz laranja, cabine branca e esteiras pretas em perspectiva elevada; PNG RGBA integral, sem recorte ou nova geração. Imagem legada preservada apenas para rollback; DI650i possui asset próprio desde v0.8.28.",
       "publishedAssetSHA256": "ccea0bbc7380d683dc44dcd06281b80af4150147fb6250ef8db6c009ec1da13a"
     },
     "EQ06": {
@@ -278,7 +278,16 @@
       "scaleMultiplier": 2.4,
       "maximumWidth": 248,
       "maximumHeight": 302,
-      "footprintAnchorX": 0.54
+      "footprintAnchorX": 0.54,
+      "texturePath": "assets/equipment/sandvik_di650i_v0828.webp",
+      "sourcePixelSize": {
+        "width": 1536,
+        "height": 1024
+      },
+      "renderFilter": "NEAREST",
+      "sourceFile": "Perfuratriz Industrial Pixel Art (1)(1).png",
+      "visualBasis": "Novo PNG RGBA fornecido pelo usuário, convertido pixel a pixel em WebP lossless; sem alterar limites ou geometria do equipamento.",
+      "publishedAssetSHA256": "371ba7f11dca88fcb29e29fc876747c5231f1c14614512c36240b8b9a908f36d"
     },
     "EQ07": {
       "label": "CAT D9",

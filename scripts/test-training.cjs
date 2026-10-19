@@ -7,7 +7,7 @@ const E=require(path.join(root,'engine.js'));
 const T=E.TRAINING,View=require(path.join(root,'phaser-play/training-view.js'));
 const data=JSON.parse(fs.readFileSync(path.join(root,'game-data.json'),'utf8'));
 const s=E.create(data,()=>.42);
-assert.equal(s.training.version,1);
+assert.equal(s.training.version,2);
 assert.equal(s.training.assignments.length,0);
 assert.equal(T.TRAINING_HOURS,12);
 const saved=JSON.stringify(s);E.normalizeRoster(s);
@@ -43,9 +43,10 @@ const before=pedro.competencies.disciplines.lubrication;
 assert.equal(before,40);
 const eval1=T.inspectInternal(s,geovane.id,pedro.id,'disciplines','lubrication',E.SKILL_CATALOG);
 assert.equal(eval1.gap,40);
-assert.equal(eval1.potentialGain,2);
 assert.equal(eval1.cap,78);
-assert.equal(eval1.chance,.4);
+assert.equal(eval1.points,2);
+assert.ok(Math.abs(eval1.earned-2.333333)<.00001);
+assert.equal(eval1.remainder,.333333);
 assert.equal(T.internal(s,geovane.id,pedro.id,'disciplines','lubrication',E.SKILL_CATALOG),null);
 assert.ok(T.active(s,geovane)&&T.active(s,pedro));
 assert.ok(E.attach(s,s.jobs[0].id,pedro.id,0,true));
@@ -55,8 +56,9 @@ const cash=s.cash;
 E.advance(s,data,()=>.15);
 assert.equal(s.cash<=cash,true,'folha operacional pode debitar; aula interna não custa matrícula');
 assert.equal(pedro.competencies.disciplines.lubrication,42);
+assert.equal(pedro.trainingProgress['disciplines:lubrication'],.333333);
 assert.equal(T.active(s,pedro),false);
-assert.ok(s.training.history.some(h=>h.kind==='internal'&&h.gain===2&&h.cost===0));
+assert.ok(s.training.history.some(h=>h.kind==='internal'&&h.gain===2&&h.earned>2.33&&h.cost===0));
 assert.equal(s.training.assignments.length,0);
 
 // Diferença insuficiente, custo externo, treinamento acima de 90.
@@ -66,12 +68,14 @@ const ext={id:'ETEST',group:'disciplines',key:'lubrication',title:'Lubrificaçã
  cost:850,premium:true,untilTick:current+2};
 s.training.offers=[ext];s.cash=2000;
 pedro.competencies.disciplines.lubrication=91;
+pedro.trainingProgress['disciplines:lubrication']=.65; // crédito anterior preservado entre aulas.
 assert.equal(T.external(s,pedro.id,'ETEST',E.SKILL_CATALOG),null);
 assert.equal(s.cash,1150);
 assert.equal(s.training.offers.some(o=>o.id==='ETEST'),false);
 assert.ok(E.attach(s,s.jobs[0].id,pedro.id,0,true));
 E.advance(s,data,()=>.15);
-assert.equal(pedro.competencies.disciplines.lubrication,92,'treinamento desenvolve acima de 90');
+assert.equal(pedro.competencies.disciplines.lubrication,92,'crédito garantido desenvolve acima de 90');
+assert.equal(pedro.trainingProgress['disciplines:lubrication'],.15);
 assert.equal(T.active(s,pedro),false);
 assert.ok(s.training.history.some(h=>h.kind==='external'&&h.cost===850));
 // Tentativa com teto não pode reservar recursos ou debitar caixa.
@@ -80,6 +84,32 @@ pedro.competencies.disciplines.lubrication=97;const moneyBefore=s.cash;
 assert.ok(T.external(s,pedro.id,'LIMIT',E.SKILL_CATALOG));
 assert.equal(s.cash,moneyBefore);
 s.training.offers=[];
+
+
+const about=(A,Tlevel)=>T.projected({competencies:{disciplines:{lubrication:A}}},'disciplines','lubrication',Tlevel,Math.min(95,Tlevel-2),A);
+assert.equal(about(30,100).earned,5,'100→30: +5 após 12 horas');
+assert.equal(about(40,100).earned,3.5,'100→40: +3,5');
+assert.equal(about(50,100).earned,2,'100→50: +2');
+assert.equal(about(60,100).earned,1,'100→60: +1');
+assert.equal(about(70,100).earned,.5,'100→70: +0,5');
+assert.equal(about(80,100).earned,.5,'100→80: +0,5');
+assert.equal(about(40,80).earned,2.333333,'80→40: fração proporcional');
+assert.ok(about(90,100).earned===.5,'interno pode ultrapassar 90 com instrutor 100');
+assert.equal(T.baseGain(30),5);assert.equal(T.baseGain(40),3.5);
+assert.equal(T.baseGain(50),2);assert.equal(T.baseGain(60),1);assert.equal(T.baseGain(70),.5);
+// Quando ganho é 0,5, duas turmas convertem exatamente 1 ponto, sem sorteio.
+const senior={id:'T100',name:'Senior',competencies:{disciplines:{lubrication:100}}};
+const novice={id:'T070',name:'Aprendiz',competencies:{disciplines:{lubrication:70}}};
+const micro={tick:0,team:[senior,novice],training:null,orders:[]};
+assert.equal(T.internal(micro,'T100','T070','disciplines','lubrication',E.SKILL_CATALOG),null);
+micro.tick=1;T.afterShift(micro,E.SKILL_CATALOG,()=>.99);
+assert.equal(novice.competencies.disciplines.lubrication,70);
+assert.equal(T.creditOf(novice,'disciplines','lubrication'),.5);
+assert.equal(T.internal(micro,'T100','T070','disciplines','lubrication',E.SKILL_CATALOG),null);
+micro.tick=2;T.afterShift(micro,E.SKILL_CATALOG,()=>.99);
+assert.equal(novice.competencies.disciplines.lubrication,71);
+assert.equal(T.creditOf(novice,'disciplines','lubrication'),0);
+assert.ok(micro.training.history.every(h=>h.kind==='internal'&&h.success),'treino não falha nem no primeiro .5');
 
 // Saves anteriores não ganham bloqueio retroativo.
 const legacy=E.create(data,()=>.44);legacy.team[0].competencies.disciplines.lubrication=55;
@@ -91,6 +121,7 @@ assert.equal(JSON.stringify(legacy.jobs),oldJobs);
 assert.equal(legacy.cash,oldMoney);
 assert.equal(legacy.team[0].competencies.disciplines.lubrication,55);
 assert.ok(legacy.team.every(m=>!T.active(legacy,m)),'não forçar normativa a colaboradores existentes');
+assert.ok(legacy.team.every(m=>!m.trainingProgress),'salvos legados não recebem saldos inventados');
 const migrated=JSON.stringify(legacy);E.normalizeRoster(legacy);assert.equal(JSON.stringify(legacy),migrated);
 assert.equal(E.validate(legacy),true);
 const ui=fs.readFileSync(path.join(root,'phaser-play/game.js'),'utf8');
@@ -102,10 +133,10 @@ assert.ok(ui.includes('function drawTraining()'));
 assert.ok(ui.includes('data-training-action'));
 assert.ok(ui.includes('E.TRAINING.active(state'));
 assert.ok(html.includes('data-open-panel="training"')&&html.includes('id="trainingPanel"'));
-assert.ok(html.includes('training.js?v=0.8.26')&&html.includes('training-view.js?v=0.8.26'));
-assert.ok(html.includes('game.js?v=0.8.27')&&html.includes('trainingSticky'));
+assert.ok(html.includes('training.js?v=0.8.28')&&html.includes('training-view.js?v=0.8.28'));
+assert.ok(html.includes('game.js?v=0.8.28')&&html.includes('trainingSticky'));
 assert.ok(plan.includes('normativeUntil>state.tick'));
 assert.ok(ready.includes('m.training'));
-assert.ok(sw.includes('porcaria-vqec-20261018-v106'));
+assert.ok(sw.includes('porcaria-vqec-20261018-v107'));
 assert.ok(sw.includes("'./training.js'")&&sw.includes("'./phaser-play/training-view.js'"));
-console.log('OK: Bia administrativa, onboarding 2 turnos, aulas exclusivas, instrutores, externo pago, save e UI.');
+console.log('OK: treinamento garantido 12h, curva reduzida, crédito fracionário, cursos pagos, normativos e saves.');

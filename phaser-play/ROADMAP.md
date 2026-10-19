@@ -2,10 +2,36 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 18/10/2026 · **v0.8.27 — habilidades conjugadas aplicadas ao diagnóstico/reparo, aprendizagem por prática até 90 e planejamento por competência; CI aprovado, QA visual pendente.**
+**Estado de referência:** 18/10/2026 · **v0.8.28 — treinamento interno/externo com evolução garantida e saldo fracionário; DI650i com asset próprio lossless; testes e QA visual pendentes.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.8.28 — Treinamentos determinísticos e asset Sandvik DI650i
+
+### Capacitação — regra validada no design
+- [x] **Treinamentos internos e externos sempre geram crédito de habilidade**, sem rolagem aleatória de sucesso. Permanecem as 12 horas de reserva integral dos participantes e o custo financeiro exclusivo dos cursos externos. A aprendizagem prática em OS permanece probabilística e limitada ao nível 90.
+- [x] **Curva reduzida pela metade**, com interpolação por faixa (instrutor nível 100): aprendiz 30 → **+5**, 40 → **+3,5**, 50 → **+2**, 60 → **+1**, 70 ou mais → **+0,5** por sessão. Para nível inferior a 30, ganho-base fixado em 5 para conter aceleração.
+- [x] **Ajuste pela diferença de proficiência:** `crédito = B(A) × (T−A)/(100−A)`, com `B(A)` ganho-base, `T` treinador e `A` aprendiz. Ex.: Geovane 80 ensina Pedro 40 em Lubrificação: **+2,333333** créditos; Pedro sobe imediatamente de 40 para 42, preservando 0,333333 para aula futura. Junior 100 ensinando Pedro 40 rende +3,5.
+- [x] Armazenar `member.trainingProgress["grupo:habilidade"]` com até seis casas decimais; notas principais permanecem **inteiras de 0 a 100**. Ex.: aluno 70 + instrutor 100: primeira sessão +0,5 crédito (nota 70), segunda +0,5 (nota 71). O crédito não desaparece entre turnos/saves. Ganho é registrado com `earned`, `creditBefore`, `creditAfter`, `gain` e horário no histórico organizado pela Bia.
+- [x] Manter elegibilidade atual para interno (**diferença mínima 5**, teto `min(95,T−2)`), externo comum (máximo 97), externo premium (máximo 100), bloqueios normativos e indisponibilidade de instrutor/aprendiz, sem alterar custo dos cursos.
+- [x] A Bia, **Analista Administrativa do Setor de Treinamentos**, mostra projeção determinística e saldo, eliminando texto sobre chance/sorteio. Treinadores são mecânicos ou instrutores externos, nunca a Bia. Escolha de inscrito em curso externo atualiza a projeção exibida.
+- [x] Migração de cursos já agendados na v0.8.26: se não houver `plannedCredit`, recalcular a curva aprovada no encerramento, sem sorteio. **Sem reembolsos ou punições retroativas**; saves existentes mantêm integrantes, OS, caixa e competências.
+- [x] A **chance continua somente para progressão por prática** na OS, com curva v0.8.27; a precisão do diagnóstico também continua probabilística por ser uma ação técnica de desempenho, não uma evolução de habilidade. Não misturar as duas probabilidades.
+
+### Imagem DI650i (EQ06)
+- [x] Substituir o asset emprestado da DR410i no `ASSETS.drill` pelo novo `sandvik_di650i_v0828.webp`, **1536×1024, VP8L lossless com alfa**, 984.300 bytes, SHA-256 `371ba7f11dca88fcb29e29fc876747c5231f1c14614512c36240b8b9a908f36d`.
+- [x] Conversão *pixel-perfect* da arte PNG fornecida pelo usuário: todos os pixels RGBA preservados, inclusive transparência. Asset próprio e separado do `EQ05` DR410i. Geometria, escala do modelo, pontos de apoio, boxes, sombras e sprites de trabalhadores inalterados.
+- [x] Teste de tamanho, assinatura WebP, dimensões e SHA-256; referências e cache PWA `v107`; documentação específica em [DI650I_ASSET.md](assets/equipment/DI650I_ASSET.md).
+
+### Homologação
+- [ ] Teste visual da DI650i nos três boxes em cenas diurna/noturna; conferir lança, mangueiras, esteiras, bordas e ausência de deslocamento.
+- [ ] Teste de duas sessões com ganho fracionário em campanha normal e recarga do save entre elas.
+- [ ] Verificar que externo premium ultrapassa 90 e que aprendizagem por prática não ultrapassa 90.
+- [ ] Conferir mensagens da Bia e projeções de ganhos em desktop e celular.
+- [ ] Validar disponibilidade, custos, 12 horas de bloqueio, normativos e demais sistemas sem regressões.
+
+**Aceite da release:** testes automatizados aprovados, deploy GitHub Pages concluído; homologação visual e balanceamento após campanha mantidos como pendências reais.
 
 ## Entrega 0.8.27 — Competências nas OS e aprendizagem por prática (implementação)
 
