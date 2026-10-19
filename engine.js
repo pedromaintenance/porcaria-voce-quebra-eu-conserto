@@ -5,7 +5,7 @@
   'use strict';
   const COMPETENCY=typeof require==='function'?require('./competency.js'):globalThis.PORCARIA_COMPETENCY;
   if(!COMPETENCY)throw Error('Módulo de competências indisponível.');
-  const TRAINING=typeof require='function'?require('./training.js'):globalThis.PORCARIA_TRAINING;
+  const TRAINING=typeof require==='function'?require('./training.js'):globalThis.PORCARIA_TRAINING;
   if(!TRAINING)throw Error('Módulo de treinamento indisponível.');
   // Campanhas novas iniciam somente com tres personagens fixos.
   const INITIAL_TEAM=Object.freeze([
