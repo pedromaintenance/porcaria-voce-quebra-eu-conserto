@@ -72,7 +72,7 @@ const html=fs.readFileSync(path.join(root,'phaser-play','index.html'),'utf8');
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
 assert.ok(game.includes('function drawCompletedOrders()'));
 assert.ok(game.includes('PORCARIA_DIAGNOSTIC_VIEW.render(window.PORCARIA_DIAGNOSTIC.compute(state,data,result.selected.raw)'));
-assert.ok(game.includes('drawTeam();drawStore();drawCompletedOrders()'));
+assert.ok(game.includes('drawTeam();drawTraining();drawStore();drawCompletedOrders()'));
 assert.ok(game.includes('data-closed-back')&&game.includes('data-closed-order'));
 assert.ok(game.includes("completedOrderId=null;completedSearch='';$('closedOrderSearch').value=''"));
 assert.ok(html.includes('id="closedOrderSearch"'));
