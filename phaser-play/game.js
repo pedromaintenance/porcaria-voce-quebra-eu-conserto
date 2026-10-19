@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.25 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.26 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -132,7 +132,7 @@ function updateSceneStatus(){
  status.textContent=label;
 }
 
-const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO', 'full-detail':'🔧 DETALHES COMPLETOS DA OS',stats:'📊 INDICADORES E RECURSOS',planning:'🗓️ PLANEJAMENTO PCM',shift:'📋 BRIEFING DE TURNO',team:'👷 EQUIPE DA OFICINA',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA',management:'📋 GESTÃO DA OFICINA'};
+const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO', 'full-detail':'🔧 DETALHES COMPLETOS DA OS',stats:'📊 INDICADORES E RECURSOS',planning:'🗓️ PLANEJAMENTO PCM',shift:'📋 BRIEFING DE TURNO',team:'👷 EQUIPE DA OFICINA',training:'📚 SETOR DE TREINAMENTOS',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA',management:'📋 GESTÃO DA OFICINA'};
 function closeSceneMenu(){
  const menu=$('sceneMenu'),trigger=$('sceneMenuBtn');
  if(menu)menu.hidden=true;
@@ -144,6 +144,7 @@ function openPanel(name){
  const overlay=$('menuOverlay');if(!overlay)return;
  if(name==='shift')drawShiftBrief();
  if(name==='planning')drawPlanning();
+ if(name==='training')drawTraining();
  if(scene?.input)scene.input.enabled=false;
  closeSceneMenu();
  overlay.hidden=false;
@@ -416,7 +417,7 @@ function drawManagement(k){
  +'</article>';
  const assigned=state.jobs.filter(j=>j.assigned);
  const blocked=assigned.filter(j=>j.status==='material'||j.status==='ferramenta').length;
- const available=state.team.filter(m=>!state.jobs.some(j=>j.assigned===m.id)).length;
+ const available=state.team.filter(m=>!state.jobs.some(j=>j.assigned===m.id)&&!E.TRAINING.active(state,m)).length;
  const metrics=[
   ['Caixa','R$ '+brl(state.cash)],
   ['Reputação',k.reputation+'/100'],
@@ -430,7 +431,7 @@ function drawManagement(k){
  ];
  $('management').innerHTML='<p class="muted">Controle da oficina no mesmo ambiente Phaser. Dados e decisões vêm da campanha ativa.</p>'
    +'<div class="managementGrid">'+metrics.map(([name,value])=>'<div class="managementMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong></div>').join('')+'</div>'
-   +'<div class="managementActions"><button class="act" data-open-panel="planning">🗓️ PLANEJAR OS</button><button class="act secondary" data-open-panel="shift">📋 REVISAR PRÓXIMO TURNO</button><button class="act secondary" data-open-panel="queue">📻 ABRIR CARTEIRA</button><button class="act secondary" data-open-panel="team">👷 EQUIPE</button><button class="act secondary" data-open-panel="store">📦 ESTOQUE</button><button class="act secondary" data-open-panel="stats">📊 INDICADORES</button></div>'
+   +'<div class="managementActions"><button class="act secondary" data-open-panel="training">📚 TREINAMENTOS</button><button class="act" data-open-panel="planning">🗓️ PLANEJAR OS</button><button class="act secondary" data-open-panel="shift">📋 REVISAR PRÓXIMO TURNO</button><button class="act secondary" data-open-panel="queue">📻 ABRIR CARTEIRA</button><button class="act secondary" data-open-panel="team">👷 EQUIPE</button><button class="act secondary" data-open-panel="store">📦 ESTOQUE</button><button class="act secondary" data-open-panel="stats">📊 INDICADORES</button></div>'
    +'<section class="readinessBoard"><div class="readinessHeading"><h3>🛠️ PRONTIDÃO OPERACIONAL · TURNO '+ready.shift+'</h3><span>QUADRO CONSULTIVO</span></div>'
    +'<div class="readinessMetrics">'
      +'<div><small>HH DE EQUIPE DISPONÍVEIS</small><strong>'+ready.metrics.nominalCrewHH+' HH</strong><span>'+ready.metrics.availableCrew+' profissional(is) × 10,5 HH</span></div>'
@@ -477,7 +478,7 @@ function drawUI(){
  renderQueue();
  const j=job(), d=$('detailFull');
  if(!j){
-  d.innerHTML='<p>Sem ordens de serviço abertas.</p>';$('detail').innerHTML=d.innerHTML;drawTeam();drawStore();
+  d.innerHTML='<p>Sem ordens de serviço abertas.</p>';$('detail').innerHTML=d.innerHTML;drawTeam();drawTraining();drawStore();
   $('stats').innerHTML='<p class="muted">Nenhuma OS aberta. Consulte as OS concluídas abaixo.</p>';
   drawCompletedOrders();
   $('logs').innerHTML=state.logs.slice(0,5).map(l=>`<div class="log">D${l.day}: ${esc(l.text)}</div>`).join('');
@@ -499,7 +500,7 @@ function drawUI(){
  out+='<div id="notice" style="display:none"></div>';
  if(!j.assigned){
   const busy=new Set(state.jobs.map(x=>x.assigned).filter(Boolean));
-  const free=state.team.filter(x=>!busy.has(x.id)&&x.restAt!==state.tick);
+  const free=state.team.filter(x=>!busy.has(x.id)&&x.restAt!==state.tick&&!E.TRAINING.active(state,x));
   const bays=[0,1,2].filter(x=>!state.jobs.some(z=>z.bay===x));
   if(free.length&&bays.length){
    out+=`<p class="muted">Escolha um profissional e um box para iniciar.</p><div class="actions"><select id="mechanicFull">${free.map(x=>`<option value="${x.id}">${esc(x.name)} (${esc(x.id)}) · ${esc(x.specialty||x.role)}</option>`).join('')}</select><select id="bayFull">${bays.map(x=>`<option value="${x}">BOX ${x+1}</option>`).join('')}</select></div><div class="actions"><button class="act" data-do="assign">ALOCAR E INVESTIGAR</button></div>`;
@@ -527,7 +528,7 @@ function drawUI(){
   job:j,state,data,model:m,scenario:c,diagnostic:diagnosis,preferredBay,feedback:quickFeedback
  });
  $('stats').innerHTML=`<div class="status">OS concluídas: <b>${k.done}</b> · Críticas: <b>${k.critical}</b></div><div class="status">Reputação: <b>${k.reputation}/100</b> · Utilização: <b>${k.utilization}%</b></div><div class="status">Mecânicos disponíveis: <b>${state.team.filter(x=>!x.assigned).length}</b></div><div class="progress"><i style="width:${k.reputation}%"></i></div><div class="legend">⚒ Clique nos boxes da oficina para selecionar uma OS.</div>`;
- drawTeam();drawStore();drawCompletedOrders();
+ drawTeam();drawTraining();drawStore();drawCompletedOrders();
  $('logs').innerHTML=state.logs.slice(0,5).map(l=>`<div class="log">D${l.day}: ${esc(l.text)}</div>`).join('');
 }
 
@@ -557,6 +558,16 @@ function renderSkills(competencies){
    }).join('')+'</div></details>'
   ).join('')+'</div>';
 }
+function drawTraining(){
+ const host=$('trainingPanel');if(!host)return;
+ const prev={
+  trainerId:$('trainingTeacher')?.value,
+  learnerId:$('trainingLearner')?.value,
+  group:$('trainingGroup')?.value,
+  key:$('trainingSkill')?.value
+ };
+ host.innerHTML=window.PORCARIA_TRAINING_VIEW.render(state,E,prev);
+}
 function drawTeam(){
  const candidates=E.availableRecruits(state);
  const space=state.team.length<E.MAX_TEAM;
@@ -573,9 +584,10 @@ function drawTeam(){
  <div class="resourceGrid">`+state.team.map(m=>{
  const current=state.jobs.find(j=>j.assigned===m.id);
  const resting=m.restAt===state.tick;
+ const training=E.TRAINING.active(state,m);
  const portraitUrl=m.sprite&&(TEAM_PORTRAITS[m.sprite]||WORKER_SHEETS[m.sprite]);
  const portrait=portraitUrl?'<span class="teamPortrait" style="background-image:url('+esc(portraitUrl)+')" aria-hidden="true"></span>':'<span class="teamPortrait placeholder" aria-label="Sem sprite">LEGADO</span>';
- return `<article class="resourceCard"><div class="teamIdentity">${portrait}<div><h3>${esc(m.avatar||'')} ${esc(m.name)} · ${esc(m.specialty||'Mecânico')} <small>${esc(m.id)}</small></h3><p class="muted">Especialidade simulada: ${esc(m.role)}</p></div></div><p class="muted">${current?'Em serviço: '+esc(current.id)+' · Box '+(current.bay+1):resting?'Descanso programado neste turno':'Disponível'} · Habilidade geral legada ${Math.round(m.skill)}</p>${energyMeter('Mental',m.mental)}${energyMeter('Física',m.physical)}${energyMeter('Moral',m.morale)}<details class="abilitiesCard"><summary>📊 VER HABILIDADES</summary>${renderSkills(E.skillsFor(m))}</details><div class="actions"><button class="act secondary" data-team-action="motivate" data-person="${esc(m.id)}">MOTIVAR</button><button class="act secondary" data-team-action="rest" data-person="${esc(m.id)}" ${current||resting?'disabled':''}>DESCANSAR</button></div></article>`;
+ return `<article class="resourceCard"><div class="teamIdentity">${portrait}<div><h3>${esc(m.avatar||'')} ${esc(m.name)} · ${esc(m.specialty||'Mecânico')} <small>${esc(m.id)}</small></h3><p class="muted">Especialidade simulada: ${esc(m.role)}</p></div></div><p class="muted">${current?'Em serviço: '+esc(current.id)+' · Box '+(current.bay+1):resting?'Descanso programado neste turno':training?(m.normativeUntil>state.tick?'Treinamento normativo · '+(m.normativeUntil-state.tick)+' turno(s)':'Em capacitação neste turno'):'Disponível'} · Habilidade geral legada ${Math.round(m.skill)}</p>${energyMeter('Mental',m.mental)}${energyMeter('Física',m.physical)}${energyMeter('Moral',m.morale)}<details class="abilitiesCard"><summary>📊 VER HABILIDADES</summary>${renderSkills(E.skillsFor(m))}</details><div class="actions"><button class="act secondary" data-team-action="motivate" data-person="${esc(m.id)}">MOTIVAR</button><button class="act secondary" data-team-action="rest" data-person="${esc(m.id)}" ${current||resting||training?'disabled':''}>DESCANSAR</button></div></article>`;
  }).join('')+'</div>';
 }
 function drawStore(){
@@ -607,6 +619,18 @@ function events(){
   if(impact)impact.textContent='Ritmo '+Math.round(p.speed*100)+'% · Fadiga '+p.fatigueMultiplier.toFixed(2)+'× · Moral −'+p.moraleLossPerHour.toFixed(2)+' pts/HH';
  });
  document.addEventListener('change',ev=>{
+  if(['trainingTeacher','trainingLearner','trainingGroup','trainingSkill'].includes(ev.target?.id)){
+   // Alterar categoria invalida a habilidade anterior; a view seleciona a primeira válida.
+   const current=ev.target?.id==='trainingGroup';
+   const kept={
+    trainerId:$('trainingTeacher')?.value,
+    learnerId:$('trainingLearner')?.value,
+    group:$('trainingGroup')?.value,
+    key:current?null:$('trainingSkill')?.value
+   };
+   $('trainingPanel').innerHTML=window.PORCARIA_TRAINING_VIEW.render(state,E,kept);
+   return;
+  }
   if(ev.target?.id!=='productivityTarget')return;
   const err=E.setProductivityTarget(state,Number(ev.target.value));
   action(err);
@@ -637,7 +661,7 @@ function events(){
   closeActivePanel();return;
  }
  if(ev.altKey||ev.ctrlKey||ev.metaKey||['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName))return;
- const panels={'0':'management','1':'queue','2':'detail','3':'team','4':'store','5':'stats'};
+ const panels={'0':'management','1':'queue','2':'detail','3':'team','4':'store','5':'stats','6':'training'};
  if(panels[ev.key]){ev.preventDefault();if(panels[ev.key]==='detail'){orderReturnPanel='workshop';quickFeedback=null}if(panels[ev.key]==='queue')preferredBay=null;openPanel(panels[ev.key])}
  });
  document.addEventListener('click',ev=>{
@@ -728,6 +752,19 @@ function events(){
    quickFeedback={jobId:selected,ok:result.ok,text:(result.ok?'✓ Confirmado: ':'✕ Hipótese rejeitada: ')+label+
      (result.ok?' · etapa registrada.':' · haverá retrabalho e consumo de energia.')};
    action(null);if(!result.ok)notify('Hipótese incorreta: custo e retrabalho adicionados.');
+   return;
+  }
+  const tr=ev.target.closest('[data-training-action]');
+  if(tr){
+   const T=E.TRAINING;
+   let err;
+   if(tr.dataset.trainingAction==='internal')
+    err=T.internal(state,$('trainingTeacher')?.value,$('trainingLearner')?.value,$('trainingGroup')?.value,$('trainingSkill')?.value,E.SKILL_CATALOG);
+   else if(tr.dataset.trainingAction==='external')
+    err=T.external(state,$('trainingPerson-'+tr.dataset.offer)?.value,tr.dataset.offer,E.SKILL_CATALOG);
+   else return;
+   action(err);
+   if(!err){drawTraining();notify('Bia registrou o treinamento. Avance o turno para concluir as 12 horas.')}
    return;
   }
   const tm=ev.target.closest('[data-team-action]');

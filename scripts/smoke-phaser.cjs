@@ -18,7 +18,7 @@ assert.ok(phaserHtml.includes('data-panel="shift"'),'briefing pré-turno usa o m
 assert.ok(phaserScript.includes('function drawManagement(k)'),'métricas da gestão vêm da simulação');
 assert.ok(phaserScript.includes('window.PORCARIA_READINESS.compute(state,data)'),'gestão/briefing usam cálculo puro do quadro');
 assert.ok(phaserHtml.includes('readiness.js?v=0.8.8'),'módulo prontidão carregado');
-assert.ok(phaserHtml.indexOf('readiness.js?v=0.8.8')<phaserHtml.indexOf('game.js?v=0.8.25'),'prontidão entra antes do Phaser');
+assert.ok(phaserHtml.indexOf('readiness.js?v=0.8.8')<phaserHtml.indexOf('game.js?v=0.8.26'),'prontidão entra antes do Phaser');
 assert.ok(phaserHtml.includes('.readinessBays'),'novo quadro tem CSS responsivo');
 
 assert.ok(phaserScript.includes('function drawShiftBrief()'),'briefing é renderizado com dados atuais');
@@ -30,7 +30,7 @@ const topHeader=headerStart>=0&&headerEnd>=0?phaserHtml.slice(headerStart,header
 assert.ok(topHeader,'barra principal da oficina presente');
 assert.ok(topHeader.includes('class="top-main"')&&topHeader.includes('class="top-status"'),'duas faixas de controles distintas');
 assert.ok(topHeader.includes('class="primary-nav"'),'menus organizados em navegação própria');
-assert.equal((topHeader.match(/class="tab nav-item/g)||[]).length,7,'sete opções de navegação, incluindo oficina atual');
+assert.equal((topHeader.match(/class="tab nav-item/g)||[]).length,8,'oito opções de navegação, incluindo Treinamentos');
 assert.ok(topHeader.includes('class="status-metrics"'),'KPIs separados da navegação');
 assert.ok(topHeader.includes('class="toolbar-actions"'),'comandos de sessão agrupados');
 assert.equal((phaserHtml.match(/id="advance"/g)||[]).length,1,'ação avançar turno aparece uma única vez');
@@ -48,7 +48,7 @@ assert.ok(phaserHtml.includes('overflow-x:auto'),'navegação responsiva roláve
 assert.ok(phaserScript.includes('function closeSceneMenu()'),'menu de cenário pode ser fechado');
 assert.ok(phaserScript.includes("sceneMenuBtn').addEventListener('click'"),'controle de abertura do menu presente');
 assert.ok(phaserScript.includes("if(!$('sceneMenu').hidden)"),'Escape fecha o dropdown antes do modal');
-assert.ok(phaserHtml.includes('game.js?v=0.8.25'),'script principal tem cache versionado');
+assert.ok(phaserHtml.includes('game.js?v=0.8.26'),'script principal tem cache versionado');
 assert.ok(phaserHtml.includes('shift-brief.js?v=0.7.7'),'módulo de briefing carregado junto ao jogo');
 assert.ok(phaserHtml.includes('planning.js?v=0.7.8'),'módulo do planejamento carregado no Pages');
 assert.ok(phaserHtml.includes('weekly.js?v=0.7.9'),'módulo semanal do PCM carregado');

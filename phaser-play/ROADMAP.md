@@ -2,10 +2,27 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 18/10/2026 · **v0.8.25 — matriz de habilidades por disciplina, sistema e equipamento para 13 personagens (perfil consultivo, sem efeitos de jogo); homologação visual pendente.**
+**Estado de referência:** 18/10/2026 · **v0.8.26 — Setor de Treinamentos com Bia, integração normativa de 2 turnos, cursos internos/externos e histórico em implementação; v0.8.27 planejada.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.8.26 — Setor de Treinamentos (implementação; homologação visual pendente)
+
+**Documentação registrada e incorporada antes do código:** PR #45. Nesta etapa, criados os módulos \`training.js\` (regras puras de agenda/turno) e \`phaser-play/training-view.js\` (fichário CSS com Bia como **Analista Administrativa**).
+
+- [x] Cadastro compatível com save anterior: \`state.training\` (v1), lista de compromissos, oferta externa, avisos administrativos e histórico por pessoa/turno/habilidade; nenhum bloqueio normativo retroativo em equipe já existente de save antigo.
+- [x] Contratação gera obrigatoriamente dois turnos de integração normativa com impedimento de OS e outras capacitações; encerramento ocorre após dois avanços do jogo. O funcionário já integra a folha.
+- [x] Treinamento interno gratuito com instrutor/aprendiz disponíveis por 12h e diferença mínima de cinco pontos; chance proporcional ao gap, teto \`min(95,T-2)\`, bloqueio de aula e trabalho simultâneos.
+- [x] Cursos externos pagos com instrutor de nível 100, oferta periódica randômica, limite comum 97 e premium 100, custos de R$600 a R$3000 (premium 2× tarifa) e um turno de indisponibilidade.
+- [x] Solicitações simuladas ocasionais da Segurança do Trabalho, bloqueio da pessoa específica e registro da conclusão.
+- [x] Interface com Bia (sprite original existente), pasta, post-its, abas coloridas, cadastro, ofertas, normativos e registros. Nenhuma nova imagem gerada.
+- [x] Integração com seleção rápida de OS, alocação no motor, descanso, gestão, planejamento, quadro de prontidão e cálculo de HH disponíveis.
+- [x] Regressão \`scripts/test-training.cjs\` e atualização de testes/workflows, cache PWA \`v105\`.
+- [ ] Homologação no navegador em desktop/mobile: altura dos cards, responsividade, foto da Bia, instrutor/aprendiz e menus sem regressão.
+- [ ] Balancear custos e incidência externa/normativa após partidas reais.
+
+**Propositadamente ainda não nesta entrega:** efeito composto das 56 habilidades sobre diagnóstico e velocidade de reparo e progressão por prática; previstos na **v0.8.27** descrita acima. A habilidade geral \`skill\` permanece válida durante a v0.8.26.
 
 ## Planejamento aprovado — Treinamentos, habilidades ativas e aprendizagem (18/10/2026)
 
