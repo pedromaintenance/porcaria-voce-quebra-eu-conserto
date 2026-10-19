@@ -75,7 +75,7 @@ function repairWith(score){
 const slow=repairWith(0),fast=repairWith(100);
 assert.ok(fast.remaining<slow.remaining,'alto conhecimento acelera efetivamente o reparo');
 assert.ok(fast.worked<=10.5&&slow.worked<=10.5,'limite de HH úteis não é alterado');
-assert.equal(fast.available,31.5,'disponibilidade permanece 3x10.5');
+assert.equal(fast.available,42,'disponibilidade nominal com 4 integrantes: 4 × 10,5 HH');
 const html=fs.readFileSync(path.join(root,'phaser-play/index.html'),'utf8');
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
 const ui=fs.readFileSync(path.join(root,'phaser-play/game.js'),'utf8');
