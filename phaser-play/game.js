@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.24 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.25 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -534,13 +534,36 @@ function drawUI(){
 function energyMeter(label,value){
  return `<div class="resourceMeter"><span>${label}</span><div class="progress"><i style="width:${Math.max(0,Math.min(100,value))}%"></i></div><b>${Math.round(value)}</b></div>`;
 }
+function renderSkills(competencies){
+ const sections=[
+  ['disciplines','DISCIPLINAS E FÍSICA APLICADA'],
+  ['systems','SISTEMAS E COMPONENTES'],
+  ['machines','EQUIPAMENTOS']
+ ];
+ const avg=group=>{
+  const values=E.SKILL_CATALOG[group].map(item=>Number(competencies[group]?.[item.id]||0));
+  return Math.round(values.reduce((a,b)=>a+b,0)/Math.max(1,values.length));
+ };
+ return '<div class="abilitySummary" aria-label="Matriz de habilidades">'
+  +sections.map(([key,label])=>{
+   const value=avg(key);
+   return '<span class="abilityMean"><small>'+esc(label)+'</small><strong>'+value+'/100</strong></span>';
+  }).join('')
+  +'</div><div class="abilityGroups">'+sections.map(([group,label])=>
+   '<details class="abilityGroup"><summary>'+esc(label)+' <span>'+E.SKILL_CATALOG[group].length+' habilidades</span></summary>'
+   +'<div class="abilityRows">'+E.SKILL_CATALOG[group].map(({id,label:skillName})=>{
+    const v=Number(competencies[group]?.[id]||0);
+    return '<div class="abilityRow"><span>'+esc(skillName)+'</span><div class="abilityTrack" role="progressbar" aria-label="'+esc(skillName)+'" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+v+'"><i style="width:'+v+'%"></i></div><b>'+v+'</b></div>';
+   }).join('')+'</div></details>'
+  ).join('')+'</div>';
+}
 function drawTeam(){
  const candidates=E.availableRecruits(state);
  const space=state.team.length<E.MAX_TEAM;
  const affordable=state.cash>=1050&&state.player.mental>=18;
  const listing=candidates.map(m=>{
   const portrait=WORKER_SHEETS[m.sprite];
-  return `<article class="resourceCard"><div class="teamIdentity"><span class="teamPortrait" style="background-image:url(${esc(portrait)})" aria-hidden="true"></span><div><h3>${esc(m.avatar)} ${esc(m.name)}</h3><p class="muted">${esc(m.specialty)} · Disciplina: ${esc(m.role)}</p></div></div><button class="act" data-team-action="hire" data-person="${esc(m.sprite)}" ${!space||!affordable?'disabled':''}>CONTRATAR · R$ 1.050</button></article>`;
+  return `<article class="resourceCard"><div class="teamIdentity"><span class="teamPortrait" style="background-image:url(${esc(portrait)})" aria-hidden="true"></span><div><h3>${esc(m.avatar)} ${esc(m.name)}</h3><p class="muted">${esc(m.specialty)} · Disciplina: ${esc(m.role)}</p></div></div><details class="abilitiesCard"><summary>📊 VER HABILIDADES</summary>${renderSkills(E.baselineSkills(m.sprite))}</details><button class="act" data-team-action="hire" data-person="${esc(m.sprite)}" ${!space||!affordable?'disabled':''}>CONTRATAR · R$ 1.050</button></article>`;
  }).join('');
  $('teamPanel').innerHTML=`<p class="muted">Campanha nova: Pedro, Geovane e Junior. As contratações são individuais e nominais. Custo: R$ 1.050 e 18 de energia mental por pessoa. Limite de ${E.MAX_TEAM} profissionais; os três boxes continuam permitindo até três OS simultâneas.</p>
  <h3 class="resourceSection">CATÁLOGO DE CONTRATAÇÃO · ${candidates.length} disponível(is)</h3>
@@ -552,7 +575,7 @@ function drawTeam(){
  const resting=m.restAt===state.tick;
  const portraitUrl=m.sprite&&(TEAM_PORTRAITS[m.sprite]||WORKER_SHEETS[m.sprite]);
  const portrait=portraitUrl?'<span class="teamPortrait" style="background-image:url('+esc(portraitUrl)+')" aria-hidden="true"></span>':'<span class="teamPortrait placeholder" aria-label="Sem sprite">LEGADO</span>';
- return `<article class="resourceCard"><div class="teamIdentity">${portrait}<div><h3>${esc(m.avatar||'')} ${esc(m.name)} · ${esc(m.specialty||'Mecânico')} <small>${esc(m.id)}</small></h3><p class="muted">Especialidade simulada: ${esc(m.role)}</p></div></div><p class="muted">${current?'Em serviço: '+esc(current.id)+' · Box '+(current.bay+1):resting?'Descanso programado neste turno':'Disponível'} · Habilidade ${Math.round(m.skill)}</p>${energyMeter('Mental',m.mental)}${energyMeter('Física',m.physical)}${energyMeter('Moral',m.morale)}<div class="actions"><button class="act secondary" data-team-action="motivate" data-person="${esc(m.id)}">MOTIVAR</button><button class="act secondary" data-team-action="rest" data-person="${esc(m.id)}" ${current||resting?'disabled':''}>DESCANSAR</button></div></article>`;
+ return `<article class="resourceCard"><div class="teamIdentity">${portrait}<div><h3>${esc(m.avatar||'')} ${esc(m.name)} · ${esc(m.specialty||'Mecânico')} <small>${esc(m.id)}</small></h3><p class="muted">Especialidade simulada: ${esc(m.role)}</p></div></div><p class="muted">${current?'Em serviço: '+esc(current.id)+' · Box '+(current.bay+1):resting?'Descanso programado neste turno':'Disponível'} · Habilidade geral legada ${Math.round(m.skill)}</p>${energyMeter('Mental',m.mental)}${energyMeter('Física',m.physical)}${energyMeter('Moral',m.morale)}<details class="abilitiesCard"><summary>📊 VER HABILIDADES</summary>${renderSkills(E.skillsFor(m))}</details><div class="actions"><button class="act secondary" data-team-action="motivate" data-person="${esc(m.id)}">MOTIVAR</button><button class="act secondary" data-team-action="rest" data-person="${esc(m.id)}" ${current||resting?'disabled':''}>DESCANSAR</button></div></article>`;
  }).join('')+'</div>';
 }
 function drawStore(){
