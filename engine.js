@@ -3,6 +3,8 @@
   const E=factory(); if(typeof module!=='undefined'&&module.exports)module.exports=E; root.PORCARIA_ENGINE=E;
 })(typeof window!=='undefined'?window:globalThis,function(){
   'use strict';
+  const COMPETENCY=typeof require==='function'?require('./competency.js'):globalThis.PORCARIA_COMPETENCY;
+  if(!COMPETENCY)throw Error('Módulo de competências indisponível.');
   const TRAINING=typeof require==='function'?require('./training.js'):globalThis.PORCARIA_TRAINING;
   if(!TRAINING)throw Error('Módulo de treinamento indisponível.');
   // Campanhas novas iniciam somente com tres personagens fixos.
@@ -282,7 +284,7 @@
   function diagnosticLabel(j,stage,code){
     return j.options?.[stage]?.find(option=>option.id===code)?.label||String(code||'');
   }
-  function answer(s,d,id,chosen){
+  function answer(s,d,id,chosen,rng=Math.random){
     const j=job(s,id);if(!j||!j.assigned||!j.help)return {error:'O diagnóstico assistido exige mecânico e box alocados.'};
     if(j.stage>=6)return {error:'Diagnóstico já concluído.'};
     if(!haveTool(s,scenario(d,j.scene)))return {error:'É necessário comprar o ferramental para confirmar a etapa do diagnóstico.'};
@@ -308,6 +310,7 @@
       s.cash=Math.max(0,s.cash-25);
       msg(s,`${id}: hipótese incorreta; retrabalho, desgaste e R$25 de custo adicional.`,'bad');
     }
+    learnByDoing(s,m,j,sc,rng);
     return {ok,correct};
   }
   function hint(s,d,id){
@@ -392,6 +395,25 @@
     m.assigned=null;
     msg(s,`${j.id} concluída: ${c.title}. ${elapsed} h corridas, receita fictícia R$${income}.`,'ok');
   }
+  function learnByDoing(s,mechanic,order,scenario,rng){
+    // Uma tentativa por habilidade e por turno, mesmo após vários cliques no diagnóstico.
+    if(mechanic.practiceTick!==s.tick){mechanic.practiceTick=s.tick;mechanic.practiceKeys=[]}
+    const keys=COMPETENCY.resolve(scenario);
+    const eligible=Object.entries(keys).filter(([group,key])=>
+      !mechanic.practiceKeys.includes(group+':'+key) &&
+      mechanic.competencies?.[group]?.[key]<90);
+    if(!eligible.length)return;
+    for(const [group,key] of eligible)mechanic.practiceKeys.push(group+':'+key);
+    const gains=COMPETENCY.practice(mechanic,scenario,rng,eligible.map(([group])=>group));
+    if(!gains.length)return;
+    const t=TRAINING.normal(s);
+    for(const g of gains){
+      t.history.unshift({id:'P'+t.nextId++,kind:'practice',tick:s.tick+1,
+        personId:mechanic.id,jobId:order.id,group:g.group,key:g.key,
+        before:g.before,after:g.after,gain:g.gain,cost:0,success:true,hours:0});
+    }
+    t.history=t.history.slice(0,180);
+  }
   function advance(s,d,rng=Math.random){
     let hours=0;let completed=0;let blocks=0;
     const pressure=productivityProfile(s.productivityTarget);
@@ -404,11 +426,12 @@
       if(!haveTool(s,c)){j.status='ferramenta';j.toolWait++;blocks++;continue}
       if(j.stage<6){
         j.status='diagnostico';
-        const baseAttempts=j.help?1:Math.max(1,Math.min(3,1+Math.floor((m.skill-48)/23)));
+        const p=COMPETENCY.evaluate(m,c).proficiency;
+        const baseAttempts=j.help?1:Math.max(1,Math.min(3,1+Math.floor((p-35)/30)));
         const n=j.help?1:Math.max(1,Math.min(6,Math.round(baseAttempts*pressure.speed)));
         let spent=0;
         for(let k=0;k<n && j.stage<6;k++){
-          const successChance=clamp(0.66+(m.skill-50)/170+(m.role===c.category?0.15:0)-(m.mental<20?0.3:0)-(m.morale<25?0.2:0),0.23,0.97);
+          const successChance=COMPETENCY.diagnosisChance(m,c);
           const ok=rnd(rng)<successChance;
           if(ok){
             const stage=j.stage,answer=[...c.path,c.component,c.damage,c.cause][stage];
@@ -423,11 +446,12 @@
         applyWorkPressure(s,m,spent,pressure);
         if(j.help){s.player.mental=clamp(s.player.mental-3);s.player.physical=clamp(s.player.physical-1);}
         j.worked+=spent;j.costLabor+=spent*24;hours+=spent;
+        if(spent>0)learnByDoing(s,m,j,c,rng);
         if(j.stage>=6){j.diagRemaining=0;j.status='apto';msg(s,`${j.id}: diagnóstico fechou. Peças e ferramental devem estar disponíveis.`,'ok')}
         continue;
       }
       if(!enterRepair(s,j,d)){blocks++;continue}
-      const special=m.role===c.category?1.18:m.role==='geral'?1.02:0.9;
+      const special=COMPETENCY.repairSpeed(m,c);
       const fatigue=m.physical<25||m.mental<20?0.62:1;
       const help=j.help?1.28:1;
       const throughput=special*fatigue*help*pressure.speed;
@@ -436,6 +460,7 @@
       const workedHH=Math.min(EFFECTIVE_HOURS,used/Math.max(0.01,throughput));
       j.repairRemaining=Math.max(0,Math.round((remaining-used)*10)/10);
       j.worked+=workedHH;j.costLabor+=workedHH*42;hours+=workedHH;
+      if(workedHH>0)learnByDoing(s,m,j,c,rng);
       applyWorkPressure(s,m,workedHH,pressure);
       if(j.help){s.player.physical=clamp(s.player.physical-4);s.player.mental=clamp(s.player.mental-1.5);}
       if(j.repairRemaining<=0.01){complete(s,j,d,m);completed++}
@@ -497,7 +522,7 @@
       pendingMaterials:s.jobs.filter(j=>j.status==='material').length, pendingTools:s.jobs.filter(j=>j.status==='ferramenta').length};
   }
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
-  return {create,normalizeRoster,availableRecruits,RECRUIT_POOL,MAX_TEAM,TRAINING,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
+  return {create,normalizeRoster,availableRecruits,RECRUIT_POOL,MAX_TEAM,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
     SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
     model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
 });

@@ -2,10 +2,28 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 18/10/2026 · **v0.8.26 — Setor de Treinamentos com Bia, integração normativa de 2 turnos, cursos internos/externos e histórico em implementação; v0.8.27 planejada.**
+**Estado de referência:** 18/10/2026 · **v0.8.27 — habilidades conjugadas aplicadas ao diagnóstico/reparo, aprendizagem por prática até 90 e planejamento por competência; CI aprovado, QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.8.27 — Competências nas OS e aprendizagem por prática (implementação)
+
+**Dependência concluída:** v0.8.26, PR #46, treinamento interno/externo/normativo com Bia como Analista Administrativa e histórico persistido. **Planejamento detalhado já documentado na PR #45, antes do código.**
+
+### Aplicação dos atributos
+- [x] Novo módulo isolado `competency.js`, consumido por `engine.js` e `phaser-play/planning.js`, com mapeamento explícito dos **29 cenários existentes** para exatamente **uma disciplina**, **um sistema** e **um equipamento** da matriz da v0.8.25. Nenhuma habilidade ou cenário foi adicionado; fallback mapeado e validado nos testes.
+- [x] Proficiência `P=0,40D+0,35S+0,25M`. A probabilidade do diagnóstico autônomo utiliza `clamp(0,25+0,006P+bônus-penalidades,0,20,0,98)`; fadiga e moral continuam influenciando, sem dupla soma da habilidade geral antiga.
+- [x] Reparos usam `V=clamp(0,75+0,007P,0,75,1,40)`, multiplicado pelos fatores preexistentes de pressão de produtividade, fadiga e apoio. Limite de **10,5 HH úteis** por turno preservado, sem diminuir jornada de 12 horas, retirar necessidade de material ou ferramental, nem produzir reparo antes do diagnóstico.
+- [x] Seleção sugerida de mecânico no planejamento PCM usa a proficiência da OS no lugar da habilidade geral, com peso adicional de energia, especialidade e indisponibilidade.
+- [x] Aprendizagem por atuação real em OS (diagnóstico assistido/autônomo ou reparo): chance `clamp(0,30−0,003H,0,03,0,30)` para as três habilidades pertinentes. Em sucesso, **+1**, raramente +2 para nível menor, limitado em **90**. Profissionais com 90–100 avançam **somente por treinamento**.
+- [x] Uma única oportunidade por **habilidade** e **turno**, inclusive se o jogador clicar repetidamente no diagnóstico. Campo de controle do membro registrado no save e evento de sucesso em `training.history` com identificação da OS, turno, atributo e nota antes/depois.
+- [x] Hipóteses do jogador ainda exigem seleção correta: proficiência não revela respostas, não automatiza a escolha e não apaga retrabalho de erro. O diagnóstico autônomo usa a nova chance proporcional.
+- [x] Testes de 29 cenários, 0–100, limites de 90, especialista contra iniciante, duração de reparo, resposta manual, HH úteis e cache PWA atualizado.
+- [ ] Homologar no navegador: observar velocidade e curva de aprendizagem ao longo da campanha, comparar desempenho de Pedro, Geovane e Junior, custo-benefício de cursos e dados importados de saves antigos.
+- [ ] Balancear a curva de aprendizagem após sessões completas. Valores são de **design fictício**, não estimativas de produtividade industrial.
+
+**Sem alterações neste release:** quantidade de falhas, atributos e equipamentos, fontes OEM, estrutura das seis etapas, contratação, custos de materiais ou duração das turmas. O futuro aumento de falhas permanece em backlog para explorar habilidades existentes.
 
 ## Entrega 0.8.26 — Setor de Treinamentos (implementação; homologação visual pendente)
 

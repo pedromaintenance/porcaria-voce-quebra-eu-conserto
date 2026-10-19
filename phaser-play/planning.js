@@ -8,6 +8,7 @@
  if(root)root.PORCARIA_PLANNING=api;
 })(typeof window!=='undefined'?window:null,function(){
  'use strict';
+ const COMPETENCY=typeof require==='function'?require('../competency.js'):globalThis.PORCARIA_COMPETENCY;
  const priorityLabel={3:'CRÍTICA',2:'ALTA',1:'MODERADA'};
  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
  function readiness(j,sc,state){
@@ -20,13 +21,14 @@
  function candidateScore(m,sc){
   const roleMatch=!!sc&&m.role===sc.category;
   const general=m.role==='geral';
+  const proficiency=sc?COMPETENCY.evaluate(m,sc).proficiency:20;
   const health=Math.min(Number(m.mental)||0,Number(m.physical)||0);
   const fatigued=health<25;
-  const score=(roleMatch?55:general?22:0)
-   +Math.max(0,Number(m.skill)||0)*0.5
+  const score=(roleMatch?12:general?3:0)
+   +proficiency*0.75
    +clamp(health,0,100)*0.25
    - (fatigued?45:0);
-  return {score:Math.round(score*10)/10,roleMatch,general,fatigued};
+  return {score:Math.round(score*10)/10,roleMatch,general,fatigued,proficiency};
  }
  function compute(state,data){
   if(!state||!data||!Array.isArray(state.jobs)||!Array.isArray(state.team))throw new Error('Estado inválido para planejamento');
@@ -74,7 +76,7 @@
    freeBays,remainingStarts:Math.min(freeBays.length,freeMechanics.length),
    remainingGrossHours:Math.min(freeBays.length,freeMechanics.length)*10.5,
    ranked,
-   method:'Pontuação heurística: criticidade ×100 +3 por turno de espera (máximo 90), +22 se insumos liberados ou −26 se bloqueados. Não equivale a risco técnico quantitativo.',
+   method:'Criticidade ×100 e prontidão de insumos priorizam OS; seleção do mecânico usa proficiência conjugada 40% disciplina, 35% sistema e 25% máquina, além de energia e especialidade. Heurística fictícia.',
    capacityNote:'HH úteis disponíveis no próximo turno (10,5 HH × menor número entre boxes e mecânicos livres), descontando DDS e almoço. Não incluem produtividade, fadiga ou trabalho já alocado. O motor define as horas efetivas.',
    etaNote:'Pedidos são recebidos ao final do turno pelo motor; ETA não significa disponibilidade de peça durante esse turno.'
   };

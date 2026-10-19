@@ -49,8 +49,8 @@
    (norm||'<div class="trainingBlank">Não há pendências normativas abertas.</div>')+'</section>';
   const history=t.history.slice(0,24).map(h=>{
    const name=s.team.find(m=>m.id===h.personId)?.name||h.personId||'Colaborador';
-   const desc=h.kind==='internal'?'Interno':h.kind==='external'?'Externo':h.kind==='onboarding'?'Integração normativa':'Normativo periódico';
-   const title=h.key?label(E.SKILL_CATALOG,h.group,h.key):'Treinamento obrigatório';
+   const desc=h.kind==='internal'?'Interno':h.kind==='external'?'Externo':h.kind==='onboarding'?'Integração normativa':h.kind==='practice'?'Prática em OS':'Normativo periódico';
+   const title=h.kind==='practice'?'Prática na OS '+esc(h.jobId||'')+' · '+esc(label(E.SKILL_CATALOG,h.group,h.key)):h.key?label(E.SKILL_CATALOG,h.group,h.key):'Treinamento obrigatório';
    return '<li><strong>'+esc(name)+' · '+esc(desc)+'</strong><span>'+esc(title)+' · turno '+h.tick+
     (h.before!==null&&h.before!==undefined?' · '+h.before+' → '+h.after:'')+
     (h.cost?' · R$ '+money(h.cost):'')+'</span></li>';

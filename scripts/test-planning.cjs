@@ -23,11 +23,16 @@ assert.equal(p.countCriticalWaiting,state.jobs.filter(j=>j.priority===3).length,
 const j=state.jobs[0],sc=E.scenario(data,j.scene);
 state.tools[sc.tool]=true;
 state.team[0].role=sc.category;state.team[0].skill=88;state.team[0].mental=99;state.team[0].physical=99;
-for(const m of state.team.slice(1)){m.role='outra';m.skill=55;m.mental=70;m.physical=70}
+// Cenário sintético: força conhecimento da OS em 100 para testar a recomendação.
+for(const group of E.SKILL_GROUPS)for(const k of Object.keys(state.team[0].competencies[group]))state.team[0].competencies[group][k]=100;
+for(const m of state.team.slice(1)){
+ m.role='outra';m.skill=55;m.mental=70;m.physical=70;
+ for(const group of E.SKILL_GROUPS)for(const k of Object.keys(m.competencies[group]))m.competencies[group][k]=0;
+}
 p=P.compute(state,data);
 let row=p.ranked.find(x=>x.id===j.id);
 assert.equal(row.readiness.kind,'ready','ferramental presente permite investigação');
-assert.equal(row.recommended.mechanicId,state.team[0].id,'mecânico com especialidade relevante sugerido');
+assert.equal(row.recommended.mechanicId,state.team[0].id,'mecânico com maior proficiência conjugada sugerido');
 assert.equal(row.recommended.bay,0,'primeiro box livre sugerido');
 assert.equal(row.recommended.roleMatch,true,'compatibilidade real da especialidade');
 assert.equal(state.team[0].assigned,null,'consultar sugestão não aloca automaticamente');
@@ -81,8 +86,8 @@ assert.ok(p.ranked.every(x=>x.recommended===null),'sem boxes livres, nenhuma sug
 const html=fs.readFileSync(path.join(root,'phaser-play','index.html'),'utf8');
 const js=fs.readFileSync(path.join(root,'phaser-play','game.js'),'utf8');
 assert.equal((html.match(/data-panel="planning"/g)||[]).length,1,'painel de planejamento único');
-assert.ok(html.includes('planning.js?v=0.7.8'),'módulo de planejamento com cache de versão');
-assert.ok(html.includes('game.js?v=0.8.26'),'jogo com cache de versão');
+assert.ok(html.includes('planning.js?v=0.8.27'),'módulo de planejamento com cache de versão');
+assert.ok(html.includes('game.js?v=0.8.27'),'jogo com cache de versão');
 assert.ok(js.includes('function drawPlanning()'),'renderizador do painel presente');
 assert.ok(js.includes('PORCARIA_PLANNING.compute(state,data)'),'planejamento deriva diretamente do estado do motor');
 assert.ok(js.includes('data-plan-assign'),'sugestão exige ação explícita');
