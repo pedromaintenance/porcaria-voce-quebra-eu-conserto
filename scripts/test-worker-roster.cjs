@@ -1,4 +1,4 @@
-/* v0.8.20: três titulares, dez nomes únicos, migração e contratações. */
+/* Lotação aberta: quatro titulares, dez nomes únicos e mecânicos avulsos. */
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'..'),E=require(path.join(root,'engine.js'));
@@ -8,8 +8,8 @@ const keys=names.map(x=>x.toLowerCase());
 const s=E.create(data,()=>0.42);
 assert.deepEqual(s.team.map(m=>m.name),['Pedro','Geovane','Junior','Acassio']);
 assert.deepEqual(s.team.map(m=>m.id),['M1','M2','M3','M4']);
-assert.equal(s.nextPerson,5);assert.equal(E.MAX_TEAM,14);
-assert.deepEqual(E.availableRecruits(s).map(m=>m.name),names);
+assert.equal(s.nextPerson,5);assert.equal(E.MAX_TEAM,undefined,'não há teto de lotação');
+assert.deepEqual(E.availableRecruits(s).map(m=>m.name),[...names,'Mecânico avulso']);
 assert.equal(s.team[2].trainingSprite,'junior-training');
 const initial=JSON.stringify(s);E.normalizeRoster(s);assert.equal(JSON.stringify(s),initial);
 assert.ok(E.hire(s,undefined,()=>0.4),'proíbe contratação sem seleção');
@@ -21,7 +21,15 @@ for(const [i,key] of keys.entries()){
  assert.deepEqual([hired.name,hired.sprite,hired.id],[names[i],key,'M'+(i+5)]);
  assert.ok(E.hire(s,key,()=>0.4),'não contratar o mesmo duas vezes');
 }
-assert.equal(s.team.length,14);assert.equal(E.availableRecruits(s).length,0);
+assert.equal(s.team.length,14);assert.deepEqual(E.availableRecruits(s).map(m=>m.name),['Mecânico avulso']);
+for(let i=0;i<15;i++){
+ s.player.mental=100;
+ assert.equal(E.hire(s,'generic',()=>0.4),null,'contratação avulsa sem teto');
+ const m=s.team.at(-1);assert.equal(m.id,'M'+(15+i));assert.equal(m.name,'Mecânico '+m.id);assert.equal(m.sprite,null);
+ assert.deepEqual(m.competencies,E.baselineSkills(m.name));
+}
+assert.equal(s.team.length,29);
+assert.deepEqual(E.availableRecruits(s).map(m=>m.name),['Mecânico avulso']);
 assert.ok(E.hire(s,'desconhecido',()=>0.4));assert.ok(E.validate(s));
 const legacy=E.create(data,()=>0.4),j=legacy.jobs[0];
 legacy.team=[
@@ -51,4 +59,4 @@ assert.ok(game.includes('E.availableRecruits(state)'));
 assert.ok(game.includes('E.hire(state,id)'));
 assert.ok(html.includes('game.js?v=0.8.30'));
 assert.ok(sw.includes('porcaria-vqec-20261019-v109'));
-console.log('OK: contratação nominal, campanha inicial 4, limite 14, saves preservados.');
+console.log('OK: contratação nominal, campanha inicial 4, contratações avulsas ilimitadas, saves preservados.');

@@ -6,7 +6,7 @@ const data=JSON.parse(fs.readFileSync(path.join(root,'game-data.json'),'utf8'));
 const s=E.create(data,()=>.42);
 assert.deepEqual(s.team.map(m=>m.name),['Pedro','Geovane','Junior','Acassio']);
 assert.deepEqual(s.team.map(m=>m.id),['M1','M2','M3','M4']);
-assert.equal(E.MAX_TEAM,14);assert.equal(s.nextPerson,5);
+assert.equal(E.MAX_TEAM,undefined);assert.equal(s.nextPerson,5);
 const m=s.team[3];assert.equal(m.role,'geral');assert.equal(m.specialty,'Instrutor');assert.equal(m.sprite,'acassio');
 const c=m.competencies;
 for(const {id} of E.SKILL_CATALOG.machines)
@@ -26,7 +26,7 @@ E.normalizeRoster(legacy);
 assert.equal(JSON.stringify(legacy.jobs),oldJobs);
 assert.deepEqual(legacy.team.map(m=>m.id),oldIds);
 assert.ok(!legacy.team.some(m=>m.name==='Acassio'),'saves existentes sem inserção retroativa');
-assert.equal(E.availableRecruits(s).length,10,'Acassio não é recrutável');
+assert.equal(E.availableRecruits(s).length,11,'Acassio não é recrutável; existe contratação avulsa');
 const file=path.join(root,'phaser-play/assets/characters/acassio-4poses.png');
 assert.ok(fs.existsSync(file),'Asset pendente: publicar acassio-4poses.png no branch antes do merge');
 const png=fs.readFileSync(file);
