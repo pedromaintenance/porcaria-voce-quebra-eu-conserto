@@ -49,6 +49,6 @@ for(const key of [...keys,'pedro','geovane','junior']){
 }
 assert.ok(game.includes('E.availableRecruits(state)'));
 assert.ok(game.includes('E.hire(state,id)'));
-assert.ok(html.includes('game.js?v=0.8.29'));
-assert.ok(sw.includes('porcaria-vqec-20261019-v108'));
+assert.ok(html.includes('game.js?v=0.8.30'));
+assert.ok(sw.includes('porcaria-vqec-20261019-v109'));
 console.log('OK: contratação nominal, campanha inicial 3, limite 13, saves preservados.');

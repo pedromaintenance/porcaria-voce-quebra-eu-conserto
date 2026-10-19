@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. v0.8.28 — pasta administrativa da Bia (visual consultivo). */
+/* P.O.R.C.A.R.I.A. v0.8.30 — pasta administrativa da Bia (visual consultivo). */
 (function(root,factory){
  const api=factory();
  if(typeof module!=='undefined'&&module.exports)module.exports=api;
@@ -11,6 +11,14 @@
  const money=n=>Number(n||0).toLocaleString('pt-BR',{maximumFractionDigits:0});
  function render(s,E,chosen={}){
   const T=E.TRAINING,t=T.normal(s);
+  const tabs=[
+   {id:'internal',label:'CAPACITAÇÃO',atlas:'coaching',icon:'📎'},
+   {id:'external',label:'OFERTAS',atlas:'field',icon:'🎫'},
+   {id:'mandatory',label:'NORMATIVOS',atlas:'inspection',icon:'📌'},
+   {id:'history',label:'HISTÓRICO',atlas:'feedback',icon:'🗂️'}
+  ];
+  const tab=tabs.some(x=>x.id===chosen.tab)?chosen.tab:'internal';
+  const activeTab=tabs.find(x=>x.id===tab);
   const free=s.team.filter(m=>!T.reason(s,m)),booked=s.team.filter(m=>T.active(s,m));
   const group=groups[chosen.group]?chosen.group:'disciplines',skills=E.SKILL_CATALOG[group];
   const key=skills.some(x=>x.id===chosen.key)?chosen.key:skills[0].id;
@@ -67,19 +75,34 @@
    return '<div class="trainingAssignment"><b>'+esc(person)+'</b><span>'+esc(a.kind==='internal'?'Interno com '+(s.team.find(m=>m.id===a.trainerId)?.name||a.trainerId):'Externo')+
     ' · '+esc(label(E.SKILL_CATALOG,a.group,a.key))+' · conclusão após avançar turno</span></div>';
   }).join('');
-  const admin='<header class="trainingCover"><span class="trainingBiaPortrait" role="img" aria-label="Bia, Analista Administrativa do Setor de Treinamentos"></span>'+
-   '<div><small>📚 PASTA DE DESENVOLVIMENTO · OFICINA</small><h2>BIA · TREINAMENTOS</h2>'+
-   '<p><strong>Analista Administrativa do Setor de Treinamentos.</strong> Eu organizo inscrições, registros, integração e avisos de Segurança do Trabalho. Os instrutores são os mecânicos ou profissionais externos.</p></div></header>';
-  const notes=t.notices.slice(0,3).map(n=>'<p class="trainingMemo">'+esc(n.text)+'</p>').join('');
-  return '<div class="trainingFolder">'+admin+
-   '<div class="trainingFolderTabs"><span>CAPACITAÇÃO</span><span>OFERTAS</span><span>NORMATIVOS</span><span>HISTÓRICO</span></div>'+
-   '<div class="trainingMeta">Turno '+s.tick+' · '+free.length+' disponível(is) · '+booked.length+' em capacitação/normativo · Caixa R$ '+money(s.cash)+'</div>'+
-   '<div class="trainingNotes">'+(notes||'<p class="trainingMemo">Bia: registros atualizados. Planeje treinamentos antes de avançar o turno.</p>')+'</div>'+
-   '<div class="trainingColumns">'+internal+external+mandatory+'</div>'+
-   '<section class="trainingLedger"><h3>🗂️ REGISTROS ORGANIZADOS</h3><h4>EM ANDAMENTO</h4>'+
+  const historyPanel='<section class="trainingLedger trainingActiveSection"><h3>🗂️ REGISTROS ORGANIZADOS</h3><h4>EM ANDAMENTO</h4>'+
    (current||'<p>Nenhuma turma programada neste turno.</p>')+'<h4>FICHAS CONCLUÍDAS</h4>'+
-   (history?'<ol>'+history+'</ol>':'<p>Os resultados aparecem aqui ao concluir as 12 horas.</p>')+'</section>'+
-   '<p class="trainingDisclaimer">Treinamentos e exigências normativas são fictícios para fins de jogo; não equivalem a certificações, NRs ou autorizações profissionais reais.</p></div>';
+   (history?'<ol>'+history+'</ol>':'<p>Os resultados aparecem aqui ao concluir as 12 horas.</p>')+'</section>';
+  const sections={internal,external,mandatory,history:historyPanel};
+  const newestNotice=t.notices[0]?.text||'Pasta atualizada. Escolha uma aba e eu organizo os registros.';
+  const noteText=esc(newestNotice);
+  const navigation=tabs.map(x=>
+   '<button type="button" id="trainingTab-'+x.id+'" class="trainingFolderTab trainingTab-'+x.id+(x.id===tab?' is-selected':'')+'"'+
+   ' data-training-tab="'+x.id+'" role="tab" aria-controls="trainingTabContent"'+
+   ' aria-selected="'+(x.id===tab?'true':'false')+'" tabindex="'+(x.id===tab?'0':'-1')+'">'+x.icon+' '+x.label+'</button>'
+  ).join('');
+  return '<div class="trainingFolder trainingFolder--single">'+
+   '<div class="trainingWorkspace">'+
+   '<aside class="trainingBiaAside" aria-label="Bia, analista administrativa">'+
+   '<div class="trainingBiaStage trainingBiaStage--'+activeTab.atlas+'">'+
+   '<span class="trainingBiaPortrait" role="img" aria-label="Bia em poses animadas, Analista Administrativa do Setor de Treinamentos"></span></div>'+
+   '<div class="trainingBiaCaption"><strong>BIA</strong><span>Analista Administrativa<br>Setor de Treinamentos</span></div>'+
+   '<div class="trainingBiaSpeech"><small>📝 RECADO DA BIA</small><p>'+noteText+'</p></div>'+
+   '</aside>'+
+   '<div class="trainingDesk"><header class="trainingDeskHead"><small>📚 PASTA DE DESENVOLVIMENTO · OFICINA</small>'+
+   '<h2>SETOR DE TREINAMENTOS</h2>'+
+   '<p><strong>Bia é a Analista Administrativa do Setor de Treinamentos.</strong> Ela organiza inscrições, registros e avisos da Segurança do Trabalho. Os instrutores são mecânicos ou profissionais externos.</p></header>'+
+   '<div class="trainingFolderTabs" role="tablist" aria-label="Áreas do setor de Treinamentos">'+navigation+'</div>'+
+   '<div class="trainingMeta">Turno '+s.tick+' · '+free.length+' disponível(is) · '+booked.length+' em capacitação/normativo · Caixa R$ '+money(s.cash)+'</div>'+
+   '<div id="trainingTabContent" role="tabpanel" aria-labelledby="trainingTab-'+tab+'" class="trainingTabContent" data-training-active="'+tab+'">'+
+   sections[tab]+'</div>'+
+   '<p class="trainingDisclaimer">Treinamentos e exigências normativas são fictícios para fins de jogo; não equivalem a certificações, NRs ou autorizações profissionais reais.</p>'+
+   '</div></div></div>';
  }
  return Object.freeze({render});
 });

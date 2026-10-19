@@ -2,10 +2,25 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 19/10/2026 · **v0.8.29 — substituição exclusivamente visual do Pedro por novo atlas RGBA 2×2; testes automatizados e homologação visual pendentes.**
+**Estado de referência:** 19/10/2026 · **v0.8.30 — Setor de Treinamentos com Bia grande em poses animadas e quatro abas funcionais; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.8.30 — Redesign do Setor de Treinamentos (somente interface)
+
+**Solicitação de 19/10/2026:** substituir a Bia pequena no cabeçalho por personagem grande e animada à esquerda, com alteração de poses; transformar as quatro etiquetas coloridas em **abas interativas**, exibindo **apenas a seção selecionada**. Referência: captura do modal da v0.8.28 fornecida pelo usuário.
+
+- [x] Reaproveitar os quatro spritesheets transparentes 2×2 existentes de Bia: `coaching` na Capacitação, `field` nas Ofertas, `inspection` nos Normativos e `feedback` no Histórico. Alternar continuamente as quatro poses de cada atlas mediante CSS, sem regenerar imagens nem criar temporizadores JS; desativar animação sob `prefers-reduced-motion`.
+- [x] Bia ampliada no lado esquerdo, sem moldura de retrato; manter nome/cargo **Analista Administrativa do Setor de Treinamentos** e um post-it com o aviso administrativo mais recente. Área administrativa à direita com cabeçalho, indicador de turno, caixa e funcionários disponíveis.
+- [x] Abas como botões reais com `role=tablist/tab/tabpanel`, `aria-selected`, foco, tecla Home/End e setas; cores e indicação de seleção. **Um único painel presente no HTML de cada renderização** (interno, externo, obrigatório ou histórico), em vez de quatro seções exibidas simultaneamente.
+- [x] Estado da aba e seleções de instrutor, aprendiz, grupo, habilidade e participante externo mantidos em memória entre trocas e redesenhos, sem alterar o save.
+- [x] Layout responsivo: desktop em duas colunas, celular com Bia em destaque no topo horizontal; preservar área de rolagem do modal apenas onde necessário.
+- [x] Preservar as regras vigentes da **v0.8.28**: créditos fracionários garantidos, tetos, custo de curso externo, duas jornadas de integração normativa, registros e disponibilidade; v0.8.29 do sprite do Pedro permanece intacta.
+- [x] Atualizar JS de apresentação, CSS, cache PWA para `v109` e regressão `scripts/test-training-layout.cjs`, além das suítes existentes.
+- [ ] Homologação visual em navegador desktop e celular: quatro poses por aba, sem cortes nas silhuetas; ausência de painéis simultâneos; preservação das seleções e controles; aviso longo sem transbordar; aceitação artística pelo usuário.
+
+**Não alterado:** `training.js`, `competency.js`, `engine.js`, catálogo de 56 habilidades, OS, HH, caixa, regras de progressão ou save.
 
 ## Entrega 0.8.29 — Nova arte do Pedro (somente asset)
 

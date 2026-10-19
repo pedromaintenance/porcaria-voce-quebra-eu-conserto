@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.29 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.30 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -46,6 +46,7 @@ let BACKGROUND_PROFILES=null;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const brl=n=>Math.round(n).toLocaleString('pt-BR');
 let data,state,selected,scene;
+let trainingUI={tab:'internal',trainerId:null,learnerId:null,group:null,key:null,offerPeople:{}}; // Somente estado visual.
 let orderReturnPanel='workshop',preferredBay=null,quickFeedback=null; // Navegação temporária, nunca salva na campanha.
 let renderProfile={scale:1,width:1080,height:450,centerX:859,centerY:270};
 const FILTER={queue:'all',query:'',store:'all',stockQuery:''};
@@ -558,16 +559,22 @@ function renderSkills(competencies){
    }).join('')+'</div></details>'
   ).join('')+'</div>';
 }
-function drawTraining(){
+function rememberTrainingSelection(resetSkill=false){
+ const v=id=>document.getElementById(id)?.value;
+ const trainer=v('trainingTeacher'),learner=v('trainingLearner'),group=v('trainingGroup'),key=v('trainingSkill');
+ if(trainer!==undefined)trainingUI.trainerId=trainer;
+ if(learner!==undefined)trainingUI.learnerId=learner;
+ if(group!==undefined)trainingUI.group=group;
+ if(key!==undefined)trainingUI.key=resetSkill?null:key;
+ else if(resetSkill)trainingUI.key=null;
+ const chosen=[...document.querySelectorAll('#trainingPanel [id^="trainingPerson-"]')];
+ for(const el of chosen)trainingUI.offerPeople[el.id.slice('trainingPerson-'.length)]=el.value;
+ return trainingUI;
+}
+function drawTraining(preserveDom=true){
  const host=$('trainingPanel');if(!host)return;
- const prev={
-  trainerId:$('trainingTeacher')?.value,
-  learnerId:$('trainingLearner')?.value,
-  group:$('trainingGroup')?.value,
-  key:$('trainingSkill')?.value,
-  offerPeople:Object.fromEntries([...document.querySelectorAll('[id^="trainingPerson-"]')].map(x=>[x.id.slice('trainingPerson-'.length),x.value]))
- };
- host.innerHTML=window.PORCARIA_TRAINING_VIEW.render(state,E,prev);
+ if(preserveDom)rememberTrainingSelection();
+ host.innerHTML=window.PORCARIA_TRAINING_VIEW.render(state,E,trainingUI);
 }
 function drawTeam(){
  const candidates=E.availableRecruits(state);
@@ -621,16 +628,8 @@ function events(){
  });
  document.addEventListener('change',ev=>{
   if(['trainingTeacher','trainingLearner','trainingGroup','trainingSkill'].includes(ev.target?.id)||ev.target?.id?.startsWith('trainingPerson-')){
-   // Alterar categoria invalida a habilidade anterior; a view seleciona a primeira válida.
-   const current=ev.target?.id==='trainingGroup';
-   const kept={
-    trainerId:$('trainingTeacher')?.value,
-    learnerId:$('trainingLearner')?.value,
-    group:$('trainingGroup')?.value,
-    key:current?null:$('trainingSkill')?.value,
-    offerPeople:Object.fromEntries([...document.querySelectorAll('[id^="trainingPerson-"]')].map(x=>[x.id.slice('trainingPerson-'.length),x.value]))
-   };
-   $('trainingPanel').innerHTML=window.PORCARIA_TRAINING_VIEW.render(state,E,kept);
+   rememberTrainingSelection(ev.target?.id==='trainingGroup');
+   drawTraining(false);
    return;
   }
   if(ev.target?.id!=='productivityTarget')return;
@@ -658,6 +657,19 @@ function events(){
  $('closePanel').addEventListener('click',closeActivePanel);
  $('menuOverlay').addEventListener('click',ev=>{if(ev.target===$('menuOverlay'))closeActivePanel()});
  document.addEventListener('keydown',ev=>{
+ const trainingFocused=ev.target?.closest?.('[data-training-tab]');
+ if(trainingFocused&&['ArrowRight','ArrowLeft','Home','End'].includes(ev.key)){
+  ev.preventDefault();
+  const tabs=['internal','external','mandatory','history'];
+  const index=tabs.indexOf(trainingFocused.dataset.trainingTab);
+  const next=ev.key==='Home'?0:ev.key==='End'?tabs.length-1:
+   (index+(ev.key==='ArrowRight'?1:tabs.length-1))%tabs.length;
+  rememberTrainingSelection();
+  trainingUI.tab=tabs[next];
+  drawTraining(false);
+  $('trainingTab-'+trainingUI.tab)?.focus();
+  return;
+ }
  if(ev.key==='Escape'){
   if(!$('sceneMenu').hidden){closeSceneMenu();$('sceneMenuBtn').focus();return}
   closeActivePanel();return;
@@ -668,6 +680,14 @@ function events(){
  });
  document.addEventListener('click',ev=>{
   if(!ev.target.closest('.scene-tools'))closeSceneMenu();
+  const trainingTab=ev.target.closest('[data-training-tab]');
+  if(trainingTab){
+   rememberTrainingSelection();
+   trainingUI.tab=trainingTab.dataset.trainingTab;
+   drawTraining(false);
+   $('trainingTab-'+trainingUI.tab)?.focus();
+   return;
+  }
   const quickDetails=ev.target.closest('[data-order-details]');
   if(quickDetails){openPanel('full-detail');return}
   const quickBack=ev.target.closest('[data-order-back]');
