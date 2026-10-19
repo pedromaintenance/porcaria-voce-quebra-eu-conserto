@@ -1,3 +1,5 @@
+> **Atualização 19/10/2026 — Lotação e tentativas:** removidos os tetos de profissionais e de decisões assistidas por turno. Dez personagens nomeados permanecem únicos; mecânicos avulsos podem ser contratados sem limite numérico (respeitando custos e integração). Saves preservados e três boxes continuam limitando OS simultâneas. O registro abaixo conserva o histórico de versões anteriores.
+
 > **Atualização 19/10/2026 — Acassio (Instrutor):** novo quarto membro inicial (M4) em campanhas novas. Matriz de competências especificada em `engine.js`; atlas RGBA 1160×1244, quatro poses 580×622, em `acassio-4poses.png`. A imagem é obrigatória antes de integrar o PR, validada por `scripts/test-acassio.cjs`. Saves antigos permanecem com o elenco e as ordens que já tinham. O teto de elenco passa a 14.
 
 > **Atualização 19/10/2026 — v0.8.29:** nova cartela de Pedro enviada pelo usuário; o arquivo original e o procedimento de separação, escala e alinhamento estão registrados em [PEDRO_ASSET_0829.md](PEDRO_ASSET_0829.md). Nenhum atributo de personagem ou OS foi modificado.

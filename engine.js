@@ -27,6 +27,7 @@
     {name:'Sousa',avatar:'🔧',role:'geral',specialty:'Mecânico',sprite:'sousa'},
     {name:'Pereira',avatar:'🔧',role:'geral',specialty:'Mecânico',sprite:'pereira'}
   ]);
+  const GENERIC_RECRUIT=Object.freeze({name:'Mecânico avulso',avatar:'🔧',role:'geral',specialty:'Mecânico',sprite:'generic'});
   // Matriz de competencias v0.8.25, independente da antiga habilidade global "skill".
   // Atribuicoes sao pedagogicas e ainda NAO alteram velocidade, acerto ou alocacao.
   const SKILL_CATALOG=Object.freeze({
@@ -116,7 +117,6 @@
     const identity=member?.sprite||member?.name||member?.id||'legacy';
     return normalizeSkills(member?.competencies,identity);
   }
-  const MAX_TEAM=INITIAL_TEAM.length+RECRUIT_POOL.length;
   const clamp=(v,l=0,h=100)=>Math.min(h,Math.max(l,Math.round(v*10)/10));
   const SHIFT_HOURS=12, DDS_HOURS=0.5, MEAL_HOURS=1;
   const EFFECTIVE_HOURS=SHIFT_HOURS-DDS_HOURS-MEAL_HOURS;
@@ -157,9 +157,11 @@
   const timeLabel=(s)=>`Dia ${s.day} • ${s.shift===0?'Turno A (dia)':'Turno B (noite)'} · 12h`;
   function newMechanic(s,rng,identity=null){
     const profile=identity;if(!profile)throw Error('Contratação exige personagem identificado.');
-    const m={id:`M${s.nextPerson++}`,name:profile.name,avatar:profile.avatar,role:profile.role,
-      specialty:profile.specialty,sprite:profile.sprite,trainingSprite:profile.trainingSprite||null,
-      skill:Math.round(54+rnd(rng)*35),competencies:baselineSkills(profile.sprite),mental:Math.round(72+rnd(rng)*25),
+    const id=`M${s.nextPerson++}`,generic=profile.sprite==='generic';
+    const name=generic?'Mecânico '+id:profile.name;
+    const m={id,name,avatar:profile.avatar,role:profile.role,
+      specialty:profile.specialty,sprite:generic?null:profile.sprite,trainingSprite:profile.trainingSprite||null,
+      skill:Math.round(54+rnd(rng)*35),competencies:baselineSkills(generic?name:profile.sprite),mental:Math.round(72+rnd(rng)*25),
       physical:Math.round(70+rnd(rng)*27),morale:Math.round(74+rnd(rng)*20),
       assigned:null,restAt:null,normativeUntil:null,normativeReason:null,completed:0,tenure:0};return m;
   }
@@ -178,7 +180,7 @@
         m.name=profile.name;m.avatar=profile.avatar;m.specialty=profile.specialty;
         m.role=profile.role;m.sprite=profile.sprite;m.trainingSprite=profile.trainingSprite||null;
       }else{
-        // Genericos previamente contratados persistem apenas em campanhas antigas.
+        // Genéricos atuais e legados mantêm identidade, ID e competências.
         m.sprite=m.sprite||null;
       }
       // Migra apenas competencias ausentes. Nenhuma OS, energia, experiencia ou skill global muda.
@@ -191,7 +193,7 @@
   function availableRecruits(s){
     if(!s||!Array.isArray(s.team))return [];
     const occupied=new Set(s.team.flatMap(m=>[m.sprite,m.name]).filter(Boolean));
-    return RECRUIT_POOL.filter(p=>!occupied.has(p.sprite)&&!occupied.has(p.name));
+    return [...RECRUIT_POOL.filter(p=>!occupied.has(p.sprite)&&!occupied.has(p.name)),GENERIC_RECRUIT];
   }
   function options(d,sc,seed){
     const rng=mulberry32(seed);
@@ -222,7 +224,7 @@
   function mulberry32(seed){return ()=>{let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return ((t^t>>>14)>>>0)/4294967296}}
   function create(data,rng=Math.random){
     const s={version:'1.1.0',day:1,shift:0,tick:0,cash:15800,reputation:86,xp:0,productivityTarget:DEFAULT_PRODUCTIVITY_TARGET,
-      player:{mental:86,physical:84,actionsLeft:3},
+      player:{mental:86,physical:84},
       team:[],jobs:[],done:[],orders:[],stock:{},tools:{},nextJob:1,nextPerson:1,nextPO:1,
       logs:[],kpi:[],lastUtilization:0,metrics:{hours:0,productive:0,wages:0,outsourced:0,incidents:0,safety:0},
       bays:3,closed:false};
@@ -298,10 +300,8 @@
     const j=job(s,id);if(!j||!j.assigned||!j.help)return {error:'O diagnóstico assistido exige mecânico e box alocados.'};
     if(j.stage>=6)return {error:'Diagnóstico já concluído.'};
     if(!haveTool(s,scenario(d,j.scene)))return {error:'É necessário comprar o ferramental para confirmar a etapa do diagnóstico.'};
-    if(s.player.actionsLeft<=0)return {error:'Sua capacidade de apoio acabou neste turno. Avance o turno.'};
     const m=employee(s,j.assigned), sc=scenario(d,j.scene);
     if(!m)return {error:'Mecânico indisponível.'};
-    s.player.actionsLeft--;
     const currentStage=j.stage;
     const correct=[...sc.path,sc.component,sc.damage,sc.cause][currentStage];
     const ok=chosen===correct;
@@ -368,16 +368,15 @@
     m.restAt=s.tick;msg(s,`${m.name} foi liberado para descanso neste turno.`);return null;
   }
   function hire(s,spriteId,rng=Math.random){
-    const profile=RECRUIT_POOL.find(p=>p.sprite===spriteId);
+    const profile=spriteId==='generic'?GENERIC_RECRUIT:RECRUIT_POOL.find(p=>p.sprite===spriteId);
     if(!profile)return 'Selecione um personagem no catálogo de contratação.';
-    if(!availableRecruits(s).some(p=>p.sprite===spriteId))return profile.name+' já integra a equipe.';
-    if(s.team.length>=MAX_TEAM)return 'Lotação máxima de '+MAX_TEAM+' profissionais.';
+    if(spriteId!=='generic'&&!availableRecruits(s).some(p=>p.sprite===spriteId))return profile.name+' já integra a equipe.';
     if(s.cash<1050)return 'São necessários R$1.050 para integração e contratação.';
     if(s.player.mental<18)return 'Contratação exige 18 de energia mental.';
     s.cash-=1050;s.player.mental=clamp(s.player.mental-18);
     const m=newMechanic(s,rng,profile);s.team.push(m);
     TRAINING.onboard(s,m);
-    msg(s,profile.name+' foi contratado! (-R$1.050, -18 mental)','ok');return null;
+    msg(s,m.name+' foi contratado! (-R$1.050, -18 mental)','ok');return null;
   }
   function isMaterialReady(s,c){return (s.stock[c.material]||0)>0}
   function haveTool(s,c){return !!s.tools[c.tool]}
@@ -511,7 +510,6 @@
       if(s.cash<0)msg(s,'Atenção financeira: caixa negativo. Planeje aquisições, produtividade e contratos antes de novos investimentos.','bad');
     }
     TRAINING.afterShift(s,SKILL_CATALOG,rng,t=>msg(s,t,'info'));
-    s.player.actionsLeft=3;
     const rec={tick:s.tick,day:s.day,shift:s.shift,cash:Math.round(s.cash),backlog:s.jobs.length,
       overdue:s.jobs.filter(j=>s.tick-j.tickOpen>4).length,completed:completed,utilization:s.lastUtilization,
       morale:Math.round(s.team.reduce((a,m)=>a+m.morale,0)/Math.max(s.team.length,1)),reputation:s.reputation};
@@ -532,7 +530,7 @@
       pendingMaterials:s.jobs.filter(j=>j.status==='material').length, pendingTools:s.jobs.filter(j=>j.status==='ferramenta').length};
   }
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
-  return {create,normalizeRoster,availableRecruits,RECRUIT_POOL,MAX_TEAM,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
+  return {create,normalizeRoster,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
     SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
     model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
 });

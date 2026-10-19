@@ -20,8 +20,8 @@ assert.deepEqual([hi.centerX,hi.centerY],[lo.centerX,lo.centerY],'same world cen
 assert.ok(game.includes('this.cameras.main.setZoom(renderProfile.scale).centerOn(renderProfile.centerX,renderProfile.centerY)'));
 assert.ok(game.includes('width:renderProfile.width,height:renderProfile.height'));
 assert.ok(game.includes('antialias:true,antialiasGL:true,roundPixels:true'));
-assert.ok(html.includes('render-quality.js?v=0.8.22')&&html.includes('game.js?v=0.8.30'));
-assert.ok(sw.includes('porcaria-vqec-20261019-v109'));
+assert.ok(html.includes('render-quality.js?v=0.8.22')&&html.includes('game.js?v=0.8.31'));
+assert.ok(sw.includes('porcaria-vqec-20261019-v110'));
 assert.ok(sw.includes('./phaser-play/render-quality.js'));
 assert.equal(manifest.quality,'WebP lossless');
 assert.equal(manifest.workerRenderFilter,'LINEAR');

@@ -42,7 +42,7 @@ const html=fs.readFileSync(path.join(root,'phaser-play/index.html'),'utf8');
 const game=fs.readFileSync(path.join(root,'phaser-play/game.js'),'utf8');
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
 assert.ok(html.includes('training-view.js?v=0.8.30'));
-assert.ok(html.includes('game.js?v=0.8.30'));
+assert.ok(html.includes('game.js?v=0.8.31'));
 assert.ok(html.includes('.trainingWorkspace{display:grid;grid-template-columns:'));
 assert.ok(html.includes('.trainingBiaPortrait{display:block;width:232px;height:249px'));
 assert.ok(html.includes('@keyframes trainingBiaPose'));
@@ -52,6 +52,6 @@ assert.ok(game.includes("trainingUI.tab=trainingTab.dataset.trainingTab"),'cliqu
 assert.ok(game.includes("trainingUI.tab=tabs[next]"),'setas/Home/End navegam com teclado');
 assert.ok(game.includes("rememberTrainingSelection()"),'escolhas preservadas');
 assert.ok(game.includes("window.PORCARIA_TRAINING_VIEW.render(state,E,trainingUI)"),'aba ativa é mantida nos redraws');
-assert.ok(sw.includes('porcaria-vqec-20261019-v109'));
+assert.ok(sw.includes('porcaria-vqec-20261019-v110'));
 assert.ok(html.includes('bia-coaching-4poses.webp'));
 console.log('OK: Bia anima 4 atlas, painel exclusivo, abas acessíveis, presets e cache atualizados.');

@@ -18,16 +18,16 @@ let jb=s.jobs.find(j=>s.tools[D.tools[E.scenario(D,j.scene).tool]?.name])||s.job
 assert.equal(E.attach(s,jb.id,s.team[0].id,0,true),null);
 const startCase=E.scenario(D,jb.scene);
 if(!s.tools[startCase.tool]) assert.equal(E.buyTool(s,D,startCase.tool),null);
-for(let i=0;i<3;i++){
+for(let i=0;i<6;i++){
  const sc=E.scenario(D,jb.scene);const correct=[...sc.path,sc.component,sc.damage,sc.cause][i];
  const a=E.answer(s,D,jb.id,correct);assert(a.ok);
 }
-assert.equal(jb.stage,3);
-assert.equal(s.player.actionsLeft,0);
-assert(E.answer(s,D,jb.id,'x').error);
+assert.equal(jb.stage,6);
+assert.equal(s.player.actionsLeft,undefined,'novo save sem cota de tentativas');
+assert(E.answer(s,D,jb.id,'x').error,'diagnóstico concluído não aceita mais respostas');
 let res=E.advance(s,D,rng);
 assert(s.tick===1);
-assert(s.player.actionsLeft===3);
+assert(s.player.actionsLeft===undefined);
 // Cure the rest
 while(jb.stage<6){
  const sc=E.scenario(D,jb.scene);const correct=[...sc.path,sc.component,sc.damage,sc.cause][jb.stage];
@@ -48,7 +48,7 @@ assert(s.done.length>=1);
 assert(s.done[0].elapsedHours>0);
 assert(E.kpis(s).mttr>0);
 for(let i=0;i<30;i++)E.advance(s,D,rng);
-assert(s.day>=17);
+assert.equal(s.day,Math.floor(s.tick/2)+1,'calendário avança um dia a cada dois turnos');
 assert(s.kpi.length>0);
 assert(s.cash<10000000 && Number.isFinite(s.cash));
 assert(E.validate(JSON.parse(JSON.stringify(s))));
