@@ -7,11 +7,12 @@
   if(!COMPETENCY)throw Error('Módulo de competências indisponível.');
   const TRAINING=typeof require==='function'?require('./training.js'):globalThis.PORCARIA_TRAINING;
   if(!TRAINING)throw Error('Módulo de treinamento indisponível.');
-  // Campanhas novas iniciam somente com tres personagens fixos.
+  // Campanhas novas iniciam com quatro personagens fixos. Saves antigos não recebem injeção automática.
   const INITIAL_TEAM=Object.freeze([
     {name:'Pedro',avatar:'🧯',role:'geral',specialty:'Brigadista',sprite:'pedro'},
     {name:'Geovane',avatar:'📋',role:'geral',specialty:'Instrutor',sprite:'geovane'},
-    {name:'Junior',avatar:'🧑‍💼',role:'geral',specialty:'Especialista',sprite:'junior',trainingSprite:'junior-training'}
+    {name:'Junior',avatar:'🧑‍💼',role:'geral',specialty:'Especialista',sprite:'junior',trainingSprite:'junior-training'},
+    {name:'Acassio',avatar:'📏',role:'geral',specialty:'Instrutor',sprite:'acassio'}
   ]);
   // Contratacoes nomeadas, personagens unicos, sem criacao de mecanicos genericos.
   const RECRUIT_POOL=Object.freeze([
@@ -72,7 +73,16 @@
       output[group]={};
       for(const entry of SKILL_CATALOG[group]){
         let score;
-        if(key==='junior')score=group==='disciplines'&&entry.id==='lubrication'?100:group==='machines'?70:90;
+        if(key==='acassio'){
+          const byMachine={EQ01:91,EQ02:91,EQ03:91,EQ04:91,EQ05:91,EQ06:91,EQ07:87,EQ08:87,EQ09:87};
+          const bySystem={fps:49,engines:91,tires:2,hydraulic_cylinders:89,hoses:89,valves:91,
+            embedded_electronics:93,brakes:91,suspension:91,fuel:93,air_intake:93,
+            lubrication_system:88,hydraulic_circuit:94,electric_circuit:94,pumps:93,air_conditioning:87};
+          score=group==='machines'?(byMachine[entry.id]??91)
+            :group==='systems'?(bySystem[entry.id]??93)
+            :(['welding','machining'].includes(entry.id)?0:91);
+        }
+        else if(key==='junior')score=group==='disciplines'&&entry.id==='lubrication'?100:group==='machines'?70:90;
         else if(key==='geovane')score=group==='machines'?(['EQ05','EQ06'].includes(entry.id)?50:100):group==='disciplines'?80:90;
         else if(key==='pedro'){
           const byDiscipline={lubrication:40,materials_mechanics:40,electrical:30,electronics:40};

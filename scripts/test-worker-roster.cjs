@@ -6,9 +6,9 @@ const data=JSON.parse(fs.readFileSync(path.join(root,'game-data.json'),'utf8'));
 const names=['Costa','Silva','Santos','Moura','Barbosa','Garcia','Braga','Almeida','Sousa','Pereira'];
 const keys=names.map(x=>x.toLowerCase());
 const s=E.create(data,()=>0.42);
-assert.deepEqual(s.team.map(m=>m.name),['Pedro','Geovane','Junior']);
-assert.deepEqual(s.team.map(m=>m.id),['M1','M2','M3']);
-assert.equal(s.nextPerson,4);assert.equal(E.MAX_TEAM,13);
+assert.deepEqual(s.team.map(m=>m.name),['Pedro','Geovane','Junior','Acassio']);
+assert.deepEqual(s.team.map(m=>m.id),['M1','M2','M3','M4']);
+assert.equal(s.nextPerson,5);assert.equal(E.MAX_TEAM,14);
 assert.deepEqual(E.availableRecruits(s).map(m=>m.name),names);
 assert.equal(s.team[2].trainingSprite,'junior-training');
 const initial=JSON.stringify(s);E.normalizeRoster(s);assert.equal(JSON.stringify(s),initial);
@@ -18,10 +18,10 @@ for(const [i,key] of keys.entries()){
  s.player.mental=100;
  assert.equal(E.hire(s,key,()=>0.4),null,key+' foi contratado');
  const hired=s.team.at(-1);
- assert.deepEqual([hired.name,hired.sprite,hired.id],[names[i],key,'M'+(i+4)]);
+ assert.deepEqual([hired.name,hired.sprite,hired.id],[names[i],key,'M'+(i+5)]);
  assert.ok(E.hire(s,key,()=>0.4),'não contratar o mesmo duas vezes');
 }
-assert.equal(s.team.length,13);assert.equal(E.availableRecruits(s).length,0);
+assert.equal(s.team.length,14);assert.equal(E.availableRecruits(s).length,0);
 assert.ok(E.hire(s,'desconhecido',()=>0.4));assert.ok(E.validate(s));
 const legacy=E.create(data,()=>0.4),j=legacy.jobs[0];
 legacy.team=[
@@ -43,12 +43,12 @@ assert.equal(legacy.team.at(-1).id,'M8','não reutilizar ID da campanha antiga')
 const game=fs.readFileSync(path.join(root,'phaser-play/game.js'),'utf8');
 const html=fs.readFileSync(path.join(root,'phaser-play/index.html'),'utf8');
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
-for(const key of [...keys,'pedro','geovane','junior']){
+for(const key of [...keys,'pedro','geovane','junior','acassio']){
  assert.ok(game.includes(key+':\'./assets/characters/'),'sprite no Phaser: '+key);
- assert.ok(sw.includes(key==='junior'?'junior-work-4poses.webp':key==='pedro'?'pedro-v0829-4poses.png':key+'-4poses.webp'),'sprite no PWA: '+key);
+ assert.ok(sw.includes(key==='junior'?'junior-work-4poses.webp':key==='pedro'?'pedro-v0829-4poses.png':key==='acassio'?'acassio-4poses.png':key+'-4poses.webp'),'sprite no PWA: '+key);
 }
 assert.ok(game.includes('E.availableRecruits(state)'));
 assert.ok(game.includes('E.hire(state,id)'));
 assert.ok(html.includes('game.js?v=0.8.30'));
 assert.ok(sw.includes('porcaria-vqec-20261019-v109'));
-console.log('OK: contratação nominal, campanha inicial 3, limite 13, saves preservados.');
+console.log('OK: contratação nominal, campanha inicial 4, limite 14, saves preservados.');
