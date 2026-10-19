@@ -15,7 +15,7 @@
   shell.push('<div class="quickReport"><small>DESCRIÇÃO DA FALHA · OPERADOR / INSPETOR</small><p>'+esc(j.report||'Descrição não informada.')+'</p></div>');
   if(!j.assigned){
    const busy=new Set(state.jobs.map(x=>x.assigned).filter(Boolean));
-   const free=state.team.filter(x=>!busy.has(x.id)&&x.restAt!==state.tick);
+   const free=state.team.filter(x=>!busy.has(x.id)&&x.restAt!==state.tick&&!(x.normativeUntil>state.tick)&&!(state.training?.assignments||[]).some(a=>a.untilTick>state.tick&&(a.learnerId===x.id||a.trainerId===x.id)));
    const bays=[0,1,2].filter(n=>!state.jobs.some(x=>x.bay===n));
    if(free.length&&bays.length){
     shell.push('<div class="quickAllocation"><label>Mecânico<select id="mechanic">'+free.map(m=>'<option value="'+esc(m.id)+'">'+esc(m.name)+' ('+esc(m.id)+') · '+esc(m.specialty||m.role)+'</option>').join('')+'</select></label>');

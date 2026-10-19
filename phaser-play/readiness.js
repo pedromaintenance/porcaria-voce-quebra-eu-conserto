@@ -28,19 +28,20 @@
   const busyById=new Map(jobsAssigned.map(j=>[j.assigned,j]));
   const crew=state.team.map(m=>{
    const job=busyById.get(m.id),resting=m.restAt===tick;
+   const training=!!(m.normativeUntil>tick)||(state.training?.assignments||[]).some(a=>a.untilTick>tick&&(a.learnerId===m.id||a.trainerId===m.id));
    const mental=num(m.mental),physical=num(m.physical),morale=num(m.morale);
    const health=Math.min(mental,physical);
    const critical=health<ENERGY_CRITICAL||morale<MORALE_CRITICAL;
    const attention=health<ENERGY_ATTENTION||morale<MORALE_ATTENTION;
    return {id:m.id,name:m.name,role:m.role,mental,physical,morale,
-    busy:!!job,jobId:job?.id||null,resting,
+    busy:!!job,jobId:job?.id||null,resting,training,
     status:critical?'critical':attention?'attention':'ok',
     reason:health<ENERGY_CRITICAL?'Energia física/mental crítica':
      morale<MORALE_CRITICAL?'Moral crítica':
      health<ENERGY_ATTENTION?'Energia física/mental em atenção':
      morale<MORALE_ATTENTION?'Moral em atenção':'Sem alerta de energia/moral',
     // Não disponibilizar descanso com profissional alocado; o motor exige liberar primeiro.
-    canRest:!job&&!resting};
+    canRest:!job&&!resting&&!training};
   });
   const scenarios=(data.scenarios||[]);
   const bays=Array.from({length:count},(_,id)=>{
@@ -62,8 +63,8 @@
     mechanicCritical:!!mech&&(Math.min(num(mech.mental),num(mech.physical))<ENERGY_CRITICAL||
       num(mech.morale)<MORALE_CRITICAL)};
   });
-  const validWorkers=crew.filter(m=>!m.resting);
-  const freeWorkers=crew.filter(m=>!m.busy&&!m.resting);
+  const validWorkers=crew.filter(m=>!m.resting&&!m.training);
+  const freeWorkers=crew.filter(m=>!m.busy&&!m.resting&&!m.training);
   const freeBays=bays.filter(b=>b.kind==='free').length;
   const activeBays=bays.filter(b=>b.kind==='diagnosis'||b.kind==='repair').length;
   const blockedBays=bays.filter(b=>b.kind==='material'||b.kind==='tool'||b.kind==='unknown').length;

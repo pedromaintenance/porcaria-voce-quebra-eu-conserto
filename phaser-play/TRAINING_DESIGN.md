@@ -1,7 +1,7 @@
 # Projeto de capacitação técnica — P.O.R.C.A.R.I.A.
 
-**Documento de arquitetura e balanceamento — planejamento (não implementado).**
-**Responsável visual pelo futuro módulo:** Bia, personagem de apoio didático. **Bia não é contratável e não executa OS.** Geovane permanece na equipe inicial como Instrutor; sua eventual atuação como instrutor de outros profissionais deverá consumir tempo/capacidade real no jogo, nunca produzir um bônus gratuito.
+**DOCUMENTO HISTÓRICO (v0.8.15).** A especificação vigente da v0.8.26/v0.8.27 está no [ROADMAP.md](ROADMAP.md). Os níveis N0–N4 abaixo foram substituídos pela matriz de 56 habilidades de 0–100.
+**Responsável administrativa pelo módulo:** Bia, Analista Administrativa do Setor de Treinamentos; ela gerencia inscrições, agenda, histórico e avisos normativos, **não ministra aulas**. **Bia não é contratável e não executa OS.** Geovane permanece na equipe inicial como Instrutor; sua eventual atuação como instrutor de outros profissionais deverá consumir tempo/capacidade real no jogo, nunca produzir um bônus gratuito.
 
 ## 1. Objetivo e fronteiras
 

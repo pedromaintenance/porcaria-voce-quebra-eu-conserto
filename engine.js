@@ -3,6 +3,8 @@
   const E=factory(); if(typeof module!=='undefined'&&module.exports)module.exports=E; root.PORCARIA_ENGINE=E;
 })(typeof window!=='undefined'?window:globalThis,function(){
   'use strict';
+  const TRAINING=typeof require==='function'?require('./training.js'):globalThis.PORCARIA_TRAINING;
+  if(!TRAINING)throw Error('Módulo de treinamento indisponível.');
   // Campanhas novas iniciam somente com tres personagens fixos.
   const INITIAL_TEAM=Object.freeze([
     {name:'Pedro',avatar:'🧯',role:'geral',specialty:'Brigadista',sprite:'pedro'},
@@ -147,12 +149,13 @@
       specialty:profile.specialty,sprite:profile.sprite,trainingSprite:profile.trainingSprite||null,
       skill:Math.round(54+rnd(rng)*35),competencies:baselineSkills(profile.sprite),mental:Math.round(72+rnd(rng)*25),
       physical:Math.round(70+rnd(rng)*27),morale:Math.round(74+rnd(rng)*20),
-      assigned:null,restAt:null,completed:0,tenure:0};return m;
+      assigned:null,restAt:null,normativeUntil:null,normativeReason:null,completed:0,tenure:0};return m;
   }
   function normalizeRoster(s){
     // Saves antigos preservam nomes, IDs, atributos, contratados e suas OS.
     // Nenhum funcionario adicional e injetado automaticamente.
     if(!s||!Array.isArray(s.team))return s;
+    TRAINING.normal(s);
     const catalog=[...INITIAL_TEAM,...RECRUIT_POOL];
     let maxId=0;
     for(const m of s.team){
@@ -213,6 +216,7 @@
       bays:3,closed:false};
     for(const [id,v] of Object.entries(data.items))s.stock[id]=v.initial;
     for(const [id,v] of Object.entries(data.tools))s.tools[id]=v.initial;
+    TRAINING.normal(s);
     INITIAL_TEAM.forEach(profile=>s.team.push(newMechanic(s,rng,profile)));
     spawn(s,data,3,rng);
     msg(s,'Oficina aberta! Separe os boxes, inspecione a fila e não condene uma peça sem diagnóstico.','ok');
@@ -249,6 +253,7 @@
     if(!j||!m)return 'Serviço ou mecânico não encontrado.';
     if(m.assigned && m.assigned!==id)return 'Esse mecânico já está alocado.';
     if(m.restAt===s.tick)return 'Esse mecânico está descansando neste turno.';
+    if(TRAINING.active(s,m))return 'Este profissional está em treinamento ou integração normativa.';
     if(j.assigned && j.assigned!==mid)return 'A ordem já está atribuída. Libere a equipe antes de alterar.';
     if(j.bay!==null && j.bay!==bay)return 'A OS já ocupa outro box.';
     if(!Number.isInteger(bay)||bay<0||bay>=s.bays)return 'Box inválido.';
@@ -346,6 +351,7 @@
   function rest(s,id){const m=employee(s,id);if(!m)return 'Mecânico inexistente.';
     if(m.assigned)return 'Libere a OS antes de conceder descanso.';
     if(m.restAt===s.tick)return 'Descanso já programado neste turno.';
+    if(TRAINING.active(s,m))return 'Profissional comprometido com treinamento ou integração normativa.';
     m.restAt=s.tick;msg(s,`${m.name} foi liberado para descanso neste turno.`);return null;
   }
   function hire(s,spriteId,rng=Math.random){
@@ -357,6 +363,7 @@
     if(s.player.mental<18)return 'Contratação exige 18 de energia mental.';
     s.cash-=1050;s.player.mental=clamp(s.player.mental-18);
     const m=newMechanic(s,rng,profile);s.team.push(m);
+    TRAINING.onboard(s,m);
     msg(s,profile.name+' foi contratado! (-R$1.050, -18 mental)','ok');return null;
   }
   function isMaterialReady(s,c){return (s.stock[c.material]||0)>0}
@@ -388,7 +395,7 @@
   function advance(s,d,rng=Math.random){
     let hours=0;let completed=0;let blocks=0;
     const pressure=productivityProfile(s.productivityTarget);
-    const availableCrew=s.team.filter(m=>m.restAt!==s.tick).length;
+    const availableCrew=s.team.filter(m=>m.restAt!==s.tick&&!TRAINING.active(s,m)).length;
     const operating=[...s.jobs];
     for(const j of operating){
       if(!j.assigned)continue;
@@ -468,6 +475,7 @@
       msg(s,`Fechamento: folha e estrutura R$${wages}. Mais ${Math.min(newcomers,freeCapacity)} novas ocorrências previstas.`, 'info');
       if(s.cash<0)msg(s,'Atenção financeira: caixa negativo. Planeje aquisições, produtividade e contratos antes de novos investimentos.','bad');
     }
+    TRAINING.afterShift(s,SKILL_CATALOG,rng,t=>msg(s,t,'info'));
     s.player.actionsLeft=3;
     const rec={tick:s.tick,day:s.day,shift:s.shift,cash:Math.round(s.cash),backlog:s.jobs.length,
       overdue:s.jobs.filter(j=>s.tick-j.tickOpen>4).length,completed:completed,utilization:s.lastUtilization,
@@ -489,7 +497,7 @@
       pendingMaterials:s.jobs.filter(j=>j.status==='material').length, pendingTools:s.jobs.filter(j=>j.status==='ferramenta').length};
   }
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
-  return {create,normalizeRoster,availableRecruits,RECRUIT_POOL,MAX_TEAM,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
+  return {create,normalizeRoster,availableRecruits,RECRUIT_POOL,MAX_TEAM,TRAINING,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
     SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
     model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
 });
