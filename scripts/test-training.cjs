@@ -129,7 +129,7 @@ const html=fs.readFileSync(path.join(root,'phaser-play/index.html'),'utf8');
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
 const plan=fs.readFileSync(path.join(root,'phaser-play/planning.js'),'utf8');
 const ready=fs.readFileSync(path.join(root,'phaser-play/readiness.js'),'utf8');
-assert.ok(ui.includes('function drawTraining()'));
+assert.ok(ui.includes('function drawTraining(preserveDom=true)'),'formulário e aba preservados nos redraws');
 assert.ok(ui.includes('data-training-action'));
 assert.ok(ui.includes('E.TRAINING.active(state'));
 assert.ok(html.includes('data-open-panel="training"')&&html.includes('id="trainingPanel"'));
