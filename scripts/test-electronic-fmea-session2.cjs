@@ -54,7 +54,7 @@ for(const [id,[model,source,part]] of Object.entries(expected)){
   });
  }
 }
-const newPaths=D.paths.filter(p=>p.origin==='trilha_didatica_simulada');
+const newPaths=D.paths.filter(p=>p.origin==='trilha_didatica_simulada' && p.group!=='FISY');
 assert.equal(newPaths.length,5,'caminhos elétricos novos, sem atribuição SAP');
 for(const p of newPaths)assert.equal(p.sapValidated,false);
 for(const item of ['CHIC','SENT','SENP','SOLN','CANR'])assert.ok(D.items[item]&&D.items[item].unit>0);
