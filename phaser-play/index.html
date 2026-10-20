@@ -684,13 +684,20 @@ body{min-height:100vh}
 #menuOverlay [data-panel="monitoring"]{padding:6px 8px 20px;background:#071725;overflow:hidden}
 .controlRoomStage{position:relative;width:100%;aspect-ratio:1672/941;overflow:hidden;background:#0c1723;border:2px solid #48546a;border-radius:10px}
 .controlRoomStage img{display:block;width:100%;height:100%;object-fit:contain}
-.controlRoomHotspots{position:absolute;inset:0}
-.controlHotspot{position:absolute;left:1.9%;width:21.7%;height:8%;display:flex;justify-content:center;align-items:center;padding:1px 3px;text-align:center;color:#fff2cd;background:#11243492;border:1px solid #eab64b66;border-radius:4px;font-size:clamp(7px,1.05vw,15px);line-height:1.15;font-weight:900;letter-spacing:.04em;cursor:pointer;text-shadow:1px 1px #071018}
-.controlHotspot:hover,.controlHotspot:focus-visible,.controlHotspot.is-current{border-color:#ffe2a4;background:#29384eb0;box-shadow:inset 0 0 0 1px #ffca65,0 0 13px #d79f38b5;outline:none}
-.controlHotspot0{top:25.6%}.controlHotspot1{top:35.2%}.controlHotspot2{top:44.4%}.controlHotspot3{top:53.8%}.controlHotspot4{top:63.1%}.controlHotspot5{top:72.4%}
-.controlRoomMobileMenu{display:none;gap:7px;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:10px}
-.controlMobileHotspot{padding:9px 7px;border:1px solid #486c82;border-radius:5px;background:#14334a;color:#f3e9d6;font-size:12px;font-weight:800}
-.controlMobileHotspot.is-current{border-color:#e9b248;color:#ffda91}
+/* Um único painel opaco cobre os botões pintados no asset, sem alinhamento por hotspot. */
+.controlRoomSidebar{position:absolute;z-index:2;top:20.5%;left:1.15%;width:25%;height:69.5%;box-sizing:border-box;display:flex;flex-direction:column;gap:8px;padding:11px 9px;background:#081b2c;border:2px solid #b48a3c;border-radius:9px;box-shadow:0 6px 22px #000b15, inset 0 0 0 1px #34506a;overflow:hidden}
+.controlRoomSidebarTitle{flex:none;color:#ffd18a;font-size:clamp(10px,1.05vw,13px);font-weight:900;letter-spacing:.09em;text-align:center;padding:0 0 7px;border-bottom:1px solid #466177}
+.controlRoomSidebarItems{display:flex;flex:1;min-height:0;flex-direction:column;align-items:stretch;justify-content:space-evenly;gap:5px}
+.controlNavItem{display:flex;flex:1 1 0;min-height:0;max-height:57px;width:100%;box-sizing:border-box;align-items:center;gap:8px;padding:5px 9px;border:1px solid #45647c;border-radius:6px;background:#163349;color:#e9f0f5;text-align:left;font-size:clamp(11px,1.2vw,14px);font-weight:800;line-height:1.12;cursor:pointer;transition:background .15s ease,border-color .15s ease}
+.controlNavIcon{flex:none;display:inline-flex;width:18px;justify-content:center;font-size:1.15em;color:#c2d7e6}
+.controlNavText{min-width:0;overflow-wrap:break-word}
+.controlNavItem:hover,.controlNavItem:focus-visible{background:#224861;border-color:#97c2d8;outline:2px solid #c6e0ef;outline-offset:-2px}
+.controlNavItem.is-current{background:#50391b;border-color:#f2bc55;color:#ffe6a4;box-shadow:inset 3px 0 #f2bc55}
+.controlNavItem.is-current .controlNavIcon{color:#ffd18a}
+.controlRoomMobileMenu{display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:9px;padding:11px;border:1px solid #51728a;border-radius:9px;background:#081b2c}
+.controlMobileNavItem{display:flex;align-items:center;gap:8px;min-width:0;min-height:44px;padding:8px 10px;border:1px solid #45647c;border-radius:6px;background:#163349;color:#e9f0f5;font-size:12px;font-weight:800;text-align:left;cursor:pointer}
+.controlMobileNavItem:hover,.controlMobileNavItem:focus-visible{border-color:#a5cfe0;outline:2px solid #a5cfe0;outline-offset:-2px}
+.controlMobileNavItem.is-current{background:#50391b;border-color:#f2bc55;color:#ffe6a4}
 .controlRoomDashboard{max-width:1120px;margin:12px auto 0}
 .controlRoomHeading{padding:12px 16px;border-left:4px solid #e9af37;background:#10273b}
 .controlRoomHeading h3{color:#ffce73;font-size:17px;margin:0 0 3px}
@@ -712,7 +719,7 @@ body{min-height:100vh}
 .fieldInspectionHeader{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 #planningNotifications{margin:18px 0 0}
 #planningNotifications>.pcmInbox{margin-top:5px}
-@media(max-width:900px){.controlRoomHotspots{display:none}.controlRoomMobileMenu{display:grid}}
+@media(max-width:690px){.controlRoomSidebar{display:none}.controlRoomMobileMenu{display:grid}}
 @media(max-width:570px){.fieldScheduleInputs{grid-template-columns:1fr}.controlRoomStage{border-radius:5px}.controlRoomReport p{font-size:11px}}
 
 </style></head><body>
@@ -784,4 +791,4 @@ body{min-height:100vh}
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.9.2"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./inspection.js?v=0.9.2"></script><script src="./evidence.js?v=0.9.3"></script><script src="./monitoring.js?v=0.9.4"></script><script src="./inspection-view.js?v=0.9.2-monitor9"></script><script src="./sector-views.js?v=0.9.5"></script><script src="./game.js?v=0.8.32-pt1412-inspection3-monitor9-sectors1"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
+<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.9.2"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./inspection.js?v=0.9.2"></script><script src="./evidence.js?v=0.9.3"></script><script src="./monitoring.js?v=0.9.4"></script><script src="./inspection-view.js?v=0.9.2-monitor9"></script><script src="./sector-views.js?v=0.9.6"></script><script src="./game.js?v=0.8.32-pt1412-inspection3-monitor9-sectors1"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
