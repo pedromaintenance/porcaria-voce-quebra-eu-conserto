@@ -14,8 +14,8 @@ const expected={
  INC094:['EQ09','PB-GRADER-TIRE-01','Pneu'],
  INC095:['EQ05',null,'Vedação']
 };
-assert.equal(D.scenarios.length,95,'85 existentes mais 10 de rodante/transmissão');
-assert.equal(new Set(D.scenarios.map(s=>s.id)).size,95,'IDs distintos');
+assert.equal(D.scenarios.length,100,'85 anteriores + 10 rodante/transmissão + 5 progressivas');
+assert.equal(new Set(D.scenarios.map(s=>s.id)).size,100,'IDs distintos');
 assert.deepEqual(D.scenarios.slice(0,85).map(x=>x.id),Array.from({length:85},(_,i)=>'INC'+String(i+1).padStart(3,'0')),'85 missões anteriores sem remoção ou reordenação');
 assert.equal(D.paths.length,387,'384 caminhos anteriores + 3 didáticos');
 const added=D.paths.filter(p=>p.origin==='trilha_didatica_simulada'&&['TRGE','REDG','GUID'].includes(p.subgroup));
@@ -70,4 +70,4 @@ for(const id of ['INC086','INC089','INC094']){
 }
 const pair=[D.scenarios.find(s=>s.id==='INC086'),D.scenarios.find(s=>s.id==='INC087')];
 assert.notEqual(pair[0].component,pair[1].component,'comando final exige diferenciar rolamento/engrenagem');
-console.log('OK: 10 missões de rodante/transmissão, 95 totais, 6x4 escolhas, 387 caminhos, origem e recursos.');
+console.log('OK: 10 missões de rodante/transmissão, 100 totais, 6x4 escolhas, 387 caminhos, origem e recursos.');
