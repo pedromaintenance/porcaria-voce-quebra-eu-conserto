@@ -134,6 +134,7 @@
   normalized(s);
   const n=s.notifications.find(x=>x.id===id);
   if(!n)return {error:'Notificação não encontrada.'};
+  if(n.monitorOnly)return {error:'Este registro de condição só pode ser tratado pelo fluxo de monitoramento.'};
   if(n.status==='convertida_os')return {error:'Notificação convertida em OS: histórico imutável.'};
   const note=trim(payload.reason,500);
   if(decision==='return'||decision==='archive'){
