@@ -42,7 +42,7 @@ assert.equal(imported.nextInspection,34);assert.equal(imported.nextNotification,
 const fs=require('node:fs'),path=require('node:path');
 const game=fs.readFileSync(path.join(__dirname,'../phaser-play/game.js'),'utf8');
 const html=fs.readFileSync(path.join(__dirname,'../phaser-play/index.html'),'utf8');
-assert.ok(game.includes('I.plan(state,data)'),'planejamento integrado');
+assert.ok(game.includes('I.schedule(state,data,')&&game.includes('I.inspectAndRoute(state,data,id)'),'inspeção livre por TAG e envio ao PCM integrados');
 const view=fs.readFileSync(path.join(__dirname,'../phaser-play/inspection-view.js'),'utf8');
 assert.ok(view.includes('data-inspection-action="inspect"')&&view.includes('data-inspection-action="notify"'),'ações de inspeção e notificação');
 assert.ok(html.includes('data-panel="inspection"')&&html.includes('data-open-panel="inspection"'),'painel acessível');
