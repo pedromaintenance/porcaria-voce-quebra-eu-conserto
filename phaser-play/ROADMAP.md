@@ -7,6 +7,19 @@
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
 
+## Entrega 0.9.1 — Revisão técnica de notificações pelo PCM (20/10/2026)
+
+- [x] Mesa PCM na aba de Inspeções com status, justificativa, histórico de decisões por turno e rastreio `IN#### → NM#### → OS####`.
+- [x] **Devolver** para complementar relato e prioridade (sem apagar a notificação), **arquivar** com justificativa, ou **aprovar** com escopo, disciplina e HH estimadas.
+- [x] A aprovação **não gera OS**. Botão distinto **Gerar OS para Planejamento** cria uma OS na fila, sem mecânico, sem box e sem programação.
+- [x] A conversão exige escopo aprovado, roteiro existente e ausência de OS ativa no mesmo equipamento. Impede conversão repetida, alterações posteriores em notas já convertidas e duplicidade de ID.
+- [x] OS convertida preserva o relato, prioridade, inspeção e origem; usa o contrato de diagnóstico do motor sem revelar causa antecipadamente. Estimativa PCM é informativa; HH de reparo permanecem as do cenário até evolução posterior.
+- [x] Todos os campos editáveis são tratados como texto escapado, com validação de formato e comprimento; saves antigos continuam válidos.
+- [ ] **Fase 3:** planejar materiais e ferramentas a partir do escopo, separar pronto para programação da fila e integrar capacidade semanal/HH por disciplina.
+- [ ] Checklists, medição e plano de inspeções com periodicidade/HH de inspetor (fora deste incremento).
+
+**Limites:** procedimentos, evidências e causas do FMEA são fictícios e não homologados. A revisão é uma ação do jogador, não uma aprovação técnica real nem autorização de trabalho.
+
 ## Entrega 0.9.0 — Inspeção sensitiva, achados e notificações (20/10/2026)
 
 - [x] Aba **INSPEÇÕES** independente da Fila de OS e do planejamento.
