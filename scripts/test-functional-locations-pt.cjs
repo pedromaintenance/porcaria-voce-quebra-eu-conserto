@@ -58,6 +58,6 @@ const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
 assert.equal((game.match(/E\.localizeDiagnosticOptions\(/g)||[]).length,2,'início e importação Phaser');
 assert.equal((app.match(/E\.localizeDiagnosticOptions\(/g)||[]).length,2,'início e importação clássica');
 assert.ok(html.includes('game.js?v=0.8.32-pt1412'));
-assert.ok(html.includes('engine.js?v=0.8.34'));
+assert.ok(html.includes('engine.js?v=0.9.2'));
 assert.ok(sw.includes('porcaria-vqec-20261019-v111-sap-v1-bia2-pt1412'));
 console.log('OK: 371 caminhos PT, hipóteses de 33 cenários, saves antigos, cache e progresso.');
