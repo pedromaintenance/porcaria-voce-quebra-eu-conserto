@@ -21,6 +21,7 @@
   // Um plano por turno. Registros não realizados de turnos anteriores são preservados como vencidos.
   for(const i of s.inspections)if(i.status==='pending'&&i.tick<s.tick)i.status='expired';
   const busy=new Set((s.jobs||[]).map(j=>j.asset));
+  for(const n of s.notifications)if(n.monitorOnly&&n.status==='monitorando')busy.add(n.asset);
   const inspected=new Set(s.inspections.filter(i=>s.tick-i.tick<4).map(i=>i.asset).filter(Boolean));
   const models=(d.models||[]).filter(m=>(d.scenarios||[]).some(c=>c.modelId===m.id));
   const rotation=models.length?s.tick%models.length:0;
