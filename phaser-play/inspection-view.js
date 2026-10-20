@@ -31,17 +31,18 @@
    const hypotheses=I.hypotheses(s,d,E,n.id);
    const options=hypotheses?.map((arr,i)=>'<label class="pcmHypothesis">'+esc(I.STAGES[i])
     +select('pcm-diagnosis-'+i+'-'+id,arr.map(x=>[x.id,x.label]),i===5?'NÃO DEFINIR A CAUSA':'SELECIONE UMA HIPÓTESE')
-    +'</label>').join('')||'<p>Hipóteses indisponíveis para esta notificação.</p>';
+    +'</label>')||[];
    actions='<div class="pcmReviewArea"><h4>HIPÓTESES DO PLANEJADOR · SEM GABARITO</h4>'
     +'<p class="muted">As escolhas são encaminhadas à equipe. Não haverá indicação de acerto ou erro nesta tela. A causa pode permanecer sem definição.</p>'
-    +'<div class="pcmHypothesisSections"><h5>LOCAL DE INSTALAÇÃO</h5><div class="pcmHypothesisGrid">'+options+'</div></div>'
+    +'<div class="pcmHypothesisSections"><h5>LOCAL DE INSTALAÇÃO</h5><div class="pcmHypothesisGrid">'+options.slice(0,3).join('')+'</div>'
+    +'<h5>MODO DE FALHA</h5><div class="pcmHypothesisGrid">'+options.slice(3).join('')+'</div></div>'
     +'<div class="pcmScopeRow"><label>Estratégia de serviço '+select('pcm-action-'+id,Object.entries(I.ACTIONS))+'</label>'
     +'<label>Disciplina '+select('pcm-trade-'+id,Object.entries(I.TRADES))+'</label>'
     +'<label>HH previstas '+select('pcm-hh-'+id,[0.5,1,2,3,4,5,6,8,10,12,16,20,24,40].map(v=>[String(v),v+' HH']))+'</label></div>'
     +'<div class="pcmActions"><button class="act" data-notification-action="approve" data-notification-id="'+id+'">✓ ENVIAR PLANEJAMENTO</button>'
     +'<button class="act secondary" data-notification-action="return" data-notification-id="'+id+'">↩ DEVOLVER</button>'
     +'<button class="act secondary" data-notification-action="archive" data-notification-id="'+id+'">ARQUIVAR</button></div>'
-    +reasonChoices(I.RETURN_REASONS)+buy+'</div>';
+    +reasonChoices({...I.RETURN_REASONS,...I.ARCHIVE_REASONS})+buy+'</div>';
   }else if(n.status==='devolvida'){
    actions='<div class="pcmReviewArea"><p class="inspectionAttention">Motivo: '+esc(n.reviewReason||'Complementação solicitada')+'</p>'
     +'<label>Prioridade '+select('pcm-priority-'+id,['baixa','media','alta'].map(v=>[v,v.toUpperCase()]))+'</label>'
