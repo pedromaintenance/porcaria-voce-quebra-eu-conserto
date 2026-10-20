@@ -3387,6 +3387,61 @@
       "groupName": "Sist Ctrl Elétr",
       "subgroup": "CASY",
       "subgroupName": "Sist Câmera"
+    },
+    {
+      "modelId": "EQ01",
+      "system": "OPCB",
+      "systemName": "Cabine Operador",
+      "group": "ECSY",
+      "groupName": "Sist Ctrl Elétr",
+      "subgroup": "AUXC",
+      "subgroupName": "Alimentação Elétrica Auxiliar",
+      "origin": "trilha_didatica_simulada",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ08",
+      "system": "ENSY",
+      "systemName": "Sist Motor",
+      "group": "ENGN",
+      "groupName": "Motor",
+      "subgroup": "ELCT",
+      "subgroupName": "Circuito de Alimentação Elétrica",
+      "origin": "trilha_didatica_simulada",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ03",
+      "system": "IMAT",
+      "systemName": "Implemento",
+      "group": "BOOM",
+      "groupName": "Lança",
+      "subgroup": "ELCM",
+      "subgroupName": "Comando Elétrico do Implemento",
+      "origin": "trilha_didatica_simulada",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ09",
+      "system": "HYSY",
+      "systemName": "Sist Hidráulico",
+      "group": "STSY",
+      "groupName": "Sis Direção",
+      "subgroup": "SENP",
+      "subgroupName": "Sensor de Pressão da Direção",
+      "origin": "trilha_didatica_simulada",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ02",
+      "system": "OPCB",
+      "systemName": "Cabine Operador",
+      "group": "ECSY",
+      "groupName": "Sist Ctrl Elétr",
+      "subgroup": "JOYS",
+      "subgroupName": "Circuito de Comando do Joystick",
+      "origin": "trilha_didatica_simulada",
+      "sapValidated": false
     }
   ],
   "scenarios": [
@@ -4649,6 +4704,613 @@
         "answer": "hipotese_escolhida_para_jogabilidade",
         "oemValidated": false
       }
+    },
+    {
+      "id": "INC046",
+      "modelId": "EQ01",
+      "category": "eletrica",
+      "title": "Alimentação auxiliar intermitente — conector",
+      "operator": "No 777E, após lavagem e deslocamento, funções auxiliares apresentam avisos intermitentes de tensão. O operador não identificou componente responsável.",
+      "verification": "Verificar estado do sistema de alimentação sob condições OEM; com isolamento adequado, examinar terminais, travas e proteção dos conectores, comparando tensões com leituras independentes. Registrar comportamento em vibração, sem pressupor defeito no módulo.",
+      "path": [
+        "OPCB",
+        "ECSY",
+        "AUXC"
+      ],
+      "component": "Conector, Elétrica",
+      "damage": "Operando intermitentemente",
+      "cause": "Corrosão",
+      "priority": 2,
+      "material": "CONE",
+      "tool": "MULT",
+      "hours": 3,
+      "diagHours": 3,
+      "estimatedCost": 70,
+      "sourcePartMatch": false,
+      "lesson": "A mesma indicação simulada pode surgir de conector oxidado, chicote desgastado ou sensor defeituoso. Neste caso fictício, uma conexão corroída sustenta a falha; sem teste não há causa confirmada.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "ELEC-CF-01-1",
+        "layer": "electronic/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "caso_didatico_nao_curado_sem_OEM_ou_SAP"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "inspecoes_e_medicoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogabilidade",
+        "oemValidated": false
+      },
+      "electronicTraining": {
+        "exampleCode": "MID 390 · CID 0168 · FMI 04",
+        "codeApplicableToModel": false,
+        "sourceSymptom": "A máquina registra baixa tensão intermitente durante acionamento de sistemas auxiliares.",
+        "sourceHypothesis": "Mau contato/oxidação no conector do circuito",
+        "competingHypotheses": [
+          {
+            "sourceId": "CF-01-2",
+            "cause": "Falha de isolamento, curto ou interrupção no chicote"
+          },
+          {
+            "sourceId": "CF-01-3",
+            "cause": "Defeito interno ou deriva do sensor"
+          }
+        ],
+        "simulatedEvidence": [
+          "Foi encontrada oxidação e retenção deficiente em um conector. Ao movimentar o chicote, o sinal muda abruptamente.",
+          "No ponto de teste simulado, a alimentação do sensor está presente, mas a referência do sinal oscila sob movimentação.",
+          "O histórico simulado mostra código intermitente em dias úmidos, após lavagem e vibração intensa."
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "adaptation": "cenario_ficcional_em_equipamento_do_jogo_sem_aplicabilidade_OEM_confirmada",
+        "differentialFamily": "A01"
+      }
+    },
+    {
+      "id": "INC047",
+      "modelId": "EQ01",
+      "category": "eletrica",
+      "title": "Alimentação auxiliar intermitente — chicote",
+      "operator": "No 777E, a alimentação auxiliar oscila quando o equipamento passa por irregularidades do piso. O aviso desaparece temporariamente durante a parada.",
+      "verification": "Comparar tensões medidas e registro de eventos; após isolamento elétrico conforme procedimento, inspecionar o trajeto do chicote, zonas de atrito, continuidade e isolamento. Não condenar o controlador somente pela intermitência.",
+      "path": [
+        "OPCB",
+        "ECSY",
+        "AUXC"
+      ],
+      "component": "Chicote Elétrico",
+      "damage": "Curto-circuitado",
+      "cause": "Abrasão",
+      "priority": 2,
+      "material": "CHIC",
+      "tool": "MULT",
+      "hours": 4,
+      "diagHours": 3,
+      "estimatedCost": 230,
+      "sourcePartMatch": false,
+      "lesson": "O gabarito fictício é abrasão do chicote causando contato elétrico indevido. Os três casos do conjunto A01 partem de sintoma semelhante, mas exigem hipóteses e inspeções diferentes.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "ELEC-CF-01-2",
+        "layer": "electronic/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "caso_didatico_nao_curado_sem_OEM_ou_SAP"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "inspecoes_e_medicoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogabilidade",
+        "oemValidated": false
+      },
+      "electronicTraining": {
+        "exampleCode": "MID 390 · CID 0168 · FMI 04",
+        "codeApplicableToModel": false,
+        "sourceSymptom": "A máquina registra baixa tensão intermitente durante acionamento de sistemas auxiliares.",
+        "sourceHypothesis": "Falha de isolamento, curto ou interrupção no chicote",
+        "competingHypotheses": [
+          {
+            "sourceId": "CF-01-1",
+            "cause": "Mau contato/oxidação no conector do circuito"
+          },
+          {
+            "sourceId": "CF-01-3",
+            "cause": "Defeito interno ou deriva do sensor"
+          }
+        ],
+        "simulatedEvidence": [
+          "Chicote roçando um suporte metálico. Isolamento desgastado e marca de contato com estrutura.",
+          "O teste de continuidade/isolamento, feito no circuito isolado conforme roteiro fictício, revela falha no trecho entre os conectores.",
+          "A falha aparece com vibração e desaparece quando o conjunto fica parado."
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "adaptation": "cenario_ficcional_em_equipamento_do_jogo_sem_aplicabilidade_OEM_confirmada",
+        "differentialFamily": "A01"
+      }
+    },
+    {
+      "id": "INC048",
+      "modelId": "EQ01",
+      "category": "eletrica",
+      "title": "Alimentação auxiliar intermitente — sensor",
+      "operator": "No 777E, os alertas de alimentação auxiliar tornam-se mais persistentes depois de semanas de leituras instáveis. Não há queda de tensão comprovada por instrumento independente.",
+      "verification": "Confirmar tensão de alimentação, terra, integridade do chicote e saída do componente monitorado conforme arquitetura efetiva. Diferenciar condição elétrica real de medição inadequada; substituir sensor somente se o ensaio discriminar a falha.",
+      "path": [
+        "OPCB",
+        "ECSY",
+        "AUXC"
+      ],
+      "component": "Sensor, Tensão",
+      "damage": "Indicado incorretamente",
+      "cause": "Deriva de calibração",
+      "priority": 2,
+      "material": "SENT",
+      "tool": "OSCI",
+      "hours": 4,
+      "diagHours": 4,
+      "estimatedCost": 365,
+      "sourcePartMatch": false,
+      "lesson": "O jogo simula um sensor com deriva de leitura, sem afirmar que o código ilustrativo se aplica ao 777E. Se a tensão física está normal, o erro pode estar na cadeia de medição.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "ELEC-CF-01-3",
+        "layer": "electronic/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "caso_didatico_nao_curado_sem_OEM_ou_SAP"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "inspecoes_e_medicoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogabilidade",
+        "oemValidated": false
+      },
+      "electronicTraining": {
+        "exampleCode": "MID 390 · CID 0168 · FMI 04",
+        "codeApplicableToModel": false,
+        "sourceSymptom": "A máquina registra baixa tensão intermitente durante acionamento de sistemas auxiliares.",
+        "sourceHypothesis": "Defeito interno ou deriva do sensor",
+        "competingHypotheses": [
+          {
+            "sourceId": "CF-01-1",
+            "cause": "Mau contato/oxidação no conector do circuito"
+          },
+          {
+            "sourceId": "CF-01-2",
+            "cause": "Falha de isolamento, curto ou interrupção no chicote"
+          }
+        ],
+        "simulatedEvidence": [
+          "Conectores limpos, pinos firmes e chicote sem danos visíveis; nada indica anomalia física externa.",
+          "Alimentação, aterramento e continuidade estão adequados no circuito didático, porém a saída do sensor permanece anormal.",
+          "O valor saiu progressivamente da faixa esperada e permaneceu incoerente após limpeza e reteste."
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "adaptation": "cenario_ficcional_em_equipamento_do_jogo_sem_aplicabilidade_OEM_confirmada",
+        "differentialFamily": "A01"
+      }
+    },
+    {
+      "id": "INC049",
+      "modelId": "EQ08",
+      "category": "eletrica",
+      "title": "Aviso de tensão elevada na 966",
+      "operator": "Na CAT 966, aparecem avisos de alimentação elétrica anormal pouco depois da partida. Sob vibração, o sintoma fica mais frequente; a tensão real ainda não foi medida.",
+      "verification": "Verificar condição de carga e referências de tensão conforme configuração antes de procurar falha eletrônica. Isolar alimentação para inspecionar cabeamento, áreas de abrasão e isolamento sem realizar testes destrutivos no ECM.",
+      "path": [
+        "ENSY",
+        "ENGN",
+        "ELCT"
+      ],
+      "component": "Chicote Elétrico",
+      "damage": "Curto-circuitado",
+      "cause": "Falha de isolamento",
+      "priority": 2,
+      "material": "CHIC",
+      "tool": "MULT",
+      "hours": 4,
+      "diagHours": 3,
+      "estimatedCost": 230,
+      "sourcePartMatch": false,
+      "lesson": "Esta missão adapta o caso didático de alimentação elevada da pá carregadeira; o gabarito simula falha de isolamento no chicote. Alerta elétrico não significa alternador condenado.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "ELEC-CF-02-2",
+        "layer": "electronic/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "caso_didatico_nao_curado_sem_OEM_ou_SAP"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "inspecoes_e_medicoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogabilidade",
+        "oemValidated": false
+      },
+      "electronicTraining": {
+        "exampleCode": "MID 272 · CID 0168 · FMI 03",
+        "codeApplicableToModel": false,
+        "sourceSymptom": "Depois da partida aparecem alertas de alimentação superior ao esperado.",
+        "sourceHypothesis": "Falha de isolamento, curto ou interrupção no chicote",
+        "competingHypotheses": [
+          {
+            "sourceId": "CF-02-1",
+            "cause": "Mau contato/oxidação no conector do circuito"
+          },
+          {
+            "sourceId": "CF-02-3",
+            "cause": "Defeito interno ou deriva do sensor"
+          }
+        ],
+        "simulatedEvidence": [
+          "Chicote roçando um suporte metálico. Isolamento desgastado e marca de contato com estrutura.",
+          "O teste de continuidade/isolamento, feito no circuito isolado conforme roteiro fictício, revela falha no trecho entre os conectores.",
+          "A falha aparece com vibração e desaparece quando o conjunto fica parado."
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "adaptation": "cenario_ficcional_em_equipamento_do_jogo_sem_aplicabilidade_OEM_confirmada"
+      }
+    },
+    {
+      "id": "INC050",
+      "modelId": "EQ03",
+      "category": "eletrica",
+      "title": "Solenoide do implemento sem resposta",
+      "operator": "Na CAT 395, um comando de implemento deixa de responder após aquecimento do conjunto. O operador percebe a função indisponível, mas não existe evidência de travamento hidráulico.",
+      "verification": "Verificar se há código e comando autorizado; com circuito isolado, comparar resistência da bobina e integridade de conectores/chicote com especificação OEM. Não substituir válvula hidráulica completa sem excluir falha elétrica.",
+      "path": [
+        "IMAT",
+        "BOOM",
+        "ELCM"
+      ],
+      "component": "Bobina, Solenoide",
+      "damage": "Com circuito aberto",
+      "cause": "Temperatura alta",
+      "priority": 3,
+      "material": "SOLN",
+      "tool": "MULT",
+      "hours": 5,
+      "diagHours": 4,
+      "estimatedCost": 285,
+      "sourcePartMatch": false,
+      "lesson": "O exercício simula bobina aberta após deterioração térmica. Circuito aberto também pode estar no chicote ou no terminal, e a literatura eletrônica é genérica, sem aplicação comprovada à CAT 395.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "ELEC-CF-08-1",
+        "layer": "electronic/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "caso_didatico_nao_curado_sem_OEM_ou_SAP"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "inspecoes_e_medicoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogabilidade",
+        "oemValidated": false
+      },
+      "electronicTraining": {
+        "exampleCode": "MID 299 · CID 1598 · FMI 05",
+        "codeApplicableToModel": false,
+        "sourceSymptom": "Implemento apresenta bloqueio e código de circuito de bobina.",
+        "sourceHypothesis": "Bobina do atuador com circuito aberto",
+        "competingHypotheses": [
+          {
+            "sourceId": "CF-08-2",
+            "cause": "Condutor rompido entre ECM e solenoide"
+          },
+          {
+            "sourceId": "CF-08-3",
+            "cause": "Terminal solto com alta resistência de contato"
+          }
+        ],
+        "simulatedEvidence": [
+          "Conector firme e chicote preservado. O atuador tem aspecto externo normal.",
+          "Após isolamento seguro do circuito, a bobina apresenta resistência incompatível com a faixa do módulo simulado (circuito aberto).",
+          "O código tornou-se permanente após aquecimento repetido do atuador."
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "adaptation": "cenario_ficcional_em_equipamento_do_jogo_sem_aplicabilidade_OEM_confirmada",
+        "differentialFamily": "A08"
+      }
+    },
+    {
+      "id": "INC051",
+      "modelId": "EQ03",
+      "category": "eletrica",
+      "title": "Implemento não responde após flexão",
+      "operator": "Na CAT 395, a resposta elétrica do implemento falha com movimentos repetidos da lança e depois passa a falhar continuamente. O histórico menciona intervenção próxima ao roteamento dos cabos.",
+      "verification": "Inspecionar suportação e raio de curvatura do chicote em condição bloqueada. Verificar alimentação no atuador e continuidade do circuito isolado conforme manual; uma bobina íntegra não descarta ruptura entre ECM e solenoide.",
+      "path": [
+        "IMAT",
+        "BOOM",
+        "ELCM"
+      ],
+      "component": "Chicote Elétrico",
+      "damage": "Com circuito aberto",
+      "cause": "Roteamento inadequado",
+      "priority": 3,
+      "material": "CHIC",
+      "tool": "OSCI",
+      "hours": 5,
+      "diagHours": 4,
+      "estimatedCost": 230,
+      "sourcePartMatch": false,
+      "lesson": "Mesmo sintoma da INC050, outro mecanismo: condutor rompido por flexão/roteamento deficiente. Distinguir falha no atuador de falha no caminho elétrico evita troca desnecessária do solenoide.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "ELEC-CF-08-2",
+        "layer": "electronic/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "caso_didatico_nao_curado_sem_OEM_ou_SAP"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "inspecoes_e_medicoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogabilidade",
+        "oemValidated": false
+      },
+      "electronicTraining": {
+        "exampleCode": "MID 299 · CID 1598 · FMI 05",
+        "codeApplicableToModel": false,
+        "sourceSymptom": "Implemento apresenta bloqueio e código de circuito de bobina.",
+        "sourceHypothesis": "Condutor rompido entre ECM e solenoide",
+        "competingHypotheses": [
+          {
+            "sourceId": "CF-08-1",
+            "cause": "Bobina do atuador com circuito aberto"
+          },
+          {
+            "sourceId": "CF-08-3",
+            "cause": "Terminal solto com alta resistência de contato"
+          }
+        ],
+        "simulatedEvidence": [
+          "O chicote passa por região de flexão e um trecho está parcialmente rompido.",
+          "Bobina mede normalmente no instrumento didático; não há continuidade entre os pontos de teste do chicote isolado.",
+          "Falha ocorria apenas durante movimento do implemento, depois tornou-se contínua."
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "adaptation": "cenario_ficcional_em_equipamento_do_jogo_sem_aplicabilidade_OEM_confirmada",
+        "differentialFamily": "A08"
+      }
+    },
+    {
+      "id": "INC052",
+      "modelId": "EQ09",
+      "category": "eletrica",
+      "title": "Leitura anormal de pressão da direção",
+      "operator": "Na motoniveladora CAT 16, o painel indica pressão da direção excessivamente alta, mas a máquina não apresentou alteração proporcional de esforço. Ainda não houve medição externa da pressão.",
+      "verification": "Priorizar segurança da direção e comparar pressão real e sinal do sensor por procedimento OEM, com instrumentação adequada. Verificar alimentação, aterramento, conexão e calibração antes de interpretar o alerta como sobrepressão hidráulica.",
+      "path": [
+        "HYSY",
+        "STSY",
+        "SENP"
+      ],
+      "component": "Sensor, Pressão",
+      "damage": "Indicado incorretamente",
+      "cause": "Deriva de calibração",
+      "priority": 3,
+      "material": "SENP",
+      "tool": "MANO",
+      "hours": 4,
+      "diagHours": 4,
+      "estimatedCost": 390,
+      "sourcePartMatch": false,
+      "lesson": "Um aviso de sobrepressão pode apontar condição real ou erro do sensor. Neste roteiro fictício, a medição independente contradiz a indicação e a deriva do sensor é o diagnóstico simulado.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "ELEC-CF-09-3",
+        "layer": "electronic/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "caso_didatico_nao_curado_sem_OEM_ou_SAP"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "inspecoes_e_medicoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogabilidade",
+        "oemValidated": false
+      },
+      "electronicTraining": {
+        "exampleCode": "MID 082 · CID 0430 · FMI 03",
+        "codeApplicableToModel": false,
+        "sourceSymptom": "Leitura de pressão de direção permanece alta no display.",
+        "sourceHypothesis": "Defeito interno ou deriva do sensor",
+        "competingHypotheses": [
+          {
+            "sourceId": "CF-09-1",
+            "cause": "Mau contato/oxidação no conector do circuito"
+          },
+          {
+            "sourceId": "CF-09-2",
+            "cause": "Falha de isolamento, curto ou interrupção no chicote"
+          }
+        ],
+        "simulatedEvidence": [
+          "Conectores limpos, pinos firmes e chicote sem danos visíveis; nada indica anomalia física externa.",
+          "Alimentação, aterramento e continuidade estão adequados no circuito didático, porém a saída do sensor permanece anormal.",
+          "O valor saiu progressivamente da faixa esperada e permaneceu incoerente após limpeza e reteste."
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "adaptation": "cenario_ficcional_em_equipamento_do_jogo_sem_aplicabilidade_OEM_confirmada"
+      }
+    },
+    {
+      "id": "INC053",
+      "modelId": "EQ05",
+      "category": "eletrica",
+      "title": "Rede da DR410i perde módulos simultâneos",
+      "operator": "Durante o turno, na DR410i, indicações de vários módulos de monitoramento deixam de atualizar. Reiniciar a tela não recupera todos os sinais; não há causa identificada.",
+      "verification": "Obter arquitetura elétrica e rede específica da perfuratriz. Sob desenergização conforme fabricante, verificar terminações, alimentação dos nós e integridade dos conectores; comparar resultado com os valores da topologia, nunca aplicar valor padrão sem esquema.",
+      "path": [
+        "AISY",
+        "COMR",
+        "ECSY"
+      ],
+      "component": "Resistor, Terminação",
+      "damage": "Com comunicação perdida",
+      "cause": "Defeito de material",
+      "priority": 3,
+      "material": "CANR",
+      "tool": "CAN",
+      "hours": 6,
+      "diagHours": 5,
+      "estimatedCost": 155,
+      "sourcePartMatch": false,
+      "lesson": "A base apresenta falha simulada de terminação CAN em perfuratriz genérica. No jogo ela foi posicionada didaticamente no controle do compressor da DR410i; nenhuma topologia ou terminador Sandvik específico foi confirmado.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "ELEC-CF-13-1",
+        "layer": "electronic/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "caso_didatico_nao_curado_sem_OEM_ou_SAP"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "inspecoes_e_medicoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogabilidade",
+        "oemValidated": false
+      },
+      "electronicTraining": {
+        "exampleCode": "MID 464 · CID 0247 · FMI 09",
+        "codeApplicableToModel": false,
+        "sourceSymptom": "Vários sistemas deixam de atualizar dados ao mesmo tempo.",
+        "sourceHypothesis": "Terminação da rede comprometida",
+        "competingHypotheses": [
+          {
+            "sourceId": "CF-13-2",
+            "cause": "Módulo da rede sem alimentação confiável"
+          },
+          {
+            "sourceId": "CF-13-3",
+            "cause": "Conexão de dados intermitente no barramento"
+          }
+        ],
+        "simulatedEvidence": [
+          "Uma resistência de terminação do barramento do cenário está fisicamente danificada.",
+          "Com rede desenergizada e arquitetura simulada documentada, a resistência de terminação medida difere do valor esperado do circuito didático.",
+          "Perda de comunicação acomete vários módulos simultaneamente ao iniciar o turno."
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "adaptation": "cenario_ficcional_em_equipamento_do_jogo_sem_aplicabilidade_OEM_confirmada",
+        "differentialFamily": "A13"
+      }
+    },
+    {
+      "id": "INC054",
+      "modelId": "EQ06",
+      "category": "eletrica",
+      "title": "Comunicação irregular do compressor DI650i",
+      "operator": "Na DI650i, os indicadores do controlador do compressor deixam de atualizar em terrenos irregulares e retornam após parada. A pressão física do compressor não foi correlacionada ao painel.",
+      "verification": "Confirmar condição pneumática de forma independente se houver risco, e depois consultar diagnóstico de rede do controlador. Com energia isolada, avaliar retenção de terminais, vedação, trilhas e continuidade do circuito CAN conforme esquema Sandvik.",
+      "path": [
+        "AISY",
+        "COMR",
+        "ECSY"
+      ],
+      "component": "Conector, Elétrica",
+      "damage": "Com comunicação perdida",
+      "cause": "Conexão frouxa",
+      "priority": 2,
+      "material": "CONE",
+      "tool": "CAN",
+      "hours": 4,
+      "diagHours": 4,
+      "estimatedCost": 70,
+      "sourcePartMatch": false,
+      "lesson": "O caso fictício adapta uma perda de comunicação intermitente de uma perfuratriz genérica. O código de referência não é afirmado como aplicável à DI650i, e não se deve condenar o compressor pela falha do painel.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "ELEC-CF-13-3",
+        "layer": "electronic/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "caso_didatico_nao_curado_sem_OEM_ou_SAP"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "inspecoes_e_medicoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogabilidade",
+        "oemValidated": false
+      },
+      "electronicTraining": {
+        "exampleCode": "MID 464 · CID 0247 · FMI 09",
+        "codeApplicableToModel": false,
+        "sourceSymptom": "Vários sistemas deixam de atualizar dados ao mesmo tempo.",
+        "sourceHypothesis": "Conexão de dados intermitente no barramento",
+        "competingHypotheses": [
+          {
+            "sourceId": "CF-13-1",
+            "cause": "Terminação da rede comprometida"
+          },
+          {
+            "sourceId": "CF-13-2",
+            "cause": "Módulo da rede sem alimentação confiável"
+          }
+        ],
+        "simulatedEvidence": [
+          "Conector de rede com pino retraído e entrada de umidade.",
+          "A continuidade de um dos condutores de comunicação varia ao movimentar o chicote.",
+          "Mensagens se perdem em terreno irregular; falha some temporariamente parado."
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "adaptation": "cenario_ficcional_em_equipamento_do_jogo_sem_aplicabilidade_OEM_confirmada",
+        "differentialFamily": "A13"
+      }
+    },
+    {
+      "id": "INC055",
+      "modelId": "EQ02",
+      "category": "eletrica",
+      "title": "Joystick da 6030 falha em movimentos",
+      "operator": "Na CAT 6030, movimentos comandados por um joystick deixam de responder de modo intermitente quando a cabine vibra. Não há confirmação de falha hidráulica do implemento.",
+      "verification": "Confirmar bloqueios e permissivos de comando; com a máquina segura, verificar fixação dos conectores, continuidade e proteção do chicote do joystick segundo esquema específico. Não pressupor que o controlador instalado seja da família citada na fonte.",
+      "path": [
+        "OPCB",
+        "ECSY",
+        "JOYS"
+      ],
+      "component": "Chicote Elétrico",
+      "damage": "Curto-circuitado",
+      "cause": "Abrasão",
+      "priority": 2,
+      "material": "CHIC",
+      "tool": "OSCI",
+      "hours": 4,
+      "diagHours": 4,
+      "estimatedCost": 230,
+      "sourcePartMatch": false,
+      "lesson": "O FMEA cita um joystick de referência Danfoss, sem confirmação de aplicação na 6030. A missão usa apenas o mecanismo genérico: dano de isolamento em chicote de sinal, a ser discriminado do joystick e do comando hidráulico.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "ELEC-CF-23-2",
+        "layer": "electronic/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "caso_didatico_nao_curado_sem_OEM_ou_SAP"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "inspecoes_e_medicoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogabilidade",
+        "oemValidated": false
+      },
+      "electronicTraining": {
+        "exampleCode": "SPN 2660 · FMI 03",
+        "codeApplicableToModel": false,
+        "sourceSymptom": "O eixo de comando X registra tensão anormal, com resposta de função bloqueada.",
+        "sourceHypothesis": "Falha de isolamento, curto ou interrupção no chicote",
+        "competingHypotheses": [
+          {
+            "sourceId": "CF-23-1",
+            "cause": "Mau contato/oxidação no conector do circuito"
+          },
+          {
+            "sourceId": "CF-23-3",
+            "cause": "Defeito interno ou deriva do sensor"
+          }
+        ],
+        "simulatedEvidence": [
+          "Chicote roçando um suporte metálico. Isolamento desgastado e marca de contato com estrutura.",
+          "O teste de continuidade/isolamento, feito no circuito isolado conforme roteiro fictício, revela falha no trecho entre os conectores.",
+          "A falha aparece com vibração e desaparece quando o conjunto fica parado."
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "adaptation": "cenario_ficcional_em_equipamento_do_jogo_sem_aplicabilidade_OEM_confirmada"
+      }
     }
   ],
   "catalog": {
@@ -4671,7 +5333,12 @@
       "Vedação",
       "Vedação Junta O-ring",
       "Filtro, Óleo",
-      "Pneu"
+      "Pneu",
+      "Chicote Elétrico",
+      "Sensor, Tensão",
+      "Sensor, Pressão",
+      "Bobina, Solenoide",
+      "Resistor, Terminação"
     ],
     "damages": [
       {
@@ -6099,6 +6766,41 @@
       "lead": 4,
       "initial": 0,
       "emoji": "🛞"
+    },
+    "CHIC": {
+      "name": "Reparo de chicote elétrico (jogo)",
+      "unit": 230,
+      "lead": 1,
+      "initial": 3,
+      "emoji": "🔌"
+    },
+    "SENT": {
+      "name": "Sensor de sinal/tensão (jogo)",
+      "unit": 365,
+      "lead": 2,
+      "initial": 1,
+      "emoji": "📟"
+    },
+    "SENP": {
+      "name": "Sensor de pressão (jogo)",
+      "unit": 390,
+      "lead": 2,
+      "initial": 1,
+      "emoji": "📟"
+    },
+    "SOLN": {
+      "name": "Bobina de solenoide (jogo)",
+      "unit": 285,
+      "lead": 2,
+      "initial": 1,
+      "emoji": "🧲"
+    },
+    "CANR": {
+      "name": "Terminal de rede CAN (jogo)",
+      "unit": 155,
+      "lead": 2,
+      "initial": 1,
+      "emoji": "🔗"
     }
   },
   "tools": {
@@ -6161,6 +6863,18 @@
       "cost": 330,
       "initial": true,
       "icon": "🧪"
+    },
+    "OSCI": {
+      "name": "Osciloscópio de diagnóstico",
+      "cost": 980,
+      "initial": false,
+      "icon": "📈"
+    },
+    "CAN": {
+      "name": "Analisador de rede CAN",
+      "cost": 1180,
+      "initial": false,
+      "icon": "🖧"
     }
   }
 }
