@@ -41,5 +41,36 @@
   n.reviewHistory.push({tick:s.tick,action:'evidence_test',reason:'Teste didático '+t.label,origin:'simulador'});
   return {ok:true,evidence,notification:n};
  }
- return {FAMILIES,available,run};
+ function practice(s,d,I,family){
+  I.normalized(s);
+  const def=FAMILIES[family];
+  if(!def)return {error:'Grupo de treinamento inválido.'};
+  const sameTurn=s.evidencePracticeTick===s.tick;
+  const count=sameTurn?(s.evidencePracticeCount||0):0;
+  if(count>=2)return {error:'Limite de dois exercícios orientados por turno.'};
+  const seq=s.evidencePracticeSequence||{};
+  const index=Number.isSafeInteger(seq[family])?seq[family]:0;
+  const scene=def.cases[index%def.cases.length];
+  const sc=d.scenarios.find(x=>x.id===scene&&x.modelId===def.modelId&&x.diagnosticTests?.length===3);
+  if(!sc)return {error:'Roteiro de teste indisponível no catálogo.'};
+  const used=new Set((s.jobs||[]).map(j=>j.asset));
+  for(const n of s.notifications)if(!['arquivada_pcm','convertida_os'].includes(n.status))used.add(n.asset);
+  for(const x of s.inspections)if(x.tick===s.tick)used.add(x.asset);
+  const asset=Array.from({length:6},(_,i)=>def.modelId+'·'+String(i+1).padStart(2,'0')).find(x=>!used.has(x));
+  if(!asset)return {error:'Não há ativo didático livre desta frota.'};
+  const record={id:'IN'+String(s.nextInspection++).padStart(4,'0'),
+   asset,modelId:def.modelId,tick:s.tick,day:s.day,shift:s.shift,
+   status:'finding',scene:sc.id,ordinal:0,simulationOnly:true,
+   inspectedTick:s.tick,observed:'Indício observado no exercício: '+sc.operator,
+   observationSource:'roteiro_diagnostico_simulado',kind:'diagnostic_practice'};
+  s.inspections.push(record);
+  const opened=I.notify(s,record.id,null,'media');
+  if(opened.error){s.inspections.pop();s.nextInspection--;return opened}
+  opened.notification.practiceFamily=family;
+  opened.notification.evidenceTests=[];
+  seq[family]=index+1;s.evidencePracticeSequence=seq;
+  s.evidencePracticeTick=s.tick;s.evidencePracticeCount=count+1;
+  return {ok:true,inspection:record,notification:opened.notification};
+ }
+ return {FAMILIES,available,run,practice};
 });
