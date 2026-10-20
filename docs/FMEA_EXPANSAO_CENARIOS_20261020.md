@@ -23,7 +23,7 @@ A campanha passou de **33 para 45 cenários**, com IDs `INC034`–`INC045`. Não
 | INC039 | CAT 16 | Pneu de motoniveladora com desgaste em ombro | PB-GRADER-TIRE-01 | Pneu; Desgastado; Ajuste ou setpoint incorreto |
 | INC040 | CAT D9 | Folga em articulação de esteira do D9 | PB-DOZER-TRACK-01 | Pino; Afrouxado; Folga ou afrouxamento |
 | INC041 | CAT 777E | Umidade no óleo do comando final | OIL-CASE-001 | Vedação; Deteriorado; Falha de vedação |
-| INC042 | CAT D9 | Poeira detectada no comando final do D9 | OIL-CASE-004 | Vedação; Deteriorado; Exposição ambiental |
+| INC042 | CAT D9 | Poeira detectada no comando final do D9 | OIL-CASE-004 | Vedação; Deteriorado; Falha de vedação |
 | INC043 | CAT 777E | Metais em elevação no diferencial | OIL-CASE-070 | Rolamento; Piteado; Contaminação |
 | INC044 | CAT 966 | Braço de elevação perdendo posição na 966 | Taxonomia geral | Vedação; Deteriorado; Desgaste |
 | INC045 | CAT 6030 | Perda lenta de arrefecimento no motor 2 | PB-SHOVEL-COOL-01 | Mangueira; Vazando; Falha de vedação |
