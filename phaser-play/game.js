@@ -720,6 +720,20 @@ function events(){
       'Notificação '+result.notification.id+' criada para revisão PCM. Nenhuma OS foi aberta.');
    return;
   }
+  const notificationAction=ev.target.closest('[data-notification-action]');
+  if(notificationAction){
+   const id=notificationAction.dataset.notificationId,decision=notificationAction.dataset.notificationAction;
+   const payload={reason:$('pcm-reason-'+id)?.value,
+      scope:$('pcm-scope-'+id)?.value,trade:$('pcm-trade-'+id)?.value,
+      estimatedHH:$('pcm-hh-'+id)?.value,description:$('pcm-description-'+id)?.value,
+      priority:$('pcm-priority-'+id)?.value};
+   const result=decision==='convert'?I.commitConversion(state,data,E,id):I.review(state,id,decision,payload);
+   if(result.error){notify(result.error);return}
+   save();drawUI();
+   if(decision==='convert')notify('OS '+result.order.id+' criada a partir da notificação '+id+'. Abra o Planejamento PCM para programar a equipe.');
+   else notify('Notificação '+id+': '+({return:'devolvida para complementação',resubmit:'reenviada para revisão',archive:'arquivada',approve:'escopo aprovado'}[decision]||'atualizada')+'.');
+   return;
+  }
   const planHorizon=ev.target.closest('[data-planning-horizon]');
   if(planHorizon){
    planningHorizon=planHorizon.dataset.planningHorizon==='week'?'week':'turn';
