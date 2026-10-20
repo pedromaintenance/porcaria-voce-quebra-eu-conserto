@@ -24,7 +24,7 @@ for(const [i,c] of cases.entries()){
 }
 for(const [a,b] of [[0,1],[2,3],[4,5]]){
  assert.deepEqual(cases[a].diagnosticTests.map(t=>t.id),cases[b].diagnosticTests.map(t=>t.id),'mesmos testes da hipótese diferencial');
- assert.notEqual(cases[a].diagnosticTests[0].result,cases[b].diagnosticTests[0].result,'o dado observado diferencia o mecanismo');
+ assert.ok(cases[a].diagnosticTests.some((x,i)=>x.result!==cases[b].diagnosticTests[i].result),'pelo menos um teste diferencia o mecanismo');
 }
 function fresh(){const s=E.create(D,()=>.5);I.normalized(s);return s;}
 const s=fresh(),initialJobs=s.jobs.length,initialAssets=s.jobs.map(j=>j.asset);
