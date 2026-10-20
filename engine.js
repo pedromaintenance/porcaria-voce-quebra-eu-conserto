@@ -326,6 +326,8 @@
     if(!j||!m)return 'Serviço ou mecânico não encontrado.';
     if(m.assigned && m.assigned!==id)return 'Esse mecânico já está alocado.';
     if(m.restAt===s.tick)return 'Esse mecânico está descansando neste turno.';
+    const bookedInspectionHH=s.inspectionLabor?.tick===s.tick?(s.inspectionLabor.byEmployee?.[mid]||0):0;
+    if(bookedInspectionHH>=EFFECTIVE_HOURS)return 'Profissional sem HH disponíveis: turno reservado para inspeções.';
     if(TRAINING.active(s,m))return 'Este profissional está em treinamento ou integração normativa.';
     if(j.assigned && j.assigned!==mid)return 'A ordem já está atribuída. Libere a equipe antes de alterar.';
     if(j.bay!==null && j.bay!==bay)return 'A OS já ocupa outro box.';
@@ -502,6 +504,8 @@
   }
   function advance(s,d,rng=Math.random){
     let hours=0;let completed=0;let blocks=0;
+    const inspected=(s.inspections||[]).filter(i=>i.tick===s.tick&&i.inspectorId&&['clear','finding','notified'].includes(i.status));
+    hours+=inspected.reduce((sum,i)=>sum+Number(i.estimatedHH||0),0);
     const plannerSettlements=[];
     const pressure=productivityProfile(s.productivityTarget);
     const availableCrew=s.team.filter(m=>m.restAt!==s.tick&&!TRAINING.active(s,m)).length;
@@ -511,6 +515,8 @@
     for(const j of operating){
       if(!j.assigned)continue;
       const m=employee(s,j.assigned), c=scenario(d,j.scene);
+      const booked=s.inspectionLabor?.tick===s.tick?(s.inspectionLabor.byEmployee?.[m?.id]||0):0;
+      const availableHH=Math.max(0,EFFECTIVE_HOURS-booked);
       if(!m){j.assigned=null;j.bay=null;continue}
       if(!haveTool(s,c)){j.status='ferramenta';j.toolWait++;blocks++;continue}
       const settlement=settlePlannerDiagnosis(s,d,j,m);
@@ -519,7 +525,7 @@
         j.status='diagnostico';
         const p=COMPETENCY.evaluate(m,c).proficiency;
         const baseAttempts=j.help?1:Math.max(1,Math.min(3,1+Math.floor((p-35)/30)));
-        const n=j.help?1:Math.max(1,Math.min(6,Math.round(baseAttempts*pressure.speed)));
+        const n=Math.min(Math.floor(availableHH),j.help?1:Math.max(1,Math.min(6,Math.round(baseAttempts*pressure.speed))));
         let spent=0;
         for(let k=0;k<n && j.stage<6;k++){
           const successChance=COMPETENCY.diagnosisChance(m,c);
@@ -546,9 +552,9 @@
       const fatigue=m.physical<25||m.mental<20?0.62:1;
       const help=j.help?1.28:1;
       const throughput=special*fatigue*help*pressure.speed;
-      const prod=EFFECTIVE_HOURS*throughput;
+      const prod=availableHH*throughput;
       const remaining=j.repairRemaining;const used=Math.min(remaining,prod);
-      const workedHH=Math.min(EFFECTIVE_HOURS,used/Math.max(0.01,throughput));
+      const workedHH=Math.min(availableHH,used/Math.max(0.01,throughput));
       j.repairRemaining=Math.max(0,Math.round((remaining-used)*10)/10);
       j.worked+=workedHH;j.costLabor+=workedHH*42;hours+=workedHH;
       if(workedHH>0)learnByDoing(s,m,j,c,rng);

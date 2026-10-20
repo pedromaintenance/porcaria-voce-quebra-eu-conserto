@@ -30,7 +30,7 @@ const topHeader=headerStart>=0&&headerEnd>=0?phaserHtml.slice(headerStart,header
 assert.ok(topHeader,'barra principal da oficina presente');
 assert.ok(topHeader.includes('class="top-main"')&&topHeader.includes('class="top-status"'),'duas faixas de controles distintas');
 assert.ok(topHeader.includes('class="primary-nav"'),'menus organizados em navegação própria');
-assert.equal((topHeader.match(/class="tab nav-item/g)||[]).length,9,'nove opções de navegação, incluindo Inspeções');
+assert.equal((topHeader.match(/class="tab nav-item/g)||[]).length,11,'onze opções de navegação, com Planejamento e Monitoramento independentes');
 assert.ok(topHeader.includes('class="status-metrics"'),'KPIs separados da navegação');
 assert.ok(topHeader.includes('class="toolbar-actions"'),'comandos de sessão agrupados');
 assert.equal((phaserHtml.match(/id="advance"/g)||[]).length,1,'ação avançar turno aparece uma única vez');

@@ -9,7 +9,7 @@ function campaign(){
  assert.equal(I.inspect(s,d,i.id).status,'finding');
  const n=I.notify(s,i.id,null,'media').notification;
  assert.equal(n.description,i.observed,'relato automático do campo');
- assert.ok(n.description.includes('Indício observado no exercício'));
+ assert.ok(n.description.includes('Anormalidade registrada'));
  const opts=I.hypotheses(s,d,E,n.id);
  assert.equal(opts.length,6);
  assert.deepEqual(I.hypotheses(s,d,E,n.id),opts,'opções estáveis');
