@@ -60,7 +60,7 @@ function scenarioGame(id){
  assert.equal(used,1);
  const j=s.jobs[0],m=s.team[0];
  assert.equal(j.scene,id);
- assert.equal(E.attach(s,j.id,m.id,0,false),undefined);
+ assert.equal(E.attach(s,j.id,m.id,0,false),null);
  j.stage=6;j.status='apto';j.repairRemaining=0.01;j.materialUsed=true;
  s.tools[original.tool]=true;
  return {s,j,m};
