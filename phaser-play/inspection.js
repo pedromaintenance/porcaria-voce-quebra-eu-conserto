@@ -21,6 +21,7 @@
   // Um plano por turno. Registros não realizados de turnos anteriores são preservados como vencidos.
   for(const i of s.inspections)if(i.status==='pending'&&i.tick<s.tick)i.status='expired';
   const busy=new Set((s.jobs||[]).map(j=>j.asset));
+  for(const n of s.notifications)if(n.monitorOnly&&['aguarda_revisao_pcm','monitorando'].includes(n.status))busy.add(n.asset);
   const inspected=new Set(s.inspections.filter(i=>s.tick-i.tick<4).map(i=>i.asset).filter(Boolean));
   const models=(d.models||[]).filter(m=>(d.scenarios||[]).some(c=>c.modelId===m.id));
   const rotation=models.length?s.tick%models.length:0;
@@ -133,6 +134,7 @@
   normalized(s);
   const n=s.notifications.find(x=>x.id===id);
   if(!n)return {error:'Notificação não encontrada.'};
+  if(n.monitorOnly)return {error:'Este registro de condição só pode ser tratado pelo fluxo de monitoramento.'};
   if(n.status==='convertida_os')return {error:'Notificação convertida em OS: histórico imutável.'};
   const note=trim(payload.reason,500);
   if(decision==='return'||decision==='archive'){
@@ -185,6 +187,8 @@
   if(!n)return {error:'Notificação não encontrada.'};
   if(n.status!=='aprovada_pcm'||!n.planningScope||n.workOrderId)
    return {error:'Somente notificações aprovadas e ainda sem OS podem ser convertidas.'};
+  if(s.notifications.some(x=>x.monitorOnly&&x.asset===n.asset&&['aguarda_revisao_pcm','monitorando'].includes(x.status)))
+   return {error:'O equipamento possui monitoramento por condição pendente. Encerre ou escalone antes de criar OS.'};
   if((s.jobs||[]).some(j=>j.asset===n.asset))return {error:'Esse equipamento já possui OS ativa. Resolva a duplicidade antes de converter.'};
   if(!Array.isArray(s.jobs)||s.jobs.length>=32)return {error:'A carteira atingiu o limite interno de 32 OS. Conclua algum serviço antes de converter.'};
   const sc=d.scenarios.find(x=>x.id===n.sourceScenario&&x.modelId===n.modelId);

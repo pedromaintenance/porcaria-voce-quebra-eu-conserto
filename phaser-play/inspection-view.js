@@ -24,8 +24,47 @@
      :'<p class="muted">Nenhum resultado registrado. Comprar uma ferramenta não executa automaticamente o teste.</p>')
    +'</section>';
  }
- function renderPCM(n,model,d,I,E,s,T){
-  const statuses={aguarda_revisao_pcm:'AGUARDA REVISÃO',devolvida:'DEVOLVIDA',aprovada_pcm:'PLANEJAMENTO APROVADO',arquivada_pcm:'ARQUIVADA',convertida_os:'OS GERADA'};
+ function monitorWidget(n,s,M){
+  if(!M)return '';
+  const m=n.monitoring||{},state=m.status||'proposta';
+  const select=(id,choices)=>'<select id="'+id+'">'+choices.map(([v,label])=>'<option value="'+esc(v)+'">'+esc(label)+'</option>').join('')+'</select>';
+  const period=id=>'<label>Intervalo da recoleta (turnos simulados) '+select(id,[[2,'2 turnos'],[4,'4 turnos']])+'</label>';
+  const actions=(buttons)=>'<div class="pcmActions">'+buttons+'</div>';
+  const btn=(kind,label,disabled=false)=>'<button type="button" class="act'+(kind==='escalate'?' secondary':'')+'" data-monitor-action="'+kind+'" data-monitor-note="'+esc(n.id)+'" '+(disabled?'disabled':'')+'>'+label+'</button>';
+  let controls='';
+  if(n.status==='aguarda_revisao_pcm'){
+   controls='<p>Não abrir OS neste momento: registrar justificativa e programar recoleta. A decisão é válida apenas para este exercício fictício.</p>'
+    +'<label>Justificativa '+select('monitor-reason-'+esc(n.id),Object.entries(M.REASONS))+'</label>'
+    +period('monitor-interval-'+esc(n.id))
+    +actions(btn('decide','INICIAR MONITORAMENTO SEM OS'));
+  }else if(n.status==='monitorando'){
+   const due=state==='programado'&&s.tick>=m.nextTick;
+   if(state==='programado')controls='<p><strong>Próxima recoleta: turno '+Number(m.nextTick)+
+    '</strong> · atual '+Number(s.tick)+(due?' · VENCIDA':' · A PROGRAMAR')+'</p>'
+    +actions(btn('collect','🔬 REALIZAR RECOLETA',!due)+btn('escalate','ESCALONAR AO PCM'));
+   if(state==='aguarda_decisao')controls='<p>Analise a tendência. A estabilidade não garante integridade do equipamento real.</p>'
+    +period('monitor-interval-'+esc(n.id))
+    +actions(btn('continue','PROGRAMAR PRÓXIMA RECOLETA')
+      +btn('close','ENCERRAR SEM OS',!(m.samples?.length>=2&&m.samples.slice(-2).every(x=>x.trend==='estavel')))
+      +btn('escalate','ESCALONAR AO PCM'));
+   if(state==='requer_avaliacao')controls='<p class="inspectionAttention">AGRAVAMENTO: não continuar monitorando sem avaliação. Acompanhar a abertura manual de notificação para intervenção.</p>'
+    +actions(btn('escalate','ESCALONAR AO PCM'));
+  }else if(n.status==='encerrada_monitoramento'){
+   controls='<p>✓ Monitoramento didático encerrado sem OS após duas recoletas estáveis consecutivas.</p>';
+  }else if(n.status==='escalonada_monitoramento'){
+   controls='<p>⚠ Monitoramento convertido em nova notificação <strong>'+esc(n.escalationNotificationId||'')+
+    '</strong>. Revisão PCM pendente; nenhuma OS foi criada automaticamente.</p>';
+  }
+  const history=(m.samples||[]).map(x=>'<li>Turno '+Number(x.tick)+' · <strong>'+esc(x.label)+'</strong>'
+   +'<p>'+esc(x.reading)+'</p><small>Recoleta simulada, sem medição OEM.</small></li>').join('');
+  return '<section class="pcmMonitoringCard"><h4>📈 MONITORAMENTO DE CONDIÇÃO · TREINAMENTO</h4>'
+   +'<p><strong>Observação inicial:</strong> '+esc(m.baseline||'')+'</p>'
+   +'<p>Resultados qualitativos criados para o jogo; nenhum prazo é critério real de liberação de máquina.</p>'
+   +controls+(history?'<details open><summary>Histórico de recoletas ('+(m.samples||[]).length+')</summary><ol>'+history+'</ol></details>':'')
+   +'</section>';
+ }
+ function renderPCM(n,model,d,I,E,s,T,M){
+  const statuses={aguarda_revisao_pcm:'AGUARDA REVISÃO',devolvida:'DEVOLVIDA',aprovada_pcm:'PLANEJAMENTO APROVADO',arquivada_pcm:'ARQUIVADA',convertida_os:'OS GERADA',monitorando:'EM MONITORAMENTO',encerrada_monitoramento:'ENCERRADO SEM OS',escalonada_monitoramento:'ESCALONADO AO PCM'};
   const id=esc(n.id),status=esc(statuses[n.status]||'STATUS DESCONHECIDO');
   const header='<header class="inspectionNotificationHead"><strong>'+id+' · '+esc(model(n.modelId))+' · '+esc(n.asset)+'</strong><span class="inspectionBadge">'+status+'</span></header>';
   const field=esc(n.reportedIndication||n.description||'Nenhuma evidência de campo disponível.');
@@ -45,6 +84,7 @@
    +'<div class="pcmScopeRow"><label>Ferramenta '+select('pcm-tool-'+id,Object.entries(d.tools).map(([code,v])=>[code,code+' · '+v.name+' · R$ '+v.cost]),'SELECIONE O FERRAMENTAL')+'</label>'
    +'<label>Prazo da compra '+select('pcm-speed-'+id,[['normal','Normal'],['rush','Urgente']])+'</label></div>'
    +'<div class="pcmActions"><button class="act secondary" data-pcm-buy="tool" data-notification-id="'+id+'">🛠 COMPRAR FERRAMENTA</button></div></div>';
+  if(n.monitorOnly)return '<article class="inspectionNotification">'+header+details+monitorWidget(n,s,M)+hist+'</article>';
   let actions='';
   if(n.status==='aguarda_revisao_pcm'){
    const hypotheses=I.hypotheses(s,d,E,n.id);
@@ -82,9 +122,9 @@
   return '<article class="inspectionNotification">'+header+details+renderEvidence(n,d,T,s)+actions+hist+'</article>';
  }
 
- function render(s,d,I,E,T){
+ function render(s,d,I,E,T,M){
   I.normalized(s);
-  const summary=I.summary(s),current=s.inspections.filter(x=>x.tick===s.tick);
+  const summary=I.summary(s),monitorSummary=M?M.summary(s):null,current=s.inspections.filter(x=>x.tick===s.tick);
   const recent=s.inspections.filter(x=>x.tick!==s.tick&&['finding','notified'].includes(x.status)).slice(-8).reverse();
   const modelName=id=>d.models.find(m=>m.id===id)?.title||id;
   const card=x=>{
@@ -105,15 +145,20 @@
     +(x.notificationId?'<p class="inspectionLinked">📋 '+esc(x.notificationId)+' · revisão PCM pendente · não é OS</p>':'')
     +actions+'</article>';
   };
-  const statusWeight={aguarda_revisao_pcm:0,devolvida:1,aprovada_pcm:2,convertida_os:3,arquivada_pcm:4};
+  const statusWeight={monitorando:0,aguarda_revisao_pcm:1,devolvida:2,aprovada_pcm:3,escalonada_monitoramento:4,convertida_os:5,encerrada_monitoramento:6,arquivada_pcm:7};
   const rows=s.notifications.slice().sort((a,b)=>(statusWeight[a.status]??5)-(statusWeight[b.status]??5)||b.openedTick-a.openedTick)
-   .slice(0,25).map(n=>renderPCM(n,modelName,d,I,E,s,T)).join('');
+   .slice(0,25).map(n=>renderPCM(n,modelName,d,I,E,s,T,M)).join('');
+  const monitoring=M?'<section class="pcmMonitoringPractice"><h3>📈 CARTEIRA · MONITORAMENTO POR CONDIÇÃO</h3>'
+   +'<p>Crie um caso qualitativo de monitoramento, justifique por que ainda não abrir OS e compare recoletas futuras. A decisão fictícia não é autorização de operação real.</p>'
+   +Object.entries(M.PROTOCOLS).map(([id,p])=>'<button class="act secondary" type="button" data-monitor-start="'+esc(id)+'">'+esc(p.label)+'</button>').join(' ')
+   +'</section>':'';
   const practice=T?'<section class="pcmEvidencePractice"><h3>🔬 TREINO DE DIAGNÓSTICO COM TESTES</h3>'
    +'<p>Escolha o sintoma. A falha é uma de duas variantes didáticas ocultas e muda no próximo exercício. Até dois exercícios por turno, sem criar OS automaticamente.</p>'
    +Object.entries(T.FAMILIES).map(([id,x])=>'<button type="button" class="act secondary" data-evidence-practice="'+esc(id)+'">'+esc(x.label)+'</button>').join(' ')
    +'</section>':'';
   return '<p class="inspectionIntro"><strong>INSPEÇÃO → HIPÓTESES PCM → EXECUÇÃO MECÂNICA.</strong> Observações simuladas sem medições OEM e sem conclusão causal.</p>'
-   +practice
+   +practice+monitoring
+   +(monitorSummary?'<div class="inspectionMetrics"><div><small>MONITORAMENTOS ATIVOS</small><strong>'+monitorSummary.active+'</strong></div><div><small>RECOLETAS VENCIDAS</small><strong>'+monitorSummary.due+'</strong></div><div><small>AGRAVAMENTOS</small><strong>'+monitorSummary.attention+'</strong></div><div><small>ENCERRADOS SEM OS</small><strong>'+monitorSummary.closed+'</strong></div></div>':'')
    +'<div class="inspectionMetrics"><div><small>PROGRAMADAS</small><strong>'+current.length+'</strong></div><div><small>A REALIZAR</small><strong>'+summary.pending+'</strong></div>'
    +'<div><small>NOTAS EM REVISÃO</small><strong>'+summary.awaiting+'</strong></div><div><small>ESCOPO APROVADO</small><strong>'+summary.approved+'</strong></div></div>'
    +'<h3 class="resourceSection">RONDA DO TURNO · DIA '+s.day+' / '+(s.shift?'B':'A')+'</h3>'

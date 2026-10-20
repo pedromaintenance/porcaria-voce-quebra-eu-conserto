@@ -283,6 +283,8 @@
   function spawn(s,d,n,rng=Math.random){
     let made=0;
     const existing=new Set(s.jobs.map(j=>j.asset));
+    // O monitoramento ativo reserva o equipamento: sem OS automática sobre o mesmo ativo.
+    for(const n of s.notifications||[])if(n.monitorOnly&&['aguarda_revisao_pcm','monitorando'].includes(n.status))existing.add(n.asset);
     for(let i=0;i<n;i++){
       const pool=d.scenarios.filter(c=>{
         // As consequências surgem somente após o atraso do precursor, nunca no sorteio livre.
