@@ -9,7 +9,7 @@ const expected={
  INC033:{source:'PB-TRUCK-FINAL-01',model:'EQ01',path:['DRTR','AXAS','FID2'],component:'Engrenagem',damage:'Desgastado',cause:'Lubrificação insuficiente'}
 };
 assert.equal(D.scenarios.length,55,'29 originais + 4 FMEA anteriores + 12 adicionais + 10 elétricos');
-assert.equal(new Set(D.scenarios.map(x=>x.id)).size,45,'IDs únicos');
+assert.equal(new Set(D.scenarios.map(x=>x.id)).size,55,'IDs únicos');
 const pathSet=new Set(D.paths.map(x=>[x.modelId,x.system,x.group,x.subgroup].join('|')));
 const parts=new Set(D.catalog.parts), damages=new Set(D.catalog.damages.map(x=>x.pt)), causes=new Set(D.catalog.causes.map(x=>x.pt));
 for(const [id,expect] of Object.entries(expected)){
