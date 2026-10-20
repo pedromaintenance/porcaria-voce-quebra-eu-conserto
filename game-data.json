@@ -3464,6 +3464,50 @@
       "subgroupName": "Filtro Hidráulico",
       "origin": "trilha_didatica_simulada",
       "sapValidated": false
+    },
+    {
+      "modelId": "EQ01",
+      "system": "ENSY",
+      "systemName": "Sist Motor",
+      "group": "FUSY",
+      "groupName": "Sist Combustível",
+      "subgroup": "FILF",
+      "subgroupName": "Filtro de Combustível",
+      "origin": "trilha_didatica_simulada",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ01",
+      "system": "ENSY",
+      "systemName": "Sist Motor",
+      "group": "FUSY",
+      "groupName": "Sist Combustível",
+      "subgroup": "SENF",
+      "subgroupName": "Sensor de Alimentação de Combustível",
+      "origin": "trilha_didatica_simulada",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ01",
+      "system": "ENSY",
+      "systemName": "Sist Motor",
+      "group": "COSY",
+      "groupName": "Sist Arrefecimento",
+      "subgroup": "CLFL",
+      "subgroupName": "Líquido de Arrefecimento",
+      "origin": "trilha_didatica_simulada",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ09",
+      "system": "ENSY",
+      "systemName": "Sist Motor",
+      "group": "ENGN",
+      "groupName": "Motor",
+      "subgroup": "CCBR",
+      "subgroupName": "Sistema de Respiro do Cárter",
+      "origin": "trilha_didatica_simulada",
+      "sapValidated": false
     }
   ],
   "scenarios": [
@@ -5819,6 +5863,496 @@
         "test": "coleta, inspeção dirigida e confirmação de bomba por OEM",
         "releasePolicy": "restrito_ao_instrutor_ate_conclusao"
       }
+    },
+    {
+      "id": "INC066",
+      "modelId": "EQ01",
+      "category": "motor",
+      "title": "777E — falta de potência por filtro de combustível",
+      "operator": "Em subidas carregadas, o 777E perde resposta e apresenta alerta genérico relacionado à alimentação do motor. Ainda não foi comprovado se o combustível chega com pressão e vazão adequadas.",
+      "verification": "Confirmar condição de admissão e códigos pela versão OEM, verificar qualidade do combustível, restrição do circuito e pressão diferencial do elemento de filtragem com pontos de teste aprovados. Coletar antes de abrir o sistema e manter limpeza para não introduzir contaminantes.",
+      "path": [
+        "ENSY",
+        "FUSY",
+        "FILF"
+      ],
+      "component": "Filtro, Combustível",
+      "damage": "Entupido ou restringido",
+      "cause": "Contaminação",
+      "priority": 2,
+      "material": "FILC",
+      "tool": "PDIF",
+      "hours": 4,
+      "diagHours": 3,
+      "estimatedCost": 165,
+      "sourcePartMatch": false,
+      "lesson": "O gabarito ficcional é restrição do elemento filtrante. Perda de potência não identifica sozinha o filtro: água, sensor, linha, admissão e comando eletrônico podem produzir sintomas semelhantes. A causa inicial da sujeira também precisa ser investigada.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-TRUCK-FUEL-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "roteiro_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "dieselTraining": {
+        "mechanism": "restricao_real_combustivel",
+        "alternatives": [
+          "entrada de água",
+          "sinal do sensor defeituoso",
+          "restrição na admissão"
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "labResultsReal": false,
+        "sourceType": "adaptacao_de_caso_simulado"
+      }
+    },
+    {
+      "id": "INC067",
+      "modelId": "EQ01",
+      "category": "motor",
+      "title": "777E — alerta de combustível com pressão normal",
+      "operator": "Em subidas, o 777E apresenta praticamente o mesmo relato de perda de potência da ocorrência anterior, mas os registros de pressão do combustível parecem inconsistentes entre turnos.",
+      "verification": "Confrontar leitura eletrônica e medição independente prevista pelo OEM, verificando alimentação elétrica, aterramento e conexões do transdutor. Somente após excluir restrição real, inspecionar e testar o sensor antes de autorizar substituição.",
+      "path": [
+        "ENSY",
+        "FUSY",
+        "SENF"
+      ],
+      "component": "Sensor, Pressão",
+      "damage": "Indicado incorretamente",
+      "cause": "Falha de instrumento",
+      "priority": 2,
+      "material": "SENP",
+      "tool": "MANO",
+      "hours": 4,
+      "diagHours": 4,
+      "estimatedCost": 390,
+      "sourcePartMatch": false,
+      "lesson": "Nesta variação o circuito tem pressão adequada no ensaio fictício e o sensor informa valor incorreto. Esse dado não está no playbook original: é um resultado criado para o jogo. O par INC066–INC067 ensina diagnóstico diferencial, não a procurar peças pelo sintoma.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-TRUCK-FUEL-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "roteiro_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "dieselTraining": {
+        "mechanism": "indicacao_pressao_incoerente",
+        "alternatives": [
+          "restrição verdadeira do filtro",
+          "contaminação do diesel",
+          "chicote elétrico com resistência"
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "labResultsReal": false,
+        "sourceType": "adaptacao_de_caso_simulado"
+      }
+    },
+    {
+      "id": "INC068",
+      "modelId": "EQ02",
+      "category": "motor",
+      "title": "6030 — metais no óleo do motor diesel 1",
+      "operator": "No motor diesel da posição 1 da 6030, um laudo didático aponta tendência anormal de metais e o histórico de manutenção do elemento filtrante precisa ser conferido. A peça responsável pelo desgaste ainda é desconhecida.",
+      "verification": "Antes da intervenção, coletar amostra representativa e analisar tendência, horas do lubrificante, tipo de metal e operação. Se o filtro for removido para abertura e inspeção, não o reinstalar; planejar troca de óleo e filtro conforme procedimento e controlar o material recuperado.",
+      "path": [
+        "ENS1",
+        "ENGN",
+        "LUSY"
+      ],
+      "component": "Filtro, Óleo",
+      "damage": "Contaminado",
+      "cause": "Contaminação",
+      "priority": 3,
+      "material": "OLMO",
+      "tool": "COLETA",
+      "hours": 6,
+      "diagHours": 4,
+      "estimatedCost": 380,
+      "sourcePartMatch": false,
+      "lesson": "O resultado didático inclui partículas retidas no filtro, justificando inspeção e substituição do elemento. Esse gabarito NÃO afirma que o filtro originou os metais, nem diagnostica virabrequim, pistão ou mancais: a origem do desgaste continua em investigação.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "OIL-CASE-049",
+        "layer": "oil/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "roteiro_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "dieselTraining": {
+        "mechanism": "particulas_metalicas_retidas_no_filtro",
+        "alternatives": [
+          "desgaste de bronzinas",
+          "resíduo de montagem",
+          "erro de amostragem"
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "labResultsReal": false,
+        "sourceType": "adaptacao_de_caso_simulado"
+      }
+    },
+    {
+      "id": "INC069",
+      "modelId": "EQ03",
+      "category": "motor",
+      "title": "395 — desgaste metálico no óleo e revisão do filtro",
+      "operator": "Na CAT 395, o histórico simulado revela elevação de metais do motor e um filtro de óleo próximo ao intervalo de substituição. Não há evidência suficiente para condenar componentes internos.",
+      "verification": "Conferir laudos e horas, realizar amostra antes da intervenção e investigar diferenças frente à referência. Quando a inspeção física exigir retirar e abrir o filtro, programar sua substituição com a troca de óleo e verificar resíduos; manter análise de causa raiz em aberto.",
+      "path": [
+        "ENSY",
+        "ENGN",
+        "LUSY"
+      ],
+      "component": "Filtro, Óleo",
+      "damage": "Contaminado",
+      "cause": "Contaminação",
+      "priority": 2,
+      "material": "OLMO",
+      "tool": "COLETA",
+      "hours": 6,
+      "diagHours": 4,
+      "estimatedCost": 380,
+      "sourcePartMatch": false,
+      "lesson": "A missão é uma intervenção diagnóstica com óleo e filtro, não um reparo definitivo do motor. A fonte didática só diz que foram encontrados resíduos no filtro; determinar origem e severidade requer evidências adicionais.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "OIL-CASE-052",
+        "layer": "oil/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "roteiro_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "dieselTraining": {
+        "mechanism": "inspecao_filtro_e_oleo_por_metais",
+        "alternatives": [
+          "início de desgaste mecânico",
+          "contaminação da amostra",
+          "resíduo pós-intervenção"
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "labResultsReal": false,
+        "sourceType": "adaptacao_de_caso_simulado"
+      }
+    },
+    {
+      "id": "INC070",
+      "modelId": "EQ04",
+      "category": "motor",
+      "title": "336GC — admissão de ar com restrição",
+      "operator": "A escavadeira 336GC perde potência gradualmente e o indicador de restrição da entrada de ar começa a apresentar alertas após dias em ambiente muito empoeirado. Não se observou falha eletrônica confirmada.",
+      "verification": "Comparar indicador e medição ou critério OEM em condição de operação definida. Inspecionar tubulações, filtros e pré-limpeza sem permitir entrada de poeira no lado limpo da admissão. Substituir o elemento apenas se a condição de restrição justificar, e conferir vedações.",
+      "path": [
+        "ENSY",
+        "ENGN",
+        "IKSY"
+      ],
+      "component": "Filtro, Ar",
+      "damage": "Entupido ou restringido",
+      "cause": "Material estranho",
+      "priority": 2,
+      "material": "FILT",
+      "tool": "SCAN",
+      "hours": 4,
+      "diagHours": 3,
+      "estimatedCost": 90,
+      "sourcePartMatch": false,
+      "lesson": "Elaboração autoral: filtro de ar obstruído no cenário. O mesmo sintoma pode ter origem em combustível, turboalimentação ou sensoriamento. O código de filtro e limite de restrição aplicáveis à 336GC não foram fornecidos.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": null,
+        "layer": "elaboracao_autoral",
+        "version": null,
+        "status": "roteiro_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "dieselTraining": {
+        "mechanism": "restricao_admissao_poerira",
+        "alternatives": [
+          "baixa pressão de combustível",
+          "falha da turboalimentação",
+          "indicador defeituoso"
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "labResultsReal": false,
+        "sourceType": "elaboracao_autoral"
+      }
+    },
+    {
+      "id": "INC071",
+      "modelId": "EQ02",
+      "category": "motor",
+      "title": "6030 — aquecimento por radiador obstruído",
+      "operator": "No motor diesel da posição 2 da CAT 6030, a temperatura sobe durante escavação intensa e retorna gradualmente sob baixa carga. Há acúmulo visível de barro e poeira na região do pacote de radiadores.",
+      "verification": "Com o equipamento desligado e resfriado, confirmar condições de ventilação, níveis e possíveis fugas. Avaliar obstrução das colmeias e executar limpeza controlada segundo OEM, sem danificar aletas, e reavaliar resposta térmica depois.",
+      "path": [
+        "ENS2",
+        "COSY",
+        "RADI"
+      ],
+      "component": "Radiador",
+      "damage": "Entupido ou restringido",
+      "cause": "Material estranho",
+      "priority": 2,
+      "material": "LIMP",
+      "tool": "TERM",
+      "hours": 5,
+      "diagHours": 3,
+      "estimatedCost": 85,
+      "sourcePartMatch": false,
+      "lesson": "O gabarito é obstrução externa da colmeia. Temperatura elevada não comprova esse defeito: funcionamento do ventilador, bomba, termostato, vazão e sensores permanecem diferenciais. O local do motor 2 é fixação didática.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-SHOVEL-COOL-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "roteiro_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "dieselTraining": {
+        "mechanism": "restricao_transferencia_calor",
+        "alternatives": [
+          "vazamento do líquido",
+          "falha de ventilador",
+          "sensor térmico incorreto"
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "labResultsReal": false,
+        "sourceType": "adaptacao_de_caso_simulado"
+      }
+    },
+    {
+      "id": "INC072",
+      "modelId": "EQ01",
+      "category": "motor",
+      "title": "777E — concentração incorreta do arrefecimento",
+      "operator": "O laudo simulado do líquido de arrefecimento do 777E registra concentração incompatível com a referência de controle e o histórico aponta reposição recente. Não existe evidência de corrosão ou dano interno irreversível.",
+      "verification": "Verificar histórico de adição, identificação e compatibilidade do produto; aferir a concentração com instrumento e procedimento previstos pelo fabricante. Corrigir a mistura segundo especificação aplicável, registrar alteração e confirmar monitoramento posterior.",
+      "path": [
+        "ENSY",
+        "COSY",
+        "CLFL"
+      ],
+      "component": "Líquido, Arrefecimento",
+      "damage": "Contaminado",
+      "cause": "Fluido ou lubrificante incorreto",
+      "priority": 2,
+      "material": "ARRF",
+      "tool": "REFR",
+      "hours": 3,
+      "diagHours": 3,
+      "estimatedCost": 250,
+      "sourcePartMatch": false,
+      "lesson": "O exercício simula reposição de produto/mistura não conforme; o ajuste não equivale a reparo de motor. O laudo original descreve desvio de concentração, sem identificar uma peça danificada. Não inferir cabeçote trincado, bomba ruim ou sistema corroído.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "OIL-CASE-061",
+        "layer": "oil/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "roteiro_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "dieselTraining": {
+        "mechanism": "mistura_arrefecimento_inadequada",
+        "alternatives": [
+          "erro de identificação da amostra",
+          "mistura compatível mas baseline incorreto",
+          "falha de ventilação"
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "labResultsReal": false,
+        "sourceType": "adaptacao_de_caso_simulado"
+      }
+    },
+    {
+      "id": "INC073",
+      "modelId": "EQ07",
+      "category": "motor",
+      "title": "D9 — ventilação insuficiente por acionamento hidráulico",
+      "operator": "No D9, a temperatura do motor sobe durante esforço prolongado e o ventilador parece responder de forma insuficiente à demanda de arrefecimento. Não há diagnóstico fechado do acionamento ou do conjunto térmico.",
+      "verification": "Identificar a arquitetura do ventilador para a série efetiva do equipamento. Confirmar pressão, vazão e comportamento do motor hidráulico de acionamento conforme procedimentos OEM; excluir obstrução de colmeia, falha de controle e leitura de temperatura antes da substituição.",
+      "path": [
+        "ENSY",
+        "COSY",
+        "MTHY"
+      ],
+      "component": "Motor, Hidráulico",
+      "damage": "Com função degradada",
+      "cause": "Desgaste",
+      "priority": 2,
+      "material": "MOTH",
+      "tool": "MANO",
+      "hours": 7,
+      "diagHours": 4,
+      "estimatedCost": 1720,
+      "sourcePartMatch": false,
+      "lesson": "Elaboração autoral: o simulador escolhe desgaste interno do motor hidráulico do ventilador como hipótese final. Sua presença e o arranjo de comando precisam ser verificados no D9 real. Aumento de temperatura por si só não permite condenar o motor do ventilador.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": null,
+        "layer": "elaboracao_autoral",
+        "version": null,
+        "status": "roteiro_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "dieselTraining": {
+        "mechanism": "perda_de_eficiencia_no_acionamento_do_ventilador",
+        "alternatives": [
+          "colmeia bloqueada",
+          "sensor térmico incorreto",
+          "comando hidráulico do ventilador inadequado"
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "labResultsReal": false,
+        "sourceType": "elaboracao_autoral"
+      }
+    },
+    {
+      "id": "INC074",
+      "modelId": "EQ08",
+      "category": "motor",
+      "title": "966 — ar de admissão escapando pela mangueira",
+      "operator": "Na CAT 966, o motor perde resposta em acelerações e há ruído de sopro na admissão sob carga. Uma mangueira próxima a um suporte apresenta marcas externas de atrito; não foi constatada falha de injetor.",
+      "verification": "Inspecionar circuito de admissão conforme arranjo OEM, tubulação de ar comprimido quando aplicável, braçadeiras e pontos de fricção. Validar a perda por método autorizado, eliminando a interferência no suporte e garantindo vedação após intervenção.",
+      "path": [
+        "ENSY",
+        "ENGN",
+        "IKSY"
+      ],
+      "component": "Mangueira",
+      "damage": "Rompido",
+      "cause": "Abrasão",
+      "priority": 2,
+      "material": "MANG",
+      "tool": "SCAN",
+      "hours": 5,
+      "diagHours": 3,
+      "estimatedCost": 260,
+      "sourcePartMatch": false,
+      "lesson": "Nesta ficção a mangueira de admissão se rompeu por abrasão. Perda de potência não identifica nem prova a localização do vazamento; também devem ser avaliados combustível, turboalimentação e sensores.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": null,
+        "layer": "elaboracao_autoral",
+        "version": null,
+        "status": "roteiro_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "dieselTraining": {
+        "mechanism": "perda_estanqueidade_admissao",
+        "alternatives": [
+          "filtro de ar obstruído",
+          "falha do turbo",
+          "baixa pressão de combustível"
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "labResultsReal": false,
+        "sourceType": "elaboracao_autoral"
+      }
+    },
+    {
+      "id": "INC075",
+      "modelId": "EQ09",
+      "category": "motor",
+      "title": "CAT 16 — pressão do cárter anormal",
+      "operator": "Na motoniveladora CAT 16, um alerta intermitente de pressão elevada do cárter acompanha ciclos longos de trabalho. A leitura eletrônica ainda não foi comparada a medição independente e não há confirmação de blow-by excessivo.",
+      "verification": "Conferir evento, pressão física e condições operacionais conforme motor e série. Investigar obstrução ou deterioração do respiro de cárter antes de condenar anéis e cilindros. Evitar operação sob condição insegura de pressurização ou vazamentos.",
+      "path": [
+        "ENSY",
+        "ENGN",
+        "CCBR"
+      ],
+      "component": "Respiro, Cárter",
+      "damage": "Entupido ou restringido",
+      "cause": "Contaminação",
+      "priority": 3,
+      "material": "RESC",
+      "tool": "MANO",
+      "hours": 5,
+      "diagHours": 4,
+      "estimatedCost": 190,
+      "sourcePartMatch": false,
+      "lesson": "O caso original trata somente de possível alta pressão de cárter de motor genérico; não comprova causa nem código aplicável à CAT 16. O jogo simula respiro obstruído, mas blow-by, falha de sensor e sistema de ventilação exigem verificação discriminante.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "ELEC-CF-19-1",
+        "layer": "electronic/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "roteiro_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "dieselTraining": {
+        "mechanism": "obstrucao_respiro_carter",
+        "alternatives": [
+          "blow-by real por desgaste",
+          "falha de transdutor",
+          "restrição externa de ventilação"
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "labResultsReal": false,
+        "sourceType": "adaptacao_de_caso_simulado"
+      }
     }
   ],
   "catalog": {
@@ -5850,7 +6384,10 @@
       "Bomba, Hidráulica",
       "Válvula, Hidráulica",
       "Trocador de Calor",
-      "Motor, Hidráulico"
+      "Motor, Hidráulico",
+      "Filtro, Combustível",
+      "Líquido, Arrefecimento",
+      "Respiro, Cárter"
     ],
     "damages": [
       {
@@ -7341,6 +7878,34 @@
       "lead": 3,
       "initial": 0,
       "emoji": "⚙️"
+    },
+    "FILC": {
+      "name": "Elemento filtrante de combustível (jogo)",
+      "unit": 165,
+      "lead": 1,
+      "initial": 2,
+      "emoji": "⛽"
+    },
+    "OLMO": {
+      "name": "Kit óleo e filtro do motor (jogo)",
+      "unit": 380,
+      "lead": 2,
+      "initial": 1,
+      "emoji": "🛢️"
+    },
+    "ARRF": {
+      "name": "Kit correção do líquido de arrefecimento (jogo)",
+      "unit": 250,
+      "lead": 2,
+      "initial": 1,
+      "emoji": "💧"
+    },
+    "RESC": {
+      "name": "Conjunto de respiro do cárter (jogo)",
+      "unit": 190,
+      "lead": 2,
+      "initial": 1,
+      "emoji": "🌬️"
     }
   },
   "tools": {
@@ -7427,6 +7992,12 @@
       "cost": 710,
       "initial": false,
       "icon": "📐"
+    },
+    "REFR": {
+      "name": "Refratômetro de arrefecimento",
+      "cost": 530,
+      "initial": false,
+      "icon": "💧"
     }
   }
 }
