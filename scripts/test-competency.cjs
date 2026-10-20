@@ -8,7 +8,7 @@ const C=E.COMPETENCY;
 const data=JSON.parse(fs.readFileSync(path.join(root,'game-data.json'),'utf8'));
 const catalog=E.SKILL_CATALOG;
 assert.equal(data.models.length,9);
-assert.equal(data.scenarios.length,33);
+assert.equal(data.scenarios.length,45);
 for(const sc of data.scenarios){
  const keys=C.resolve(sc);
  for(const group of E.SKILL_GROUPS){
@@ -86,4 +86,4 @@ assert.ok(sw.includes('porcaria-vqec-20261019-v111'));
 assert.ok(sw.includes("'./competency.js'"));
 assert.ok(plan.includes('COMPETENCY.evaluate(m,sc)'));
 assert.ok(ui.includes('proficiência '));
-console.log('OK: 33 cenários, três competências, precisão, HH de reparo, aprendizagem até 90 e anti-exploit por turno.');
+console.log('OK: 45 cenários, três competências, precisão, HH de reparo, aprendizagem até 90 e anti-exploit por turno.');
