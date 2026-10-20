@@ -168,5 +168,5 @@
    +(rows||'<p class="muted">Nenhuma notificação aberta.</p>')
    +'<p class="inspectionFuture">Revisão e conversão de OS disponíveis. Programação detalhada, reserva de materiais e dimensionamento de equipe permanecem no menu Planejamento PCM.</p>';
  }
- return {render};
+ return {render,renderPCM,monitorWidget};
 });
