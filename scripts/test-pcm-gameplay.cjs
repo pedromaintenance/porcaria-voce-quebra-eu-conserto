@@ -88,7 +88,8 @@ assert.equal(JSON.stringify(invalid.s.jobs),beforeOpts);
 const legacy=E.create(d,()=>0.5);
 E.advance(legacy,d,()=>0.4);
 assert.ok(E.validate(legacy),'OS antigas seguem válidas');
-const view=V.render(invalid.s,d,I,E);
+const unreviewed=campaign();
+const view=V.render(unreviewed.s,d,I,E);
 for(const fragment of ['LOCAL DE INSTALAÇÃO','MODO DE FALHA','NÃO DEFINIR A CAUSA','APROVISIONAMENTO','data-pcm-buy="material"','data-pcm-buy="tool"']){
  assert.ok(view.includes(fragment),fragment);
 }
