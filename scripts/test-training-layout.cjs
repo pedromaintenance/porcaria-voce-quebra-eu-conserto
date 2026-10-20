@@ -57,8 +57,8 @@ const walking=Object.fromEntries(manifest.atlases.map(a=>[a.id,a.frames.filter(f
 assert.deepEqual(walking.coaching,[1],'quadro de caminhada coaching identificado pelo manifesto');
 assert.deepEqual(walking.field,[2],'quadro de caminhada field identificado pelo manifesto');
 const animationRules={
- coaching:html.match(/@keyframes trainingBiaNoWalkCoaching\\{([\\s\\S]*?)\\n\\}/)?.[1],
- field:html.match(/@keyframes trainingBiaNoWalkField\\{([\\s\\S]*?)\\n\\}/)?.[1]
+ coaching:html.match(/@keyframes trainingBiaNoWalkCoaching\{([\s\S]*?)\n\}/)?.[1],
+ field:html.match(/@keyframes trainingBiaNoWalkField\{([\s\S]*?)\n\}/)?.[1]
 };
 for(const [atlas,frames] of Object.entries({coaching:[0,2,3],field:[0,1,3]})){
  assert.ok(animationRules[atlas],'animação configurada: '+atlas);
