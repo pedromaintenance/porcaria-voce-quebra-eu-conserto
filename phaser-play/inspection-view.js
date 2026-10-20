@@ -124,7 +124,7 @@
 
  function render(s,d,I,E,T,M){
   I.normalized(s);
-  const summary=I.summary(s),current=s.inspections.filter(x=>x.tick===s.tick);
+  const summary=I.summary(s),monitorSummary=M?M.summary(s):null,current=s.inspections.filter(x=>x.tick===s.tick);
   const recent=s.inspections.filter(x=>x.tick!==s.tick&&['finding','notified'].includes(x.status)).slice(-8).reverse();
   const modelName=id=>d.models.find(m=>m.id===id)?.title||id;
   const card=x=>{
@@ -158,6 +158,7 @@
    +'</section>':'';
   return '<p class="inspectionIntro"><strong>INSPEÇÃO → HIPÓTESES PCM → EXECUÇÃO MECÂNICA.</strong> Observações simuladas sem medições OEM e sem conclusão causal.</p>'
    +practice+monitoring
+   +(monitorSummary?'<div class="inspectionMetrics"><div><small>MONITORAMENTOS ATIVOS</small><strong>'+monitorSummary.active+'</strong></div><div><small>RECOLETAS VENCIDAS</small><strong>'+monitorSummary.due+'</strong></div><div><small>AGRAVAMENTOS</small><strong>'+monitorSummary.attention+'</strong></div><div><small>ENCERRADOS SEM OS</small><strong>'+monitorSummary.closed+'</strong></div></div>':'')
    +'<div class="inspectionMetrics"><div><small>PROGRAMADAS</small><strong>'+current.length+'</strong></div><div><small>A REALIZAR</small><strong>'+summary.pending+'</strong></div>'
    +'<div><small>NOTAS EM REVISÃO</small><strong>'+summary.awaiting+'</strong></div><div><small>ESCOPO APROVADO</small><strong>'+summary.approved+'</strong></div></div>'
    +'<h3 class="resourceSection">RONDA DO TURNO · DIA '+s.day+' / '+(s.shift?'B':'A')+'</h3>'
