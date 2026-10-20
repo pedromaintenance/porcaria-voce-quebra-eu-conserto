@@ -33,7 +33,7 @@
   const btn=(kind,label,disabled=false)=>'<button type="button" class="act'+(kind==='escalate'?' secondary':'')+'" data-monitor-action="'+kind+'" data-monitor-note="'+esc(n.id)+'" '+(disabled?'disabled':'')+'>'+label+'</button>';
   let controls='';
   if(n.status==='aguarda_revisao_pcm'){
-   controls='<p>Não abrir OS neste momento: registrar justificativa e programar recoleta. A decisão é válida apenas para este exercício fictício.</p>'
+   controls='<p>Não abrir OS neste momento: registre a justificativa e programe a próxima recoleta.</p>'
     +'<label>Justificativa '+select('monitor-reason-'+esc(n.id),Object.entries(M.REASONS))+'</label>'
     +period('monitor-interval-'+esc(n.id))
     +actions(btn('decide','INICIAR MONITORAMENTO SEM OS'));
@@ -50,16 +50,16 @@
    if(state==='requer_avaliacao')controls='<p class="inspectionAttention">AGRAVAMENTO: não continuar monitorando sem avaliação. Acompanhar a abertura manual de notificação para intervenção.</p>'
     +actions(btn('escalate','ESCALONAR AO PCM'));
   }else if(n.status==='encerrada_monitoramento'){
-   controls='<p>✓ Monitoramento didático encerrado sem OS após duas recoletas estáveis consecutivas.</p>';
+   controls='<p>✓ Monitoramento encerrado sem OS após duas recoletas estáveis consecutivas.</p>';
   }else if(n.status==='escalonada_monitoramento'){
    controls='<p>⚠ Monitoramento convertido em nova notificação <strong>'+esc(n.escalationNotificationId||'')+
     '</strong>. Revisão PCM pendente; nenhuma OS foi criada automaticamente.</p>';
   }
   const history=(m.samples||[]).map(x=>'<li>Turno '+Number(x.tick)+' · <strong>'+esc(x.label)+'</strong>'
-   +'<p>'+esc(x.reading)+'</p><small>Recoleta simulada, sem medição OEM.</small></li>').join('');
-  return '<section class="pcmMonitoringCard"><h4>📈 MONITORAMENTO DE CONDIÇÃO · TREINAMENTO</h4>'
+   +'<p>'+esc(x.reading)+'</p><small>Resultado registrado na carteira.</small></li>').join('');
+  return '<section class="pcmMonitoringCard"><h4>📈 MONITORAMENTO DE CONDIÇÃO</h4>'
    +'<p><strong>Observação inicial:</strong> '+esc(m.baseline||'')+'</p>'
-   +'<p>Resultados qualitativos criados para o jogo; nenhum prazo é critério real de liberação de máquina.</p>'
+   +'<p>Acompanhe a evolução dos resultados e registre a decisão técnica.</p>'
    +controls+(history?'<details open><summary>Histórico de recoletas ('+(m.samples||[]).length+')</summary><ol>'+history+'</ol></details>':'')
    +'</section>';
  }
@@ -67,9 +67,9 @@
   const statuses={aguarda_revisao_pcm:'AGUARDA REVISÃO',devolvida:'DEVOLVIDA',aprovada_pcm:'PLANEJAMENTO APROVADO',arquivada_pcm:'ARQUIVADA',convertida_os:'OS GERADA',monitorando:'EM MONITORAMENTO',encerrada_monitoramento:'ENCERRADO SEM OS',escalonada_monitoramento:'ESCALONADO AO PCM'};
   const id=esc(n.id),status=esc(statuses[n.status]||'STATUS DESCONHECIDO');
   const header='<header class="inspectionNotificationHead"><strong>'+id+' · '+esc(model(n.modelId))+' · '+esc(n.asset)+'</strong><span class="inspectionBadge">'+status+'</span></header>';
-  const field=esc(n.reportedIndication||n.description||'Nenhuma evidência de campo disponível.');
-  const details='<div class="inspectionObservation"><strong>ENCONTRADO NA INSPEÇÃO</strong><p>'+field+'</p></div>'
-   +'<small>Prioridade: '+esc(n.priority.toUpperCase())+' · Inspeção '+esc(n.inspectionId)+' · cenário de treinamento, sem medição real</small>';
+  const field=esc(n.reportedIndication||n.description||'Nenhum dado de condição disponível.');
+  const details='<div class="inspectionObservation"><strong>CONDIÇÃO REGISTRADA</strong><p>'+field+'</p></div>'
+   +'<small>Prioridade: '+esc(n.priority.toUpperCase())+' · Inspeção '+esc(n.inspectionId)+'</small>';
   const hist=Array.isArray(n.reviewHistory)&&n.reviewHistory.length
    ?'<details class="inspectionAudit"><summary>Histórico de decisões · '+n.reviewHistory.length+'</summary><ol>'
      +n.reviewHistory.slice(-8).map(h=>'<li>Turno '+Number(h.tick||0)+' · '+esc(h.action)+' · '+esc(h.reason)+'</li>').join('')+'</ol></details>':'';
