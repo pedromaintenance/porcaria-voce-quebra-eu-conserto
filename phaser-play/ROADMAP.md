@@ -7,6 +7,22 @@
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
 
+## Entrega 0.9.0 — Inspeção sensitiva, achados e notificações (20/10/2026)
+
+- [x] Aba **INSPEÇÕES** independente da Fila de OS e do planejamento.
+- [x] Até três rotinas de inspeção **simuladas** por turno, em modelos com roteiros existentes, sem escolher equipamento que tenha OS ativa. A abertura do painel no mesmo turno não duplica tarefas.
+- [x] Desfechos sensitivo-didáticos: sem anormalidade aparente ou indício de defeito. Sintomas só são revelados depois da inspeção; não há medição, causa confirmada nem evidência real.
+- [x] Abrir uma **notificação NM####** apenas após um achado, com texto editável e prioridade definida pelo jogador. Cada nota guarda inspeção de origem e permanece em `aguarda_revisao_pcm`.
+- [x] A notificação **não é OS**, não altera o backlog de serviços, nem compra material, nem consome HH neste MVP.
+- [x] Saves antigos recebem coleções novas sem perder as OS ou o histórico; uma inspeção não executada vence ao trocar de turno.
+- [x] Testes de planejamento idempotente, notificações não duplicadas, fonte simulada, saves antigos e integridade da fila de OS.
+- [ ] Implementar checklists por equipamento e programa com periodicidade, HH e designação de inspetor.
+- [ ] Implementar revisão de notificações: aceitar, devolver, arquivar e transformar em OS com escopo e evidências.
+- [ ] Integrar programação PCM, materiais, ferramentas e capacidade semanal antes de execução.
+- [ ] Expandir inspeções com evidências positivas, negativas e inconclusivas do FMEA (somente após curadoria).
+
+**Observação:** probabilidades e quantidade de inspeções são parâmetros fictícios do jogo; o módulo não se apresenta como procedimento de campo. Os dados FMEA ainda não são homologação OEM.
+
 ## Entrega 0.8.30 — Redesign do Setor de Treinamentos (somente interface)
 
 **Solicitação de 19/10/2026:** substituir a Bia pequena no cabeçalho por personagem grande e animada à esquerda, com alteração de poses; transformar as quatro etiquetas coloridas em **abas interativas**, exibindo **apenas a seção selecionada**. Referência: captura do modal da v0.8.28 fornecida pelo usuário.

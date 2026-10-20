@@ -1,8 +1,10 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.32 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.9.0 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
 const E=window.PORCARIA_ENGINE;
+const I=window.PORCARIA_INSPECTION;
+const IV=window.PORCARIA_INSPECTION_VIEW;
 const STAGES=['Sistema','Grupo','Subgrupo','Componente','Dano','Causa'];
 const SAVE='porcaria.phaser.prototype.v01';
 const ASSETS={
@@ -134,7 +136,7 @@ function updateSceneStatus(){
  status.textContent=label;
 }
 
-const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO', 'full-detail':'🔧 DETALHES COMPLETOS DA OS',stats:'📊 INDICADORES E RECURSOS',planning:'🗓️ PLANEJAMENTO PCM',shift:'📋 BRIEFING DE TURNO',team:'👷 EQUIPE DA OFICINA',training:'📚 SETOR DE TREINAMENTOS',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA',management:'📋 GESTÃO DA OFICINA'};
+const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO', 'full-detail':'🔧 DETALHES COMPLETOS DA OS',stats:'📊 INDICADORES E RECURSOS',planning:'🗓️ PLANEJAMENTO PCM',shift:'📋 BRIEFING DE TURNO',team:'👷 EQUIPE DA OFICINA',training:'📚 SETOR DE TREINAMENTOS',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA',management:'📋 GESTÃO DA OFICINA',inspection:'🔎 INSPEÇÕES E NOTIFICAÇÕES'};
 function closeSceneMenu(){
  const menu=$('sceneMenu'),trigger=$('sceneMenuBtn');
  if(menu)menu.hidden=true;
@@ -147,6 +149,7 @@ function openPanel(name){
  if(name==='shift')drawShiftBrief();
  if(name==='planning')drawPlanning();
  if(name==='training')drawTraining();
+ if(name==='inspection'){I.plan(state,data);save();drawInspection();}
  if(scene?.input)scene.input.enabled=false;
  closeSceneMenu();
  overlay.hidden=false;
@@ -397,6 +400,7 @@ function drawBays(){
   return `<div class="bayBadge ${st.css}" style="${style}"><b>BOX ${i+1}</b><span>${j?esc(E.model(data,j.modelId)?.title)+' · '+esc(j.id):'Disponível'}</span><b>${st.label}</b></div>`;
  }).join('');
 }
+function drawInspection(){if($('inspectionPanel'))$('inspectionPanel').innerHTML=IV.render(state,data,I)}
 function renderQueue(){
  $('queue').innerHTML=[...state.jobs].filter(j=>{
  const m=E.model(data,j.modelId),q=FILTER.query.toLowerCase();
@@ -422,6 +426,7 @@ function drawManagement(k){
  const available=state.team.filter(m=>!state.jobs.some(j=>j.assigned===m.id)&&!E.TRAINING.active(state,m)).length;
  const metrics=[
   ['Caixa','R$ '+brl(state.cash)],
+   ['Notas de inspeção',I.summary(state).awaiting],
   ['Reputação',k.reputation+'/100'],
   ['OS na carteira',k.backlog],
   ['Em execução',assigned.length],
@@ -433,7 +438,7 @@ function drawManagement(k){
  ];
  $('management').innerHTML='<p class="muted">Controle da oficina no mesmo ambiente Phaser. Dados e decisões vêm da campanha ativa.</p>'
    +'<div class="managementGrid">'+metrics.map(([name,value])=>'<div class="managementMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong></div>').join('')+'</div>'
-   +'<div class="managementActions"><button class="act secondary" data-open-panel="training">📚 TREINAMENTOS</button><button class="act" data-open-panel="planning">🗓️ PLANEJAR OS</button><button class="act secondary" data-open-panel="shift">📋 REVISAR PRÓXIMO TURNO</button><button class="act secondary" data-open-panel="queue">📻 ABRIR CARTEIRA</button><button class="act secondary" data-open-panel="team">👷 EQUIPE</button><button class="act secondary" data-open-panel="store">📦 ESTOQUE</button><button class="act secondary" data-open-panel="stats">📊 INDICADORES</button></div>'
+   +'<div class="managementActions"><button class="act secondary" data-open-panel="inspection">🔎 INSPEÇÕES</button><button class="act secondary" data-open-panel="training">📚 TREINAMENTOS</button><button class="act" data-open-panel="planning">🗓️ PLANEJAR OS</button><button class="act secondary" data-open-panel="shift">📋 REVISAR PRÓXIMO TURNO</button><button class="act secondary" data-open-panel="queue">📻 ABRIR CARTEIRA</button><button class="act secondary" data-open-panel="team">👷 EQUIPE</button><button class="act secondary" data-open-panel="store">📦 ESTOQUE</button><button class="act secondary" data-open-panel="stats">📊 INDICADORES</button></div>'
    +'<section class="readinessBoard"><div class="readinessHeading"><h3>🛠️ PRONTIDÃO OPERACIONAL · TURNO '+ready.shift+'</h3><span>QUADRO CONSULTIVO</span></div>'
    +'<div class="readinessMetrics">'
      +'<div><small>HH DE EQUIPE DISPONÍVEIS</small><strong>'+ready.metrics.nominalCrewHH+' HH</strong><span>'+ready.metrics.availableCrew+' profissional(is) × 10,5 HH</span></div>'
@@ -473,6 +478,7 @@ function drawUI(){
  updateSceneStatus();
  const k=E.kpis(state);
  drawManagement(k);
+ if(document.querySelector('[data-panel="inspection"].is-open'))drawInspection();
  $('day').textContent='DIA '+state.day+' · '+(state.shift?'🌙 NOITE · B':'☀ DIA · A');
  $('cash').textContent='R$ '+brl(state.cash);$('team').textContent=state.team.length;
  $('backlog').textContent=k.backlog;$('energy').textContent=Math.round(state.player.mental)+'/100';
@@ -703,6 +709,17 @@ function events(){
    if(submenu.dataset.openPanel==='queue')preferredBay=null;
    openPanel(submenu.dataset.openPanel);return;
   }
+  const inspectionAction=ev.target.closest('[data-inspection-action]');
+  if(inspectionAction){
+   const id=inspectionAction.dataset.inspectionId,kind=inspectionAction.dataset.inspectionAction;
+   const result=kind==='inspect'?I.inspect(state,data,id):
+    kind==='notify'?I.notify(state,id,$('inspection-note-'+id)?.value,$('inspection-priority-'+id)?.value):{error:'Ação inválida.'};
+   if(result.error){notify(result.error);return}
+   save();drawUI();
+   notify(kind==='inspect'?(result.status==='clear'?'Inspeção encerrada: sem indício aparente.':'Indício observado. Registre uma notificação se necessário.'):
+      'Notificação '+result.notification.id+' criada para revisão PCM. Nenhuma OS foi aberta.');
+   return;
+  }
   const planHorizon=ev.target.closest('[data-planning-horizon]');
   if(planHorizon){
    planningHorizon=planHorizon.dataset.planningHorizon==='week'?'week':'turn';
@@ -824,7 +841,7 @@ function events(){
    const candidate=JSON.parse(await file.text());
    if(!E.validate(candidate))throw Error('Save incompatível com a simulação atual.');
    if(!confirm('Importar save e substituir o progresso desta oficina? Exporte o save atual antes de continuar.'))return;
-   state=E.localizeDiagnosticOptions(E.normalizeRoster(candidate),data);state.productivityTarget=E.productivityProfile(state.productivityTarget).target;selected=state.jobs[0]?.id||null;
+   state=E.localizeDiagnosticOptions(E.normalizeRoster(candidate),data);I.normalized(state);state.productivityTarget=E.productivityProfile(state.productivityTarget).target;selected=state.jobs[0]?.id||null;
     completedOrderId=null;completedSearch='';$('closedOrderSearch').value='';
    action(null);notify('Save importado com sucesso.');
   }catch(error){notify('Falha ao importar: '+error.message)}
@@ -1275,9 +1292,10 @@ async function boot(){
   if(!state)state=E.create(data);
   E.normalizeRoster(state); // inclui campanhas antigas sem apagar OS nem contratações.
   E.localizeDiagnosticOptions(state,data); // traduz opções legadas sem alterar códigos.
+   I.normalized(state); // saves antigos recebem uma carteira vazia.
   state.productivityTarget=E.productivityProfile(state.productivityTarget).target;
   selected=state.jobs[0]?.id;events();drawUI();
-  if(!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
+  if(!I||!IV||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
   if(!window.PORCARIA_RENDER_QUALITY)throw Error('Configuração de nitidez indisponível.');
   renderProfile=window.PORCARIA_RENDER_QUALITY.profile({
    viewportWidth:window.innerWidth,devicePixelRatio:window.devicePixelRatio,
