@@ -83,7 +83,7 @@
  // Etapas do fluxo técnico de revisão: nunca gerar OS ao aprovar uma nota.
  const TRADES=Object.freeze({mecanica:'Mecânica',hidraulica:'Hidráulica',eletrica:'Elétrica',eletronica:'Eletrônica',lubrificacao:'Lubrificação',estruturas:'Estruturas',instrumentacao:'Instrumentação'});
  const PRIORITIES=new Set(['baixa','media','alta']);
- const trim=(v,max)=>String(v??'').trim().replace(/\\s+/g,' ').slice(0,max+1);
+ const trim=(v,max)=>String(v??'').trim().replace(/\s+/g,' ').slice(0,max+1);
  function audit(n,s,action,reason){
   if(!Array.isArray(n.reviewHistory))n.reviewHistory=[];
   n.reviewHistory.push({tick:s.tick,action,reason:String(reason||''),origin:'revisao_pcm_jogo'});
