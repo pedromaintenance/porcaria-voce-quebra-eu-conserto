@@ -10,8 +10,8 @@ const expected={
   INC042:['EQ07','OIL-CASE-004'],INC043:['EQ01','OIL-CASE-070'],
   INC044:['EQ08',null],INC045:['EQ02','PB-SHOVEL-COOL-01']
 };
-assert.equal(D.scenarios.length,55);
-assert.equal(new Set(D.scenarios.map(s=>s.id)).size,55,'IDs únicos');
+assert.equal(D.scenarios.length,65);
+assert.equal(new Set(D.scenarios.map(s=>s.id)).size,65,'IDs únicos');
 const locs=new Set(D.paths.map(p=>[p.modelId,p.system,p.group,p.subgroup].join('|')));
 const modelIds=new Set(D.models.map(m=>m.id));
 for(const [id,[model,source]] of Object.entries(expected)){
@@ -52,4 +52,4 @@ assert.equal(initial.stock.FILO,2,'novo estoque inicial');
 assert.equal(initial.stock.PNEU,0,'pneu exige aprovisionamento');
 assert.equal(initial.tools.COLETA,true);
 assert.equal(initial.tools.CALP,false);
-console.log('OK: 12 novos casos didáticos FMEA, 55 totais; catálogos, opções, estoque e sorteio válidos.');
+console.log('OK: 12 novos casos didáticos FMEA, 65 totais; catálogos, opções, estoque e sorteio válidos.');

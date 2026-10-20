@@ -3442,6 +3442,28 @@
       "subgroupName": "Circuito de Comando do Joystick",
       "origin": "trilha_didatica_simulada",
       "sapValidated": false
+    },
+    {
+      "modelId": "EQ03",
+      "system": "HYSY",
+      "systemName": "Sist Hidráulico",
+      "group": "FISY",
+      "groupName": "Filtração Hidráulica",
+      "subgroup": "FILH",
+      "subgroupName": "Filtro de Retorno Hidráulico",
+      "origin": "trilha_didatica_simulada",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ05",
+      "system": "HYSY",
+      "systemName": "Sist Hidráulico",
+      "group": "FISY",
+      "groupName": "Filtração Hidráulica",
+      "subgroup": "FILH",
+      "subgroupName": "Filtro Hidráulico",
+      "origin": "trilha_didatica_simulada",
+      "sapValidated": false
     }
   ],
   "scenarios": [
@@ -5311,6 +5333,492 @@
         "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
         "adaptation": "cenario_ficcional_em_equipamento_do_jogo_sem_aplicabilidade_OEM_confirmada"
       }
+    },
+    {
+      "id": "INC056",
+      "modelId": "EQ03",
+      "category": "hidraulica",
+      "title": "395 — alimentação hidráulica estrangulada",
+      "operator": "Após aquecimento, a escavadeira CAT 395 movimenta os implementos lentamente e apresenta ruído na região das bombas. Não há vazamento externo evidente nem confirmação de dano na bomba.",
+      "verification": "Verificar níveis, condição do fluido, filtros e restrição da sucção apenas conforme pontos e limites OEM. Após isolamento e alívio total de pressão, inspecionar possível esmagamento de uma mangueira de alimentação e interferência com suportes.",
+      "path": [
+        "HYSY",
+        "DRPU",
+        "HYPU"
+      ],
+      "component": "Mangueira",
+      "damage": "Colapsado ou esmagado",
+      "cause": "Bloqueio ou restrição",
+      "priority": 2,
+      "material": "MANG",
+      "tool": "VACU",
+      "hours": 5,
+      "diagHours": 4,
+      "estimatedCost": 260,
+      "sourcePartMatch": false,
+      "lesson": "O gabarito simula mangueira colapsada limitando a alimentação da bomba. Ruído ou possível cavitação são efeitos plausíveis, mas não provam a causa nem autorizam condenação automática da bomba.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-EXC-PUMP-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "cenario_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_ficticia",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "hydraulicTraining": {
+        "origin": "adaptacao_de_referencia_simulada",
+        "mechanism": "restricao_de_succao",
+        "alternatives": [
+          "desgaste interno da bomba",
+          "leitura incorreta de pressão"
+        ],
+        "test": "inspeção de linhas e avaliação controlada da sucção",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao"
+      }
+    },
+    {
+      "id": "INC057",
+      "modelId": "EQ03",
+      "category": "hidraulica",
+      "title": "395 — vazamento na conexão junto à bomba",
+      "operator": "Na CAT 395, surge óleo acumulado abaixo da bomba principal e a produtividade hidráulica oscila. Após limpeza preliminar ainda não se sabe se a perda vem do corpo da bomba ou das linhas próximas.",
+      "verification": "Com a máquina bloqueada e pressão residual eliminada, localizar início da trilha de óleo e examinar interface de conexões. Confirmar integridade de vedação e fixação por procedimento do fabricante, sem reaperto em linha pressurizada.",
+      "path": [
+        "HYSY",
+        "DRPU",
+        "HYPU"
+      ],
+      "component": "Conexão, Mangueira",
+      "damage": "Vazando",
+      "cause": "Conexão frouxa",
+      "priority": 2,
+      "material": "CONH",
+      "tool": "MANO",
+      "hours": 4,
+      "diagHours": 3,
+      "estimatedCost": 120,
+      "sourcePartMatch": false,
+      "lesson": "O cenário resolve como vazamento em conexão com fixação inadequada, e não falha da vedação interna da bomba. Sintomas idênticos podem ter origens distintas; o rastreamento físico precede a substituição de componentes.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-EXC-PUMP-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "cenario_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_ficticia",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "hydraulicTraining": {
+        "origin": "adaptacao_de_referencia_simulada",
+        "mechanism": "perda_externa_interface",
+        "alternatives": [
+          "vedação da bomba",
+          "óleo proveniente de componente superior"
+        ],
+        "test": "limpeza e rastreamento da origem da perda",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao"
+      }
+    },
+    {
+      "id": "INC058",
+      "modelId": "EQ03",
+      "category": "hidraulica",
+      "title": "395 — filtro hidráulico com restrição",
+      "operator": "Na CAT 395, movimentos tornam-se lentos após várias horas de serviço e há alerta genérico de condição hidráulica. O histórico recente registra manutenção de fluidos, sem indicação conclusiva da origem.",
+      "verification": "Conferir a configuração efetiva de filtragem, indicador de restrição e diferencial de pressão em condições previstas pelo OEM. Após despressurização e controle da contaminação, inspecionar o elemento filtrante e investigar a origem dos resíduos antes da substituição.",
+      "path": [
+        "HYSY",
+        "FISY",
+        "FILH"
+      ],
+      "component": "Filtro, Hidráulico",
+      "damage": "Entupido ou restringido",
+      "cause": "Contaminação",
+      "priority": 2,
+      "material": "FILH",
+      "tool": "PDIF",
+      "hours": 4,
+      "diagHours": 3,
+      "estimatedCost": 135,
+      "sourcePartMatch": false,
+      "lesson": "No jogo, contaminação restringiu um elemento de filtração hipotético. O banco FMEA sustenta a investigação de restrições, mas não confirma esse arranjo de filtro na CAT 395 nem a origem das partículas. A fonte de contaminação continua exigindo pesquisa.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-EXC-PUMP-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "cenario_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_ficticia",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "hydraulicTraining": {
+        "origin": "adaptacao_de_referencia_simulada",
+        "mechanism": "restricao_na_filtragem",
+        "alternatives": [
+          "falha da bomba",
+          "sensor/indicação defeituosa"
+        ],
+        "test": "confirmar localização OEM e pressão diferencial, inspecionar elemento",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao"
+      }
+    },
+    {
+      "id": "INC059",
+      "modelId": "EQ08",
+      "category": "hidraulica",
+      "title": "966 — cilindro de elevação com fuga externa",
+      "operator": "Na CAT 966, o implemento de elevação apresenta perda gradual de posição e há umidade perto da haste do cilindro da posição 1. Ainda não se distinguiu perda externa do circuito de deriva por fuga interna.",
+      "verification": "Apoiar mecanicamente o implemento, bloquear e despressurizar para localizar o primeiro ponto de óleo. Confirmar vedações, superfície da haste e integridade das linhas; testes de deriva só por procedimento OEM e sem pessoas sob o implemento.",
+      "path": [
+        "IMAT",
+        "LIAM",
+        "CYL1"
+      ],
+      "component": "Vedação",
+      "damage": "Vazando",
+      "cause": "Falha de vedação",
+      "priority": 2,
+      "material": "VED",
+      "tool": "MANO",
+      "hours": 5,
+      "diagHours": 4,
+      "estimatedCost": 145,
+      "sourcePartMatch": false,
+      "lesson": "Este gabarito simula vedação externa comprometida. Em comparação com INC044, perda de posição também pode resultar de fuga interna, sem vazamento visível. O caso CAT 980 de referência não foi homologado para a CAT 966.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-LOADER-CYL-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "cenario_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_ficticia",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "hydraulicTraining": {
+        "origin": "adaptacao_de_referencia_simulada",
+        "mechanism": "fuga_externa_cilindro",
+        "alternatives": [
+          "passagem interna do cilindro",
+          "válvula de retenção"
+        ],
+        "test": "localização da origem e ensaio de deriva OEM",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao"
+      }
+    },
+    {
+      "id": "INC060",
+      "modelId": "EQ08",
+      "category": "hidraulica",
+      "title": "966 — direção pesada com bomba desgastada",
+      "operator": "Na CAT 966, a direção demora a responder após aquecimento e há relatos de maior esforço nas manobras. Não foram isoladas as hipóteses de vazamento, restrição ou leitura incorreta.",
+      "verification": "Verificar condição do fluido, alimentação e resposta da direção; fazer testes controlados de vazão/pressão conforme configuração OEM e identificar perdas internas da bomba antes de autorizar substituição. Sistema de direção é função crítica para segurança.",
+      "path": [
+        "HYSY",
+        "STSY",
+        "HYPU"
+      ],
+      "component": "Bomba, Hidráulica",
+      "damage": "Com função degradada",
+      "cause": "Desgaste",
+      "priority": 3,
+      "material": "BOMH",
+      "tool": "MANO",
+      "hours": 9,
+      "diagHours": 5,
+      "estimatedCost": 2450,
+      "sourcePartMatch": false,
+      "lesson": "Elaboração autoral: a bomba da direção tem desgaste interno no exercício. Sintoma de direção lenta não demonstra bomba condenada; válvula, cilindro, fluido, restrição e sensor também são candidatos. Sem diagnóstico seguro, não liberar equipamento.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": null,
+        "layer": "elaboracao_autoral",
+        "version": null,
+        "status": "cenario_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_ficticia",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "hydraulicTraining": {
+        "origin": "elaboracao_autoral",
+        "mechanism": "perda_de_eficiencia_volumetrica",
+        "alternatives": [
+          "fuga no cilindro",
+          "válvula de controle",
+          "restrição na alimentação"
+        ],
+        "test": "teste de pressão e vazão conforme OEM",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao"
+      }
+    },
+    {
+      "id": "INC061",
+      "modelId": "EQ02",
+      "category": "hidraulica",
+      "title": "6030 — válvula principal presa por partículas",
+      "operator": "Na escavadeira CAT 6030, uma função hidráulica apresenta resposta irregular e aquecimento depois do trabalho pesado. O laboratório sinaliza material particulado no circuito, sem localizar o componente gerador.",
+      "verification": "Correlacionar óleo, filtro e tendências com a função afetada. Sob bloqueio e alívio da energia hidráulica, avaliar o comando e a válvula principal da posição 1 por testes OEM, verificando se existe travamento por resíduo antes de substituir o conjunto.",
+      "path": [
+        "HYSY",
+        "HSVV",
+        "VAL1"
+      ],
+      "component": "Válvula, Hidráulica",
+      "damage": "Travado",
+      "cause": "Contaminação",
+      "priority": 3,
+      "material": "VALH",
+      "tool": "COLETA",
+      "hours": 7,
+      "diagHours": 4,
+      "estimatedCost": 980,
+      "sourcePartMatch": false,
+      "lesson": "O gabarito ficcional escolhe uma válvula travada por contaminação. O registro de óleo usado como referência é de CAT 777 e somente ensina interpretação de partículas; não comprova esta falha na 6030 nem identifica o gerador do material.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "OIL-CASE-043",
+        "layer": "oil/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "cenario_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_ficticia",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "hydraulicTraining": {
+        "origin": "adaptacao_de_referencia_simulada",
+        "mechanism": "valvula_com_particulas",
+        "alternatives": [
+          "atuador elétrico",
+          "bobina do comando",
+          "restrição em filtro"
+        ],
+        "test": "avaliação óleo e testes controlados da válvula OEM",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao"
+      }
+    },
+    {
+      "id": "INC062",
+      "modelId": "EQ02",
+      "category": "hidraulica",
+      "title": "6030 — troca térmica hidráulica prejudicada",
+      "operator": "Na CAT 6030, a temperatura do óleo hidráulico aumenta em ciclos longos, enquanto o desempenho melhora após redução de carga. Não se identifica vazamento ou falha de sensor de forma conclusiva.",
+      "verification": "Verificar correlação de temperaturas, fluxo de ar e condição do resfriador hidráulico da posição 2, conforme arranjo real. Depois de bloquear e resfriar, examinar incrustação externa e sujidade antes de qualquer desmonte ou limpeza técnica controlada.",
+      "path": [
+        "HYSY",
+        "COSY",
+        "HOC2"
+      ],
+      "component": "Trocador de Calor",
+      "damage": "Entupido ou restringido",
+      "cause": "Material estranho",
+      "priority": 2,
+      "material": "LIMP",
+      "tool": "TERM",
+      "hours": 4,
+      "diagHours": 3,
+      "estimatedCost": 85,
+      "sourcePartMatch": false,
+      "lesson": "Missão autoral: sujidade externa dificulta a dissipação de calor, sem comprovar falha de bomba. Em operação real, a investigação também deve avaliar ventilação, válvula térmica, vazão e medição de temperatura.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": null,
+        "layer": "elaboracao_autoral",
+        "version": null,
+        "status": "cenario_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_ficticia",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "hydraulicTraining": {
+        "origin": "elaboracao_autoral",
+        "mechanism": "restricao_troca_termica",
+        "alternatives": [
+          "falha de ventilação",
+          "vazão inadequada",
+          "sensor de temperatura"
+        ],
+        "test": "comparação térmica e inspeção do resfriador",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao"
+      }
+    },
+    {
+      "id": "INC063",
+      "modelId": "EQ05",
+      "category": "hidraulica",
+      "title": "DR410i — retorno hidráulico com restrição",
+      "operator": "Na Sandvik DR410i, o sistema hidráulico apresenta resposta mais lenta e alarme genérico de condição após vários turnos. A equipe menciona partículas no histórico de óleo, mas nenhum elemento foi inspecionado.",
+      "verification": "Consultar primeiro o esquema real para identificar filtração e pontos de teste. Verificar restrição do filtro, tendência de pressão diferencial e qualidade de amostragem segundo Sandvik; trabalhar com energia hidráulica totalmente controlada.",
+      "path": [
+        "HYSY",
+        "FISY",
+        "FILH"
+      ],
+      "component": "Filtro, Hidráulico",
+      "damage": "Entupido ou restringido",
+      "cause": "Material estranho",
+      "priority": 2,
+      "material": "FILH",
+      "tool": "PDIF",
+      "hours": 4,
+      "diagHours": 3,
+      "estimatedCost": 135,
+      "sourcePartMatch": false,
+      "lesson": "O filtro de retorno é uma localização didática, não um item Sandvik homologado. A missão resolve uma obstrução por material estranho, sem concluir a origem da contaminação nem afirmar a configuração da perfuratriz.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": null,
+        "layer": "elaboracao_autoral",
+        "version": null,
+        "status": "cenario_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_ficticia",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "hydraulicTraining": {
+        "origin": "elaboracao_autoral",
+        "mechanism": "filtragem_dr410_restrita",
+        "alternatives": [
+          "bomba desgastada",
+          "erro de indicador",
+          "falha de válvula"
+        ],
+        "test": "confirmar esquema e diferencial de pressão OEM",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao"
+      }
+    },
+    {
+      "id": "INC064",
+      "modelId": "EQ06",
+      "category": "hidraulica",
+      "title": "DI650i — pulldown perde torque hidráulico",
+      "operator": "Na Sandvik DI650i, o conjunto de pulldown perde desempenho quando o óleo aquece, embora o comando permaneça disponível. Não há confirmação de folga de corrente ou restrição na alimentação.",
+      "verification": "Conferir a arquitetura aplicável e executar teste comparativo seguro de vazão/pressão no motor hidráulico de avanço, seguindo documentação Sandvik. Inspecionar alternativas mecânicas de guiamento e fuga hidráulica antes de condenar o motor.",
+      "path": [
+        "MAST",
+        "ROHE",
+        "MTHY"
+      ],
+      "component": "Motor, Hidráulico",
+      "damage": "Com função degradada",
+      "cause": "Desgaste",
+      "priority": 3,
+      "material": "MOTH",
+      "tool": "MANO",
+      "hours": 8,
+      "diagHours": 4,
+      "estimatedCost": 1720,
+      "sourcePartMatch": false,
+      "lesson": "Nesta ficção, desgaste interno reduz a eficiência do motor hidráulico do pulldown. O playbook de avanço irregular da DR410i é apenas referência conceitual de hipóteses, não evidência de aplicação na DI650i.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-DRILL-DR410-FEED-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "cenario_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_ficticia",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "hydraulicTraining": {
+        "origin": "adaptacao_de_referencia_simulada",
+        "mechanism": "fuga_interna_motor",
+        "alternatives": [
+          "resistência mecânica",
+          "desajuste de corrente",
+          "baixa vazão da alimentação"
+        ],
+        "test": "ensaios comparativos conforme arquitetura Sandvik",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao"
+      }
+    },
+    {
+      "id": "INC065",
+      "modelId": "EQ01",
+      "category": "hidraulica",
+      "title": "777E — metais e falha na bomba dos freios",
+      "operator": "O laudo didático de óleo do circuito hidráulico de freios do 777E mostra crescimento de partículas ferrosas, com alterações ocasionais na resposta do sistema. A fonte das partículas ainda não está comprovada.",
+      "verification": "Impedir operação sem verificação segura dos freios. Investigar filtros, amostra, contaminantes e pressão/vazão; somente com inspeção de componente e procedimento OEM confirmar eventual dano interno na bomba antes de substituí-la.",
+      "path": [
+        "HYSY",
+        "BRSY",
+        "HYPU"
+      ],
+      "component": "Bomba, Hidráulica",
+      "damage": "Desgastado",
+      "cause": "Contaminação",
+      "priority": 3,
+      "material": "BOMH",
+      "tool": "COLETA",
+      "hours": 10,
+      "diagHours": 5,
+      "estimatedCost": 2450,
+      "sourcePartMatch": false,
+      "lesson": "O cenário simula bomba de alimentação dos freios com desgaste identificado em investigação fictícia. O caso de referência usa CAT 777 genérico e uma inspeção virtual, sem confirmar aplicação ao 777E ou origem da falha no campo. Sistema de freios exige tratamento conservador.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "OIL-CASE-046",
+        "layer": "oil/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "cenario_didatico_nao_homologado_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_sem_execucao",
+        "answer": "hipotese_resolvida_ficticia",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "hydraulicTraining": {
+        "origin": "adaptacao_de_referencia_simulada",
+        "mechanism": "desgaste_bomba_contaminacao",
+        "alternatives": [
+          "partículas de outro componente",
+          "falha de indicador",
+          "resíduo de manutenção anterior"
+        ],
+        "test": "coleta, inspeção dirigida e confirmação de bomba por OEM",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao"
+      }
     }
   ],
   "catalog": {
@@ -5338,7 +5846,11 @@
       "Sensor, Tensão",
       "Sensor, Pressão",
       "Bobina, Solenoide",
-      "Resistor, Terminação"
+      "Resistor, Terminação",
+      "Bomba, Hidráulica",
+      "Válvula, Hidráulica",
+      "Trocador de Calor",
+      "Motor, Hidráulico"
     ],
     "damages": [
       {
@@ -6801,6 +7313,34 @@
       "lead": 2,
       "initial": 1,
       "emoji": "🔗"
+    },
+    "FILH": {
+      "name": "Elemento de filtro hidráulico (jogo)",
+      "unit": 135,
+      "lead": 1,
+      "initial": 3,
+      "emoji": "🧃"
+    },
+    "BOMH": {
+      "name": "Conjunto de bomba hidráulica (jogo)",
+      "unit": 2450,
+      "lead": 4,
+      "initial": 0,
+      "emoji": "⚙️"
+    },
+    "VALH": {
+      "name": "Conjunto de válvula hidráulica (jogo)",
+      "unit": 980,
+      "lead": 3,
+      "initial": 0,
+      "emoji": "🔩"
+    },
+    "MOTH": {
+      "name": "Conjunto de motor hidráulico (jogo)",
+      "unit": 1720,
+      "lead": 3,
+      "initial": 0,
+      "emoji": "⚙️"
     }
   },
   "tools": {
@@ -6875,6 +7415,18 @@
       "cost": 1180,
       "initial": false,
       "icon": "🖧"
+    },
+    "VACU": {
+      "name": "Kit de diagnóstico de sucção hidráulica",
+      "cost": 650,
+      "initial": false,
+      "icon": "📏"
+    },
+    "PDIF": {
+      "name": "Medidor de diferencial de pressão",
+      "cost": 710,
+      "initial": false,
+      "icon": "📐"
     }
   }
 }
