@@ -15,8 +15,8 @@ const expected={
  INC054:['EQ06','ELEC-CF-13-3','Conector, Elétrica'],
  INC055:['EQ02','ELEC-CF-23-2','Chicote Elétrico']
 };
-assert.equal(D.scenarios.length,85,'45 anteriores + 10 elétricos + 10 hidráulicos + 10 diesel + 10 perfuratrizes');
-assert.equal(new Set(D.scenarios.map(s=>s.id)).size,85);
+assert.equal(D.scenarios.length,95,'45 anteriores + 10 elétricos + 10 hidráulicos + 10 diesel + 10 perfuratrizes + 10 rodante');
+assert.equal(new Set(D.scenarios.map(s=>s.id)).size,95);
 const paths=new Set(D.paths.map(p=>[p.modelId,p.system,p.group,p.subgroup].join('|')));
 const original=D.scenarios.slice(0,45).map(s=>s.id);
 assert.deepEqual(original,Array.from({length:45},(_,i)=>'INC'+String(i+1).padStart(3,'0')),'não remover nem reordenar missões anteriores');
