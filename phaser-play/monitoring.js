@@ -70,13 +70,17 @@
   const n=get(s,id),m=n?.monitoring;
   if(!n||n.status!=='monitorando'||m.status!=='programado')return {error:'Não existe recoleta programada para esta notificação.'};
   if(!Number.isSafeInteger(m.nextTick)||s.tick<m.nextTick)return {error:'Recoleta ainda não venceu. Turno programado: '+m.nextTick+'.'};
+  if(!s.tools?.COLETA)return {error:'Kit de coleta e inspeção de fluidos indisponível.'};
+  const cost=40; // Preço virtual do teste, não custo de laboratório real.
+  if(!Number.isFinite(s.cash)||s.cash<cost)return {error:'Saldo fictício insuficiente para recoleta.'};
   const p=PROTOCOLS[n.monitorProtocol];
   if(!p)return {error:'Protocolo não encontrado.'};
   const round=m.samples.length;
   const key=p.results[Math.min(round,p.results.length-1)];
   const desc=OUTCOMES[key];
-  const entry={tick:s.tick,round:round+1,trend:key,label:desc.label,reading:desc.meaning,
+  const entry={tick:s.tick,round:round+1,trend:key,label:desc.label,reading:desc.meaning,cost,
    source:'coleta_e_comparacao_qualitativa_ficticia',oemValidated:false};
+  s.cash-=cost;
   m.samples.push(entry);
   m.nextTick=null;
   m.status=key==='agravamento'?'requer_avaliacao':'aguarda_decisao';
