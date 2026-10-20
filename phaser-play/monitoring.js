@@ -56,6 +56,7 @@
   if(!Object.hasOwn(REASONS,reason))return {error:'Justificativa de monitoramento inválida.'};
   const days=Number(interval);
   if(!INTERVALS.includes(days))return {error:'Selecione dois ou quatro turnos simulados.'};
+  if((s.jobs||[]).some(j=>j.asset===n.asset))return {error:'Este ativo já possui OS aberta.'};
   n.status='monitorando';n.monitoring.status='programado';n.monitoring.reason=reason;
   n.monitoring.interval=days;n.monitoring.nextTick=s.tick+days;
   n.monitoring.decisions.push({tick:s.tick,action:'monitorar',reason:REASONS[reason],nextTick:n.monitoring.nextTick});
