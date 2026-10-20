@@ -44,7 +44,29 @@ const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
 assert.ok(html.includes('training-view.js?v=0.8.30'));
 assert.ok(html.includes('game.js?v=0.8.32'));
 assert.ok(html.includes('.trainingWorkspace{display:grid;grid-template-columns:'));
-assert.ok(html.includes('.trainingBiaPortrait{display:block;width:232px;height:249px'));
+assert.ok(html.includes('.trainingBiaPortrait{display:block;width:min(232px,100%);height:auto;aspect-ratio:580/622'),'retrato proporcional em telas estreitas');
+assert.ok(html.includes('.trainingBiaStage{position:relative;display:flex;align-items:end;justify-content:center;width:100%;height:286px;isolation:isolate;overflow:visible}'),'palco não recorta poses');
+assert.ok(html.includes('animation:trainingBiaPose 12s steps(1,end) infinite'),'4 poses trocam sem arrastar spritesheet, a cada 3 segundos');
+assert.ok(html.includes('animation:trainingBiaNoWalkCoaching 9s steps(1,end) infinite'),'coaching usa só três quadros, sem caminhar');
+assert.ok(html.includes('animation:trainingBiaNoWalkField 9s steps(1,end) infinite'),'field usa só três quadros, sem caminhar');
+const framePositions={
+ '0':'0 0','1':'100% 0','2':'0 100%','3':'100% 100%'
+};
+const manifest=JSON.parse(fs.readFileSync(path.join(root,'phaser-play/assets/characters/bia/manifest.json'),'utf8'));
+const walking=Object.fromEntries(manifest.atlases.map(a=>[a.id,a.frames.filter(f=>/walk/i.test(f.pose)).map(f=>f.index)]));
+assert.deepEqual(walking.coaching,[1],'quadro de caminhada coaching identificado pelo manifesto');
+assert.deepEqual(walking.field,[2],'quadro de caminhada field identificado pelo manifesto');
+const animationRules={
+ coaching:html.match(/@keyframes trainingBiaNoWalkCoaching\\{([\\s\\S]*?)\\n\\}/)?.[1],
+ field:html.match(/@keyframes trainingBiaNoWalkField\\{([\\s\\S]*?)\\n\\}/)?.[1]
+};
+for(const [atlas,frames] of Object.entries({coaching:[0,2,3],field:[0,1,3]})){
+ assert.ok(animationRules[atlas],'animação configurada: '+atlas);
+ for(const walk of walking[atlas])assert.ok(!animationRules[atlas].includes('background-position:'+framePositions[walk]+'}'),'nunca usar pose de caminhada '+atlas);
+ assert.equal((animationRules[atlas].match(/background-position:/g)||[]).length,frames.length,'somente os três quadros estáticos '+atlas);
+}
+assert.ok(html.includes('.trainingBiaPortrait{width:min(166px,100%)}')&&html.includes('.trainingBiaPortrait{width:min(106px,100%)}'),'proporção preservada em tablets e celulares');
+assert.ok(html.includes('@media(prefers-reduced-motion:reduce){.trainingBiaPortrait{animation:none!important}}'),'respeito à preferência de movimento reduzido');
 assert.ok(html.includes('@keyframes trainingBiaPose'));
 assert.ok(html.includes('prefers-reduced-motion:reduce'));
 for(const atlas of ['coaching','field','inspection','feedback'])assert.ok(html.includes('bia-'+atlas+'-4poses.webp'));
@@ -52,6 +74,6 @@ assert.ok(game.includes("trainingUI.tab=trainingTab.dataset.trainingTab"),'cliqu
 assert.ok(game.includes("trainingUI.tab=tabs[next]"),'setas/Home/End navegam com teclado');
 assert.ok(game.includes("rememberTrainingSelection()"),'escolhas preservadas');
 assert.ok(game.includes("window.PORCARIA_TRAINING_VIEW.render(state,E,trainingUI)"),'aba ativa é mantida nos redraws');
-assert.ok(sw.includes('porcaria-vqec-20261019-v111'));
+assert.ok(sw.includes('porcaria-vqec-20261019-v111-sap-v1-bia2'),'cache atualizado para correção da Bia');
 assert.ok(html.includes('bia-coaching-4poses.webp'));
 console.log('OK: Bia anima 4 atlas, painel exclusivo, abas acessíveis, presets e cache atualizados.');

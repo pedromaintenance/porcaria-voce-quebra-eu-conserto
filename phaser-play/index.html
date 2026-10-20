@@ -513,20 +513,34 @@ body{min-height:100vh}
 .trainingFolder{font-size:12px;padding:12px;background:repeating-linear-gradient(0deg,#efe5cf 0 31px,#e2d7c0 32px);min-height:380px}
 .trainingWorkspace{display:grid;grid-template-columns:minmax(190px,235px) minmax(0,1fr);gap:14px;align-items:start}
 .trainingBiaAside{position:sticky;top:8px;align-self:start;display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0}
-.trainingBiaStage{position:relative;display:flex;align-items:end;justify-content:center;width:100%;height:286px;isolation:isolate}
+.trainingBiaStage{position:relative;display:flex;align-items:end;justify-content:center;width:100%;height:286px;isolation:isolate;overflow:visible}
 .trainingBiaStage::after{content:"";position:absolute;bottom:7px;left:18%;right:18%;height:16px;z-index:-1;background:#4c554b30;border-radius:50%;filter:blur(7px)}
-.trainingBiaPortrait{display:block;width:232px;height:249px;max-width:100%;background-repeat:no-repeat;background-size:200% 200%;background-position:0 0;image-rendering:auto;animation:trainingBiaPose 14s linear infinite}
-.trainingBiaStage--coaching .trainingBiaPortrait{background-image:url('./assets/characters/bia/bia-coaching-4poses.webp')}
-.trainingBiaStage--field .trainingBiaPortrait{background-image:url('./assets/characters/bia/bia-field-4poses.webp')}
+.trainingBiaPortrait{display:block;width:min(232px,100%);height:auto;aspect-ratio:580/622;flex-shrink:0;background-repeat:no-repeat;background-size:200% 200%;background-position:0 0;image-rendering:auto;animation:trainingBiaPose 12s steps(1,end) infinite}
+.trainingBiaStage--coaching .trainingBiaPortrait{background-image:url('./assets/characters/bia/bia-coaching-4poses.webp');animation:trainingBiaNoWalkCoaching 9s steps(1,end) infinite}
+.trainingBiaStage--field .trainingBiaPortrait{background-image:url('./assets/characters/bia/bia-field-4poses.webp');animation:trainingBiaNoWalkField 9s steps(1,end) infinite}
 .trainingBiaStage--inspection .trainingBiaPortrait{background-image:url('./assets/characters/bia/bia-inspection-4poses.webp')}
 .trainingBiaStage--feedback .trainingBiaPortrait{background-image:url('./assets/characters/bia/bia-feedback-4poses.webp')}
+/* Quadros são trocados instantaneamente: jamais mostrar dois quadrantes durante uma transição.
+   Manifesto Bia: coaching[1] e field[2] são caminhadas e não entram na animação. */
 @keyframes trainingBiaPose{
-  0%,24.99%{background-position:0 0}
-  25%,49.99%{background-position:100% 0}
-  50%,74.99%{background-position:0 100%}
+  0%{background-position:0 0}
+  25%{background-position:100% 0}
+  50%{background-position:0 100%}
   75%,100%{background-position:100% 100%}
 }
-@media(prefers-reduced-motion:reduce){.trainingBiaPortrait{animation:none}}
+/* coaching: 0 (instrução), 2 (agachada), 3 (inspeção). Ignora 1 (caminhada). */
+@keyframes trainingBiaNoWalkCoaching{
+  0%{background-position:0 0}
+  33.333%{background-position:0 100%}
+  66.666%,100%{background-position:100% 100%}
+}
+/* field: 0 (anotações), 1 (registro), 3 (rádio). Ignora 2 (caminhada). */
+@keyframes trainingBiaNoWalkField{
+  0%{background-position:0 0}
+  33.333%{background-position:100% 0}
+  66.666%,100%{background-position:100% 100%}
+}
+@media(prefers-reduced-motion:reduce){.trainingBiaPortrait{animation:none!important}}
 .trainingBiaCaption{display:flex;align-items:center;gap:7px;justify-content:center;flex-wrap:wrap;text-align:center;color:#263b4c}
 .trainingBiaCaption strong{font-size:19px;color:#294966}
 .trainingBiaCaption span{font-size:10px;line-height:1.4;font-weight:750}
@@ -569,9 +583,9 @@ body{min-height:100vh}
 .trainingLedger li,.trainingAssignment{display:grid;gap:4px;background:#e9f1e9;border-radius:6px;padding:9px}
 .trainingLedger li span,.trainingAssignment span{font-size:11px;color:#516373}
 .trainingDisclaimer{font-size:10px;color:#675c54;margin:0;line-height:1.3}
-@media(max-width:740px){.trainingWorkspace{grid-template-columns:minmax(135px,175px) minmax(0,1fr);gap:8px}.trainingBiaStage{height:221px}.trainingBiaPortrait{width:166px;height:179px}.trainingFolder{padding:8px}.trainingDesk{padding:8px}.trainingFolderTab{font-size:9px;min-height:40px}.trainingLedger ol{grid-template-columns:1fr}}
-@media(max-width:590px){.trainingWorkspace{grid-template-columns:1fr}.trainingBiaAside{position:static;display:grid;grid-template-columns:108px 1fr;align-items:center;gap:8px}.trainingBiaStage{grid-row:span 2;height:135px}.trainingBiaPortrait{width:106px;height:114px}.trainingBiaCaption{justify-content:flex-start;text-align:left}.trainingBiaSpeech{padding:7px 9px}.trainingBiaSpeech::before{display:none}.trainingDeskHead h2{font-size:16px!important}.trainingFolderTab{min-height:38px;padding:6px 3px}.trainingControls{grid-template-columns:1fr}}
-@media(max-width:370px){.trainingBiaAside{grid-template-columns:90px 1fr}.trainingBiaPortrait{width:90px;height:97px}.trainingFolderTabs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:740px){.trainingWorkspace{grid-template-columns:minmax(135px,175px) minmax(0,1fr);gap:8px}.trainingBiaStage{height:221px}.trainingBiaPortrait{width:min(166px,100%)}.trainingFolder{padding:8px}.trainingDesk{padding:8px}.trainingFolderTab{font-size:9px;min-height:40px}.trainingLedger ol{grid-template-columns:1fr}}
+@media(max-width:590px){.trainingWorkspace{grid-template-columns:1fr}.trainingBiaAside{position:static;display:grid;grid-template-columns:108px 1fr;align-items:center;gap:8px}.trainingBiaStage{grid-row:span 2;height:135px}.trainingBiaPortrait{width:min(106px,100%)}.trainingBiaCaption{justify-content:flex-start;text-align:left}.trainingBiaSpeech{padding:7px 9px}.trainingBiaSpeech::before{display:none}.trainingDeskHead h2{font-size:16px!important}.trainingFolderTab{min-height:38px;padding:6px 3px}.trainingControls{grid-template-columns:1fr}}
+@media(max-width:370px){.trainingBiaAside{grid-template-columns:90px 1fr}.trainingBiaPortrait{width:min(90px,100%)}.trainingFolderTabs{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 </style></head><body>
 <div id="layout">
