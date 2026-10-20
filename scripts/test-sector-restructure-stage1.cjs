@@ -20,8 +20,8 @@ assert.ok(full.includes('data-inspection-action="schedule"'));
 assert.ok(!full.includes('data-evidence-practice')&&!full.includes('data-monitor-start'));
 const staff=save.team.find(m=>!m.assigned&&m.restAt!==save.tick&&!E.TRAINING.active(save,m));
 assert.ok(staff,'inspetor disponível');
-const fleet=D.models.flatMap(m=>Array.from({length:6},(_,k)=>m.id+'·'+String(k+1).padStart(2,'0')))
- .filter(asset=>!save.jobs.some(j=>j.asset===asset));
+const fleet=D.models.map(m=>Array.from({length:6},(_,k)=>m.id+'·'+String(k+1).padStart(2,'0'))
+ .find(asset=>!save.jobs.some(j=>j.asset===asset))).filter(Boolean);
 assert.ok(fleet.length>=9);
 for(let i=0;i<7;i++){
  const s=I.schedule(save,D,fleet[i],staff.id);
