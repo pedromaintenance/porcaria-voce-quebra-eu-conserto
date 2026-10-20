@@ -7,6 +7,17 @@
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
 
+## Entrega 0.9.2 — PCM gamificado, hipóteses técnicas e consequências mecânicas (20/10/2026)
+
+- [x] **Nenhum campo de texto livre na inspeção ou revisão:** achado é preenchido automaticamente pelo evento simulado; motivo de devolução/arquivamento, disciplina, HH e estratégia são selecionados de listas.
+- [x] Planejador escolhe **Sistema, Grupo, Subgrupo, Componente, Dano** e, opcionalmente, **Causa** dentre quatro alternativas por etapa. Alternativas fixas por notificação, sem gabarito ou devolução visual de erro.
+- [x] Compras explícitas de peças (item + quantidade) e ferramentas (item) no fluxo PCM; permanecem sujeitas a caixa, estoque, ETA e regras do motor. Compra não indica material correto.
+- [x] Aprovação armazena hipóteses e gera escopo predefinido, sem iniciar OS; botão separado converte em OS vinculada à notificação.
+- [x] Primeira execução mecânica avalia o plano **uma única vez**: 6/6 certas restaura energia mental a 100 e acrescenta 20 de moral; cada escolha incorreta implica -8 mental, -3 física, -5 moral, 0,5h de retrabalho e R$25, sem detalhar o gabarito ao planejador. Causa vazia não conta como erro, mas não concede bônus integral.
+- [x] OS legadas sem plano PCM seguem o fluxo normal; saves mantêm compatibilidade estrutural.
+- [ ] Evoluir inspeções para verificações condicionalmente observáveis e balancear o impacto das penalidades com jogadores.
+**Nota técnica:** os valores e cenários são fictícios, feitos para jogabilidade, não procedimento de oficina.
+
 ## Entrega 0.9.1 — Revisão técnica de notificações pelo PCM (20/10/2026)
 
 - [x] Mesa PCM na aba de Inspeções com status, justificativa, histórico de decisões por turno e rastreio `IN#### → NM#### → OS####`.
