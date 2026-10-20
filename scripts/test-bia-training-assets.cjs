@@ -56,9 +56,13 @@ assert.equal(crypto.createHash('sha256').update(repairedBytes).digest('hex'),'0d
 assert.equal(repaired.sha256,'0df565e155bea199facfd3c6a0032c2afba7cfcba59ad9d057c282cff877c538');
 assert.equal(repairedBytes.toString('ascii',0,4),'RIFF');
 assert.equal(repairedBytes.toString('ascii',8,12),'WEBP');
-assert.equal(1+repairedBytes[24]+(repairedBytes[25]<<8)+(repairedBytes[26]<<16),1160);
-assert.equal(1+repairedBytes[27]+(repairedBytes[28]<<8)+(repairedBytes[29]<<16),1244);
-assert.ok((repairedBytes[20]&0x10)!==0,'alpha corrigido preservado');
+// Pillow exporta lossless WebP com chunk VP8L, diferente dos VP8X lossy originais.
+assert.equal(repairedBytes.toString('ascii',12,16),'VP8L','WebP lossless preserva a arte original');
+assert.equal(repairedBytes[20],0x2f,'assinatura do bitstream VP8L');
+const width=1+repairedBytes[21]+((repairedBytes[22]&0x3f)<<8);
+const height=1+(repairedBytes[22]>>6)+(repairedBytes[23]<<2)+((repairedBytes[24]&0x0f)<<10);
+assert.equal(width,1160);assert.equal(height,1244);
+assert.ok((repairedBytes[24]&0x10)!==0,'canal alfa VP8L presente');
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
 assert.ok(sw.includes('./phaser-play/assets/characters/bia/bia-field-repaired-4poses.webp'),'PWA guarda sprite corrigido');
 
