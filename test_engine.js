@@ -2,7 +2,7 @@ const assert=require('assert');
 const D=require('./game-data.json'), E=require('./engine.js');
 const rng=E.mulberry32(28948);
 const s=E.create(D,rng);
-assert.equal(D.scenarios.length,95);
+assert.equal(D.scenarios.length,100);
 assert.equal(D.models.length,9);
 assert.equal(s.team.length,4);
 assert.equal(s.jobs.length,3);
@@ -52,4 +52,4 @@ assert.equal(s.day,Math.floor(s.tick/2)+1,'calendário avança um dia a cada doi
 assert(s.kpi.length>0);
 assert(s.cash<10000000 && Number.isFinite(s.cash));
 assert(E.validate(JSON.parse(JSON.stringify(s))));
-console.log('OK: 95 missions, 6 levels, shifts, capacity, credit, materials, repair, KPI, persistence');
+console.log('OK: 100 missions, 6 levels, shifts, capacity, credit, materials, repair, KPI, persistence');

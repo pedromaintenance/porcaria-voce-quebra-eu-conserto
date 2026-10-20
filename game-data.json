@@ -7408,6 +7408,276 @@
         "origin": "elaboracao_autoral",
         "realDefectConfirmed": false
       }
+    },
+    {
+      "id": "INC096",
+      "modelId": "EQ01",
+      "category": "rodante",
+      "title": "777E — dano secundário no rolamento do comando final",
+      "operator": "Após uma intervenção tardia na vedação do comando final da posição 1 do 777E, o mesmo caminhão retorna com ruído e presença de partículas. O histórico fictício registra umidade prolongada no óleo; ainda é necessário avaliar se houve dano residual.",
+      "verification": "Rever histórico de entrada de água e amostras antes/depois do reparo. Bloquear e inspecionar rolamentos, engrenagens e vedação por processo OEM; confirmar danos de superfície antes de condenar mancal ou autorizar operação.",
+      "path": [
+        "DRTR",
+        "AXAS",
+        "FID1"
+      ],
+      "component": "Rolamento",
+      "damage": "Piteado",
+      "cause": "Contaminação",
+      "priority": 3,
+      "material": "ROL",
+      "tool": "EXTR",
+      "hours": 9,
+      "diagHours": 5,
+      "estimatedCost": 490,
+      "sourcePartMatch": false,
+      "lesson": "O precursor INC041 simula ingresso de água por vedação. O estágio atual escolhe pitting de rolamento por contaminação como consequência ficcional da demora; o laudo original OIL-CASE-001 NÃO comprova dano interno nem estabelece janela causal.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "OIL-CASE-001",
+        "layer": "oil/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "encadeamento_autoral_a_partir_de_referencia_didatica"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "inspecoes_e_testes_propostos_nao_executados",
+        "answer": "desfecho_escolhido_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "progression": {
+        "precedingScenario": "INC041",
+        "thresholdIdleShifts": 3,
+        "thresholdIdleWithPlannerErrors": 2,
+        "minPlannerErrors": 2,
+        "trigger": "after_delayed_completion",
+        "causalModel": "hipotese_didatica_nao_probabilistica",
+        "mechanism": "umidade_permanente_no_lubrificante_pode_acelerar_desgaste",
+        "alternatives": [
+          "recoleta normal após reparo",
+          "dano em engrenagem",
+          "resíduo metálico da intervenção"
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "realConsequenceVerified": false
+      }
+    },
+    {
+      "id": "INC097",
+      "modelId": "EQ07",
+      "category": "rodante",
+      "title": "D9 — desgaste abrasivo evolui para engrenagem danificada",
+      "operator": "Depois de correção tardia da vedação do comando final do D9, surgem ruído sob tração e novos resíduos no óleo do mesmo equipamento. O laudo anterior indicava poeira, mas não identificou componente interno avariado.",
+      "verification": "Verificar histórico de limpeza e amostras representativas, condições de respiro e vedação. Com rodante e transmissão isolados, inspecionar dentes e mancais do comando final conforme OEM antes de decidir substituição do conjunto.",
+      "path": [
+        "DRTR",
+        "FDSP",
+        "FDS2"
+      ],
+      "component": "Engrenagem",
+      "damage": "Abrasado ou sulcado",
+      "cause": "Abrasão",
+      "priority": 3,
+      "material": "ENG",
+      "tool": "COLETA",
+      "hours": 10,
+      "diagHours": 5,
+      "estimatedCost": 1100,
+      "sourcePartMatch": false,
+      "lesson": "INC042 trata possível entrada de poeira. Este retorno fictício agrega abrasão de dentes após exposição prolongada; o OIL-CASE-004 não confirma avaria de engrenagem e não sustenta tempo real para sua ocorrência.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "OIL-CASE-004",
+        "layer": "oil/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "encadeamento_autoral_a_partir_de_referencia_didatica"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "inspecoes_e_testes_propostos_nao_executados",
+        "answer": "desfecho_escolhido_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "progression": {
+        "precedingScenario": "INC042",
+        "thresholdIdleShifts": 3,
+        "thresholdIdleWithPlannerErrors": 2,
+        "minPlannerErrors": 2,
+        "trigger": "after_delayed_completion",
+        "causalModel": "hipotese_didatica_nao_probabilistica",
+        "mechanism": "particulado_abrasivo_pode_acelerar_desgaste_de_geracao_secundaria",
+        "alternatives": [
+          "vedação ainda deficiente",
+          "desgaste de rolamento",
+          "coleta contaminada"
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "realConsequenceVerified": false
+      }
+    },
+    {
+      "id": "INC098",
+      "modelId": "EQ03",
+      "category": "hidraulica",
+      "title": "395 — desgaste de bomba após restrição hidráulica persistente",
+      "operator": "Após tratamento atrasado de um filtro hidráulico da CAT 395, o circuito continua lento e aquecido no mesmo equipamento. No enredo, a pressão diferencial voltou ao normal, mas o desempenho permaneceu insatisfatório.",
+      "verification": "Com os implementos seguros e o circuito isolado, revisar qualidade do óleo e alimentação da bomba. Executar testes de pressão, vazão e eficiência conforme OEM; diferenciar desgaste de bomba de fugas no implemento ou falhas do comando antes de substituição.",
+      "path": [
+        "HYSY",
+        "DRPU",
+        "HYPU"
+      ],
+      "component": "Bomba, Hidráulica",
+      "damage": "Com função degradada",
+      "cause": "Contaminação",
+      "priority": 3,
+      "material": "BOMH",
+      "tool": "MANO",
+      "hours": 10,
+      "diagHours": 5,
+      "estimatedCost": 2450,
+      "sourcePartMatch": false,
+      "lesson": "O precursor INC058 representa filtragem restringida. A continuação escolhe dano secundário de bomba por partículas apenas dentro do jogo; restrição do filtro NÃO implica automaticamente deterioração da bomba e o FMEA de referência não confirma esse nexo em campo.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-EXC-PUMP-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "encadeamento_autoral_a_partir_de_referencia_didatica"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "inspecoes_e_testes_propostos_nao_executados",
+        "answer": "desfecho_escolhido_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "progression": {
+        "precedingScenario": "INC058",
+        "thresholdIdleShifts": 3,
+        "thresholdIdleWithPlannerErrors": 2,
+        "minPlannerErrors": 2,
+        "trigger": "after_delayed_completion",
+        "causalModel": "hipotese_didatica_nao_probabilistica",
+        "mechanism": "contaminacao_persistente_pode_levar_a_desgaste_da_bomba",
+        "alternatives": [
+          "válvula com perda de controle",
+          "fuga de cilindro",
+          "erro de indicador"
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "realConsequenceVerified": false
+      }
+    },
+    {
+      "id": "INC099",
+      "modelId": "EQ06",
+      "category": "perfuracao",
+      "title": "DI650i — compressor com eficiência reduzida após restrição",
+      "operator": "Após a correção tardia do filtro de admissão na DI650i, a pressão de ar permanece insuficiente no mesmo equipamento. O histórico narrativo indica operação prolongada com restrição, porém a condição interna do compressor não está comprovada.",
+      "verification": "Confirmar configuração Sandvik e repetir ensaios de pressão, temperatura e comando de carga. Com energia pneumática isolada, diferenciar fuga, leitura defeituosa e perda efetiva de rendimento antes de substituir o compressor.",
+      "path": [
+        "AISY",
+        "COMR",
+        "COSY"
+      ],
+      "component": "Compressor, Ar",
+      "damage": "Com função degradada",
+      "cause": "Desgaste",
+      "priority": 3,
+      "material": "COMA",
+      "tool": "PNEU",
+      "hours": 11,
+      "diagHours": 5,
+      "estimatedCost": 3500,
+      "sourcePartMatch": false,
+      "lesson": "INC076 escolhe admissão filtrante obstruída. A sequência simula desgaste interno de compressor após atraso no tratamento, mas o playbook DI650i apresenta apenas hipóteses alternativas, sem constatar esse dano nem duração para evolução.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-DRILL-DI650-COMP-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "encadeamento_autoral_a_partir_de_referencia_didatica"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "inspecoes_e_testes_propostos_nao_executados",
+        "answer": "desfecho_escolhido_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "progression": {
+        "precedingScenario": "INC076",
+        "thresholdIdleShifts": 3,
+        "thresholdIdleWithPlannerErrors": 2,
+        "minPlannerErrors": 2,
+        "trigger": "after_delayed_completion",
+        "causalModel": "hipotese_didatica_nao_probabilistica",
+        "mechanism": "operacao_prolongada_com_restricao_pode_agravar_condicao_do_compressor",
+        "alternatives": [
+          "fuga em mangueira",
+          "válvula de comando irregular",
+          "sensor de pressão incorreto"
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "realConsequenceVerified": false
+      }
+    },
+    {
+      "id": "INC100",
+      "modelId": "EQ09",
+      "category": "rodante",
+      "title": "CAT 16 — pneu com desgaste irreversível após desalinhamento",
+      "operator": "Após corrigir tardiamente um desalinhamento no conjunto tandem da CAT 16, o pneu da posição 4 no mesmo equipamento mantém desgaste direcional acentuado. A geometria corrigida não recupera borracha já consumida.",
+      "verification": "Medir profundidade e padrão de desgaste, confirmar pressão e especificação do pneu e verificar geometria depois do reparo. Encaminhar para decisão de manutenção/descarte conforme limites da aplicação e procedimentos para pneus OTR.",
+      "path": [
+        "DRTR",
+        "TAN2",
+        "TIR4"
+      ],
+      "component": "Pneu",
+      "damage": "Desgastado",
+      "cause": "Desalinhamento",
+      "priority": 2,
+      "material": "PNEU",
+      "tool": "CTSM",
+      "hours": 5,
+      "diagHours": 4,
+      "estimatedCost": 1800,
+      "sourcePartMatch": false,
+      "lesson": "INC094 corrige a origem hipotética do desgaste irregular. O segundo estágio simula que o pneu já atingiu condição de substituição; o playbook de pneus da CAT 16 não fornece limite ou inspeção real de descarte. O atraso é uma regra de jogo.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-GRADER-TIRE-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "encadeamento_autoral_a_partir_de_referencia_didatica"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "inspecoes_e_testes_propostos_nao_executados",
+        "answer": "desfecho_escolhido_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "progression": {
+        "precedingScenario": "INC094",
+        "thresholdIdleShifts": 3,
+        "thresholdIdleWithPlannerErrors": 2,
+        "minPlannerErrors": 2,
+        "trigger": "after_delayed_completion",
+        "causalModel": "hipotese_didatica_nao_probabilistica",
+        "mechanism": "desgaste_acumulado_nao_revertido_por_alinhamento",
+        "alternatives": [
+          "pressão inadequada",
+          "pneu ainda recuperável dentro dos limites",
+          "folga residual no eixo"
+        ],
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "realConsequenceVerified": false
+      }
     }
   ],
   "catalog": {
@@ -7444,7 +7714,8 @@
       "Líquido, Arrefecimento",
       "Respiro, Cárter",
       "Válvula, Pneumática",
-      "Roda-Guia"
+      "Roda-Guia",
+      "Compressor, Ar"
     ],
     "damages": [
       {
@@ -8984,6 +9255,13 @@
       "lead": 3,
       "initial": 0,
       "emoji": "⚙️"
+    },
+    "COMA": {
+      "name": "Conjunto compressor de ar (jogo)",
+      "unit": 3500,
+      "lead": 5,
+      "initial": 0,
+      "emoji": "💨"
     }
   },
   "tools": {

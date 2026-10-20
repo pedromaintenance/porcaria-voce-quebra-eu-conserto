@@ -60,4 +60,4 @@ assert.equal((app.match(/E\.localizeDiagnosticOptions\(/g)||[]).length,2,'iníci
 assert.ok(html.includes('game.js?v=0.8.32-pt1412'));
 assert.ok(html.includes('engine.js?v=0.9.2'));
 assert.ok(sw.includes('porcaria-vqec-20261019-v111-sap-v1-bia2-pt1412'));
-console.log('OK: 387 caminhos PT (16 didáticos), hipóteses de 95 cenários, saves antigos, cache e progresso.');
+console.log('OK: 387 caminhos PT (16 didáticos), hipóteses de 100 cenários, saves antigos, cache e progresso.');
