@@ -14,10 +14,10 @@ const expected={
  INC074:['EQ08',null,'Mangueira'],
  INC075:['EQ09','ELEC-CF-19-1','Respiro, Cárter']
 };
-assert.equal(D.scenarios.length,75,'65 existentes + 10 novos casos diesel');
-assert.equal(new Set(D.scenarios.map(s=>s.id)).size,75,'identificadores únicos');
+assert.equal(D.scenarios.length,85,'65 existentes + 10 diesel + 10 perfuratrizes');
+assert.equal(new Set(D.scenarios.map(s=>s.id)).size,85,'identificadores únicos');
 assert.deepEqual(D.scenarios.slice(0,65).map(x=>x.id),Array.from({length:65},(_,i)=>'INC'+String(i+1).padStart(3,'0')),'65 cenários preexistentes preservados');
-assert.equal(D.paths.length,382);
+assert.equal(D.paths.length,384);
 const recent=D.paths.filter(p=>p.origin==='trilha_didatica_simulada'&&['FILF','SENF','CLFL','CCBR'].includes(p.subgroup));
 assert.equal(recent.length,4,'quatro trilhas novas de motor');
 for(const path of recent)assert.equal(path.sapValidated,false,'não afirmar caminho SAP homologado');
@@ -73,4 +73,4 @@ assert.equal(state.tools.REFR,false,'ferramenta precisa de compra');
 const only={...D,scenarios:[D.scenarios.find(x=>x.id==='INC071')]};
 const campaign=E.create(only,()=>.42);
 assert.ok(campaign.jobs.every(j=>j.scene==='INC071'),'novos casos entram no sorteio');
-console.log('OK: sessão 4, 10 missões diesel/óleo, 75 totais, 6x4 alternativas, 4 localizações didáticas e recursos.');
+console.log('OK: sessão 4, 10 missões diesel/óleo, 85 totais, 6x4 alternativas, 4 localizações didáticas e recursos.');
