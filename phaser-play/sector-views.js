@@ -92,12 +92,18 @@
   I.normalized(s);
   const current=Object.hasOwn(CATEGORIES,category)?category:'overview',active=CATEGORIES[current],summary=M.summary(s);
   const monitorNotes=s.notifications.filter(n=>isMonitor(n));
-  const actions=Object.entries(CATEGORIES).map(([k,v],i)=>'<button type="button" class="controlHotspot controlHotspot'+i+' '+(current===k?'is-current':'')+'" '
-   +'data-monitor-category="'+k+'" aria-pressed="'+String(current===k)+'" aria-label="Abrir '+esc(v.title)+'">'+esc(v.title.toUpperCase())+'</button>').join('');
+  // O painel sólido cobre a coluna de botões pintada no cenário; há navegação acessível no celular.
+  const controls=(mobile=false)=>Object.entries(CATEGORIES).map(([key,entry])=>
+   '<button type="button" class="'+(mobile?'controlMobileNavItem':'controlNavItem')+(current===key?' is-current':'')+'"'
+   +' data-monitor-category="'+key+'" aria-pressed="'+String(current===key)+'" aria-label="Abrir '+esc(entry.title)+'">'
+   +'<span class="controlNavIcon" aria-hidden="true">'+esc(entry.icon)+'</span>'
+   +'<span class="controlNavText">'+esc(entry.title)+'</span></button>').join('');
   const top='<section class="controlRoomStage" aria-label="Sala de Controle">'
    +'<img src="./assets/pedro-sala-controle.webp" alt="Pedro na sala de controle da mina diante dos painéis de monitoramento" loading="lazy">'
-   +'<div class="controlRoomHotspots">'+actions+'</div></section>'
-   +'<div class="controlRoomMobileMenu" role="navigation" aria-label="Áreas de monitoramento">'+actions.replaceAll('controlHotspot','controlMobileHotspot')+'</div>';
+   +'<nav class="controlRoomSidebar" aria-label="Menu da sala de controle">'
+   +'<div class="controlRoomSidebarTitle">MONITORAMENTO</div>'
+   +'<div class="controlRoomSidebarItems">'+controls()+'</div></nav></section>'
+   +'<nav class="controlRoomMobileMenu" aria-label="Menu de monitoramento no celular">'+controls(true)+'</nav>';
   const metrics='<div class="inspectionMetrics"><div><small>EM ACOMPANHAMENTO</small><strong>'+summary.active+'</strong></div>'
    +'<div><small>RECOLETAS VENCIDAS</small><strong>'+summary.due+'</strong></div>'
    +'<div><small>AGRAVAMENTOS</small><strong>'+summary.attention+'</strong></div>'
