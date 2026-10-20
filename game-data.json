@@ -3508,6 +3508,28 @@
       "subgroupName": "Sistema de Respiro do Cárter",
       "origin": "trilha_didatica_simulada",
       "sapValidated": false
+    },
+    {
+      "modelId": "EQ06",
+      "system": "AISY",
+      "systemName": "Sist de Ar",
+      "group": "COMR",
+      "groupName": "Compressor",
+      "subgroup": "INFL",
+      "subgroupName": "Filtragem da Admissão de Ar",
+      "origin": "trilha_didatica_simulada",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ06",
+      "system": "AISY",
+      "systemName": "Sist de Ar",
+      "group": "COMR",
+      "groupName": "Compressor",
+      "subgroup": "HSVV",
+      "subgroupName": "Mangueiras / Conexões Pneumáticas",
+      "origin": "trilha_didatica_simulada",
+      "sapValidated": false
     }
   ],
   "scenarios": [
@@ -6353,6 +6375,506 @@
         "labResultsReal": false,
         "sourceType": "adaptacao_de_caso_simulado"
       }
+    },
+    {
+      "id": "INC076",
+      "modelId": "EQ06",
+      "category": "perfuracao",
+      "title": "DI650i — admissão do compressor restringida",
+      "operator": "Durante perfuração, a DI650i apresenta queda progressiva de pressão de ar, especialmente sob demanda contínua. Não foram registradas fugas externas, e a condição do elemento filtrante ainda não foi avaliada.",
+      "verification": "Confirmar a arquitetura de admissão do compressor Sandvik. Em condição segura e com a máquina isolada, verificar indicadores de restrição e inspecionar o elemento e os dutos de entrada conforme o OEM; comparar pressão sob cargas equivalentes antes de concluir falha interna.",
+      "path": [
+        "AISY",
+        "COMR",
+        "INFL"
+      ],
+      "component": "Filtro, Ar",
+      "damage": "Entupido ou restringido",
+      "cause": "Contaminação",
+      "priority": 2,
+      "material": "FILT",
+      "tool": "PDIF",
+      "hours": 4,
+      "diagHours": 3,
+      "estimatedCost": 90,
+      "sourcePartMatch": false,
+      "lesson": "O caso resolve ficticiamente um elemento de admissão restrito, não desgaste do compressor. O roteiro FMEA apresenta o filtro como hipótese, mas não fornece número de peça, valor de restrição ou confirmação de instalação nesta DI650i.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-DRILL-DI650-COMP-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "hipotese_didatica_sem_confirmacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "testes_propostos_sem_execucao",
+        "answer": "desfecho_escolhido_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drillTraining": {
+        "mechanism": "restricao_admissao_ar",
+        "alternatives": [
+          "mangueira com fuga",
+          "comando de carga",
+          "sensor de pressão impreciso"
+        ],
+        "safetyNote": "Evitar qualquer abertura da linha com pressão armazenada.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "architectureConfirmed": false,
+        "origin": "adaptacao_do_playbook"
+      }
+    },
+    {
+      "id": "INC077",
+      "modelId": "EQ06",
+      "category": "perfuracao",
+      "title": "DI650i — perda de ar na mangueira do compressor",
+      "operator": "Na DI650i, a pressão pneumática cai durante perfuração e surge ruído de escape na região das linhas próximas ao compressor. A origem do som não foi confirmada e pode haver outras fontes de perda.",
+      "verification": "Despressurizar e bloquear o conjunto conforme procedimento, inspecionar o roteamento, suportes e a cobertura externa das mangueiras. Confirmar a localização e a extensão do vazamento por ensaio autorizado antes de reparar, eliminando o contato por abrasão.",
+      "path": [
+        "AISY",
+        "COMR",
+        "HSVV"
+      ],
+      "component": "Mangueira",
+      "damage": "Vazando",
+      "cause": "Abrasão",
+      "priority": 2,
+      "material": "MANG",
+      "tool": "PNEU",
+      "hours": 5,
+      "diagHours": 3,
+      "estimatedCost": 260,
+      "sourcePartMatch": false,
+      "lesson": "O gabarito simula desgaste externo por contato que evoluiu para fuga na linha pneumática. A mesma perda de pressão do INC076 tem origem distinta; não basta substituir filtros ou condenar o compressor.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-DRILL-DI650-COMP-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "hipotese_didatica_sem_confirmacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "testes_propostos_sem_execucao",
+        "answer": "desfecho_escolhido_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drillTraining": {
+        "mechanism": "fuga_pneumatica_por_abrasao",
+        "alternatives": [
+          "elemento filtrante restringido",
+          "controle de carga",
+          "vedação em reservatório"
+        ],
+        "safetyNote": "Ar comprimido e mangueiras podem reter energia; bloquear e despressurizar integralmente.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "architectureConfirmed": false,
+        "origin": "adaptacao_do_playbook"
+      }
+    },
+    {
+      "id": "INC078",
+      "modelId": "EQ06",
+      "category": "perfuracao",
+      "title": "DI650i — ar de descarga aquecido por restrição térmica",
+      "operator": "Na DI650i, a temperatura do conjunto de ar comprimido cresce nos ciclos longos e o rendimento pneumático piora. Há acúmulo de poeira na região externa de um trocador de calor, sem diagnóstico confirmado da ventilação.",
+      "verification": "Com o sistema desligado, isolado, despressurizado e resfriado, examinar o trocador na posição didática 1 e a passagem de ar. Avaliar fluxo, comando térmico e condição das superfícies antes de realizar limpeza permitida pelo fabricante e confirmar a melhora.",
+      "path": [
+        "AISY",
+        "COMR",
+        "HEE1"
+      ],
+      "component": "Trocador de Calor",
+      "damage": "Entupido ou restringido",
+      "cause": "Material estranho",
+      "priority": 2,
+      "material": "LIMP",
+      "tool": "TERM",
+      "hours": 4,
+      "diagHours": 3,
+      "estimatedCost": 85,
+      "sourcePartMatch": false,
+      "lesson": "A missão resolve uma restrição externa ao resfriamento. O FMEA não oferece esse defeito detalhado na DI650i; esta é uma elaboração autoral usando o caminho funcional já existente, sem confirmar a arquitetura ou parâmetros Sandvik.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": null,
+        "layer": "elaboracao_autoral",
+        "version": null,
+        "status": "hipotese_didatica_sem_confirmacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "testes_propostos_sem_execucao",
+        "answer": "desfecho_escolhido_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drillTraining": {
+        "mechanism": "restricao_de_troca_termica",
+        "alternatives": [
+          "ventilação insuficiente",
+          "falha do controle",
+          "compressor com desgaste interno"
+        ],
+        "safetyNote": "Ar e superfícies quentes; esperar resfriamento e retirar toda a pressão.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "architectureConfirmed": false,
+        "origin": "elaboracao_autoral"
+      }
+    },
+    {
+      "id": "INC079",
+      "modelId": "EQ06",
+      "category": "perfuracao",
+      "title": "DI650i — perda na interface do vaso de ar",
+      "operator": "Na DI650i, a pressão do sistema de ar recupera devagar após períodos de alta demanda. A inspeção sensitiva indica escape próximo ao vaso de ar, mas não se identificou se a origem é tampa, conexão ou corpo do recipiente.",
+      "verification": "Isolar, despressurizar e verificar ausência de energia residual; por procedimentos Sandvik, localizar a interface com perda, examinar vedações e conexões. Não realizar reparo estrutural nem interferir no vaso pressurizado sem avaliação de integridade e responsabilidade técnica.",
+      "path": [
+        "AISY",
+        "COMR",
+        "VPAR"
+      ],
+      "component": "Vedação Junta O-ring",
+      "damage": "Vazando",
+      "cause": "Falha de vedação",
+      "priority": 3,
+      "material": "AIRT",
+      "tool": "PNEU",
+      "hours": 5,
+      "diagHours": 4,
+      "estimatedCost": 180,
+      "sourcePartMatch": false,
+      "lesson": "O desfecho do exercício é uma vedação deteriorada de conexão, não trinca na parede do reservatório. Uma suspeita de defeito estrutural em vaso de pressão exige outro processo de segurança e jamais pode ser resolvida com uma vedação por tentativa.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-DRILL-DI650-COMP-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "hipotese_didatica_sem_confirmacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "testes_propostos_sem_execucao",
+        "answer": "desfecho_escolhido_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drillTraining": {
+        "mechanism": "perda_estanqueidade_interface_vaso",
+        "alternatives": [
+          "falha estrutural do vaso",
+          "mangueira próxima",
+          "válvula não vedando"
+        ],
+        "safetyNote": "Pressão armazenada e integridade de vaso: não operar enquanto houver dúvida de segurança.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "architectureConfirmed": false,
+        "origin": "adaptacao_do_playbook"
+      }
+    },
+    {
+      "id": "INC080",
+      "modelId": "EQ06",
+      "category": "perfuracao",
+      "title": "DI650i — corrente de avanço com alongamento",
+      "operator": "Na DI650i, o avanço do conjunto de perfuração apresenta trancos e ruídos no mastro. Não foi identificada falha elétrica e a equipe relata histórico de ajuste de tensão da corrente.",
+      "verification": "Bloquear o mastro, imobilizar elementos móveis e medir tensão, alongamento e desgaste dos componentes do avanço conforme configuração OEM. Inspecionar guias e componentes hidráulicos para separar alongamento de corrente de restrição mecânica ou comando irregular.",
+      "path": [
+        "MAST",
+        "DFAS",
+        "FECH"
+      ],
+      "component": "Corrente",
+      "damage": "Alongado",
+      "cause": "Desgaste",
+      "priority": 2,
+      "material": "CORREN",
+      "tool": "TEN",
+      "hours": 7,
+      "diagHours": 4,
+      "estimatedCost": 690,
+      "sourcePartMatch": false,
+      "lesson": "O cenário resolve desgaste com alongamento de corrente e ajuste fora do aceitável na ficção. A referência do banco é um playbook da DR410i, transferido somente como hipótese conceitual; nenhum limite de corrente Sandvik foi fornecido para a DI650i.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-DRILL-DR410-FEED-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "hipotese_didatica_sem_confirmacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "testes_propostos_sem_execucao",
+        "answer": "desfecho_escolhido_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drillTraining": {
+        "mechanism": "alongamento_corrente_avanco",
+        "alternatives": [
+          "guias com sujeira",
+          "oscilações hidráulicas",
+          "tensão incorreta sem alongamento"
+        ],
+        "safetyNote": "Mastro e cabeça devem permanecer bloqueados e mecanicamente sustentados.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "architectureConfirmed": false,
+        "origin": "adaptacao_do_playbook"
+      }
+    },
+    {
+      "id": "INC081",
+      "modelId": "EQ05",
+      "category": "perfuracao",
+      "title": "DR410i — válvula do compressor sem atuação regular",
+      "operator": "Durante a perfuração com a DR410i, o suprimento de ar oscila apesar de não haver fuga externa localizada. O operador relata demora para o compressor responder às variações de carga, sem prova de defeito no elemento compressor.",
+      "verification": "Determinar pelo esquema Sandvik se a variante possui a válvula de controle considerada no cenário. Verificar comando, sinal, pressão e movimentação autorizada do componente; após isolar energia e pressão, investigar deposição ou travamento interno antes da substituição.",
+      "path": [
+        "AISY",
+        "COMR",
+        "HSVV"
+      ],
+      "component": "Válvula, Pneumática",
+      "damage": "Travado",
+      "cause": "Contaminação",
+      "priority": 3,
+      "material": "VALP",
+      "tool": "PNEU",
+      "hours": 6,
+      "diagHours": 4,
+      "estimatedCost": 790,
+      "sourcePartMatch": false,
+      "lesson": "O exercício escolhe travamento por contaminação em uma válvula pneumática fictícia. O playbook DI650i apenas prevê possível deficiência do comando de carga; ele não identifica uma válvula concreta na DR410i nem comprova esse defeito.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-DRILL-DI650-COMP-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "hipotese_didatica_sem_confirmacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "testes_propostos_sem_execucao",
+        "answer": "desfecho_escolhido_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drillTraining": {
+        "mechanism": "comando_de_carga_irregular",
+        "alternatives": [
+          "restrição de admissão",
+          "sensor incoerente",
+          "fuga pneumática"
+        ],
+        "safetyNote": "Isolar pressões e comandos automáticos antes de abrir qualquer componente.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "architectureConfirmed": false,
+        "origin": "adaptacao_do_playbook"
+      }
+    },
+    {
+      "id": "INC082",
+      "modelId": "EQ05",
+      "category": "perfuracao",
+      "title": "DR410i — mangueira de ar danificada por contato",
+      "operator": "Na DR410i, uma mangueira do circuito pneumático apresenta cobertura externa gasta e ruído de escape sob pressão. A oficina ainda precisa confirmar se a deformação externa coincide com a perda funcional.",
+      "verification": "Interromper a operação, imobilizar e despressurizar todo o circuito. Verificar ponto inicial de vazamento, desgaste por contato, suportação e orientação da mangueira; substituir o conjunto após confirmação, corrigindo a interferência que ocasionou a abrasão.",
+      "path": [
+        "AISY",
+        "COMR",
+        "HSVV"
+      ],
+      "component": "Mangueira",
+      "damage": "Abrasado ou sulcado",
+      "cause": "Abrasão",
+      "priority": 2,
+      "material": "MANG",
+      "tool": "PNEU",
+      "hours": 5,
+      "diagHours": 3,
+      "estimatedCost": 260,
+      "sourcePartMatch": false,
+      "lesson": "A missão representa fuga iniciada por abrasão externa no conjunto pneumático. Foi adaptada como mecanismo genérico da hipótese de perda de estanqueidade do playbook DI650i; nenhuma aplicação de peça específica da DR410i foi validada.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-DRILL-DI650-COMP-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "hipotese_didatica_sem_confirmacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "testes_propostos_sem_execucao",
+        "answer": "desfecho_escolhido_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drillTraining": {
+        "mechanism": "abrasao_na_linha_de_ar",
+        "alternatives": [
+          "conexão frouxa",
+          "vedação do vaso",
+          "restrição no filtro"
+        ],
+        "safetyNote": "Não procurar o vazamento com as mãos em linha pressurizada.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "architectureConfirmed": false,
+        "origin": "adaptacao_do_playbook"
+      }
+    },
+    {
+      "id": "INC083",
+      "modelId": "EQ05",
+      "category": "perfuracao",
+      "title": "DR410i — pulldown perde força com aquecimento",
+      "operator": "Na DR410i, a força de avanço diminui após ciclos longos; não há óleo visível no cilindro de pulldown da posição 1. A corrente e as guias ainda não foram plenamente verificadas.",
+      "verification": "Com o mastro bloqueado e elementos sustentados, realizar teste de retenção e comparação do sistema hidráulico por procedimento Sandvik. Separar passagem interna do cilindro, válvulas de comando, resistência de guias e tensão da corrente antes de definir reparo.",
+      "path": [
+        "MAST",
+        "ROHE",
+        "CYP1"
+      ],
+      "component": "Vedação",
+      "damage": "Com função degradada",
+      "cause": "Desgaste",
+      "priority": 3,
+      "material": "VED",
+      "tool": "MANO",
+      "hours": 7,
+      "diagHours": 4,
+      "estimatedCost": 145,
+      "sourcePartMatch": false,
+      "lesson": "A resolução fictícia é fuga interna por desgaste das vedações do cilindro. Falta confirmar arquitetura real do avanço; o FMEA registra oscilação hidráulica apenas como uma hipótese entre corrente e guiamento.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-DRILL-DR410-FEED-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "hipotese_didatica_sem_confirmacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "testes_propostos_sem_execucao",
+        "answer": "desfecho_escolhido_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drillTraining": {
+        "mechanism": "fuga_interna_cilindro_pulldown",
+        "alternatives": [
+          "corrente desajustada",
+          "travamento nas guias",
+          "válvula de controle"
+        ],
+        "safetyNote": "Mastro e cabeçote devem estar bloqueados; perigo de movimento inesperado.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "architectureConfirmed": false,
+        "origin": "adaptacao_do_playbook"
+      }
+    },
+    {
+      "id": "INC084",
+      "modelId": "EQ05",
+      "category": "perfuracao",
+      "title": "DR410i — rotação irregular da cabeça",
+      "operator": "Na DR410i, a rotação do cabeçote se torna irregular sob carga e aparecem vibração e aquecimento próximo ao motor de rotação da posição 1. Não foi localizado vazamento externo conclusivo.",
+      "verification": "Confirmar circuito e arquitetura da cabeça rotativa real. Medir pressão, vazão e comportamento funcional conforme Sandvik; diferenciar redução de eficiência do motor hidráulico de falha de alimentação, rolamentos, transmissão e carga da perfuração.",
+      "path": [
+        "MAST",
+        "ROHE",
+        "MOR1"
+      ],
+      "component": "Motor, Hidráulico",
+      "damage": "Com função degradada",
+      "cause": "Desgaste",
+      "priority": 3,
+      "material": "MOTH",
+      "tool": "MANO",
+      "hours": 9,
+      "diagHours": 5,
+      "estimatedCost": 1720,
+      "sourcePartMatch": false,
+      "lesson": "Missão autoral: o gabarito é desgaste interno do motor hidráulico de rotação. Nem o playbook de avanço da DR410i nem o de compressor DI650i documentam esse diagnóstico específico, portanto não é uma falha comprovada da máquina.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": null,
+        "layer": "elaboracao_autoral",
+        "version": null,
+        "status": "hipotese_didatica_sem_confirmacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "testes_propostos_sem_execucao",
+        "answer": "desfecho_escolhido_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drillTraining": {
+        "mechanism": "perda_eficiencia_motor_rotacao",
+        "alternatives": [
+          "carga de perfuração excessiva",
+          "alimentação hidráulica insuficiente",
+          "falha mecânica no cabeçote"
+        ],
+        "safetyNote": "Bloquear a cabeça e prevenir rotação inesperada antes de inspeções.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "architectureConfirmed": false,
+        "origin": "elaboracao_autoral"
+      }
+    },
+    {
+      "id": "INC085",
+      "modelId": "EQ05",
+      "category": "perfuracao",
+      "title": "DR410i — ventilação do compressor com ruído crescente",
+      "operator": "Na DR410i, o conjunto de ar comprimido fica mais quente em ciclos longos e surge ruído crescente na região do ventilador de resfriamento do compressor. A equipe ainda não isolou a causa do aquecimento.",
+      "verification": "Após parar, bloquear, resfriar e despressurizar, examinar integridade do ventilador, folgas, rolamentos e passagem de ar. Confirmar pelo esquema e inspeção o tipo de mancal ou acionamento presente antes de remover componentes ou executar reparo.",
+      "path": [
+        "AISY",
+        "COMR",
+        "FANN"
+      ],
+      "component": "Rolamento",
+      "damage": "Desgastado",
+      "cause": "Lubrificação insuficiente",
+      "priority": 2,
+      "material": "ROL",
+      "tool": "EXTR",
+      "hours": 6,
+      "diagHours": 4,
+      "estimatedCost": 490,
+      "sourcePartMatch": false,
+      "lesson": "O cenário resolve dano de rolamento do ventilador com lubrificação insuficiente, mas a arquitetura de mancais da DR410i não foi homologada. A mesma temperatura alta pode resultar de trocador bloqueado, acionamento ou comando térmico.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": null,
+        "layer": "elaboracao_autoral",
+        "version": null,
+        "status": "hipotese_didatica_sem_confirmacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "testes_propostos_sem_execucao",
+        "answer": "desfecho_escolhido_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drillTraining": {
+        "mechanism": "desgaste_mancal_ventilador_compressor",
+        "alternatives": [
+          "trocador obstruído",
+          "ventilador com comando incorreto",
+          "motor hidráulico com baixa resposta"
+        ],
+        "safetyNote": "Proteções, ventilador parado e energia pneumática isolada antes de trabalhar.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "architectureConfirmed": false,
+        "origin": "elaboracao_autoral"
+      }
     }
   ],
   "catalog": {
@@ -6387,7 +6909,8 @@
       "Motor, Hidráulico",
       "Filtro, Combustível",
       "Líquido, Arrefecimento",
-      "Respiro, Cárter"
+      "Respiro, Cárter",
+      "Válvula, Pneumática"
     ],
     "damages": [
       {
@@ -7906,6 +8429,20 @@
       "lead": 2,
       "initial": 1,
       "emoji": "🌬️"
+    },
+    "VALP": {
+      "name": "Válvula de controle pneumático (simulada)",
+      "unit": 790,
+      "lead": 3,
+      "initial": 0,
+      "emoji": "🔩"
+    },
+    "AIRT": {
+      "name": "Kit de vedação do circuito de ar (simulado)",
+      "unit": 180,
+      "lead": 2,
+      "initial": 2,
+      "emoji": "💨"
     }
   },
   "tools": {
@@ -7998,6 +8535,12 @@
       "cost": 530,
       "initial": false,
       "icon": "💧"
+    },
+    "PNEU": {
+      "name": "Kit de diagnóstico pneumático com manômetro",
+      "cost": 680,
+      "initial": false,
+      "icon": "💨"
     }
   }
 }
