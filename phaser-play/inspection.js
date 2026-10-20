@@ -59,7 +59,7 @@
   if(s.inspectionLabor?.tick!==s.tick)s.inspectionLabor={tick:s.tick,byEmployee:{}};
   const booked=s.inspectionLabor.byEmployee[who]||0;
   if(booked+INSPECTION_HH>10.5)return {error:'Capacidade de inspeção excedida: limite de 10,5 HH por profissional e turno.'};
-  const E=root.PORCARIA_ENGINE;
+  const E=globalThis.PORCARIA_ENGINE;
   if(E?.TRAINING?.active?.(s,mech))return {error:'O profissional está em treinamento durante este turno.'};
   if((s.jobs||[]).some(j=>j.asset===chosen))return {error:'Equipamento indisponível: já possui OS aberta.'};
   if(s.notifications.some(n=>n.asset===chosen&&n.monitorOnly&&['monitorando','aguarda_revisao_pcm'].includes(n.status)))
