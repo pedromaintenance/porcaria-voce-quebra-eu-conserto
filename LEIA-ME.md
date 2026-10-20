@@ -7,7 +7,7 @@
 
 Este não é mais apenas um jogo de acertar uma árvore de códigos. A oficina agora tem **restrições operacionais e consequências persistentes**.
 
-1. **29 cenários técnicos roteirizados** (não combinações arbitrárias de dano e causa), com caminhos de sistema/grupo/subgrupo derivados do banco enviado. Eles podem surgir repetidamente em unidades simuladas diferentes, em uma campanha que aumenta a pressão ao longo dos dias.
+1. **33 cenários técnicos roteirizados** (não combinações arbitrárias de dano e causa), com caminhos de sistema/grupo/subgrupo derivados do banco enviado. Eles podem surgir repetidamente em unidades simuladas diferentes, em uma campanha que aumenta a pressão ao longo dos dias.
 2. **Turnos:** um dia tem Turno A e Turno B, de 8 horas cada. Ordens consomem turnos para diagnóstico e reparo. O desempenho depende de especialidade e fadiga.
 3. **Capacidade real da simulação:** três boxes. Cada profissional só pode estar atribuído a uma OS. É possível liberar a equipe e o box sem apagar o diagnóstico.
 4. **Estoque e suprimentos:** 12 classes de materiais consumíveis, reservas na reparação, compras padrão/urgentes, prazos de entrega e atraso logístico eventual.
@@ -17,9 +17,11 @@ Este não é mais apenas um jogo de acertar uma árvore de códigos. A oficina a
 8. **KPIs:** backlog, ordens críticas, envelhecimento, tempo de restauração, taxa de reparo sem retrabalho, utilização de mão de obra, pendências de peças/ferramentas, caixa, reputação e evolução histórica.
 9. **Ciclo de gestão:** marco de avaliação ao fim de 20 dias; depois disso, você pode continuar em modo livre.
 
+**Ampliação 20/10/2026:** quatro ocorrências didáticas novas adaptadas de roteiros autorais do [FMEA Database Mining](https://github.com/pedromaintenance/fmea-database-mining): CAT 395 (vedação de bomba), CAT 6030 (restrição em radiador), CAT D9 (rodante) e CAT 777E (engrenagens de comando final). Os roteiros-fonte ainda aguardam revisão OEM; os vínculos de peça/dano/causa e o gabarito são escolhas **ficcionais de jogabilidade**, não diagnósticos validados. As regras futuras de Inspeção/PCM não foram implementadas neste pacote.
+
 ## Como jogar
 
-Abra **Oficina**, escolha uma ocorrência do rádio e faça a triagem. Designe um profissional disponível e um box. Se marcar **Vou junto**, terá ações de diagnóstico direto (até 3 por turno). Caso contrário, o mecânico investigará no avanço de turno — com chance de equívoco proporcional à habilidade e ao estado de fadiga.
+Abra **Oficina**, escolha uma ocorrência do rádio e faça a triagem. Designe um profissional disponível e um box. Se marcar **Vou junto**, poderá realizar diagnósticos assistidos sem teto fixo de tentativas por turno. Caso contrário, o mecânico investigará no avanço de turno — com chance de equívoco proporcional à habilidade e ao estado de fadiga.
 
 A árvore de diagnóstico segue exatamente:
 
