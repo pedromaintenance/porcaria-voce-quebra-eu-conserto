@@ -4516,7 +4516,7 @@
       ],
       "component": "Vedação",
       "damage": "Deteriorado",
-      "cause": "Exposição ambiental",
+      "cause": "Falha de vedação",
       "priority": 2,
       "material": "VED",
       "tool": "COLETA",
@@ -4524,7 +4524,7 @@
       "diagHours": 3,
       "estimatedCost": 145,
       "sourcePartMatch": false,
-      "lesson": "Entrada de poeira orienta inspeção de interfaces e respiro, não condenação imediata de engrenagens. Neste cenário o defeito simulado é de vedação; a base de origem não identifica a peça.",
+      "lesson": "O gabarito simula deterioração de vedação que favorece entrada de poeira. Sílica e alumínio no óleo não confirmam sozinhos a via de ingresso nem condenam engrenagens. Inspecionar respiros e interfaces.",
       "fmeaSource": {
         "repository": "pedromaintenance/fmea-database-mining",
         "recordId": "OIL-CASE-004",
