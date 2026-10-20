@@ -39,7 +39,7 @@
   if(!asset)return {error:'Nenhum equipamento didático livre nesta frota.'};
   const i={id:'IN'+String(s.nextInspection++).padStart(4,'0'),asset,modelId:p.modelId,
    tick:s.tick,day:s.day,shift:s.shift,status:'finding',scene:null,ordinal:0,
-   simulationOnly:true,inspectedTick:s.tick,observed:'Registro de condição simulado: '+p.baseline,
+   simulationOnly:true,inspectedTick:s.tick,observed:'Condição recebida: '+p.baseline,
    observationSource:'monitoramento_didatico',kind:'monitoring_practice'};
   s.inspections.push(i);
   const notified=I.notify(s,i.id,null,'baixa');
@@ -63,9 +63,9 @@
   return {ok:true,notification:n};
  }
  const OUTCOMES={
-  estavel:{label:'ESTÁVEL',meaning:'Repetição qualitativa sem agravamento detectável na simulação; não prova ausência de falha.'},
-  inconclusivo:{label:'INCONCLUSIVA',meaning:'Coleta ou comparação sem qualidade suficiente para caracterizar tendência; nova coleta necessária.'},
-  agravamento:{label:'AGRAVAMENTO',meaning:'Novo indício consistente de piora no exercício; avaliar intervenção antes de autorizar retorno.'}
+  estavel:{label:'ESTÁVEL',meaning:'Acompanhamento mantém o perfil anterior, sem agravamento identificado no resultado.'},
+  inconclusivo:{label:'INCONCLUSIVA',meaning:'Resultado insuficiente para estabelecer tendência. Necessária nova coleta.'},
+  agravamento:{label:'AGRAVAMENTO',meaning:'Nova evidência de agravamento. Avaliação técnica e decisão de intervenção necessárias.'}
  };
  function collect(s,id){
   const n=get(s,id),m=n?.monitoring;
