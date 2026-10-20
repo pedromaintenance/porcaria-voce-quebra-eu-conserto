@@ -5966,7 +5966,39 @@
         "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
         "labResultsReal": false,
         "sourceType": "adaptacao_de_caso_simulado"
-      }
+      },
+      "diagnosticTests": [
+        {
+          "id": "press",
+          "tool": "MANO",
+          "label": "Comparar indicação do combustível com medição independente",
+          "outcome": "convergente",
+          "result": "Leitura independente e painel indicam queda correlacionada de alimentação no exercício; há insuficiência real a investigar.",
+          "limits": "Medições sem faixa OEM: a coincidência indica efeito, não localiza a restrição.",
+          "simulationOnly": true,
+          "cashCost": 35
+        },
+        {
+          "id": "restrict",
+          "tool": "PDIF",
+          "label": "Investigar restrição na filtragem do combustível",
+          "outcome": "observado",
+          "result": "Inspeção didática do elemento e diferencial indicam restrição à passagem de combustível.",
+          "limits": "A origem das partículas e o restante do circuito continuam sob investigação.",
+          "simulationOnly": true,
+          "cashCost": 35
+        },
+        {
+          "id": "sample",
+          "tool": "COLETA",
+          "label": "Verificar aspecto de amostra de combustível",
+          "outcome": "inconclusivo",
+          "result": "A amostra qualitativa não apresenta sinal conclusivo de água; não distingue obstrução de erro de leitura.",
+          "limits": "Coleta visual não substitui critérios laboratoriais nem análise OEM.",
+          "simulationOnly": true,
+          "cashCost": 35
+        }
+      ]
     },
     {
       "id": "INC067",
@@ -6015,7 +6047,39 @@
         "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
         "labResultsReal": false,
         "sourceType": "adaptacao_de_caso_simulado"
-      }
+      },
+      "diagnosticTests": [
+        {
+          "id": "press",
+          "tool": "MANO",
+          "label": "Comparar indicação do combustível com medição independente",
+          "outcome": "divergente",
+          "result": "A pressão de referência permanece estável no exercício, enquanto o painel oscila; o sinal indicado não corresponde à grandeza medida.",
+          "limits": "O desvio ainda pode ser sensor, chicote, conector ou controle de aquisição.",
+          "simulationOnly": true,
+          "cashCost": 35
+        },
+        {
+          "id": "restrict",
+          "tool": "PDIF",
+          "label": "Investigar restrição na filtragem do combustível",
+          "outcome": "nao_observado",
+          "result": "A verificação didática não encontra restrição significativa do elemento filtrante nas condições simuladas.",
+          "limits": "A ausência de restrição não demonstra por si só qual componente elétrico falhou.",
+          "simulationOnly": true,
+          "cashCost": 35
+        },
+        {
+          "id": "sample",
+          "tool": "COLETA",
+          "label": "Verificar aspecto de amostra de combustível",
+          "outcome": "inconclusivo",
+          "result": "A amostra qualitativa não apresenta sinal conclusivo de água; sozinha não distingue falha de sensor de bloqueio intermitente.",
+          "limits": "Coleta visual não substitui critérios laboratoriais nem análise OEM.",
+          "simulationOnly": true,
+          "cashCost": 35
+        }
+      ]
     },
     {
       "id": "INC068",
@@ -6457,7 +6521,39 @@
         "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
         "architectureConfirmed": false,
         "origin": "adaptacao_do_playbook"
-      }
+      },
+      "diagnosticTests": [
+        {
+          "id": "airtight",
+          "tool": "PNEU",
+          "label": "Verificar perda de pressão no circuito pneumático",
+          "outcome": "nao_observado",
+          "result": "Com o circuito isolado no simulador, não se observa fuga externa relevante no teste de retenção.",
+          "limits": "Um teste estanque não permite condenar o compressor nem confirma o filtro.",
+          "simulationOnly": true,
+          "cashCost": 35
+        },
+        {
+          "id": "restriction",
+          "tool": "PDIF",
+          "label": "Verificar restrição da admissão do compressor",
+          "outcome": "observado",
+          "result": "No exercício, a inspeção do elemento indica sujidade e restrição no ar admitido.",
+          "limits": "Confirmar em campo a configuração, a restrição e o limite Sandvik antes de agir.",
+          "simulationOnly": true,
+          "cashCost": 35
+        },
+        {
+          "id": "temperature",
+          "tool": "TERM",
+          "label": "Comparar tendência térmica externa",
+          "outcome": "inconclusivo",
+          "result": "O comportamento térmico virtual é inespecífico: não permite atribuir falta de ar ao filtro ou à fuga.",
+          "limits": "Não foram usados valores reais de temperatura.",
+          "simulationOnly": true,
+          "cashCost": 35
+        }
+      ]
     },
     {
       "id": "INC077",
@@ -6507,7 +6603,39 @@
         "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
         "architectureConfirmed": false,
         "origin": "adaptacao_do_playbook"
-      }
+      },
+      "diagnosticTests": [
+        {
+          "id": "airtight",
+          "tool": "PNEU",
+          "label": "Verificar perda de pressão no circuito pneumático",
+          "outcome": "observado",
+          "result": "O ensaio didático registra perda de retenção e indica escape em uma interface de mangueira.",
+          "limits": "A localização e a extensão exigiriam inspeção segura de campo e despressurização.",
+          "simulationOnly": true,
+          "cashCost": 35
+        },
+        {
+          "id": "restriction",
+          "tool": "PDIF",
+          "label": "Verificar restrição da admissão do compressor",
+          "outcome": "nao_observado",
+          "result": "O exercício não encontra restrição de admissão relevante na comparação simulada.",
+          "limits": "Não confirma sozinho a origem do vazamento nem exclui defeitos de controle.",
+          "simulationOnly": true,
+          "cashCost": 35
+        },
+        {
+          "id": "temperature",
+          "tool": "TERM",
+          "label": "Comparar tendência térmica externa",
+          "outcome": "inconclusivo",
+          "result": "O comportamento térmico virtual é inespecífico: não diferencia vazamento de admissão restringida.",
+          "limits": "Não foram usados valores reais de temperatura.",
+          "simulationOnly": true,
+          "cashCost": 35
+        }
+      ]
     },
     {
       "id": "INC078",
@@ -6957,7 +7085,39 @@
         "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
         "origin": "adaptacao_de_referencia_sintetica",
         "realDefectConfirmed": false
-      }
+      },
+      "diagnosticTests": [
+        {
+          "id": "oil",
+          "tool": "COLETA",
+          "label": "Examinar partículas e histórico do lubrificante",
+          "outcome": "inconclusivo",
+          "result": "O exercício confirma partículas metálicas, mas sua morfologia não permite isolar rolamento de engrenagem.",
+          "limits": "Uma amostra isolada não é diagnóstico de componente.",
+          "simulationOnly": true,
+          "cashCost": 35
+        },
+        {
+          "id": "inspect",
+          "tool": "EXTR",
+          "label": "Solicitar inspeção interna qualificada do comando final",
+          "outcome": "observado",
+          "result": "Com desmontagem virtual controlada, observam-se marcas localizadas nas pistas de rolamento; os dentes inspecionados não apresentam lascamento relevante.",
+          "limits": "Esse achado é simulado, não comprova dano na frota nem substitui relatório dimensional OEM.",
+          "simulationOnly": true,
+          "cashCost": 35
+        },
+        {
+          "id": "thermal",
+          "tool": "TERM",
+          "label": "Comparar comportamento térmico e ruído localizado",
+          "outcome": "inconclusivo",
+          "result": "O aquecimento localizado no exercício não diferencia de forma confiável o mancal das engrenagens.",
+          "limits": "Temperatura e ruído são indicativos, não identificação inequívoca.",
+          "simulationOnly": true,
+          "cashCost": 35
+        }
+      ]
     },
     {
       "id": "INC087",
@@ -7007,7 +7167,39 @@
         "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
         "origin": "adaptacao_de_referencia_sintetica",
         "realDefectConfirmed": false
-      }
+      },
+      "diagnosticTests": [
+        {
+          "id": "oil",
+          "tool": "COLETA",
+          "label": "Examinar partículas e histórico do lubrificante",
+          "outcome": "inconclusivo",
+          "result": "O exercício confirma partículas metálicas, mas sua morfologia não permite isolar rolamento de engrenagem.",
+          "limits": "Uma amostra isolada não é diagnóstico de componente.",
+          "simulationOnly": true,
+          "cashCost": 35
+        },
+        {
+          "id": "inspect",
+          "tool": "EXTR",
+          "label": "Solicitar inspeção interna qualificada do comando final",
+          "outcome": "observado",
+          "result": "A inspeção virtual revela lascamento em dentes de engrenagem; as pistas de rolamento avaliadas não apresentam dano correspondente.",
+          "limits": "Esse achado é simulado, não comprova dano na frota nem substitui relatório dimensional OEM.",
+          "simulationOnly": true,
+          "cashCost": 35
+        },
+        {
+          "id": "thermal",
+          "tool": "TERM",
+          "label": "Comparar comportamento térmico e ruído localizado",
+          "outcome": "inconclusivo",
+          "result": "O aquecimento localizado no exercício não diferencia de forma confiável o mancal das engrenagens.",
+          "limits": "Temperatura e ruído são indicativos, não identificação inequívoca.",
+          "simulationOnly": true,
+          "cashCost": 35
+        }
+      ]
     },
     {
       "id": "INC088",

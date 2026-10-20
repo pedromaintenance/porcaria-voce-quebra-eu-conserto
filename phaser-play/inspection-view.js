@@ -5,7 +5,26 @@
 })(typeof window!=='undefined'?window:globalThis,function(){
  'use strict';
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- function renderPCM(n,model,d,I,E,s){
+ function renderEvidence(n,d,T,s){
+  if(!T)return '';
+  const tests=T.available(s,d,n.id);
+  if(!tests.length)return '';
+  const outcomes={observado:'INDÍCIO OBSERVADO',nao_observado:'NÃO OBSERVADO',
+   convergente:'LEITURAS COERENTES',divergente:'LEITURAS DIVERGENTES',inconclusivo:'INCONCLUSIVO'};
+  const reports=(n.evidenceTests||[]).map(x=>'<li><strong>'+esc(x.label)+' · '+esc(outcomes[x.outcome]||'OBSERVAÇÃO')
+   +'</strong><p>'+esc(x.result)+'</p><small>'+esc(x.limits)+' · resultado SIMULADO · turno '+Number(x.tick)+'</small></li>').join('');
+  const controls=n.status==='aguarda_revisao_pcm'?tests.map(x=>'<div class="pcmTestAction"><div><strong>'+esc(x.label)+'</strong>'
+   +'<small>'+esc(x.toolName)+' · custo fictício R$ '+Number(x.cost)+'</small></div>'
+   +'<button class="act secondary" type="button" data-evidence-test="'+esc(x.id)+'" data-notification-id="'+esc(n.id)+'" '
+   +(x.completed||!x.available?'disabled':'')+'>'+esc(x.completed?'REGISTRADO':x.available?'EXECUTAR TESTE':'FALTA FERRAMENTA')+'</button></div>').join(''):'';
+  return '<section class="pcmEvidence"><h4>🔬 BANCADA DE EVIDÊNCIAS · FICÇÃO DIDÁTICA</h4>'
+   +'<p>Os resultados são qualitativos e criados para o jogo. Execute os testes antes de escolher hipóteses. Não representam medições ou limites OEM.</p>'
+   +(controls?'<div class="pcmTestList">'+controls+'</div>':'')
+   +(reports?'<div class="pcmEvidenceReport"><strong>RESULTADOS REGISTRADOS</strong><ul>'+reports+'</ul></div>'
+     :'<p class="muted">Nenhum resultado registrado. Comprar uma ferramenta não executa automaticamente o teste.</p>')
+   +'</section>';
+ }
+ function renderPCM(n,model,d,I,E,s,T){
   const statuses={aguarda_revisao_pcm:'AGUARDA REVISÃO',devolvida:'DEVOLVIDA',aprovada_pcm:'PLANEJAMENTO APROVADO',arquivada_pcm:'ARQUIVADA',convertida_os:'OS GERADA'};
   const id=esc(n.id),status=esc(statuses[n.status]||'STATUS DESCONHECIDO');
   const header='<header class="inspectionNotificationHead"><strong>'+id+' · '+esc(model(n.modelId))+' · '+esc(n.asset)+'</strong><span class="inspectionBadge">'+status+'</span></header>';
@@ -60,10 +79,10 @@
   }else if(n.status==='arquivada_pcm'){
    actions='<p class="inspectionAttention">Motivo do arquivamento: '+esc(n.reviewReason||'')+'</p>';
   }
-  return '<article class="inspectionNotification">'+header+details+actions+hist+'</article>';
+  return '<article class="inspectionNotification">'+header+details+renderEvidence(n,d,T,s)+actions+hist+'</article>';
  }
 
- function render(s,d,I,E){
+ function render(s,d,I,E,T){
   I.normalized(s);
   const summary=I.summary(s),current=s.inspections.filter(x=>x.tick===s.tick);
   const recent=s.inspections.filter(x=>x.tick!==s.tick&&['finding','notified'].includes(x.status)).slice(-8).reverse();
@@ -88,8 +107,13 @@
   };
   const statusWeight={aguarda_revisao_pcm:0,devolvida:1,aprovada_pcm:2,convertida_os:3,arquivada_pcm:4};
   const rows=s.notifications.slice().sort((a,b)=>(statusWeight[a.status]??5)-(statusWeight[b.status]??5)||b.openedTick-a.openedTick)
-   .slice(0,25).map(n=>renderPCM(n,modelName,d,I,E,s)).join('');
+   .slice(0,25).map(n=>renderPCM(n,modelName,d,I,E,s,T)).join('');
+  const practice=T?'<section class="pcmEvidencePractice"><h3>🔬 TREINO DE DIAGNÓSTICO COM TESTES</h3>'
+   +'<p>Escolha o sintoma. A falha é uma de duas variantes didáticas ocultas e muda no próximo exercício. Até dois exercícios por turno, sem criar OS automaticamente.</p>'
+   +Object.entries(T.FAMILIES).map(([id,x])=>'<button type="button" class="act secondary" data-evidence-practice="'+esc(id)+'">'+esc(x.label)+'</button>').join(' ')
+   +'</section>':'';
   return '<p class="inspectionIntro"><strong>INSPEÇÃO → HIPÓTESES PCM → EXECUÇÃO MECÂNICA.</strong> Observações simuladas sem medições OEM e sem conclusão causal.</p>'
+   +practice
    +'<div class="inspectionMetrics"><div><small>PROGRAMADAS</small><strong>'+current.length+'</strong></div><div><small>A REALIZAR</small><strong>'+summary.pending+'</strong></div>'
    +'<div><small>NOTAS EM REVISÃO</small><strong>'+summary.awaiting+'</strong></div><div><small>ESCOPO APROVADO</small><strong>'+summary.approved+'</strong></div></div>'
    +'<h3 class="resourceSection">RONDA DO TURNO · DIA '+s.day+' / '+(s.shift?'B':'A')+'</h3>'
