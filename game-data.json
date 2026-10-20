@@ -6621,7 +6621,7 @@
           "label": "Verificar restrição da admissão do compressor",
           "outcome": "nao_observado",
           "result": "O exercício não encontra restrição de admissão relevante na comparação simulada.",
-          "limits": "Não confirma sozinho a origem do vazamento.",
+          "limits": "Não confirma sozinho a origem do vazamento nem exclui defeitos de controle.",
           "simulationOnly": true,
           "cashCost": 35
         },
