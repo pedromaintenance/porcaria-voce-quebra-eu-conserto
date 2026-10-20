@@ -80,12 +80,116 @@
   s.notifications.push(n);x.notificationId=idNew;x.status='notified';
   return {ok:true,notification:n};
  }
+ // Etapas do fluxo técnico de revisão: nunca gerar OS ao aprovar uma nota.
+ const TRADES=Object.freeze({mecanica:'Mecânica',hidraulica:'Hidráulica',eletrica:'Elétrica',eletronica:'Eletrônica',lubrificacao:'Lubrificação',estruturas:'Estruturas',instrumentacao:'Instrumentação'});
+ const PRIORITIES=new Set(['baixa','media','alta']);
+ const trim=(v,max)=>String(v??'').trim().replace(/\s+/g,' ').slice(0,max+1);
+ function audit(n,s,action,reason){
+  if(!Array.isArray(n.reviewHistory))n.reviewHistory=[];
+  n.reviewHistory.push({tick:s.tick,action,reason:String(reason||''),origin:'revisao_pcm_jogo'});
+  if(n.reviewHistory.length>100)n.reviewHistory=n.reviewHistory.slice(-100);
+ }
+ function review(s,id,decision,payload={}){
+  normalized(s);
+  const n=s.notifications.find(x=>x.id===id);
+  if(!n)return {error:'Notificação não encontrada.'};
+  if(n.status==='convertida_os')return {error:'Notificação convertida em OS: histórico imutável.'};
+  const note=trim(payload.reason,500);
+  if(decision==='return'||decision==='archive'){
+   if(!['aguarda_revisao_pcm','devolvida','aprovada_pcm'].includes(n.status))return {error:'Status não permite revisão.'};
+   if(note.length<15||note.length>500)return {error:'Informe justificativa técnica de 15 a 500 caracteres.'};
+   n.status=decision==='return'?'devolvida':'arquivada_pcm';
+   n.reviewReason=note;
+   if(decision==='return')n.planningScope=null;
+   n.reviewedTick=s.tick;
+   audit(n,s,decision,note);
+   return {ok:true,status:n.status,notification:n};
+  }
+  if(decision==='resubmit'){
+   if(n.status!=='devolvida')return {error:'Somente notificações devolvidas admitem complementação.'};
+   const description=trim(payload.description,600);
+   if(description.length<15||description.length>600)return {error:'O relato complementado precisa ter entre 15 e 600 caracteres.'};
+   if(!PRIORITIES.has(payload.priority))return {error:'Prioridade inválida.'};
+   n.description=description;n.priority=payload.priority;n.status='aguarda_revisao_pcm';
+   n.reviewReason=null;
+   audit(n,s,'resubmit','Relato complementado e reenviado à revisão PCM.');
+   return {ok:true,status:n.status,notification:n};
+  }
+  if(decision==='approve'){
+   if(n.status!=='aguarda_revisao_pcm')return {error:'Aprovação exige uma notificação aguardando revisão.'};
+   const scope=trim(payload.scope,700);
+   const trade=String(payload.trade||'');
+   const hh=Number(payload.estimatedHH);
+   if(scope.length<20||scope.length>700)return {error:'Delimite o serviço em 20 a 700 caracteres, sem antecipar causas não confirmadas.'};
+   if(!Object.hasOwn(TRADES,trade))return {error:'Disciplina não cadastrada.'};
+   if(!Number.isFinite(hh)||hh<0.5||hh>80||Math.round(hh*2)!==hh*2)
+     return {error:'Estimativa HH inválida: de 0,5 a 80, em intervalos de meia hora.'};
+   const note=trim(payload.reason,500);
+   if(note.length>500)return {error:'Observação PCM limitada a 500 caracteres.'};
+   n.planningScope={description:scope,trade,tradeLabel:TRADES[trade],estimatedHH:hh,planningNote:note,reviewedTick:s.tick};
+   n.reviewedTick=s.tick;n.reviewReason=null;n.status='aprovada_pcm';
+   audit(n,s,'approve','Escopo aprovado: '+TRADES[trade]+' · '+hh+' HH.');
+   return {ok:true,status:n.status,notification:n};
+  }
+  return {error:'Decisão PCM desconhecida.'};
+ }
+ function convert(s,d,id){
+  normalized(s);
+  const n=s.notifications.find(x=>x.id===id);
+  if(!n)return {error:'Notificação não encontrada.'};
+  if(n.status!=='aprovada_pcm'||!n.planningScope||n.workOrderId)
+   return {error:'Somente notificações aprovadas e ainda sem OS podem ser convertidas.'};
+  if((s.jobs||[]).some(j=>j.asset===n.asset))return {error:'Esse equipamento já possui OS ativa. Resolva a duplicidade antes de converter.'};
+  if(!Array.isArray(s.jobs)||s.jobs.length>=32)return {error:'A carteira atingiu o limite interno de 32 OS. Conclua algum serviço antes de converter.'};
+  const sc=d.scenarios.find(x=>x.id===n.sourceScenario&&x.modelId===n.modelId);
+  if(!sc)return {error:'Roteiro de cenário incompatível com a notificação. Nenhuma OS foi criada.'};
+  if(!d.models.some(x=>x.id===n.modelId)||!String(n.asset).startsWith(n.modelId+'·'))
+   return {error:'Equipamento inválido para conversão.'};
+  if(!Number.isSafeInteger(s.nextJob)||s.nextJob<1)return {error:'Sequência de ordens inválida.'};
+  const mapping={baixa:1,media:2,alta:3};
+  if(!mapping[n.priority])return {error:'Prioridade não reconhecida.'};
+  // Mesmo contrato estrutural de E.spawn, com origem e escopo adicionais.
+  const seq=s.nextJob,os='OS'+String(seq).padStart(4,'0');
+  if([...s.jobs,...(s.done||[])].some(j=>j.id===os))return {error:'Identificador da OS já existe. Nenhum registro alterado.'};
+  const candidate={
+   id:os,scene:sc.id,asset:n.asset,modelId:n.modelId,title:sc.title,
+   report:n.description,dayOpen:s.day,tickOpen:s.tick,priority:mapping[n.priority],
+   status:'fila',assigned:null,bay:null,help:false,stage:0,hints:{},diagnosticLog:[],
+   diagTarget:sc.diagHours*2,diagRemaining:sc.diagHours*2,repairTarget:sc.hours,repairRemaining:sc.hours,
+   options:null,wrong:0,rework:false,materialUsed:false,worked:0,toolWait:0,blockedShifts:0,
+   notes:[],scheduleShift:null,costLabor:0,reworkHours:0,
+   source:'notificacao_inspecao',notificationId:n.id,inspectionId:n.inspectionId,
+   approvedScope:{...n.planningScope}
+  };
+  return {ok:true,orderDraft:candidate,notification:n};
+ }
+ function commitConversion(s,d,E,id){
+  const checked=convert(s,d,id);
+  if(checked.error)return checked;
+  const draft=checked.orderDraft;
+  const scenario=d.scenarios.find(x=>x.id===draft.scene);
+  const Eoptions=E?.options;
+  if(typeof Eoptions!=='function')return {error:'Motor de diagnóstico indisponível: conversão cancelada.'};
+  const values=Eoptions(d,scenario,Math.floor(Math.random()*2**30));
+  if(!Array.isArray(values)||values.length!==6)return {error:'Falha na montagem do diagnóstico; nenhuma OS criada.'};
+  draft.options=values;
+  s.jobs.push(draft);
+  s.nextJob++;
+  const n=checked.notification;
+  n.workOrderId=draft.id;n.status='convertida_os';n.convertedTick=s.tick;
+  audit(n,s,'convert','OS '+draft.id+' criada manualmente; programação e alocação pendentes.');
+  return {ok:true,order:draft,notification:n};
+ }
+
  function summary(s){
   normalized(s);
   return {pending:s.inspections.filter(x=>x.tick===s.tick&&x.status==='pending').length,
    findings:s.inspections.filter(x=>x.status==='finding').length,
    awaiting:s.notifications.filter(x=>x.status==='aguarda_revisao_pcm').length,
+   returned:s.notifications.filter(x=>x.status==='devolvida').length,
+   approved:s.notifications.filter(x=>x.status==='aprovada_pcm').length,
+   converted:s.notifications.filter(x=>x.status==='convertida_os').length,
    total:s.inspections.length,notifications:s.notifications.length};
  }
- return {normalized,plan,inspect,notify,summary,LIMIT_PER_SHIFT};
+ return {normalized,plan,inspect,notify,review,convert,commitConversion,summary,TRADES,LIMIT_PER_SHIFT};
 });

@@ -618,6 +618,28 @@ body{min-height:100vh}
 .inspectionFuture{padding:12px;border-left:3px solid #6ea6c1;background:#142f44;font-size:12px;line-height:1.5}
 @media(max-width:700px){.inspectionMetrics{grid-template-columns:repeat(2,minmax(0,1fr))}.inspectionList{grid-template-columns:1fr}.inspectionMetrics strong{font-size:21px}}
 
+
+/* v0.9.1 — mesa PCM de revisão: escopos, HH e rastreabilidade. */
+.inspectionNotification{margin:10px 0;min-width:0}
+.inspectionNotificationHead{display:flex;align-items:center;gap:9px;justify-content:space-between;flex-wrap:wrap}
+.inspectionNotificationHead strong{font-size:13px}
+.pcmReviewArea{margin-top:10px;padding:11px;border:1px solid #5a7588;background:#091e2d;border-radius:8px}
+.pcmReviewArea h4{margin:0 0 10px;color:#ffd38a;font-size:12px;letter-spacing:.06em}
+.pcmScopeRow{display:grid;grid-template-columns:2fr 1fr;gap:10px;margin:9px 0}
+.pcmScopeRow label,.pcmReviewArea>label{display:grid;gap:5px;color:#b9d4e5;font-size:11px;font-weight:800}
+.pcmScopeRow select,.pcmScopeRow input,.pcmReviewArea select{width:100%;min-width:0;border:1px solid #6a8297;border-radius:6px;background:#102e41;color:#f5fafc;min-height:38px;padding:7px;font:inherit}
+.pcmActions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.pcmActions .act{min-height:38px;font-size:11px}
+.pcmApprovedScope{padding:11px;background:#153d33;border:1px solid #4f9d78;border-radius:7px;margin-top:11px}
+.pcmApprovedScope strong{color:#b8f5ca}
+.pcmApprovedScope p{line-height:1.5}
+.pcmApprovedScope small{display:block;color:#d2eae0}
+.inspectionAttention{padding:9px;background:#533822;border-radius:6px;border-left:3px solid #f3bc70;overflow-wrap:anywhere}
+.inspectionAudit{margin:10px 0 0;color:#bbd4e4;font-size:11px}
+.inspectionAudit summary{cursor:pointer;color:#f6d9a4}
+.inspectionAudit li{margin-top:5px;overflow-wrap:anywhere}
+@media(max-width:460px){.pcmScopeRow{grid-template-columns:1fr}.pcmActions .act{width:100%}}
+
 </style></head><body>
 <div id="layout">
 <header class="top" role="banner">
@@ -683,4 +705,4 @@ body{min-height:100vh}
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.8.34"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./inspection.js?v=0.9.0"></script><script src="./inspection-view.js?v=0.9.0"></script><script src="./game.js?v=0.8.32-pt1412-inspection1"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
+<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.8.34"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./inspection.js?v=0.9.1"></script><script src="./inspection-view.js?v=0.9.1"></script><script src="./game.js?v=0.8.32-pt1412-inspection2"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
