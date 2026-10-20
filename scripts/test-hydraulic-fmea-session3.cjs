@@ -14,11 +14,11 @@ const expected={
  INC064:['EQ06','PB-DRILL-DR410-FEED-01','Motor, Hidráulico'],
  INC065:['EQ01','OIL-CASE-046','Bomba, Hidráulica']
 };
-assert.equal(D.scenarios.length,65,'55 antigos + 10 missões hidráulicas');
-assert.equal(new Set(D.scenarios.map(x=>x.id)).size,65,'IDs únicos');
+assert.equal(D.scenarios.length,75,'55 anteriores + 10 hidráulicos + 10 diesel');
+assert.equal(new Set(D.scenarios.map(x=>x.id)).size,75,'IDs únicos');
 assert.deepEqual(D.scenarios.slice(0,55).map(x=>x.id),Array.from({length:55},(_,i)=>'INC'+String(i+1).padStart(3,'0')),'55 missões anteriores preservadas');
 const catalogPaths=new Set(D.paths.map(p=>[p.modelId,p.system,p.group,p.subgroup].join('|')));
-assert.equal(D.paths.length,378);
+assert.equal(D.paths.length,382);
 const newHydraulicPaths=D.paths.filter(p=>p.origin==='trilha_didatica_simulada' && p.group==='FISY');
 assert.equal(newHydraulicPaths.length,2);
 for(const p of newHydraulicPaths)assert.equal(p.sapValidated,false);
