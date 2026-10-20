@@ -655,6 +655,19 @@ body{min-height:100vh}
 @media(max-width:760px){.pcmHypothesisGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:450px){.pcmHypothesisGrid{grid-template-columns:1fr}}
 
+.pcmEvidencePractice,.pcmEvidence{margin:12px 0;padding:12px;border:1px solid #52768c;border-radius:8px;background:#112b3d;color:#dcecf4}
+.pcmEvidencePractice h3,.pcmEvidence h4{font-size:13px;color:#ffda96;margin:0 0 8px}
+.pcmEvidencePractice p,.pcmEvidence p{font-size:12px;line-height:1.55}
+.pcmEvidencePractice button{margin:4px 6px 4px 0;white-space:normal;text-align:left}
+.pcmTestList{display:grid;gap:7px;margin-top:8px}
+.pcmTestAction{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px;border:1px solid #456376;border-radius:6px;background:#0d2535}
+.pcmTestAction strong{display:block;font-size:12px;color:#f0ede0}
+.pcmTestAction small{display:block;font-size:10px;margin-top:3px;color:#bbd3e1}
+.pcmTestAction button{flex-shrink:0;max-width:45%;white-space:normal}
+.pcmEvidenceReport ul{margin:8px 0;padding-left:22px}
+.pcmEvidenceReport li{padding:8px 0;border-bottom:1px solid #354d61}
+.pcmEvidenceReport li p{margin:5px 0}
+@media(max-width:500px){.pcmTestAction{align-items:stretch;flex-direction:column}.pcmTestAction button{max-width:100%}}
 </style></head><body>
 <div id="layout">
 <header class="top" role="banner">
@@ -720,4 +733,4 @@ body{min-height:100vh}
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.9.2"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./inspection.js?v=0.9.2"></script><script src="./inspection-view.js?v=0.9.2"></script><script src="./game.js?v=0.8.32-pt1412-inspection3"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
+<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.9.2"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./inspection.js?v=0.9.2"></script><script src="./evidence.js?v=0.9.3"></script><script src="./inspection-view.js?v=0.9.2"></script><script src="./game.js?v=0.8.32-pt1412-inspection3"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
