@@ -187,6 +187,8 @@
   if(!n)return {error:'Notificação não encontrada.'};
   if(n.status!=='aprovada_pcm'||!n.planningScope||n.workOrderId)
    return {error:'Somente notificações aprovadas e ainda sem OS podem ser convertidas.'};
+  if(s.notifications.some(x=>x.monitorOnly&&x.asset===n.asset&&['aguarda_revisao_pcm','monitorando'].includes(x.status)))
+   return {error:'O equipamento possui monitoramento por condição pendente. Encerre ou escalone antes de criar OS.'};
   if((s.jobs||[]).some(j=>j.asset===n.asset))return {error:'Esse equipamento já possui OS ativa. Resolva a duplicidade antes de converter.'};
   if(!Array.isArray(s.jobs)||s.jobs.length>=32)return {error:'A carteira atingiu o limite interno de 32 OS. Conclua algum serviço antes de converter.'};
   const sc=d.scenarios.find(x=>x.id===n.sourceScenario&&x.modelId===n.modelId);
