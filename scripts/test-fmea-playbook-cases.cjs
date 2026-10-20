@@ -8,7 +8,7 @@ const expected={
  INC032:{source:'PB-DOZER-TRACK-01',model:'EQ07',path:['UNCR','TRF1','IDL1'],component:'Rolamento',damage:'Gripado',cause:'Lubrificação insuficiente'},
  INC033:{source:'PB-TRUCK-FINAL-01',model:'EQ01',path:['DRTR','AXAS','FID2'],component:'Engrenagem',damage:'Desgastado',cause:'Lubrificação insuficiente'}
 };
-assert.equal(D.scenarios.length,45,'29 originais + 4 FMEA anteriores + 12 adicionais');
+assert.equal(D.scenarios.length,55,'29 originais + 4 FMEA anteriores + 12 adicionais + 10 elétricos');
 assert.equal(new Set(D.scenarios.map(x=>x.id)).size,45,'IDs únicos');
 const pathSet=new Set(D.paths.map(x=>[x.modelId,x.system,x.group,x.subgroup].join('|')));
 const parts=new Set(D.catalog.parts), damages=new Set(D.catalog.damages.map(x=>x.pt)), causes=new Set(D.catalog.causes.map(x=>x.pt));
@@ -40,4 +40,4 @@ const s=E.create(D,()=>0.5);
 assert.ok(s.jobs.length===3,'campanha inicial preservada');
 const originalIds=[...D.scenarios.slice(0,29).map(x=>x.id)];
 assert.deepEqual(originalIds,Array.from({length:29},(_,i)=>'INC'+String(i+1).padStart(3,'0')),'29 cenários originais preservados');
-console.log('OK: 4 casos FMEA anteriores preservados, 45 cenários, códigos, gabaritos, opções e sorteio válidos.');
+console.log('OK: 4 casos FMEA anteriores preservados, 55 cenários, códigos, gabaritos, opções e sorteio válidos.');
