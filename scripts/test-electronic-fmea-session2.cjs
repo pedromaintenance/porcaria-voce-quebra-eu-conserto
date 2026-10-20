@@ -15,8 +15,8 @@ const expected={
  INC054:['EQ06','ELEC-CF-13-3','Conector, Elétrica'],
  INC055:['EQ02','ELEC-CF-23-2','Chicote Elétrico']
 };
-assert.equal(D.scenarios.length,65,'45 anteriores + 10 elétricos + 10 hidráulicos');
-assert.equal(new Set(D.scenarios.map(s=>s.id)).size,65);
+assert.equal(D.scenarios.length,75,'45 anteriores + 10 elétricos + 10 hidráulicos + 10 diesel');
+assert.equal(new Set(D.scenarios.map(s=>s.id)).size,75);
 const paths=new Set(D.paths.map(p=>[p.modelId,p.system,p.group,p.subgroup].join('|')));
 const original=D.scenarios.slice(0,45).map(s=>s.id);
 assert.deepEqual(original,Array.from({length:45},(_,i)=>'INC'+String(i+1).padStart(3,'0')),'não remover nem reordenar missões anteriores');
@@ -54,7 +54,7 @@ for(const [id,[model,source,part]] of Object.entries(expected)){
   });
  }
 }
-const newPaths=D.paths.filter(p=>p.origin==='trilha_didatica_simulada' && p.group!=='FISY');
+const newPaths=D.paths.filter(p=>p.origin==='trilha_didatica_simulada' && ['AUXC','ELCT','ELCM','SENP','JOYS'].includes(p.subgroup));
 assert.equal(newPaths.length,5,'caminhos elétricos novos, sem atribuição SAP');
 for(const p of newPaths)assert.equal(p.sapValidated,false);
 for(const item of ['CHIC','SENT','SENP','SOLN','CANR'])assert.ok(D.items[item]&&D.items[item].unit>0);
