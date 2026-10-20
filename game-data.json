@@ -3530,6 +3530,39 @@
       "subgroupName": "Mangueiras / Conexões Pneumáticas",
       "origin": "trilha_didatica_simulada",
       "sapValidated": false
+    },
+    {
+      "modelId": "EQ01",
+      "system": "DRTR",
+      "systemName": "Transmissão",
+      "group": "TRAN",
+      "groupName": "Transmissão",
+      "subgroup": "TRGE",
+      "subgroupName": "Conjunto de Engrenagens (didático)",
+      "origin": "trilha_didatica_simulada",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ02",
+      "system": "SWAS",
+      "systemName": "Conj Giro",
+      "group": "SWT1",
+      "groupName": "Giro Transf;Posição 1",
+      "subgroup": "REDG",
+      "subgroupName": "Redutor de Giro;Posição 1 (didático)",
+      "origin": "trilha_didatica_simulada",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ07",
+      "system": "UNCR",
+      "systemName": "Mterial Rodante",
+      "group": "TRF2",
+      "groupName": "Carro Esteira;Posição 2",
+      "subgroup": "GUID",
+      "subgroupName": "Roda-Guia;Posição 2 (didático)",
+      "origin": "trilha_didatica_simulada",
+      "sapValidated": false
     }
   ],
   "scenarios": [
@@ -6875,6 +6908,506 @@
         "architectureConfirmed": false,
         "origin": "elaboracao_autoral"
       }
+    },
+    {
+      "id": "INC086",
+      "modelId": "EQ01",
+      "category": "rodante",
+      "title": "777E — ronco de comando final por rolamento",
+      "operator": "Na CAT 777E, o comando final da posição 1 apresenta ronco crescente sob carga, com aquecimento localizado. A amostra de óleo indica alteração de metais, mas não identifica a peça responsável.",
+      "verification": "Correlacionar lado, ponto do ruído, temperatura, amostras e bujão magnético. Após isolamento e intervenção aprovada, avaliar folga, estado de rolamentos e engrenagens segundo OEM; não concluir dano em mancal somente por ferro elevado.",
+      "path": [
+        "DRTR",
+        "AXAS",
+        "FID1"
+      ],
+      "component": "Rolamento",
+      "damage": "Piteado",
+      "cause": "Fadiga",
+      "priority": 3,
+      "material": "ROL",
+      "tool": "EXTR",
+      "hours": 8,
+      "diagHours": 4,
+      "estimatedCost": 490,
+      "sourcePartMatch": false,
+      "lesson": "Este gabarito representa pitting por fadiga em rolamento, hipótese resolvida apenas dentro da ficção. O playbook de comando final do CAT 777 apresenta rolamento e engrenagem como hipóteses concorrentes, sem confirmação de posição ou mecanismo de falha.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-TRUCK-FINAL-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "hipotese_didatica_sem_validacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "ensaios_e_inspecoes_propostos_nao_executados",
+        "answer": "desfecho_ficcional_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drivetrainTraining": {
+        "mechanism": "fadiga_rolamento_final",
+        "alternatives": [
+          "dentes de engrenagem avariados",
+          "contaminação do lubrificante sem dano interno",
+          "ruído de conjunto vizinho"
+        ],
+        "safetyNote": "Imobilizar e estabilizar conjunto pesado antes de desmontagem.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "origin": "adaptacao_de_referencia_sintetica",
+        "realDefectConfirmed": false
+      }
+    },
+    {
+      "id": "INC087",
+      "modelId": "EQ01",
+      "category": "rodante",
+      "title": "777E — dano em dente de engrenagem do comando final",
+      "operator": "No CAT 777E, o comando final da posição 2 emite estalos sob torque e há partículas metálicas no óleo. O relatório inicial menciona engrenagens e rolamentos como possibilidades, sem inspeção interna.",
+      "verification": "Inspecionar histórico de choque de carga e óleo; comparar ruído e vibração em condição controlada. Após bloqueio e abertura autorizada, avaliar dentes, engrenamento e mancais conforme fabricante, distinguindo lascamento de desgaste uniforme.",
+      "path": [
+        "DRTR",
+        "AXAS",
+        "FID2"
+      ],
+      "component": "Engrenagem",
+      "damage": "Lascado",
+      "cause": "Sobrecarga mecânica",
+      "priority": 3,
+      "material": "ENG",
+      "tool": "COLETA",
+      "hours": 10,
+      "diagHours": 5,
+      "estimatedCost": 1100,
+      "sourcePartMatch": false,
+      "lesson": "Na missão, a inspeção virtual escolheria dente lascado após sobrecarga. O playbook não comprova a peça nem a causa; o mesmo ronco que a INC086 não permite inferir se a origem é rolamento ou engrenagem.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-TRUCK-FINAL-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "hipotese_didatica_sem_validacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "ensaios_e_inspecoes_propostos_nao_executados",
+        "answer": "desfecho_ficcional_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drivetrainTraining": {
+        "mechanism": "lascamento_engrenagem_final",
+        "alternatives": [
+          "rolamento com dano localizado",
+          "óleo inadequado",
+          "contato anormal por alinhamento"
+        ],
+        "safetyNote": "Bloquear movimento do caminhão, suportar conjuntos e seguir limites OEM.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "origin": "adaptacao_de_referencia_sintetica",
+        "realDefectConfirmed": false
+      }
+    },
+    {
+      "id": "INC088",
+      "modelId": "EQ01",
+      "category": "rodante",
+      "title": "777E — metais de desgaste na transmissão",
+      "operator": "Um laudo sintético da transmissão da CAT 777E aponta tendência crescente de metais e, sob tração, surgem vibrações. A investigação externa não identifica a engrenagem nem demonstra falha do sistema de arrefecimento.",
+      "verification": "Conferir amostra e filtro, dados de operação e compatibilidade do óleo. Planejar inspeção interna somente sob autorização e bloqueio; diferenciar contato em engrenagens, mancais e contaminantes, e justificar a substituição exclusivamente por dano confirmado.",
+      "path": [
+        "DRTR",
+        "TRAN",
+        "TRGE"
+      ],
+      "component": "Engrenagem",
+      "damage": "Piteado",
+      "cause": "Lubrificação insuficiente",
+      "priority": 3,
+      "material": "ENG",
+      "tool": "COLETA",
+      "hours": 11,
+      "diagHours": 5,
+      "estimatedCost": 1100,
+      "sourcePartMatch": false,
+      "lesson": "O registro OIL-CASE-038 simula dano interno confirmado, mas não identifica uma engrenagem específica da transmissão. O jogo escolhe pitting e lubrificação insuficiente como conclusão ficcional, não como fato OEM nem resultado de laudo real.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "OIL-CASE-038",
+        "layer": "oil/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "hipotese_didatica_sem_validacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "ensaios_e_inspecoes_propostos_nao_executados",
+        "answer": "desfecho_ficcional_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drivetrainTraining": {
+        "mechanism": "piteamento_hipotetico_engrenagem_transmissao",
+        "alternatives": [
+          "falha de mancal interno",
+          "contaminação do óleo",
+          "perfil de aditivação alterado"
+        ],
+        "safetyNote": "Acesso interno exige bloqueio, drenagem e suporte de componentes pesados.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "origin": "adaptacao_de_referencia_sintetica",
+        "realDefectConfirmed": false
+      }
+    },
+    {
+      "id": "INC089",
+      "modelId": "EQ02",
+      "category": "rodante",
+      "title": "6030 — metais no Redutor de Giro",
+      "operator": "No conjunto de giro da CAT 6030, há elevação de metais no óleo de um redutor e ruído intermitente ao movimentar a superestrutura. Não se identificou ainda qual interface interna apresenta desgaste.",
+      "verification": "Correlacionar amostras, qualidade do óleo, ruído e folgas do conjunto. Isolar movimento e executar inspeção dirigida conforme arquitetura real da 6030; avaliar engrenagens e rolamentos antes de delimitar substituição, sem atribuir o dano ao motor hidráulico pelo sintoma.",
+      "path": [
+        "SWAS",
+        "SWT1",
+        "REDG"
+      ],
+      "component": "Engrenagem",
+      "damage": "Desgastado",
+      "cause": "Lubrificação insuficiente",
+      "priority": 3,
+      "material": "ENG",
+      "tool": "COLETA",
+      "hours": 10,
+      "diagHours": 5,
+      "estimatedCost": 1100,
+      "sourcePartMatch": false,
+      "lesson": "O FMEA OIL-CASE-029 trata redutor da 6030 com dano interno fictício, sem precisar a peça. Escolhemos desgaste de engrenagem por deficiência de lubrificação como gabarito do jogo. Esse caminho foi criado apenas para treino, não importado do SAP.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "OIL-CASE-029",
+        "layer": "oil/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "hipotese_didatica_sem_validacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "ensaios_e_inspecoes_propostos_nao_executados",
+        "answer": "desfecho_ficcional_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drivetrainTraining": {
+        "mechanism": "desgaste_engrenagem_redutor_de_giro",
+        "alternatives": [
+          "rolamento interno danificado",
+          "vedação permitindo contaminantes",
+          "fluido fora da especificação"
+        ],
+        "safetyNote": "Bloquear giro e suportar adequadamente componentes de massa elevada.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "origin": "adaptacao_de_referencia_sintetica",
+        "realDefectConfirmed": false
+      }
+    },
+    {
+      "id": "INC090",
+      "modelId": "EQ07",
+      "category": "rodante",
+      "title": "D9 — rolete de retorno aquecendo e agarrando",
+      "operator": "No D9, o conjunto do rodante apresenta aquecimento localizado e ruído de arrasto junto ao rolete de retorno da posição 3. O terreno é abrasivo, mas ainda não se verificou vedação e rotação do rolete.",
+      "verification": "Imobilizar e travar o equipamento; verificar localização, condição da vedação, temperatura comparativa e possibilidade de giro no procedimento OEM. Só desmontar após controlar tensão de esteira e energias armazenadas; documentar desgaste de mancais e origem da falta de lubrificação.",
+      "path": [
+        "UNCR",
+        "TRF1",
+        "IDL3"
+      ],
+      "component": "Rolamento",
+      "damage": "Gripado",
+      "cause": "Lubrificação insuficiente",
+      "priority": 2,
+      "material": "ROL",
+      "tool": "TERM",
+      "hours": 6,
+      "diagHours": 4,
+      "estimatedCost": 490,
+      "sourcePartMatch": false,
+      "lesson": "Neste caso fictício o mancal gripou após lubrificação insuficiente. O playbook D9 propõe dano em rolete versus roda-guia versus tensão da esteira, mas não comprova o rolamento nem autoriza usar temperatura isoladamente para condená-lo.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-DOZER-TRACK-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "hipotese_didatica_sem_validacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "ensaios_e_inspecoes_propostos_nao_executados",
+        "answer": "desfecho_ficcional_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drivetrainTraining": {
+        "mechanism": "gripagem_mancal_rolete",
+        "alternatives": [
+          "roda-guia desalinhada",
+          "esteira tensionada em excesso",
+          "atrito por detritos externos"
+        ],
+        "safetyNote": "Tensão de esteira é energia armazenada; controlar antes de intervir.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "origin": "adaptacao_de_referencia_sintetica",
+        "realDefectConfirmed": false
+      }
+    },
+    {
+      "id": "INC091",
+      "modelId": "EQ07",
+      "category": "rodante",
+      "title": "D9 — roda-guia desalinhada no lado direito",
+      "operator": "O D9 apresenta tendência de deslocamento lateral da esteira e marcas assimétricas de contato no rodante da posição 2. A equipe relata aquecimento, mas ainda não há medição geométrica.",
+      "verification": "Identificar estrutura e roda-guia na configuração do D9 e medir paralelismo, folgas e desgaste com instrumentos apropriados, conforme limites OEM. Inspecionar suportes e trilhas de contato antes de substituir o conjunto ou ajustar esteira.",
+      "path": [
+        "UNCR",
+        "TRF2",
+        "GUID"
+      ],
+      "component": "Roda-Guia",
+      "damage": "Desalinhado",
+      "cause": "Desalinhamento",
+      "priority": 2,
+      "material": "RGUA",
+      "tool": "CTSM",
+      "hours": 7,
+      "diagHours": 4,
+      "estimatedCost": 970,
+      "sourcePartMatch": false,
+      "lesson": "A missão resolve virtualmente desalinhamento do conjunto de roda-guia, diferente de rolamento gripado na INC090. Não há localização funcional OEM ou medição CTS real; o caminho GUID é apenas didático.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-DOZER-TRACK-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "hipotese_didatica_sem_validacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "ensaios_e_inspecoes_propostos_nao_executados",
+        "answer": "desfecho_ficcional_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drivetrainTraining": {
+        "mechanism": "desalinhamento_roda_guia",
+        "alternatives": [
+          "rolete com desgaste desigual",
+          "folga no ajustador",
+          "condição de solo"
+        ],
+        "safetyNote": "Não intervir sem bloquear e aliviar tensões conforme procedimento.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "origin": "adaptacao_de_referencia_sintetica",
+        "realDefectConfirmed": false
+      }
+    },
+    {
+      "id": "INC092",
+      "modelId": "EQ08",
+      "category": "rodante",
+      "title": "966 — contaminação no diferencial dianteiro",
+      "operator": "O óleo do diferencial dianteiro da CAT 966 apresenta sinais de contaminação ambiental em laudo simulado, mas não há ruído mecânico conclusivo. O histórico inclui limpeza recente no entorno do eixo.",
+      "verification": "Conferir representatividade da amostra, tampa de acesso, respiros e vedações do eixo. Após bloqueio, localizar interface de entrada de contaminantes, corrigir a estanqueidade e avaliar condição do lubrificante; não condenar rolamentos ou engrenagens sem evidência própria.",
+      "path": [
+        "DRTR",
+        "AXA1",
+        "DIFF"
+      ],
+      "component": "Vedação",
+      "damage": "Deteriorado",
+      "cause": "Falha de vedação",
+      "priority": 2,
+      "material": "VED",
+      "tool": "COLETA",
+      "hours": 5,
+      "diagHours": 3,
+      "estimatedCost": 145,
+      "sourcePartMatch": false,
+      "lesson": "O caso OIL-CASE-067 pertence a uma CAT 950, não a uma 966. A hipótese de vedação degradada é uma adaptação ficcional; presença de sujeira no óleo não identifica isoladamente a via de entrada nem prova dano irreversível.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "OIL-CASE-067",
+        "layer": "oil/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "hipotese_didatica_sem_validacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "ensaios_e_inspecoes_propostos_nao_executados",
+        "answer": "desfecho_ficcional_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drivetrainTraining": {
+        "mechanism": "ingresso_contaminantes_por_vedacao",
+        "alternatives": [
+          "respiro desprotegido",
+          "amostragem contaminada",
+          "óleo previamente contaminado"
+        ],
+        "safetyNote": "Evitar contato com eixo e roda sem bloqueio e estabilização.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "origin": "adaptacao_de_referencia_sintetica",
+        "realDefectConfirmed": false
+      }
+    },
+    {
+      "id": "INC093",
+      "modelId": "EQ09",
+      "category": "rodante",
+      "title": "CAT 16 — tandem com engrenagem piteada",
+      "operator": "Na CAT 16, um laudo didático do conjunto de transmissão/tandem mostra partículas acima do histórico e há ruído novo sob esforço. As condições de coleta e a posição exata ainda precisam ser confirmadas.",
+      "verification": "Investigar estado e aplicação do óleo, ingressos possíveis, ruído e folgas. Inspecionar o comando final/tandem da posição 1 apenas após bloqueio e autorização; diferenciar desgaste de dentes, mancais e vedação antes de autorizar troca de engrenagem.",
+      "path": [
+        "DRTR",
+        "TAN1",
+        "FDS1"
+      ],
+      "component": "Engrenagem",
+      "damage": "Piteado",
+      "cause": "Contaminação",
+      "priority": 3,
+      "material": "ENG",
+      "tool": "COLETA",
+      "hours": 8,
+      "diagHours": 4,
+      "estimatedCost": 1100,
+      "sourcePartMatch": false,
+      "lesson": "O registro OIL-CASE-069 aponta contaminação possível de conjunto de transmissão/diferencial da CAT 16, não pitting de engrenagem confirmado. A missão seleciona esse defeito somente como ficção, sem alegar que o laudo identifica a peça.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "OIL-CASE-069",
+        "layer": "oil/diagnostic-records.json",
+        "version": "1.1.0",
+        "status": "hipotese_didatica_sem_validacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "ensaios_e_inspecoes_propostos_nao_executados",
+        "answer": "desfecho_ficcional_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drivetrainTraining": {
+        "mechanism": "piteamento_tandem_por_contaminacao",
+        "alternatives": [
+          "respiro com entrada de poeira",
+          "rolamento piteado",
+          "erro de amostragem"
+        ],
+        "safetyNote": "Usar sustentação mecânica e isolar torque antes de abertura.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "origin": "adaptacao_de_referencia_sintetica",
+        "realDefectConfirmed": false
+      }
+    },
+    {
+      "id": "INC094",
+      "modelId": "EQ09",
+      "category": "rodante",
+      "title": "CAT 16 — desgaste direcional por desalinhamento",
+      "operator": "Na CAT 16, o pneu de tandem na posição 4 apresenta desgaste direcional e o operador relata leve tendência lateral. A calibragem foi verificada preliminarmente, mas a geometria ainda não foi avaliada.",
+      "verification": "Confirmar pressão com instrumento calibrado e condições de carga; verificar alinhamento e folgas de rodas/eixos com procedimentos e limites aplicáveis ao arranjo real. Separar ajuste geométrico de erro de inflação antes de definir substituição do pneu.",
+      "path": [
+        "DRTR",
+        "TAN2",
+        "TIR4"
+      ],
+      "component": "Pneu",
+      "damage": "Desgastado",
+      "cause": "Desalinhamento",
+      "priority": 2,
+      "material": "PNEU",
+      "tool": "CTSM",
+      "hours": 5,
+      "diagHours": 3,
+      "estimatedCost": 1800,
+      "sourcePartMatch": false,
+      "lesson": "O gabarito fictício usa desgaste associado ao desalinhamento, contrastando com o caso INC039 de pressão incorreta. O playbook da CAT 16 não comprova defeito geométrico, e limite de descarte/pressão depende de especificação do pneu.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": "PB-GRADER-TIRE-01",
+        "layer": "diagnostic/playbooks.v1.json",
+        "version": "1.2.1",
+        "status": "hipotese_didatica_sem_validacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "ensaios_e_inspecoes_propostos_nao_executados",
+        "answer": "desfecho_ficcional_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drivetrainTraining": {
+        "mechanism": "desgaste_pneu_por_geometria",
+        "alternatives": [
+          "pressão de inflação incompatível",
+          "folga de articulações",
+          "pavimento e uso"
+        ],
+        "safetyNote": "Rodas OTR exigem procedimento qualificado e condições seguras.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "origin": "adaptacao_de_referencia_sintetica",
+        "realDefectConfirmed": false
+      }
+    },
+    {
+      "id": "INC095",
+      "modelId": "EQ05",
+      "category": "rodante",
+      "title": "DR410i — tensionador de esteira perde retenção",
+      "operator": "Na DR410i, a esteira do lado 1 perde tensão depois de deslocamentos e a equipe observa umidade localizada perto do mecanismo tensionador. Não está comprovada trinca estrutural ou folga nas articulações.",
+      "verification": "Bloquear deslocamento e controlar energia acumulada no tensionador seguindo procedimento Sandvik. Localizar fuga, inspecionar vedação, suporte e mecanismo de ajuste; separar vazamento da retenção hidráulica de alongamento de corrente ou erro de regulagem.",
+      "path": [
+        "UNCR",
+        "TRF1",
+        "TENS"
+      ],
+      "component": "Vedação",
+      "damage": "Vazando",
+      "cause": "Falha de vedação",
+      "priority": 3,
+      "material": "VED",
+      "tool": "MANO",
+      "hours": 6,
+      "diagHours": 4,
+      "estimatedCost": 145,
+      "sourcePartMatch": false,
+      "lesson": "O tensionador da perfuratriz é um caminho existente no jogo, mas o defeito de vedação é totalmente autoral, não uma aplicação validada do playbook do D9. O resultado de diagnóstico permanece fictício e exige confirmação do tipo de tensionador instalado.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/fmea-database-mining",
+        "recordId": null,
+        "layer": "elaboracao_autoral",
+        "version": null,
+        "status": "hipotese_didatica_sem_validacao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "ensaios_e_inspecoes_propostos_nao_executados",
+        "answer": "desfecho_ficcional_para_jogabilidade",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "drivetrainTraining": {
+        "mechanism": "perda_retencao_tensionador",
+        "alternatives": [
+          "esteira com ajuste incorreto",
+          "pino de corrente gasto",
+          "mecanismo mecânico com folga"
+        ],
+        "safetyNote": "Tensionadores podem armazenar energia perigosa: não desmontar sem procedimento OEM.",
+        "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
+        "origin": "elaboracao_autoral",
+        "realDefectConfirmed": false
+      }
     }
   ],
   "catalog": {
@@ -6910,7 +7443,8 @@
       "Filtro, Combustível",
       "Líquido, Arrefecimento",
       "Respiro, Cárter",
-      "Válvula, Pneumática"
+      "Válvula, Pneumática",
+      "Roda-Guia"
     ],
     "damages": [
       {
@@ -8443,6 +8977,13 @@
       "lead": 2,
       "initial": 2,
       "emoji": "💨"
+    },
+    "RGUA": {
+      "name": "Conjunto de roda-guia (simulado)",
+      "unit": 970,
+      "lead": 3,
+      "initial": 0,
+      "emoji": "⚙️"
     }
   },
   "tools": {
@@ -8541,6 +9082,18 @@
       "cost": 680,
       "initial": false,
       "icon": "💨"
+    },
+    "CTSM": {
+      "name": "Kit medição dimensional de material rodante",
+      "cost": 870,
+      "initial": false,
+      "icon": "📏"
+    },
+    "COMP": {
+      "name": "Relógio comparador e base magnética",
+      "cost": 520,
+      "initial": false,
+      "icon": "📐"
     }
   }
 }
