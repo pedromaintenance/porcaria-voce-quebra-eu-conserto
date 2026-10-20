@@ -69,7 +69,7 @@
   const x=s.inspections.find(v=>v.id===id);
   if(!x)return {error:'Inspeção não encontrada.'};
   if(x.status!=='finding'||x.notificationId)return {error:'É necessário um achado ainda não notificado.'};
-  const text=String(description||'').trim().replace(/\s+/g,' ');
+  const text=String(description||x.observed||'').trim().replace(/\s+/g,' ');
   if(text.length<15||text.length>600)return {error:'Descreva o defeito observado em 15 a 600 caracteres.'};
   if(!['baixa','media','alta'].includes(priority))return {error:'Selecione a prioridade da notificação.'};
   const idNew='NM'+String(s.nextNotification++).padStart(4,'0');
@@ -89,7 +89,47 @@
   n.reviewHistory.push({tick:s.tick,action,reason:String(reason||''),origin:'revisao_pcm_jogo'});
   if(n.reviewHistory.length>100)n.reviewHistory=n.reviewHistory.slice(-100);
  }
- function review(s,id,decision,payload={}){
+ const STAGES=['Sistema','Grupo','Subgrupo','Componente','Dano','Causa'];
+ const RETURN_REASONS=Object.freeze({
+  insuficiente:'Indício insuficiente para caracterizar a demanda.',
+  equipamento:'É necessário confirmar o equipamento ou sua localização.',
+  observacao:'A inspeção precisa ser complementada com novas observações.'
+ });
+ const ARCHIVE_REASONS=Object.freeze({
+  duplicada:'Demanda duplicada em outra ordem ou notificação.',
+  nao_confirmada:'Condição não confirmada no exercício de inspeção.',
+  sem_intervencao:'Não foi identificada necessidade de intervenção nesta simulação.'
+ });
+ const ACTIONS=Object.freeze({
+  verificar:'Inspecionar e confirmar a condição reportada antes de intervir.',
+  diagnosticar:'Realizar testes orientados para isolar a origem da anormalidade.',
+  reparar:'Diagnosticar, corrigir e testar o funcionamento do conjunto.'
+ });
+ function hypotheses(s,d,E,id){
+  normalized(s);
+  const n=s.notifications.find(x=>x.id===id);
+  if(!n||!d||!E||typeof E.options!=='function')return null;
+  const sc=d.scenarios.find(x=>x.id===n.sourceScenario&&x.modelId===n.modelId);
+  if(!sc)return null;
+  // Seed reproduzível para não trocar opções enquanto o jogador seleciona hipóteses.
+  let seed=2166136261;
+  for(const ch of n.id+'|'+sc.id)seed=Math.imul(seed^ch.charCodeAt(0),16777619)>>>0;
+  return E.options(d,sc,seed);
+ }
+ function diagnosisPayload(s,d,E,n,payload){
+  const choices=payload.diagnosis;
+  if(!Array.isArray(choices)||choices.length!==6)return {error:'Selecione Sistema, Grupo, Subgrupo, Componente e Dano. Causa pode ficar vazia.'};
+  const options=hypotheses(s,d,E,n.id);
+  if(!options||options.length!==6)return {error:'Catálogo de hipóteses indisponível.'};
+  for(let i=0;i<6;i++){
+   const value=choices[i]??'';
+   if(i===5&&value==='')continue;
+   if(!value||!options[i].some(x=>x.id===value))return {error:'Selecione uma opção cadastrada para '+STAGES[i]+'.'};
+  }
+  return {codes:choices.map(x=>String(x||'')),labels:choices.map((c,i)=>options[i].find(x=>x.id===c)?.label||'Não informada'),optionalCause:!choices[5]};
+ }
+
+ function review(s,id,decision,payload={},d=null,E=null){
   normalized(s);
   const n=s.notifications.find(x=>x.id===id);
   if(!n)return {error:'Notificação não encontrada.'};
@@ -107,7 +147,7 @@
   }
   if(decision==='resubmit'){
    if(n.status!=='devolvida')return {error:'Somente notificações devolvidas admitem complementação.'};
-   const description=trim(payload.description,600);
+   const description=trim(payload.description??n.description,600);
    if(description.length<15||description.length>600)return {error:'O relato complementado precisa ter entre 15 e 600 caracteres.'};
    if(!PRIORITIES.has(payload.priority))return {error:'Prioridade inválida.'};
    n.description=description;n.priority=payload.priority;n.status='aguarda_revisao_pcm';
@@ -117,16 +157,22 @@
   }
   if(decision==='approve'){
    if(n.status!=='aguarda_revisao_pcm')return {error:'Aprovação exige uma notificação aguardando revisão.'};
-   const scope=trim(payload.scope,700);
+   const proposed=Array.isArray(payload.diagnosis)?diagnosisPayload(s,d,E,n,payload):null;
+   if(proposed?.error)return {error:proposed.error};
+   const action=Object.hasOwn(ACTIONS,payload.action)?ACTIONS[payload.action]:null;
+   const scope=proposed ? (action||ACTIONS.verificar) : trim(payload.scope,700);
    const trade=String(payload.trade||'');
    const hh=Number(payload.estimatedHH);
+   if(Array.isArray(payload.diagnosis)&&!action)return {error:'Escolha a estratégia do serviço.'};
    if(scope.length<20||scope.length>700)return {error:'Delimite o serviço em 20 a 700 caracteres, sem antecipar causas não confirmadas.'};
    if(!Object.hasOwn(TRADES,trade))return {error:'Disciplina não cadastrada.'};
    if(!Number.isFinite(hh)||hh<0.5||hh>80||Math.round(hh*2)!==hh*2)
      return {error:'Estimativa HH inválida: de 0,5 a 80, em intervalos de meia hora.'};
-   const note=trim(payload.reason,500);
+   const selected=decision==='return'?RETURN_REASONS[payload.reason]:ARCHIVE_REASONS[payload.reason];
+   const note=selected||trim(payload.reason,500);
    if(note.length>500)return {error:'Observação PCM limitada a 500 caracteres.'};
    n.planningScope={description:scope,trade,tradeLabel:TRADES[trade],estimatedHH:hh,planningNote:note,reviewedTick:s.tick};
+   if(proposed)n.planningDiagnosis={codes:proposed.codes,labels:proposed.labels,optionalCause:proposed.optionalCause,evaluated:false};
    n.reviewedTick=s.tick;n.reviewReason=null;n.status='aprovada_pcm';
    audit(n,s,'approve','Escopo aprovado: '+TRADES[trade]+' · '+hh+' HH.');
    return {ok:true,status:n.status,notification:n};
@@ -159,7 +205,8 @@
    options:null,wrong:0,rework:false,materialUsed:false,worked:0,toolWait:0,blockedShifts:0,
    notes:[],scheduleShift:null,costLabor:0,reworkHours:0,
    source:'notificacao_inspecao',notificationId:n.id,inspectionId:n.inspectionId,
-   approvedScope:{...n.planningScope}
+   approvedScope:{...n.planningScope},
+   plannerDiagnosis:n.planningDiagnosis?{...n.planningDiagnosis,codes:[...n.planningDiagnosis.codes],labels:[...n.planningDiagnosis.labels]}:null
   };
   return {ok:true,orderDraft:candidate,notification:n};
  }
@@ -191,5 +238,5 @@
    converted:s.notifications.filter(x=>x.status==='convertida_os').length,
    total:s.inspections.length,notifications:s.notifications.length};
  }
- return {normalized,plan,inspect,notify,review,convert,commitConversion,summary,TRADES,LIMIT_PER_SHIFT};
+ return {normalized,plan,inspect,notify,review,convert,commitConversion,hypotheses,summary,TRADES,RETURN_REASONS,ARCHIVE_REASONS,ACTIONS,STAGES,LIMIT_PER_SHIFT};
 });

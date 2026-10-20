@@ -5,57 +5,65 @@
 })(typeof window!=='undefined'?window:globalThis,function(){
  'use strict';
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- function renderPCM(n,model){
-  const statuses={aguarda_revisao_pcm:'AGUARDA REVISÃO',devolvida:'DEVOLVIDA AO EMISSOR',aprovada_pcm:'ESCOPO APROVADO',arquivada_pcm:'ARQUIVADA',convertida_os:'OS GERADA'};
-  const id=esc(n.id);
-  const status=esc(statuses[n.status]||'STATUS DESCONHECIDO');
-  const header='<header class="inspectionNotificationHead"><strong>'+id+' · '+esc(model(n.modelId))+' · '+esc(n.asset)+'</strong>'
-   +'<span class="inspectionBadge">'+status+'</span></header>';
-  const details='<p><strong>Relato:</strong> '+esc(n.description)+'</p>'
-   +'<small>Prioridade informada: '+esc(n.priority.toUpperCase())+' · Inspeção de origem: '+esc(n.inspectionId)
-   +' · fonte: observação didática (sem laudo ou medição)</small>';
-  const history=Array.isArray(n.reviewHistory)&&n.reviewHistory.length
-   ?'<details class="inspectionAudit"><summary>Histórico de revisão · '+n.reviewHistory.length+' ação(ões)</summary><ol>'
+ function renderPCM(n,model,d,I,E,s){
+  const statuses={aguarda_revisao_pcm:'AGUARDA REVISÃO',devolvida:'DEVOLVIDA',aprovada_pcm:'PLANEJAMENTO APROVADO',arquivada_pcm:'ARQUIVADA',convertida_os:'OS GERADA'};
+  const id=esc(n.id),status=esc(statuses[n.status]||'STATUS DESCONHECIDO');
+  const header='<header class="inspectionNotificationHead"><strong>'+id+' · '+esc(model(n.modelId))+' · '+esc(n.asset)+'</strong><span class="inspectionBadge">'+status+'</span></header>';
+  const field=esc(n.reportedIndication||n.description||'Nenhuma evidência de campo disponível.');
+  const details='<div class="inspectionObservation"><strong>ENCONTRADO NA INSPEÇÃO</strong><p>'+field+'</p></div>'
+   +'<small>Prioridade: '+esc(n.priority.toUpperCase())+' · Inspeção '+esc(n.inspectionId)+' · cenário de treinamento, sem medição real</small>';
+  const hist=Array.isArray(n.reviewHistory)&&n.reviewHistory.length
+   ?'<details class="inspectionAudit"><summary>Histórico de decisões · '+n.reviewHistory.length+'</summary><ol>'
      +n.reviewHistory.slice(-8).map(h=>'<li>Turno '+Number(h.tick||0)+' · '+esc(h.action)+' · '+esc(h.reason)+'</li>').join('')+'</ol></details>':'';
-  const reviewNote='<label class="inspectionLabel" for="pcm-reason-'+id+'">Justificativa técnica (obrigatória para devolução/arquivamento)</label>'
-   +'<textarea class="inspectionInput" id="pcm-reason-'+id+'" maxlength="500" rows="2" placeholder="O que falta verificar ou por que o serviço não será aberto?"></textarea>';
+  const select=(inputId,options,empty)=>'<select id="'+inputId+'">'+(empty?'<option value="">'+esc(empty)+'</option>':'')
+   +options.map(([code,label])=>'<option value="'+esc(code)+'">'+esc(label)+'</option>').join('')+'</select>';
+  const reasonChoices=items=>'<label>Motivo da decisão '+select('pcm-reason-'+id,Object.entries(items),'SELECIONE O MOTIVO')+'</label>';
+  const buy='<div class="pcmResourceBox"><h4>APROVISIONAMENTO · ESCOLHA DO PLANEJADOR</h4>'
+   +'<p class="muted">Os itens não são recomendações automáticas. Escolher e comprar não revela o diagnóstico correto.</p>'
+   +'<div class="pcmScopeRow"><label>Material '+select('pcm-item-'+id,Object.entries(d.items).map(([code,v])=>[code,code+' · '+v.name+' · R$ '+v.unit]),'SELECIONE UMA PEÇA')+'</label>'
+   +'<label>Quantidade '+select('pcm-qty-'+id,[1,2,3,4,5].map(v=>[String(v),String(v)]))+'</label></div>'
+   +'<div class="pcmActions"><button class="act secondary" data-pcm-buy="material" data-notification-id="'+id+'">📦 SOLICITAR MATERIAL</button></div>'
+   +'<div class="pcmScopeRow"><label>Ferramenta '+select('pcm-tool-'+id,Object.entries(d.tools).map(([code,v])=>[code,code+' · '+v.name+' · R$ '+v.cost]),'SELECIONE O FERRAMENTAL')+'</label>'
+   +'<label>Prazo da compra '+select('pcm-speed-'+id,[['normal','Normal'],['rush','Urgente']])+'</label></div>'
+   +'<div class="pcmActions"><button class="act secondary" data-pcm-buy="tool" data-notification-id="'+id+'">🛠 COMPRAR FERRAMENTA</button></div></div>';
   let actions='';
   if(n.status==='aguarda_revisao_pcm'){
-   const trades=[['mecanica','Mecânica'],['hidraulica','Hidráulica'],['eletrica','Elétrica'],['eletronica','Eletrônica'],['lubrificacao','Lubrificação'],['estruturas','Estruturas'],['instrumentacao','Instrumentação']];
-   actions='<div class="pcmReviewArea"><h4>REVISÃO TÉCNICA · PCM</h4>'
-    +'<label class="inspectionLabel" for="pcm-scope-'+id+'">Delimitação do serviço (não declarar causa como confirmada)</label>'
-    +'<textarea class="inspectionInput" id="pcm-scope-'+id+'" rows="3" maxlength="700" placeholder="Inspecionar, testar e confirmar..."></textarea>'
-    +'<div class="pcmScopeRow"><label>Disciplina<select id="pcm-trade-'+id+'">'+trades.map(([v,l])=>'<option value="'+v+'">'+l+'</option>').join('')+'</select></label>'
-    +'<label>HH estimadas<input id="pcm-hh-'+id+'" type="number" min="0.5" max="80" step="0.5" value="2"></label></div>'
-    +reviewNote+'<div class="pcmActions">'
-    +'<button class="act" data-notification-action="approve" data-notification-id="'+id+'">✓ APROVAR ESCOPO</button>'
+   const hypotheses=I.hypotheses(s,d,E,n.id);
+   const options=hypotheses?.map((arr,i)=>'<label class="pcmHypothesis">'+esc(I.STAGES[i])
+    +select('pcm-diagnosis-'+i+'-'+id,arr.map(x=>[x.id,x.label]),i===5?'NÃO DEFINIR A CAUSA':'SELECIONE UMA HIPÓTESE')
+    +'</label>')||[];
+   actions='<div class="pcmReviewArea"><h4>HIPÓTESES DO PLANEJADOR · SEM GABARITO</h4>'
+    +'<p class="muted">As escolhas são encaminhadas à equipe. Não haverá indicação de acerto ou erro nesta tela. A causa pode permanecer sem definição.</p>'
+    +'<div class="pcmHypothesisSections"><h5>LOCAL DE INSTALAÇÃO</h5><div class="pcmHypothesisGrid">'+options.slice(0,3).join('')+'</div>'
+    +'<h5>MODO DE FALHA</h5><div class="pcmHypothesisGrid">'+options.slice(3).join('')+'</div></div>'
+    +'<div class="pcmScopeRow"><label>Estratégia de serviço '+select('pcm-action-'+id,Object.entries(I.ACTIONS))+'</label>'
+    +'<label>Disciplina '+select('pcm-trade-'+id,Object.entries(I.TRADES))+'</label>'
+    +'<label>HH previstas '+select('pcm-hh-'+id,[0.5,1,2,3,4,5,6,8,10,12,16,20,24,40].map(v=>[String(v),v+' HH']))+'</label></div>'
+    +'<div class="pcmActions"><button class="act" data-notification-action="approve" data-notification-id="'+id+'">✓ ENVIAR PLANEJAMENTO</button>'
     +'<button class="act secondary" data-notification-action="return" data-notification-id="'+id+'">↩ DEVOLVER</button>'
-    +'<button class="act secondary" data-notification-action="archive" data-notification-id="'+id+'">ARQUIVAR COM MOTIVO</button></div></div>';
+    +'<button class="act secondary" data-notification-action="archive" data-notification-id="'+id+'">ARQUIVAR</button></div>'
+    +reasonChoices({...I.RETURN_REASONS,...I.ARCHIVE_REASONS})+buy+'</div>';
   }else if(n.status==='devolvida'){
-   actions='<div class="pcmReviewArea"><p class="inspectionAttention"><strong>Complementação solicitada:</strong> '+esc(n.reviewReason||'Não informada')+'</p>'
-    +'<label class="inspectionLabel" for="pcm-description-'+id+'">Corrigir descrição da notificação</label>'
-    +'<textarea class="inspectionInput" id="pcm-description-'+id+'" maxlength="600" rows="3">'+esc(n.description)+'</textarea>'
-    +'<label>Prioridade<select id="pcm-priority-'+id+'">'
-    +['baixa','media','alta'].map(p=>'<option value="'+p+'"'+(p===n.priority?' selected':'')+'>'+p.toUpperCase()+'</option>').join('')+'</select></label>'
-    +'<div class="pcmActions"><button class="act" data-notification-action="resubmit" data-notification-id="'+id+'">REENVIAR À REVISÃO</button>'
-    +'<button class="act secondary" data-notification-action="archive" data-notification-id="'+id+'">ARQUIVAR COM MOTIVO</button></div>'
-    +reviewNote+'</div>';
+   actions='<div class="pcmReviewArea"><p class="inspectionAttention">Motivo: '+esc(n.reviewReason||'Complementação solicitada')+'</p>'
+    +'<label>Prioridade '+select('pcm-priority-'+id,['baixa','media','alta'].map(v=>[v,v.toUpperCase()]))+'</label>'
+    +'<div class="pcmActions"><button class="act" data-notification-action="resubmit" data-notification-id="'+id+'">REENVIAR ACHADO</button>'
+    +'<button class="act secondary" data-notification-action="archive" data-notification-id="'+id+'">ARQUIVAR</button></div>'
+    +reasonChoices(I.ARCHIVE_REASONS)+'</div>';
   }else if(n.status==='aprovada_pcm'){
-   const p=n.planningScope||{};
-   actions='<div class="pcmApprovedScope"><strong>ESCOPO APROVADO</strong><p>'+esc(p.description||'')+'</p>'
-    +'<small>'+esc(p.tradeLabel||p.trade||'')+' · '+Number(p.estimatedHH||0)+' HH estimadas · '
-    +'Ainda não programada, sem equipe, box ou materiais reservados.</small></div>'
-    +'<div class="pcmActions"><button class="act" data-notification-action="convert" data-notification-id="'+id+'">GERAR OS PARA PLANEJAMENTO</button>'
-    +'<button class="act secondary" data-notification-action="archive" data-notification-id="'+id+'">ARQUIVAR COM MOTIVO</button></div>'+reviewNote;
+   actions='<div class="pcmApprovedScope"><strong>HIPÓTESES ENCAMINHADAS · SEM AVALIAÇÃO</strong><p>'+esc(n.planningScope?.description||'')+'</p>'
+    +'<small>'+esc(n.planningScope?.tradeLabel||'')+' · '+Number(n.planningScope?.estimatedHH||0)+' HH planejadas; equipe ainda não alocada.</small></div>'
+    +'<div class="pcmActions"><button class="act" data-notification-action="convert" data-notification-id="'+id+'">GERAR OS PARA O MECÂNICO</button>'
+    +'<button class="act secondary" data-notification-action="archive" data-notification-id="'+id+'">ARQUIVAR</button></div>'
+    +reasonChoices(I.ARCHIVE_REASONS)+buy;
   }else if(n.status==='convertida_os'){
-   actions='<p class="inspectionLinked">✓ Vinculada à OS '+esc(n.workOrderId||'')+'. Programação, equipe e box são definidos no PCM.</p>';
+   actions='<p class="inspectionLinked">✓ '+esc(n.workOrderId||'')+' criada. O plano será avaliado quando o mecânico iniciar o serviço.</p>';
   }else if(n.status==='arquivada_pcm'){
-   actions='<p class="inspectionAttention">Arquivada com justificativa: '+esc(n.reviewReason||'Não informada')+'</p>';
+   actions='<p class="inspectionAttention">Motivo do arquivamento: '+esc(n.reviewReason||'')+'</p>';
   }
-  return '<article class="inspectionNotification">'+header+details+actions+history+'</article>';
+  return '<article class="inspectionNotification">'+header+details+actions+hist+'</article>';
  }
 
- function render(s,d,I){
+ function render(s,d,I,E){
   I.normalized(s);
   const summary=I.summary(s),current=s.inspections.filter(x=>x.tick===s.tick);
   const recent=s.inspections.filter(x=>x.tick!==s.tick&&['finding','notified'].includes(x.status)).slice(-8).reverse();
@@ -68,9 +76,7 @@
    if(x.status==='pending'&&x.tick===s.tick)
     actions='<button type="button" class="act" data-inspection-action="inspect" data-inspection-id="'+esc(x.id)+'">🔎 REALIZAR INSPEÇÃO</button>';
    if(x.status==='finding'){
-    const description='Relato de inspeção: '+String(x.observed||'').replace(/^Indício observado no exercício: /,'');
-    actions='<label class="inspectionLabel" for="inspection-note-'+esc(x.id)+'">Descreva o sintoma (15 a 600 caracteres)</label>'
-     +'<textarea class="inspectionInput" id="inspection-note-'+esc(x.id)+'" rows="3" maxlength="600">'+esc(description)+'</textarea>'
+    actions='<p class="muted">O registro será criado automaticamente a partir do achado observado. Nenhuma descrição manual é necessária.</p>'
      +'<div class="inspectionNotifyActions"><label>Prioridade <select id="inspection-priority-'+esc(x.id)+'">'
      +'<option value="media">Média</option><option value="baixa">Baixa</option><option value="alta">Alta</option></select></label>'
      +'<button class="act" type="button" data-inspection-action="notify" data-inspection-id="'+esc(x.id)+'">📋 ABRIR NOTIFICAÇÃO</button></div>';
@@ -82,8 +88,8 @@
   };
   const statusWeight={aguarda_revisao_pcm:0,devolvida:1,aprovada_pcm:2,convertida_os:3,arquivada_pcm:4};
   const rows=s.notifications.slice().sort((a,b)=>(statusWeight[a.status]??5)-(statusWeight[b.status]??5)||b.openedTick-a.openedTick)
-   .slice(0,25).map(n=>renderPCM(n,modelName)).join('');
-  return '<p class="inspectionIntro"><strong>INSPEÇÃO ≠ DIAGNÓSTICO ≠ ORDEM DE SERVIÇO.</strong> Observações simuladas sem medições OEM e sem conclusão causal.</p>'
+   .slice(0,25).map(n=>renderPCM(n,modelName,d,I,E,s)).join('');
+  return '<p class="inspectionIntro"><strong>INSPEÇÃO → HIPÓTESES PCM → EXECUÇÃO MECÂNICA.</strong> Observações simuladas sem medições OEM e sem conclusão causal.</p>'
    +'<div class="inspectionMetrics"><div><small>PROGRAMADAS</small><strong>'+current.length+'</strong></div><div><small>A REALIZAR</small><strong>'+summary.pending+'</strong></div>'
    +'<div><small>NOTAS EM REVISÃO</small><strong>'+summary.awaiting+'</strong></div><div><small>ESCOPO APROVADO</small><strong>'+summary.approved+'</strong></div></div>'
    +'<h3 class="resourceSection">RONDA DO TURNO · DIA '+s.day+' / '+(s.shift?'B':'A')+'</h3>'

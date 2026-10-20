@@ -456,8 +456,26 @@
     }
     t.history=t.history.slice(0,180);
   }
+  // Avalia o plano exclusivamente ao iniciar trabalho mecânico; sem gabarito para o PCM.
+  function settlePlannerDiagnosis(s,d,j,m){
+    const plan=j.plannerDiagnosis;
+    if(!plan||plan.evaluated||!Array.isArray(plan.codes))return null;
+    const sc=scenario(d,j.scene);
+    if(!sc||plan.codes.length!==6)return null;
+    const trueCodes=[...sc.path,sc.component,sc.damage,sc.cause];
+    const errors=plan.codes.filter((code,i)=>code!==''&&code!==trueCodes[i]).length;
+    const perfect=errors===0&&plan.codes.every((code,i)=>code===trueCodes[i]);
+    plan.evaluated=true;plan.executionTick=s.tick;plan.mechanicId=m.id;
+    if(errors){
+      j.wrong+=errors;j.rework=true;j.reworkHours+=0.5*errors;
+      j.diagRemaining+=0.5*errors;
+      s.cash=Math.max(0,s.cash-errors*25);
+    }
+    return {mechanic:m,errors,perfect};
+  }
   function advance(s,d,rng=Math.random){
     let hours=0;let completed=0;let blocks=0;
+    const plannerSettlements=[];
     const pressure=productivityProfile(s.productivityTarget);
     const availableCrew=s.team.filter(m=>m.restAt!==s.tick&&!TRAINING.active(s,m)).length;
     const operating=[...s.jobs];
@@ -466,6 +484,8 @@
       const m=employee(s,j.assigned), c=scenario(d,j.scene);
       if(!m){j.assigned=null;j.bay=null;continue}
       if(!haveTool(s,c)){j.status='ferramenta';j.toolWait++;blocks++;continue}
+      const settlement=settlePlannerDiagnosis(s,d,j,m);
+      if(settlement)plannerSettlements.push(settlement);
       if(j.stage<6){
         j.status='diagnostico';
         const p=COMPETENCY.evaluate(m,c).proficiency;
@@ -511,6 +531,19 @@
     for(const m of s.team){
       if(m.restAt===s.tick){m.mental=clamp(m.mental+17);m.physical=clamp(m.physical+20);m.morale=clamp(m.morale+5);m.restAt=null}
       if(m.mental<24||m.physical<24)m.morale=clamp(m.morale-6);
+    }
+    for(const result of plannerSettlements){
+      const mechanic=result.mechanic;
+      if(result.perfect){
+        mechanic.mental=100;
+        mechanic.morale=clamp(mechanic.morale+20);
+        msg(s,'Plano PCM aplicado com precisão: recuperação de energia e moral da equipe.','ok');
+      }else if(result.errors){
+        mechanic.mental=clamp(mechanic.mental-result.errors*8);
+        mechanic.physical=clamp(mechanic.physical-result.errors*3);
+        mechanic.morale=clamp(mechanic.morale-result.errors*5);
+        msg(s,'O serviço exigiu retrabalho por inconsistências do planejamento.','bad');
+      }
     }
     const nominalHH=availableCrew*EFFECTIVE_HOURS;
     s.metrics.hours+=nominalHH;s.metrics.productive+=hours;

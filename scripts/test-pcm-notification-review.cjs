@@ -89,14 +89,15 @@ I.normalized(draft);assert.deepEqual(draft,s,'save preservado após normalizaç�
 const html=fs.readFileSync(path.join(__dirname,'../phaser-play/index.html'),'utf8');
 const game=fs.readFileSync(path.join(__dirname,'../phaser-play/game.js'),'utf8');
 assert.ok(game.includes('I.commitConversion(state,data,E,id)'),'criação manual conectada ao motor');
-assert.ok(game.includes('I.review(state,id,decision,payload)'),'revisão conectada à UI');
-assert.ok(html.includes('inspection.js?v=0.9.1'));
-assert.ok(html.includes('inspection-view.js?v=0.9.1'));
+assert.ok(game.includes('I.review(state,id,decision,payload,data,E)'),'revisão conectada à UI');
+assert.ok(html.includes('inspection.js?v=0.9.2'));
+assert.ok(html.includes('inspection-view.js?v=0.9.2'));
 assert.ok(html.includes('pcmScopeRow')&&html.includes('pcmActions'),'interface PCM responsiva');
 const saveLegacy=E.create(data,()=>.5);
 I.normalized(saveLegacy);assert.equal(I.summary(saveLegacy).approved,0,'compatível com saves anteriores');
 const noteMarkup=JSON.parse(JSON.stringify(note));
 noteMarkup.description='<script>alert("XSS")</script> falha reportada com texto perigoso';
+noteMarkup.reportedIndication=noteMarkup.description;
 const cloned=JSON.parse(JSON.stringify(s));cloned.notifications=[noteMarkup];
 const unsafe=V.render(cloned,data,I);
 assert.ok(!unsafe.includes('<script>')&&unsafe.includes('&lt;script&gt;'),'descrições sempre escapadas');

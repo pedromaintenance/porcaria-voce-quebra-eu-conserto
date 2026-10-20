@@ -400,7 +400,7 @@ function drawBays(){
   return `<div class="bayBadge ${st.css}" style="${style}"><b>BOX ${i+1}</b><span>${j?esc(E.model(data,j.modelId)?.title)+' · '+esc(j.id):'Disponível'}</span><b>${st.label}</b></div>`;
  }).join('');
 }
-function drawInspection(){if($('inspectionPanel'))$('inspectionPanel').innerHTML=IV.render(state,data,I)}
+function drawInspection(){if($('inspectionPanel'))$('inspectionPanel').innerHTML=IV.render(state,data,I,E)}
 function renderQueue(){
  $('queue').innerHTML=[...state.jobs].filter(j=>{
  const m=E.model(data,j.modelId),q=FILTER.query.toLowerCase();
@@ -713,21 +713,41 @@ function events(){
   if(inspectionAction){
    const id=inspectionAction.dataset.inspectionId,kind=inspectionAction.dataset.inspectionAction;
    const result=kind==='inspect'?I.inspect(state,data,id):
-    kind==='notify'?I.notify(state,id,$('inspection-note-'+id)?.value,$('inspection-priority-'+id)?.value):{error:'Ação inválida.'};
+    kind==='notify'?I.notify(state,id,null,$('inspection-priority-'+id)?.value):{error:'Ação inválida.'};
    if(result.error){notify(result.error);return}
    save();drawUI();
    notify(kind==='inspect'?(result.status==='clear'?'Inspeção encerrada: sem indício aparente.':'Indício observado. Registre uma notificação se necessário.'):
       'Notificação '+result.notification.id+' criada para revisão PCM. Nenhuma OS foi aberta.');
    return;
   }
+  const pcmBuy=ev.target.closest('[data-pcm-buy]');
+  if(pcmBuy){
+    const id=pcmBuy.dataset.notificationId,mode=pcmBuy.dataset.pcmBuy;
+    const n=state.notifications.find(x=>x.id===id);
+    if(!n||!['aguarda_revisao_pcm','aprovada_pcm'].includes(n.status)){notify('Notificação indisponível para aprovisionamento.');return}
+    if(mode==='material'){
+      const item=$('pcm-item-'+id)?.value,qty=Number($('pcm-qty-'+id)?.value||1),speed=$('pcm-speed-'+id)?.value==='rush';
+      if(!item||!data.items[item]){notify('Escolha um material válido.');return}
+      const error=E.orderMaterial(state,data,item,qty,speed);
+      if(error){notify(error);return}
+    }else if(mode==='tool'){
+      const tool=$('pcm-tool-'+id)?.value;
+      if(!tool||!data.tools[tool]){notify('Escolha uma ferramenta válida.');return}
+      const error=E.buyTool(state,data,tool);
+      if(error){notify(error);return}
+    }else return;
+    save();drawUI();notify('Solicitação registrada. A compra não confirma a hipótese técnica.');return;
+  }
   const notificationAction=ev.target.closest('[data-notification-action]');
   if(notificationAction){
    const id=notificationAction.dataset.notificationId,decision=notificationAction.dataset.notificationAction;
-   const payload={reason:$('pcm-reason-'+id)?.value,
-      scope:$('pcm-scope-'+id)?.value,trade:$('pcm-trade-'+id)?.value,
-      estimatedHH:$('pcm-hh-'+id)?.value,description:$('pcm-description-'+id)?.value,
-      priority:$('pcm-priority-'+id)?.value};
-   const result=decision==='convert'?I.commitConversion(state,data,E,id):I.review(state,id,decision,payload);
+   const payload={
+      reason:$('pcm-reason-'+id)?.value,
+      diagnosis:Array.from({length:6},(_,i)=>$('pcm-diagnosis-'+i+'-'+id)?.value||''),
+      action:$('pcm-action-'+id)?.value,trade:$('pcm-trade-'+id)?.value,
+      estimatedHH:$('pcm-hh-'+id)?.value,priority:$('pcm-priority-'+id)?.value
+   };
+   const result=decision==='convert'?I.commitConversion(state,data,E,id):I.review(state,id,decision,payload,data,E);
    if(result.error){notify(result.error);return}
    save();drawUI();
    if(decision==='convert')notify('OS '+result.order.id+' criada a partir da notificação '+id+'. Abra o Planejamento PCM para programar a equipe.');
