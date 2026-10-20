@@ -100,7 +100,7 @@
   x.status=anomaly?'finding':'clear';
   x.inspectedTick=s.tick;
   x.observed=anomaly
-   ?'Anormalidade registrada: '+sc.operator.replace(/\\b(?:simulado|simulada|fictício|fictícia)\\b/gi,'').replace(/\\s+/g,' ').trim()
+   ?'Anormalidade registrada: '+sc.operator.replace(/\b(?:simulado|simulada|fictício|fictícia)\b/gi,'').replace(/\s+/g,' ').trim()
    :'Nenhuma anormalidade encontrada na inspeção de campo.';
   x.observationSource='simulado_sem_medicao';
   return {ok:true,status:x.status,inspection:x};
