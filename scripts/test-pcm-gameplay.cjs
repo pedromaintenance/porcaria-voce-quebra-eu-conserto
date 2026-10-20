@@ -1,0 +1,104 @@
+/* Regressão PCM 0.9.2: hipóteses ocultas, materiais, causa opcional e energia mecânica. */
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs'),path=require('node:path');
+const E=require('../engine.js'),I=require('../phaser-play/inspection.js'),V=require('../phaser-play/inspection-view.js');
+const d=require('../game-data.json');
+function campaign(){
+ const s=E.create(d,()=>0.4),i=I.plan(s,d)[0];
+ assert.equal(I.inspect(s,d,i.id).status,'finding');
+ const n=I.notify(s,i.id,null,'media').notification;
+ assert.equal(n.description,i.observed,'relato automático do campo');
+ assert.ok(n.description.includes('Indício observado no exercício'));
+ const opts=I.hypotheses(s,d,E,n.id);
+ assert.equal(opts.length,6);
+ assert.deepEqual(I.hypotheses(s,d,E,n.id),opts,'opções estáveis');
+ assert.ok(opts.every(arr=>arr.length===4));
+ const sc=d.scenarios.find(x=>x.id===n.sourceScenario),truth=[...sc.path,sc.component,sc.damage,sc.cause];
+ assert.ok(opts.every((a,i)=>a.some(x=>x.id===truth[i])),'gabarito disponível sem sinal visual');
+ return {s,i,n,opts,sc,truth};
+}
+function approve(c,codes){
+ const {s,n}=c;
+ const p={diagnosis:codes,action:'diagnosticar',trade:'mecanica',estimatedHH:4};
+ const result=I.review(s,n.id,'approve',p,d,E);
+ assert.equal(result.ok,true);
+ assert.equal(n.planningDiagnosis.evaluated,false);
+ assert.deepEqual(n.planningDiagnosis.codes,codes);
+ assert.equal(s.jobs.length,3,'aprovação não cria OS');
+ return p;
+}
+function begin(c){
+ const {s,n,sc}=c;
+ const r=I.commitConversion(s,d,E,n.id);
+ assert.equal(r.ok,true);
+ const j=r.order;
+ assert.equal(j.stage,0);
+ const m=s.team.find(x=>!x.assigned&&x.restAt!==s.tick&&!E.TRAINING.active(s,x));
+ assert.ok(m);
+ s.tools[sc.tool]=true;
+ assert.equal(E.attach(s,j.id,m.id,0,true),null);
+ return {j,m};
+}
+const perfect=campaign(),p=approve(perfect,perfect.truth),good=begin(perfect);
+assert.equal(perfect.n.status,'convertida_os');
+assert.equal(perfect.s.jobs.length,4);
+const priorMental=good.m.mental;
+assert.equal(good.j.plannerDiagnosis.evaluated,false,'sem avaliação durante aprovação ou designação');
+E.advance(perfect.s,d,()=>0);
+assert.equal(good.j.plannerDiagnosis.evaluated,true);
+assert.equal(good.m.mental,100,'todo diagnóstico correto recupera 100% da energia mental');
+assert.ok(good.m.morale>=20,'moral aumentada');
+assert.equal(good.j.wrong,0);
+const bad=campaign();
+const mistaken=bad.truth.map((code,i)=>i===5?'':bad.opts[i].find(x=>x.id!==code).id);
+approve(bad,mistaken);
+assert.equal(I.review(bad.s,bad.n.id,'approve',{diagnosis:bad.truth,action:'verificar',trade:'mecanica',estimatedHH:2},d,E).error!==undefined,true,'sem nova tentativa após aprovação');
+const worker=begin(bad);
+const cashBefore=bad.s.cash,wrongCount=mistaken.filter((x,i)=>x&&x!==bad.truth[i]).length;
+assert.equal(wrongCount,5);
+E.advance(bad.s,d,()=>0);
+assert.equal(worker.j.plannerDiagnosis.evaluated,true);
+assert.equal(worker.j.wrong,wrongCount,'cada opção errada gera uma penalidade');
+assert.equal(worker.j.rework,true);
+assert.equal(worker.j.reworkHours,wrongCount*0.5);
+assert.ok(worker.m.mental<100&&worker.m.morale<100,'não recebe bônus por falha');
+assert.ok(bad.s.cash<=cashBefore-25*wrongCount,'custo de retrabalho no motor');
+const balance=worker.j.wrong;
+worker.j.assigned=null;worker.m.assigned=null;
+E.advance(bad.s,d,()=>0);
+assert.equal(worker.j.wrong,balance,'penalidade aplicada uma única vez');
+const incomplete=campaign();
+approve(incomplete,[...incomplete.truth.slice(0,5),'']);
+const g=begin(incomplete);
+const moraleBefore=g.m.morale;
+E.advance(incomplete.s,d,()=>0);
+assert.equal(g.j.wrong,0,'causa vazia não gera penalidade');
+assert.ok(g.m.mental<100,'causa vazia não concede bônus integral');
+assert.ok(g.m.morale<=moraleBefore+20,'sem bônus total');
+const invalid=campaign();
+const noCause=[...invalid.truth.slice(0,5),''];
+const p0={diagnosis:noCause,action:'verificar',trade:'mecanica',estimatedHH:2};
+assert.equal(I.review(invalid.s,invalid.n.id,'approve',{...p0,diagnosis:['',...noCause.slice(1)]},d,E).error!==undefined,true,'sistema obrigatório');
+assert.equal(I.review(invalid.s,invalid.n.id,'approve',{...p0,diagnosis:['FAKE',...noCause.slice(1)]},d,E).error!==undefined,true,'código fora das alternativas');
+assert.equal(invalid.n.status,'aguarda_revisao_pcm','sem escrita em caso inválido');
+const beforeOpts=JSON.stringify(invalid.s.jobs);
+assert.equal(I.review(invalid.s,invalid.n.id,'approve',p0,d,E).ok,true,'causa opcional aceita');
+assert.equal(JSON.stringify(invalid.s.jobs),beforeOpts);
+const legacy=E.create(d,()=>0.5);
+E.advance(legacy,d,()=>0.4);
+assert.ok(E.validate(legacy),'OS antigas seguem válidas');
+const view=V.render(invalid.s,d,I,E);
+for(const fragment of ['LOCAL DE INSTALAÇÃO','MODO DE FALHA','NÃO DEFINIR A CAUSA','APROVISIONAMENTO','data-pcm-buy="material"','data-pcm-buy="tool"']){
+ assert.ok(view.includes(fragment),fragment);
+}
+assert.ok(!view.includes('<textarea'),'sem digitação manual de relatos ou escopos');
+assert.ok(!view.includes('RESULTADO CORRETO')&&!view.includes('ERRO NO DIAGNÓSTICO'),'sem gabarito');
+const game=fs.readFileSync(path.resolve(__dirname,'../phaser-play/game.js'),'utf8');
+assert.ok(game.includes('I.notify(state,id,null'),'preenche o relato automaticamente');
+assert.ok(game.includes('I.review(state,id,decision,payload,data,E)'),'opções registradas');
+assert.ok(game.includes('E.orderMaterial(state,data,item,qty,speed)'),'solicitar peças');
+assert.ok(game.includes('E.buyTool(state,data,tool)'),'comprar ferramenta');
+const html=fs.readFileSync(path.resolve(__dirname,'../phaser-play/index.html'),'utf8');
+assert.ok(html.includes('inspection.js?v=0.9.2')&&html.includes('inspection-view.js?v=0.9.2'));
+console.log('OK PCM: hipóteses fechadas, causa vazia, custos de erro, bônus total, compras, saves e nenhuma descrição livre.');
