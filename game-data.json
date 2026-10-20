@@ -6211,25 +6211,25 @@
       "id": "INC073",
       "modelId": "EQ07",
       "category": "motor",
-      "title": "D9 — ventilador patinando sob carga",
-      "operator": "No D9, a temperatura do motor sobe durante esforço contínuo e há ruído na região do acionamento de ventilação. A causa ainda não está associada com segurança ao radiador ou à transmissão de movimento.",
-      "verification": "Com rotação nula, proteções, bloqueio e partes quentes controladas, inspecionar o tipo real de acionamento do ventilador. Se a configuração utilizar correia, verificar condição e tensão por procedimento OEM; caso contrário, descartar essa hipótese sem tentar adaptá-la.",
+      "title": "D9 — ventilação insuficiente por acionamento hidráulico",
+      "operator": "No D9, a temperatura do motor sobe durante esforço prolongado e o ventilador parece responder de forma insuficiente à demanda de arrefecimento. Não há diagnóstico fechado do acionamento ou do conjunto térmico.",
+      "verification": "Identificar a arquitetura do ventilador para a série efetiva do equipamento. Confirmar pressão, vazão e comportamento do motor hidráulico de acionamento conforme procedimentos OEM; excluir obstrução de colmeia, falha de controle e leitura de temperatura antes da substituição.",
       "path": [
         "ENSY",
         "COSY",
-        "FANN"
+        "MTHY"
       ],
-      "component": "Correia",
-      "damage": "Patinando",
-      "cause": "Folga incorreta",
+      "component": "Motor, Hidráulico",
+      "damage": "Com função degradada",
+      "cause": "Desgaste",
       "priority": 2,
-      "material": "CORR",
-      "tool": "TEN",
-      "hours": 4,
-      "diagHours": 3,
-      "estimatedCost": 115,
+      "material": "MOTH",
+      "tool": "MANO",
+      "hours": 7,
+      "diagHours": 4,
+      "estimatedCost": 1720,
       "sourcePartMatch": false,
-      "lesson": "O gabarito representa uma variante didática de ventilador acionado por correia. A configuração real do D9 pode utilizar outra arquitetura; sem série e manual OEM, NÃO pressupor a existência dessa correia na máquina da frota.",
+      "lesson": "Elaboração autoral: o simulador escolhe desgaste interno do motor hidráulico do ventilador como hipótese final. Sua presença e o arranjo de comando precisam ser verificados no D9 real. Aumento de temperatura por si só não permite condenar o motor do ventilador.",
       "fmeaSource": {
         "repository": "pedromaintenance/fmea-database-mining",
         "recordId": null,
@@ -6245,11 +6245,11 @@
         "applicabilityValidated": false
       },
       "dieselTraining": {
-        "mechanism": "patinamento_acionamento_ventilador",
+        "mechanism": "perda_de_eficiencia_no_acionamento_do_ventilador",
         "alternatives": [
           "colmeia bloqueada",
-          "controle térmico inadequado",
-          "rolamento com resistência"
+          "sensor térmico incorreto",
+          "comando hidráulico do ventilador inadequado"
         ],
         "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
         "labResultsReal": false,
