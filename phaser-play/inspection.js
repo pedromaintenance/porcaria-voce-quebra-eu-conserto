@@ -47,6 +47,46 @@
   s.inspectionRoundTick=s.tick;
   return chosen;
  }
+ const INSPECTION_HH=1.5;
+ function schedule(s,d,asset,inspectorId){
+  normalized(s);
+  const chosen=String(asset||''),who=String(inspectorId||'');
+  const match=/^(EQ\d{2})·0[1-6]$/.exec(chosen);
+  if(!match||!d.models.some(m=>m.id===match[1]))return {error:'Selecione um equipamento válido da frota.'};
+  const mech=(s.team||[]).find(m=>m.id===who);
+  if(!mech)return {error:'Selecione um profissional da equipe.'};
+  if(mech.assigned||mech.restAt===s.tick)return {error:'Este profissional está alocado ou em descanso.'};
+  if(s.inspectionLabor?.tick!==s.tick)s.inspectionLabor={tick:s.tick,byEmployee:{}};
+  const booked=s.inspectionLabor.byEmployee[who]||0;
+  if(booked+INSPECTION_HH>10.5)return {error:'Capacidade de inspeção excedida: limite de 10,5 HH por profissional e turno.'};
+  const E=root.PORCARIA_ENGINE;
+  if(E?.TRAINING?.active?.(s,mech))return {error:'O profissional está em treinamento durante este turno.'};
+  if((s.jobs||[]).some(j=>j.asset===chosen))return {error:'Equipamento indisponível: já possui OS aberta.'};
+  if(s.notifications.some(n=>n.asset===chosen&&n.monitorOnly&&['monitorando','aguarda_revisao_pcm'].includes(n.status)))
+   return {error:'O equipamento está sob monitoramento de condição.'};
+  if(s.inspections.some(x=>x.asset===chosen&&x.tick===s.tick))return {error:'Já existe uma inspeção deste ativo neste turno.'};
+  const list=d.scenarios.filter(sc=>sc.modelId===match[1]&&!sc.progression);
+  if(!list.length)return {error:'Nenhum roteiro de inspeção disponível para o equipamento.'};
+  const idx=(s.tick+s.nextInspection)%list.length,sc=list[idx];
+  const rec={id:'IN'+String(s.nextInspection++).padStart(4,'0'),
+   asset:chosen,modelId:match[1],tick:s.tick,day:s.day,shift:s.shift,
+   status:'pending',scene:sc.id,ordinal:s.inspections.filter(x=>x.tick===s.tick).length,
+   inspectorId:who,estimatedHH:INSPECTION_HH,simulationOnly:true,notificationId:null,
+   inspectedTick:null,observed:null,kind:'field_selected'};
+  s.inspections.push(rec);
+  s.inspectionLabor.byEmployee[who]=Math.round((booked+INSPECTION_HH)*10)/10;
+  return {ok:true,inspection:rec};
+ }
+ function inspectAndRoute(s,d,id){
+  const result=inspect(s,d,id);
+  if(result.error)return result;
+  if(result.status==='finding'){
+   const note=notify(s,id,null,'media');
+   if(note.error)return {error:note.error};
+   return {...result,notification:note.notification};
+  }
+  return result;
+ }
  function inspect(s,d,id){
   normalized(s);
   const x=s.inspections.find(v=>v.id===id);
@@ -242,5 +282,5 @@
    converted:s.notifications.filter(x=>x.status==='convertida_os').length,
    total:s.inspections.length,notifications:s.notifications.length};
  }
- return {normalized,plan,inspect,notify,review,convert,commitConversion,hypotheses,summary,TRADES,RETURN_REASONS,ARCHIVE_REASONS,ACTIONS,STAGES,LIMIT_PER_SHIFT};
+ return {normalized,plan,schedule,inspect,inspectAndRoute,notify,review,convert,commitConversion,hypotheses,summary,TRADES,RETURN_REASONS,ARCHIVE_REASONS,ACTIONS,STAGES,LIMIT_PER_SHIFT,INSPECTION_HH};
 });
