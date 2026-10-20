@@ -19,6 +19,10 @@
 - [Manifesto de pose e SHA-256](manifest.json)
 - [Projeto de treinamento por disciplina e modelo](../../../TRAINING_DESIGN.md)
 
+## Correção da pose apontando no menu (20/10/2026)
+
+O arquivo original `bia-coaching-4poses.webp` foi preservado intacto, porém o quadro 0 (apontar) contém a ponta do dedo truncada na própria imagem, conforme captura do jogo. **Não é um recorte de CSS.** No menu de Capacitação, essa pose foi substituída visualmente pelo quadro 0 (prancheta/análise) de `bia-feedback-4poses.webp`. A animação usa, portanto, `feedback[0] → coaching[2] → coaching[3]`, a cada 3 segundos. O quadro `coaching[1]` (caminhada) continua excluído. Com movimento reduzido, exibe a pose completa de prancheta. A galeria de assets mantém as 16 poses originais para documentação.
+
 ## Uso futuro no Phaser
 
 ```js

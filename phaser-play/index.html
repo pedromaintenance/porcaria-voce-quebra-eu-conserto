@@ -516,7 +516,7 @@ body{min-height:100vh}
 .trainingBiaStage{position:relative;display:flex;align-items:end;justify-content:center;width:100%;height:286px;isolation:isolate;overflow:visible}
 .trainingBiaStage::after{content:"";position:absolute;bottom:7px;left:18%;right:18%;height:16px;z-index:-1;background:#4c554b30;border-radius:50%;filter:blur(7px)}
 .trainingBiaPortrait{display:block;width:min(232px,100%);height:auto;aspect-ratio:580/622;flex-shrink:0;background-repeat:no-repeat;background-size:200% 200%;background-position:0 0;image-rendering:auto;animation:trainingBiaPose 12s steps(1,end) infinite}
-.trainingBiaStage--coaching .trainingBiaPortrait{background-image:url('./assets/characters/bia/bia-coaching-4poses.webp');animation:trainingBiaNoWalkCoaching 9s steps(1,end) infinite}
+.trainingBiaStage--coaching .trainingBiaPortrait{background-image:url('./assets/characters/bia/bia-feedback-4poses.webp');animation:trainingBiaNoWalkCoaching 9s steps(1,end) infinite}
 .trainingBiaStage--field .trainingBiaPortrait{background-image:url('./assets/characters/bia/bia-field-4poses.webp');animation:trainingBiaNoWalkField 9s steps(1,end) infinite}
 .trainingBiaStage--inspection .trainingBiaPortrait{background-image:url('./assets/characters/bia/bia-inspection-4poses.webp')}
 .trainingBiaStage--feedback .trainingBiaPortrait{background-image:url('./assets/characters/bia/bia-feedback-4poses.webp')}
@@ -528,11 +528,13 @@ body{min-height:100vh}
   50%{background-position:0 100%}
   75%,100%{background-position:100% 100%}
 }
-/* coaching: 0 (instrução), 2 (agachada), 3 (inspeção). Ignora 1 (caminhada). */
+/* A pose coaching[0] tem a ponta do dedo cortada no próprio WebP.
+   Usa feedback[0] (prancheta) como alternativa íntegra, mantendo coaching[2,3].
+   coaching[1] (caminhada) permanece excluída. Troca atômica de atlas a cada 3 s. */
 @keyframes trainingBiaNoWalkCoaching{
-  0%{background-position:0 0}
-  33.333%{background-position:0 100%}
-  66.666%,100%{background-position:100% 100%}
+  0%{background-image:url('./assets/characters/bia/bia-feedback-4poses.webp');background-position:0 0}
+  33.333%{background-image:url('./assets/characters/bia/bia-coaching-4poses.webp');background-position:0 100%}
+  66.666%,100%{background-image:url('./assets/characters/bia/bia-coaching-4poses.webp');background-position:100% 100%}
 }
 /* field: 0 (anotações), 1 (registro), 3 (rádio). Ignora 2 (caminhada). */
 @keyframes trainingBiaNoWalkField{
