@@ -21,7 +21,7 @@
   // Um plano por turno. Registros não realizados de turnos anteriores são preservados como vencidos.
   for(const i of s.inspections)if(i.status==='pending'&&i.tick<s.tick)i.status='expired';
   const busy=new Set((s.jobs||[]).map(j=>j.asset));
-  const inspected=new Set(s.inspections.map(i=>i.asset).filter(Boolean));
+  const inspected=new Set(s.inspections.filter(i=>s.tick-i.tick<4).map(i=>i.asset).filter(Boolean));
   const models=(d.models||[]).filter(m=>(d.scenarios||[]).some(c=>c.modelId===m.id));
   const rotation=models.length?s.tick%models.length:0;
   const rotated=[...models.slice(rotation),...models.slice(0,rotation)];
@@ -54,8 +54,8 @@
   if(x.tick!==s.tick)return {error:'A programação pertence a outro turno.'};
   const sc=d.scenarios.find(v=>v.id===x.scene);
   if(!sc)return {error:'Roteiro didático não encontrado.'};
-  // Amostragem reprodutível e não clínica: aproximadamente uma em quatro inspeções sem achado.
-  const anomaly=(s.tick+x.ordinal+1)%4!==0;
+  // Amostragem reprodutível e não clínica: aproximadamente uma em três inspeções sem achado.
+  const anomaly=(s.tick+x.ordinal+1)%3!==0;
   x.status=anomaly?'finding':'clear';
   x.inspectedTick=s.tick;
   x.observed=anomaly
