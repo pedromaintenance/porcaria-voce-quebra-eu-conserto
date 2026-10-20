@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. 0.8.24 — cartão rápido de OS; nenhuma regra de simulação. */
+/* P.O.R.C.A.R.I.A. 0.8.25 — grupos de diagnóstico e referências SAP; lógica inalterada. */
 (function(root,factory){
  'use strict';
  const api=factory();
@@ -26,10 +26,22 @@
    return shell.join('')+'</article>';
   }
   const steps=(r?.steps||[]).slice(0,6);
+  const sapEquivalent=['M, Nível 6','M, Nível 7','M, Nível 8','Parte objeto','Perda','Causa'];
+  const renderStep=(x,i)=>'<div class="quickStep '+esc(x.status)+'"><small>'+esc(x.label)+'</small>'
+   +'<b>'+esc(x.status==='confirmed'?x.result:x.status==='current'?'EM ANÁLISE':'PENDENTE')+'</b>'
+   +'<span class="quickSapRef" aria-label="Referência SAP: '+esc(sapEquivalent[i])+'">'
+   +'<img src="./assets/ui/sap-flag.png" alt="" width="34" height="17">'
+   +'<span class="quickSapText">'+esc(sapEquivalent[i])+'</span></span></div>';
+  const group=(label,type,icon,offset)=>'<section class="quickStageGroup '+type+'" aria-label="'+esc(label)+'">'
+   +'<h3 class="quickStageGroupTitle"><span aria-hidden="true">'+icon+'</span> '+esc(label)+'</h3>'
+   +'<div class="quickSteps" role="group" aria-label="'+esc(label)+'">'
+   +steps.slice(offset,offset+3).map((step,i)=>renderStep(step,offset+i)).join('')
+   +'</div></section>';
   shell.push('<div class="quickProgress"><div class="quickSectionHeading"><strong>DIAGNÓSTICO</strong><span>'+Number(r?.stage||0)+'/6 ETAPAS</span></div>');
-  shell.push('<div class="quickSteps" role="group" aria-label="Seis etapas do diagnóstico">'+steps.map(x=>
-   '<div class="quickStep '+esc(x.status)+'"><small>'+esc(x.label)+'</small><b>'+esc(x.status==='confirmed'?x.result:x.status==='current'?'EM ANÁLISE':'PENDENTE')+'</b></div>'
-  ).join('')+'</div></div>');
+  shell.push('<div class="quickStageGroups" aria-label="Seis etapas do diagnóstico">'
+   +group('LOCAL DE INSTALAÇÃO','location','📍',0)
+   +group('MODO DE FALHA','failure','⚙',3)
+   +'</div></div>');
   if(feedback?.jobId===j.id) shell.push('<p class="quickFeedback '+(feedback.ok?'ok':'wrong')+'" role="status">'+esc(feedback.text)+'</p>');
   if(r?.complete){
    const v=i=>esc(steps[i]?.result||'A confirmar');

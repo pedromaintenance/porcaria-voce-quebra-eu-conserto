@@ -441,6 +441,52 @@ body{min-height:100vh}
 }
 
 
+
+/* 0.8.33 — agrupamento SAP no resumo de OS: títulos e rodapés internos. */
+#menuOverlay.quick-order .modalShell{width:min(1060px,100%);max-height:calc(100dvh - 16px)}
+#menuOverlay.quick-order .modalContent{padding:12px 16px 14px;overflow-y:auto;overscroll-behavior:contain;flex:1 1 auto}
+#menuOverlay.quick-order .modalTop{padding:11px 18px;font-size:16px}
+#menuOverlay.quick-order .quickOrder{gap:12px;font-size:13px}
+#menuOverlay.quick-order .quickIdentity strong{font-size:16px}
+#menuOverlay.quick-order .quickReport{padding:10px 13px}
+.quickStageGroups{display:grid;gap:12px;margin-top:8px}
+.quickStageGroup{border:2px solid #d8a139;border-radius:10px;background:linear-gradient(170deg,#222a31,#0d2638 90%);padding:0 10px 10px;min-width:0}
+.quickStageGroup.failure{border-color:#168fc9;background:linear-gradient(160deg,#112c42,#091e32 90%)}
+.quickStageGroupTitle{display:flex;align-items:center;gap:10px;margin:0 -10px 5px;padding:10px 14px;color:#ffd17b;font-size:15px;font-weight:900;letter-spacing:.055em;background:linear-gradient(95deg,#5a441e 0%,#252c31 46%,transparent 90%)}
+.quickStageGroup.failure .quickStageGroupTitle{background:linear-gradient(95deg,#0b405d 0%,#102b40 50%,transparent 95%)}
+.quickStageGroupTitle span{font-size:18px;line-height:1}
+.quickStageGroup .quickSteps{gap:10px;margin:0;grid-template-columns:repeat(3,minmax(0,1fr))}
+.quickStageGroup .quickStep{min-height:95px;padding:10px 12px;gap:6px;border-radius:8px}
+.quickStageGroup .quickStep small{font-size:12px;line-height:1.3}
+.quickStageGroup .quickStep b{font-size:14px;line-height:1.25;white-space:normal;overflow-wrap:anywhere}
+.quickSapRef{margin-top:auto;align-self:flex-end;max-width:100%;display:inline-flex;justify-content:flex-end;align-items:center;gap:7px;min-height:20px;color:#e6edf6;text-align:right}
+.quickSapRef img{display:block;flex:0 0 auto;width:34px;height:17px;object-fit:contain}
+.quickSapText{font-size:11px;line-height:1.2;border-left:2px solid #d29b34;padding-left:7px;white-space:normal;overflow-wrap:anywhere}
+@media(max-width:640px){
+ #menuOverlay.quick-order .modalContent{padding:8px 9px 10px}
+ #menuOverlay.quick-order .quickOrder{gap:9px}
+ .quickStageGroups{gap:8px}
+ .quickStageGroup{padding:0 5px 6px}
+ .quickStageGroupTitle{font-size:12px;padding:7px 9px;margin:0 -5px 5px}
+ .quickStageGroup .quickSteps{gap:4px}
+ .quickStageGroup .quickStep{min-height:85px;padding:7px 5px;gap:5px}
+ .quickStageGroup .quickStep small{font-size:10px}
+ .quickStageGroup .quickStep b{font-size:11px}
+ .quickSapRef{gap:3px}
+ .quickSapRef img{width:24px;height:12px}
+ .quickSapText{font-size:9px;padding-left:4px;border-left-width:1px}
+}
+@media(max-width:360px){
+ .quickStageGroup .quickSteps{gap:3px}
+ .quickStageGroup .quickStep{padding:6px 4px}
+ .quickSapRef img{width:20px;height:10px}
+ .quickSapText{font-size:8px}
+}
+@media(max-height:600px){
+ #menuOverlay.quick-order .modalContent{overflow-y:auto}
+ #menuOverlay.quick-order .quickStageGroup .quickStep{min-height:67px}
+}
+
 /* v0.8.25 — matriz consultiva de habilidades, sem impacto no motor de manutencao */
 .abilitiesCard{margin:10px 0;border:1px solid #4c728a;border-radius:9px;background:#0c2536;overflow:hidden}
 .abilitiesCard>summary{cursor:pointer;padding:9px 11px;font-size:12px;font-weight:850;color:#ffcf80;list-style-position:inside}
@@ -591,4 +637,4 @@ body{min-height:100vh}
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.24"></script><script src="./training-view.js?v=0.8.30"></script><script src="./game.js?v=0.8.32"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
+<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./game.js?v=0.8.32"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
