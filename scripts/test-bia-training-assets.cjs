@@ -44,6 +44,28 @@ for(const atlas of manifest.atlases){
  });
 }
 assert.equal(count,16,'16 quadros acessíveis por metadado');
+// Derivado do MESMO atlas field: corrige o topo do capacete sem apagar o original.
+const repaired=manifest.derivedAtlases?.find(x=>x.id==='field-repaired');
+assert.ok(repaired,'sprite sheet corrigido registrado no manifesto');
+assert.equal(repaired.sourceAtlas,'bia-field-4poses.webp');
+assert.equal(repaired.file,'bia-field-repaired-4poses.webp');
+assert.deepEqual(repaired.dimensions,{width:1160,height:1244,frameWidth:580,frameHeight:622});
+const repairedBytes=fs.readFileSync(path.join(base,repaired.file));
+assert.equal(repairedBytes.length,786602);
+assert.equal(crypto.createHash('sha256').update(repairedBytes).digest('hex'),'0df565e155bea199facfd3c6a0032c2afba7cfcba59ad9d057c282cff877c538');
+assert.equal(repaired.sha256,'0df565e155bea199facfd3c6a0032c2afba7cfcba59ad9d057c282cff877c538');
+assert.equal(repairedBytes.toString('ascii',0,4),'RIFF');
+assert.equal(repairedBytes.toString('ascii',8,12),'WEBP');
+// Pillow exporta lossless WebP com chunk VP8L, diferente dos VP8X lossy originais.
+assert.equal(repairedBytes.toString('ascii',12,16),'VP8L','WebP lossless preserva a arte original');
+assert.equal(repairedBytes[20],0x2f,'assinatura do bitstream VP8L');
+const width=1+repairedBytes[21]+((repairedBytes[22]&0x3f)<<8);
+const height=1+(repairedBytes[22]>>6)+(repairedBytes[23]<<2)+((repairedBytes[24]&0x0f)<<10);
+assert.equal(width,1160);assert.equal(height,1244);
+assert.ok((repairedBytes[24]&0x10)!==0,'canal alfa VP8L presente');
+const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
+assert.ok(sw.includes('./phaser-play/assets/characters/bia/bia-field-repaired-4poses.webp'),'PWA guarda sprite corrigido');
+
 const preview=fs.readFileSync(path.join(base,'index.html'),'utf8');
 const design=fs.readFileSync(path.join(root,'phaser-play','TRAINING_DESIGN.md'),'utf8');
 const game=fs.readFileSync(path.join(root,'phaser-play','game.js'),'utf8');

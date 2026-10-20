@@ -50,6 +50,7 @@ assert.ok(html.includes('animation:trainingBiaPose 12s steps(1,end) infinite'),'
 assert.ok(html.includes('animation:trainingBiaNoWalkCoaching 9s steps(1,end) infinite'),'coaching usa três quadros sem caminhar');
 assert.ok(html.includes(".trainingBiaStage--coaching .trainingBiaPortrait{background-image:url('./assets/characters/bia/bia-feedback-4poses.webp')"),'pose estática completa como fallback, inclusive sem animação');
 assert.ok(html.includes('animation:trainingBiaNoWalkField 9s steps(1,end) infinite'),'field usa só três quadros, sem caminhar');
+assert.ok(html.includes(".trainingBiaStage--field .trainingBiaPortrait{background-image:url('./assets/characters/bia/bia-field-repaired-4poses.webp')"),'aba Ofertas usa o atlas com capacete restaurado');
 const framePositions={
  '0':'0 0','1':'100% 0','2':'0 100%','3':'100% 100%'
 };
@@ -79,7 +80,8 @@ assert.ok(html.includes('.trainingBiaPortrait{width:min(166px,100%)}')&&html.inc
 assert.ok(html.includes('@media(prefers-reduced-motion:reduce){.trainingBiaPortrait{animation:none!important}}'),'respeito à preferência de movimento reduzido');
 assert.ok(html.includes('@keyframes trainingBiaPose'));
 assert.ok(html.includes('prefers-reduced-motion:reduce'));
-for(const atlas of ['coaching','field','inspection','feedback'])assert.ok(html.includes('bia-'+atlas+'-4poses.webp'));
+for(const atlas of ['coaching','inspection','feedback'])assert.ok(html.includes('bia-'+atlas+'-4poses.webp'));
+assert.ok(html.includes('bia-field-repaired-4poses.webp'),'asset field corrigido disponível no CSS');
 assert.ok(game.includes("trainingUI.tab=trainingTab.dataset.trainingTab"),'clique troca tab');
 assert.ok(game.includes("trainingUI.tab=tabs[next]"),'setas/Home/End navegam com teclado');
 assert.ok(game.includes("rememberTrainingSelection()"),'escolhas preservadas');
