@@ -269,11 +269,24 @@
     msg(s,'Oficina aberta! Separe os boxes, inspecione a fila e não condene uma peça sem diagnóstico.','ok');
     return s;
   }
+  // Cria a mesma estrutura de OS em sorteios e em consequências progressivas.
+  function buildJob(s,d,c,asset,rng=Math.random){
+    return {id:`OS${String(s.nextJob++).padStart(4,'0')}`,scene:c.id,asset,modelId:c.modelId,
+      title:c.title,report:c.operator,dayOpen:s.day,tickOpen:s.tick,priority:c.priority,
+      status:'fila',assigned:null,bay:null,help:false,stage:0,hints:{},diagnosticLog:[],
+      diagTarget:c.diagHours*2,diagRemaining:c.diagHours*2,
+      repairTarget:c.hours,repairRemaining:c.hours,
+      options:options(d,c,Math.floor(rnd(rng)*2**30)),wrong:0,rework:false,
+      materialUsed:false,worked:0,toolWait:0,blockedShifts:0,notes:[],scheduleShift:null,
+      costLabor:0,reworkHours:0,idleShifts:0};
+  }
   function spawn(s,d,n,rng=Math.random){
     let made=0;
     const existing=new Set(s.jobs.map(j=>j.asset));
     for(let i=0;i<n;i++){
       const pool=d.scenarios.filter(c=>{
+        // As consequências surgem somente após o atraso do precursor, nunca no sorteio livre.
+        if(c.progression)return false;
         const m=model(d,c.modelId);if(!m)return false;
         return [...Array(6)].some((_,x)=>!existing.has(`${c.modelId}·${String(x+1).padStart(2,'0')}`));
       });
@@ -281,19 +294,30 @@
       const c=one(pool,rng),m=model(d,c.modelId);
       const fleet=Array.from({length:6},(_,k)=>`${c.modelId}·${String(k+1).padStart(2,'0')}`);
       const asset=one(fleet.filter(x=>!existing.has(x)),rng);existing.add(asset);
-      const severity=c.priority;
-      const j={id:`OS${String(s.nextJob++).padStart(4,'0')}`,scene:c.id,asset,modelId:c.modelId,
-        title:c.title,report:c.operator,dayOpen:s.day,tickOpen:s.tick,priority:severity,
-        status:'fila',assigned:null,bay:null,help:false,stage:0,hints:{},diagnosticLog:[],
-        diagTarget:c.diagHours*2,diagRemaining:c.diagHours*2,
-        repairTarget:c.hours,repairRemaining:c.hours,
-        options:options(d,c,Math.floor(rnd(rng)*2**30)),wrong:0,rework:false,
-        materialUsed:false,worked:0,toolWait:0,blockedShifts:0,notes:[],scheduleShift:null,
-        costLabor:0,reworkHours:0};
-      s.jobs.push(j);made++;
+      s.jobs.push(buildJob(s,d,c,asset,rng));made++;
     }
     if(made)msg(s,`${made} ocorrência(s) chegaram com relatos dos operadores.`);
     return made;
+  }
+  // Conclusão tardia do serviço anterior pode expor dano secundário DIDÁTICO no mesmo ativo.
+  // O cenário novo não prevê falha OEM nem aparece no sorteio regular.
+  function spawnDelayedConsequence(s,d,prior){
+    const next=d.scenarios.find(c=>c.progression?.precedingScenario===prior.scene);
+    if(!next||next.modelId!==prior.modelId||s.jobs.length>=32)return null;
+    if(s.jobs.some(j=>j.asset===prior.asset))return null;
+    const idle=Math.max(0,prior.idleShifts||0);
+    const errors=Math.max(0,prior.plannerDiagnosis?.errorCount||0);
+    const chain=next.progression;
+    const byDelay=idle>=chain.thresholdIdleShifts;
+    const byPCM=idle>=chain.thresholdIdleWithPlannerErrors&&errors>=chain.minPlannerErrors;
+    if(!byDelay&&!byPCM)return null;
+    const rng=mulberry32(((s.tick+1)*2654435761^(s.nextJob*40503))>>>0);
+    const sequel=buildJob(s,d,next,prior.asset,rng);
+    sequel.chainOrigin={orderId:prior.id,scene:prior.scene,asset:prior.asset,
+      idleShifts:idle,plannerErrors:errors,trigger:byPCM?'delay_and_pcm_rework':'delay'};
+    s.jobs.push(sequel);
+    msg(s,`Evolução DIDÁTICA: ${prior.asset} retornou após ${prior.id} com ${next.id} (${next.title}). Atraso de ${idle} turno(s) sem equipe. Não é previsão real de falha.`,'bad');
+    return sequel;
   }
   function attach(s,id,mid,bay,help){
     const j=job(s,id),m=employee(s,mid);
@@ -435,7 +459,8 @@
     s.done.unshift({...j,elapsedHours:elapsed,revenue:income,firstTime,materialCost:d.items[c.material].unit});s.done=s.done.slice(0,200);
     s.jobs=s.jobs.filter(x=>x.id!==j.id);
     m.assigned=null;
-    msg(s,`${j.id} concluída: ${c.title}. ${elapsed} h corridas, receita fictícia R$${income}.`,'ok');
+    msg(s,`${j.id} concluída: ${c.title}. ${elapsed} h corridas, receita fictícia R${income}.`,'ok');
+    spawnDelayedConsequence(s,d,j);
   }
   function learnByDoing(s,mechanic,order,scenario,rng){
     // Uma tentativa por habilidade e por turno, mesmo após vários cliques no diagnóstico.
@@ -465,7 +490,7 @@
     const trueCodes=[...sc.path,sc.component,sc.damage,sc.cause];
     const errors=plan.codes.filter((code,i)=>code!==''&&code!==trueCodes[i]).length;
     const perfect=errors===0&&plan.codes.every((code,i)=>code===trueCodes[i]);
-    plan.evaluated=true;plan.executionTick=s.tick;plan.mechanicId=m.id;
+    plan.evaluated=true;plan.executionTick=s.tick;plan.mechanicId=m.id;plan.errorCount=errors;
     if(errors){
       j.wrong+=errors;j.rework=true;j.reworkHours+=0.5*errors;
       j.diagRemaining+=0.5*errors;
@@ -479,6 +504,8 @@
     const pressure=productivityProfile(s.productivityTarget);
     const availableCrew=s.team.filter(m=>m.restAt!==s.tick&&!TRAINING.active(s,m)).length;
     const operating=[...s.jobs];
+    // Contabiliza somente turnos sem alocação antes do diagnóstico (inclusive saves legados).
+    for(const j of operating)if(!j.assigned&&j.stage===0)j.idleShifts=(j.idleShifts||0)+1;
     for(const j of operating){
       if(!j.assigned)continue;
       const m=employee(s,j.assigned), c=scenario(d,j.scene);
