@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.31 · motor de simulacao v1.1 */
+/* P.O.R.C.A.R.I.A. Phaser vertical slice v0.8.32 · motor de simulacao v1.1 */
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
@@ -8,7 +8,7 @@ const SAVE='porcaria.phaser.prototype.v01';
 const ASSETS={
  truck:'./assets/equipment/cat777e_v3.webp',
  shovel:'./assets/equipment/cat6030.png',
- excavator:'./assets/equipment/cat395.png',
+ excavator:'./assets/equipment/cat395.png?v=20261019-3px',
  drill:'./assets/equipment/sandvik_di650i_v0828.webp', // DI650i: arte original do usuário, WebP VP8L lossless com alfa.
  dr410i:'./assets/equipment/sandvik_dr410i_v2.webp', // imagem DR410i fornecida pelo jogador.
  dozer:'./assets/equipment/catd9-dozer-v0819.webp',
