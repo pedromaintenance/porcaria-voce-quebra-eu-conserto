@@ -45,6 +45,7 @@ async function boot(){
   DATA=await res.json();
   try{const raw=localStorage.getItem(K);if(raw){const imported=JSON.parse(raw);if(E.validate(imported))STATE=imported}}catch(e){}
   if(!STATE)STATE=E.create(DATA);
+   E.localizeDiagnosticOptions(STATE,DATA);
   UI.selected=STATE.jobs[0]?.id||null;
   UI.dbModel=DATA.models[0].id;
   connect();render();
@@ -65,7 +66,7 @@ function connect(){
  el('saveBtn').addEventListener('click',exportSave);el('exportBtn').addEventListener('click',exportSave);
  el('importFile').addEventListener('change',ev=>{
   const file=ev.target.files?.[0];if(!file)return;
-  file.text().then(t=>{const obj=JSON.parse(t);if(!E.validate(obj))throw Error('Este JSON não pertence à v1.1.');STATE=obj;UI.selected=STATE.jobs[0]?.id||null;save();render();openModal('Save restaurado','<p>Carreira carregada com sucesso.</p>');}).catch(e=>err(e.message));ev.target.value='';
+  file.text().then(t=>{const obj=JSON.parse(t);if(!E.validate(obj))throw Error('Este JSON não pertence à v1.1.');STATE=E.localizeDiagnosticOptions(obj,DATA);UI.selected=STATE.jobs[0]?.id||null;save();render();openModal('Save restaurado','<p>Carreira carregada com sucesso.</p>');}).catch(e=>err(e.message));ev.target.value='';
  });
  el('resetBtn').addEventListener('click',()=>openModal('Reiniciar campanha','<p>O reset apaga o progresso local. Recomendo exportar o save JSON antes de começar outra oficina.</p><button class="button" id="downloadBeforeReset">⇩ Exportar backup agora</button>',()=>{STATE=E.create(DATA);UI.selected=STATE.jobs[0]?.id;save();render();},'Apagar e começar',()=>el('downloadBeforeReset')?.addEventListener('click',exportSave)));
  el('hireButton').addEventListener('click',()=>openModal('Contratar mecânico','<p>Integração: <b>R$1.050</b> e <b>18 de energia mental</b> da chefia. O profissional entra no quadro e passa a gerar custo diário de pessoal.</p>',()=>act(E.hire(STATE,'generic'))));

@@ -221,6 +221,39 @@
     stages.push(list(sc.cause,d.catalog.causes.filter(x=>x.groupPt===ca?.groupPt).map(x=>x.pt),4));
     return stages;
   }
+  function localizeDiagnosticOptions(s,d){
+    if(!s||!d||!Array.isArray(d.paths))return s;
+    for(const j of [...(s.jobs||[]),...(s.done||[])]){
+      if(!Array.isArray(j.options))continue;
+      const sc=d.scenarios?.find(x=>x.id===j.scene);
+      if(!sc)continue;
+      const path=d.paths.filter(p=>p.modelId===sc.modelId);
+      const sameSys=path.filter(p=>p.system===sc.path[0]);
+      const sameGroup=sameSys.filter(p=>p.group===sc.path[1]);
+      const defs=[
+        {key:'system',name:'systemName',pool:path},
+        {key:'group',name:'groupName',pool:sameSys.length?sameSys:path},
+        {key:'subgroup',name:'subgroupName',pool:sameGroup.length?sameGroup:path}
+      ];
+      for(let i=0;i<3;i++){
+        if(!Array.isArray(j.options[i]))continue;
+        const def=defs[i],names=new Map();
+        for(const r of [...def.pool,...path])if(r[def.key]&&!names.has(r[def.key]))names.set(r[def.key],r[def.name]);
+        const oldLabels=new Map();
+        for(const option of j.options[i]){
+          if(!option||!names.has(option.id))continue;
+          oldLabels.set(option.label,names.get(option.id));
+          option.label=names.get(option.id);
+        }
+        // Migração restrita a textos reconhecidos em eventos, sem modificar os resultados.
+        for(const event of j.diagnosticLog||[]){
+          if(event?.stage===i&&event.outcome!=='evidence'&&oldLabels.has(event.value))
+            event.value=oldLabels.get(event.value);
+        }
+      }
+    }
+    return s;
+  }
   function mulberry32(seed){return ()=>{let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return ((t^t>>>14)>>>0)/4294967296}}
   function create(data,rng=Math.random){
     const s={version:'1.1.0',day:1,shift:0,tick:0,cash:15800,reputation:86,xp:0,productivityTarget:DEFAULT_PRODUCTIVITY_TARGET,
@@ -530,7 +563,7 @@
       pendingMaterials:s.jobs.filter(j=>j.status==='material').length, pendingTools:s.jobs.filter(j=>j.status==='ferramenta').length};
   }
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
-  return {create,normalizeRoster,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
+  return {create,normalizeRoster,localizeDiagnosticOptions,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
     SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
     model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
 });
