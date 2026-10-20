@@ -7412,7 +7412,7 @@
     {
       "id": "INC096",
       "modelId": "EQ01",
-      "category": "progressiva",
+      "category": "rodante",
       "title": "777E — dano secundário no rolamento do comando final",
       "operator": "Após uma intervenção tardia na vedação do comando final da posição 1 do 777E, o mesmo caminhão retorna com ruído e presença de partículas. O histórico fictício registra umidade prolongada no óleo; ainda é necessário avaliar se houve dano residual.",
       "verification": "Rever histórico de entrada de água e amostras antes/depois do reparo. Bloquear e inspecionar rolamentos, engrenagens e vedação por processo OEM; confirmar danos de superfície antes de condenar mancal ou autorizar operação.",
@@ -7466,7 +7466,7 @@
     {
       "id": "INC097",
       "modelId": "EQ07",
-      "category": "progressiva",
+      "category": "rodante",
       "title": "D9 — desgaste abrasivo evolui para engrenagem danificada",
       "operator": "Depois de correção tardia da vedação do comando final do D9, surgem ruído sob tração e novos resíduos no óleo do mesmo equipamento. O laudo anterior indicava poeira, mas não identificou componente interno avariado.",
       "verification": "Verificar histórico de limpeza e amostras representativas, condições de respiro e vedação. Com rodante e transmissão isolados, inspecionar dentes e mancais do comando final conforme OEM antes de decidir substituição do conjunto.",
@@ -7520,7 +7520,7 @@
     {
       "id": "INC098",
       "modelId": "EQ03",
-      "category": "progressiva",
+      "category": "hidraulica",
       "title": "395 — desgaste de bomba após restrição hidráulica persistente",
       "operator": "Após tratamento atrasado de um filtro hidráulico da CAT 395, o circuito continua lento e aquecido no mesmo equipamento. No enredo, a pressão diferencial voltou ao normal, mas o desempenho permaneceu insatisfatório.",
       "verification": "Com os implementos seguros e o circuito isolado, revisar qualidade do óleo e alimentação da bomba. Executar testes de pressão, vazão e eficiência conforme OEM; diferenciar desgaste de bomba de fugas no implemento ou falhas do comando antes de substituição.",
@@ -7574,7 +7574,7 @@
     {
       "id": "INC099",
       "modelId": "EQ06",
-      "category": "progressiva",
+      "category": "perfuracao",
       "title": "DI650i — compressor com eficiência reduzida após restrição",
       "operator": "Após a correção tardia do filtro de admissão na DI650i, a pressão de ar permanece insuficiente no mesmo equipamento. O histórico narrativo indica operação prolongada com restrição, porém a condição interna do compressor não está comprovada.",
       "verification": "Confirmar configuração Sandvik e repetir ensaios de pressão, temperatura e comando de carga. Com energia pneumática isolada, diferenciar fuga, leitura defeituosa e perda efetiva de rendimento antes de substituir o compressor.",
@@ -7628,7 +7628,7 @@
     {
       "id": "INC100",
       "modelId": "EQ09",
-      "category": "progressiva",
+      "category": "rodante",
       "title": "CAT 16 — pneu com desgaste irreversível após desalinhamento",
       "operator": "Após corrigir tardiamente um desalinhamento no conjunto tandem da CAT 16, o pneu da posição 4 no mesmo equipamento mantém desgaste direcional acentuado. A geometria corrigida não recupera borracha já consumida.",
       "verification": "Medir profundidade e padrão de desgaste, confirmar pressão e especificação do pneu e verificar geometria depois do reparo. Encaminhar para decisão de manutenção/descarte conforme limites da aplicação e procedimentos para pneus OTR.",
