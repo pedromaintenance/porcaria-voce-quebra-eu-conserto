@@ -29,7 +29,7 @@ O original `bia-field-4poses.webp` permanece **intacto**. Os quadros inferiores 
 
 Geramos `bia-field-repaired-4poses.webp` com `python scripts/repair-bia-field-atlas.py`, recuperando exclusivamente a área superior dos capacetes com pixels dos quadros originais 0 e 1, alinhados a partir dos contornos existentes. **Nenhuma nova arte foi gerada**. Quadros 0/1 iguais ao original em RGBA; 2/3 têm apenas o capacete reconstruído, com suavização de borda; ordem 2×2, 580×622 px por frame, canal alfa e animação de 3 segundos preservados. O novo arquivo é um WebP **lossless** de 1160×1244 px para evitar nova degradação.
 
-SHA-256: `0df565e155bea199facfd3c6a0032c2afba59ad9d057c282cff877c538` (786602 bytes). A aba **Ofertas** usa a cópia corrigida, enquanto a versão original é backup. A caminhada field[2] continua excluída do ciclo de animação.
+SHA-256: `0df565e155bea199facfd3c6a0032c2afba7cfcba59ad9d057c282cff877c538` (786602 bytes). A aba **Ofertas** usa a cópia corrigida, enquanto a versão original é backup. A caminhada field[2] continua excluída do ciclo de animação.
 
 ## Uso futuro no Phaser
 
