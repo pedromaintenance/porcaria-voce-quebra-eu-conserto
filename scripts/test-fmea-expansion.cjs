@@ -11,7 +11,7 @@ const expected={
   INC044:['EQ08',null],INC045:['EQ02','PB-SHOVEL-COOL-01']
 };
 assert.equal(D.scenarios.length,55);
-assert.equal(new Set(D.scenarios.map(s=>s.id)).size,45,'IDs únicos');
+assert.equal(new Set(D.scenarios.map(s=>s.id)).size,55,'IDs únicos');
 const locs=new Set(D.paths.map(p=>[p.modelId,p.system,p.group,p.subgroup].join('|')));
 const modelIds=new Set(D.models.map(m=>m.id));
 for(const [id,[model,source]] of Object.entries(expected)){
