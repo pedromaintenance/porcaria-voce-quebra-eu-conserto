@@ -15,8 +15,8 @@ const expected={
  INC084:['EQ05',null,'Motor, Hidráulico'],
  INC085:['EQ05',null,'Rolamento']
 };
-assert.equal(D.scenarios.length,95,'75 anteriores + 10 perfuratrizes + 10 rodante');
-assert.equal(new Set(D.scenarios.map(s=>s.id)).size,95,'IDs únicos');
+assert.equal(D.scenarios.length,100,'75 anteriores + 10 perfuratrizes + 10 rodante + 5 progressivas');
+assert.equal(new Set(D.scenarios.map(s=>s.id)).size,100,'IDs únicos');
 assert.deepEqual(D.scenarios.slice(0,75).map(x=>x.id),Array.from({length:75},(_,i)=>'INC'+String(i+1).padStart(3,'0')),'missões anteriores preservadas');
 assert.equal(D.paths.length,387,'382 caminhos anteriores + dois de perfuratrizes + três de rodante');
 const added=D.paths.filter(p=>p.origin==='trilha_didatica_simulada'&&p.modelId==='EQ06'&&p.system==='AISY'&&p.group==='COMR'&&['INFL','HSVV'].includes(p.subgroup));
@@ -73,4 +73,4 @@ for(const c of [di,dr]){
  assert.equal(sample.jobs.length,3);
  assert.ok(sample.jobs.every(j=>j.scene===c.id),'missão entra no sorteio '+c.id);
 }
-console.log('OK: sessão 5, 10 missões perfuratriz/pneumática; 95 cenários, 6x4 classificações, estoque, segurança e proveniência.');
+console.log('OK: sessão 5, 10 missões perfuratriz/pneumática; 100 cenários, 6x4 classificações, estoque, segurança e proveniência.');
