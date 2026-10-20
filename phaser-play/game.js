@@ -5,6 +5,7 @@ const $=id=>document.getElementById(id);
 const E=window.PORCARIA_ENGINE;
 const I=window.PORCARIA_INSPECTION;
 const IV=window.PORCARIA_INSPECTION_VIEW;
+const S=window.PORCARIA_SECTORS;
 const T=window.PORCARIA_EVIDENCE;
 const M=window.PORCARIA_MONITORING;
 const STAGES=['Sistema','Grupo','Subgrupo','Componente','Dano','Causa'];
@@ -138,7 +139,8 @@ function updateSceneStatus(){
  status.textContent=label;
 }
 
-const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO', 'full-detail':'🔧 DETALHES COMPLETOS DA OS',stats:'📊 INDICADORES E RECURSOS',planning:'🗓️ PLANEJAMENTO PCM',shift:'📋 BRIEFING DE TURNO',team:'👷 EQUIPE DA OFICINA',training:'📚 SETOR DE TREINAMENTOS',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA',management:'📋 GESTÃO DA OFICINA',inspection:'🔎 INSPEÇÕES E NOTIFICAÇÕES'};
+let monitorCategory='overview';
+const PANEL_TITLES={queue:'📻 FILA DE ORDENS DE SERVIÇO',detail:'🔧 ORDEM DE SERVIÇO', 'full-detail':'🔧 DETALHES COMPLETOS DA OS',stats:'📊 INDICADORES E RECURSOS',planning:'🗓️ PLANEJAMENTO PCM',shift:'📋 BRIEFING DE TURNO',team:'👷 EQUIPE DA OFICINA',training:'📚 SETOR DE TREINAMENTOS',store:'📦 ALMOXARIFADO E FERRAMENTAL',help:'❔ CONTROLES DA OFICINA',management:'📋 GESTÃO DA OFICINA',inspection:'🔎 INSPEÇÕES DE CAMPO',monitoring:'📈 SALA DE CONTROLE · MONITORAMENTO'};
 function closeSceneMenu(){
  const menu=$('sceneMenu'),trigger=$('sceneMenuBtn');
  if(menu)menu.hidden=true;
@@ -150,8 +152,9 @@ function openPanel(name){
  const overlay=$('menuOverlay');if(!overlay)return;
  if(name==='shift')drawShiftBrief();
  if(name==='planning')drawPlanning();
+ if(name==='monitoring')drawMonitoring();
  if(name==='training')drawTraining();
- if(name==='inspection'){I.plan(state,data);save();drawInspection();}
+ if(name==='inspection')drawInspection();
  if(scene?.input)scene.input.enabled=false;
  closeSceneMenu();
  overlay.hidden=false;
@@ -235,7 +238,7 @@ function drawShiftBrief(){
    +metric('Aptas ao reparo',report.counts.repair)
    +metric('Bloqueios',report.counts.blocked,report.counts.blocked?'critical':'')
    +'</div>';
- if(monitoring.active||monitoring.due||monitoring.attention)out+='<div class="shiftReadinessSummary"><strong>📈 MONITORAMENTO POR CONDIÇÃO</strong><span>'+monitoring.active+' ativo(s) · '+monitoring.due+' recoleta(s) vencida(s) · '+monitoring.attention+' agravamento(s) para decisão</span><button class="act secondary" data-open-panel="inspection">ABRIR CARTEIRA DE MONITORAMENTO</button></div>';
+ if(monitoring.active||monitoring.due||monitoring.attention)out+='<div class="shiftReadinessSummary"><strong>📈 MONITORAMENTO POR CONDIÇÃO</strong><span>'+monitoring.active+' ativo(s) · '+monitoring.due+' recoleta(s) vencida(s) · '+monitoring.attention+' agravamento(s) para decisão</span><button class="act secondary" data-open-panel="monitoring">ABRIR CARTEIRA DE MONITORAMENTO</button></div>';
  out+='<div class="shiftReadinessSummary"><strong>PRONTIDÃO DA EQUIPE</strong>'
    +'<span>'+ready.metrics.boxLimitedHH+' HH úteis nominais pelo limite de boxes · '+ready.metrics.atRisk+' profissional(is) em atenção · '+ready.metrics.criticalCrew+' em condição crítica de jogo</span>'
    +'<button class="act secondary" data-open-panel="management">VER PRONTIDÃO</button></div>';
@@ -345,6 +348,7 @@ function drawWeekly(){
  $('planning').innerHTML=out;
 }
 function drawPlanning(){
+ if($('planningNotifications'))$('planningNotifications').innerHTML=S.planning(state,data,I,E,IV);
  if(planningHorizon==='week'){drawWeekly();return}
  const plan=window.PORCARIA_PLANNING.compute(state,data);
  const metric=(title,value)=>'<div class="planningMetric"><small>'+esc(title)+'</small><strong>'+esc(value)+'</strong></div>';
@@ -404,7 +408,8 @@ function drawBays(){
   return `<div class="bayBadge ${st.css}" style="${style}"><b>BOX ${i+1}</b><span>${j?esc(E.model(data,j.modelId)?.title)+' · '+esc(j.id):'Disponível'}</span><b>${st.label}</b></div>`;
  }).join('');
 }
-function drawInspection(){if($('inspectionPanel'))$('inspectionPanel').innerHTML=IV.render(state,data,I,E,T,M)}
+function drawInspection(){if($('inspectionPanel'))$('inspectionPanel').innerHTML=S.inspections(state,data,I,E)}
+function drawMonitoring(){if($('monitoringPanel'))$('monitoringPanel').innerHTML=S.monitoring(state,data,M,IV,I,E,monitorCategory)}
 function renderQueue(){
  $('queue').innerHTML=[...state.jobs].filter(j=>{
  const m=E.model(data,j.modelId),q=FILTER.query.toLowerCase();
@@ -483,6 +488,8 @@ function drawUI(){
  const k=E.kpis(state);
  drawManagement(k);
  if(document.querySelector('[data-panel="inspection"].is-open'))drawInspection();
+ if(document.querySelector('[data-panel="monitoring"].is-open'))drawMonitoring();
+ if(document.querySelector('[data-panel="planning"].is-open'))drawPlanning();
  $('day').textContent='DIA '+state.day+' · '+(state.shift?'🌙 NOITE · B':'☀ DIA · A');
  $('cash').textContent='R$ '+brl(state.cash);$('team').textContent=state.team.length;
  $('backlog').textContent=k.backlog;$('energy').textContent=Math.round(state.player.mental)+'/100';
@@ -729,6 +736,12 @@ function events(){
    notify('Resultado didático registrado na notificação: '+result.notification.id+'.');
    return;
   }
+  const monitorCategoryButton=ev.target.closest('[data-monitor-category]');
+  if(monitorCategoryButton){
+   monitorCategory=monitorCategoryButton.dataset.monitorCategory;
+   drawMonitoring();
+   return;
+  }
   const monitorStart=ev.target.closest('[data-monitor-start]');
   if(monitorStart){
    const result=M.open(state,data,I,monitorStart.dataset.monitorStart);
@@ -757,12 +770,16 @@ function events(){
   const inspectionAction=ev.target.closest('[data-inspection-action]');
   if(inspectionAction){
    const id=inspectionAction.dataset.inspectionId,kind=inspectionAction.dataset.inspectionAction;
-   const result=kind==='inspect'?I.inspect(state,data,id):
+   const result=kind==='schedule'?I.schedule(state,data,$('fieldAsset')?.value,$('fieldInspector')?.value):
+    kind==='inspect'?I.inspectAndRoute(state,data,id):
     kind==='notify'?I.notify(state,id,null,$('inspection-priority-'+id)?.value):{error:'Ação inválida.'};
    if(result.error){notify(result.error);return}
    save();drawUI();
-   notify(kind==='inspect'?(result.status==='clear'?'Inspeção encerrada: sem indício aparente.':'Indício observado. Registre uma notificação se necessário.'):
-      'Notificação '+result.notification.id+' criada para revisão PCM. Nenhuma OS foi aberta.');
+   if(kind==='schedule')notify('Inspeção '+result.inspection.id+' programada para '+result.inspection.asset+'.');
+   else if(result.notification){
+    notify('Nota '+result.notification.id+' encaminhada ao Planejamento PCM.');
+    openPanel('planning');
+   }else notify('Inspeção concluída: equipamento sem anormalidade registrada.');
    return;
   }
   const pcmBuy=ev.target.closest('[data-pcm-buy]');
@@ -1374,7 +1391,7 @@ async function boot(){
    I.normalized(state); // saves antigos recebem uma carteira vazia.
   state.productivityTarget=E.productivityProfile(state.productivityTarget).target;
   selected=state.jobs[0]?.id;events();drawUI();
-  if(!I||!IV||!T||!M||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
+  if(!I||!IV||!S||!T||!M||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
   if(!window.PORCARIA_RENDER_QUALITY)throw Error('Configuração de nitidez indisponível.');
   renderProfile=window.PORCARIA_RENDER_QUALITY.profile({
    viewportWidth:window.innerWidth,devicePixelRatio:window.devicePixelRatio,
