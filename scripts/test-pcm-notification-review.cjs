@@ -97,6 +97,7 @@ const saveLegacy=E.create(data,()=>.5);
 I.normalized(saveLegacy);assert.equal(I.summary(saveLegacy).approved,0,'compatível com saves anteriores');
 const noteMarkup=JSON.parse(JSON.stringify(note));
 noteMarkup.description='<script>alert("XSS")</script> falha reportada com texto perigoso';
+noteMarkup.reportedIndication=noteMarkup.description;
 const cloned=JSON.parse(JSON.stringify(s));cloned.notifications=[noteMarkup];
 const unsafe=V.render(cloned,data,I);
 assert.ok(!unsafe.includes('<script>')&&unsafe.includes('&lt;script&gt;'),'descrições sempre escapadas');
