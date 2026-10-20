@@ -5,6 +5,7 @@ const $=id=>document.getElementById(id);
 const E=window.PORCARIA_ENGINE;
 const I=window.PORCARIA_INSPECTION;
 const IV=window.PORCARIA_INSPECTION_VIEW;
+const T=window.PORCARIA_EVIDENCE;
 const STAGES=['Sistema','Grupo','Subgrupo','Componente','Dano','Causa'];
 const SAVE='porcaria.phaser.prototype.v01';
 const ASSETS={
@@ -400,7 +401,7 @@ function drawBays(){
   return `<div class="bayBadge ${st.css}" style="${style}"><b>BOX ${i+1}</b><span>${j?esc(E.model(data,j.modelId)?.title)+' · '+esc(j.id):'Disponível'}</span><b>${st.label}</b></div>`;
  }).join('');
 }
-function drawInspection(){if($('inspectionPanel'))$('inspectionPanel').innerHTML=IV.render(state,data,I,E)}
+function drawInspection(){if($('inspectionPanel'))$('inspectionPanel').innerHTML=IV.render(state,data,I,E,T)}
 function renderQueue(){
  $('queue').innerHTML=[...state.jobs].filter(j=>{
  const m=E.model(data,j.modelId),q=FILTER.query.toLowerCase();
@@ -708,6 +709,22 @@ function events(){
    if(submenu.dataset.openPanel==='detail'){orderReturnPanel='workshop';quickFeedback=null}
    if(submenu.dataset.openPanel==='queue')preferredBay=null;
    openPanel(submenu.dataset.openPanel);return;
+  }
+  const evidencePractice=ev.target.closest('[data-evidence-practice]');
+  if(evidencePractice){
+   const result=T.practice(state,data,I,evidencePractice.dataset.evidencePractice);
+   if(result.error){notify(result.error);return}
+   save();drawUI();
+   notify('Treino simulado criado: '+result.notification.id+'. Escolha um teste para investigar antes de planejar.');
+   return;
+  }
+  const evidenceTest=ev.target.closest('[data-evidence-test]');
+  if(evidenceTest){
+   const result=T.run(state,data,I,evidenceTest.dataset.notificationId,evidenceTest.dataset.evidenceTest);
+   if(result.error){notify(result.error);return}
+   save();drawUI();
+   notify('Resultado didático registrado na notificação: '+result.notification.id+'.');
+   return;
   }
   const inspectionAction=ev.target.closest('[data-inspection-action]');
   if(inspectionAction){
@@ -1329,7 +1346,7 @@ async function boot(){
    I.normalized(state); // saves antigos recebem uma carteira vazia.
   state.productivityTarget=E.productivityProfile(state.productivityTarget).target;
   selected=state.jobs[0]?.id;events();drawUI();
-  if(!I||!IV||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
+  if(!I||!IV||!T||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
   if(!window.PORCARIA_RENDER_QUALITY)throw Error('Configuração de nitidez indisponível.');
   renderProfile=window.PORCARIA_RENDER_QUALITY.profile({
    viewportWidth:window.innerWidth,devicePixelRatio:window.devicePixelRatio,
