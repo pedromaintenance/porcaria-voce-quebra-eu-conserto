@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Inspeciona os limites alfa dos quatro quadros de cada atlas da Bia."""
-from PIL import Image, ImageDraw\nfrom io import BytesIO\nimport base64
+from PIL import Image, ImageDraw
+from io import BytesIO
+import base64
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent.parent
