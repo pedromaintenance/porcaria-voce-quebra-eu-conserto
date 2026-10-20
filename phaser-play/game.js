@@ -225,6 +225,7 @@ function jobBlockers(j){
 function drawShiftBrief(){
  const report=window.PORCARIA_SHIFT_BRIEF.compute(state,data);
  const ready=window.PORCARIA_READINESS.compute(state,data);
+ const monitoring=M.summary(state);
  const metric=(title,value,tone)=>'<div class="shiftMetric '+(tone||'')+'"><small>'+esc(title)+'</small><strong>'+esc(value)+'</strong></div>';
  let out='<p class="shiftBriefIntro">DIA '+report.day+' · TURNO '+report.shift+' → '+report.nextShift
    +' · Janela de 12 horas (10,5 HH úteis/mecânico). Revise bloqueios antes de comprometer a próxima escala.</p>';
@@ -234,6 +235,7 @@ function drawShiftBrief(){
    +metric('Aptas ao reparo',report.counts.repair)
    +metric('Bloqueios',report.counts.blocked,report.counts.blocked?'critical':'')
    +'</div>';
+ if(monitoring.active||monitoring.due||monitoring.attention)out+='<div class="shiftReadinessSummary"><strong>📈 MONITORAMENTO POR CONDIÇÃO</strong><span>'+monitoring.active+' ativo(s) · '+monitoring.due+' recoleta(s) vencida(s) · '+monitoring.attention+' agravamento(s) para decisão</span><button class="act secondary" data-open-panel="inspection">ABRIR CARTEIRA DE MONITORAMENTO</button></div>';
  out+='<div class="shiftReadinessSummary"><strong>PRONTIDÃO DA EQUIPE</strong>'
    +'<span>'+ready.metrics.boxLimitedHH+' HH úteis nominais pelo limite de boxes · '+ready.metrics.atRisk+' profissional(is) em atenção · '+ready.metrics.criticalCrew+' em condição crítica de jogo</span>'
    +'<button class="act secondary" data-open-panel="management">VER PRONTIDÃO</button></div>';
