@@ -44,6 +44,24 @@ for(const atlas of manifest.atlases){
  });
 }
 assert.equal(count,16,'16 quadros acessíveis por metadado');
+// Derivado do MESMO atlas field: corrige o topo do capacete sem apagar o original.
+const repaired=manifest.derivedAtlases?.find(x=>x.id==='field-repaired');
+assert.ok(repaired,'sprite sheet corrigido registrado no manifesto');
+assert.equal(repaired.sourceAtlas,'bia-field-4poses.webp');
+assert.equal(repaired.file,'bia-field-repaired-4poses.webp');
+assert.deepEqual(repaired.dimensions,{width:1160,height:1244,frameWidth:580,frameHeight:622});
+const repairedBytes=fs.readFileSync(path.join(base,repaired.file));
+assert.equal(repairedBytes.length,786602);
+assert.equal(crypto.createHash('sha256').update(repairedBytes).digest('hex'),'0df565e155bea199facfd3c6a0032c2afba59ad9d057c282cff877c538');
+assert.equal(repaired.sha256,'0df565e155bea199facfd3c6a0032c2afba59ad9d057c282cff877c538');
+assert.equal(repairedBytes.toString('ascii',0,4),'RIFF');
+assert.equal(repairedBytes.toString('ascii',8,12),'WEBP');
+assert.equal(1+repairedBytes[24]+(repairedBytes[25]<<8)+(repairedBytes[26]<<16),1160);
+assert.equal(1+repairedBytes[27]+(repairedBytes[28]<<8)+(repairedBytes[29]<<16),1244);
+assert.ok((repairedBytes[20]&0x10)!==0,'alpha corrigido preservado');
+const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
+assert.ok(sw.includes('./phaser-play/assets/characters/bia/bia-field-repaired-4poses.webp'),'PWA guarda sprite corrigido');
+
 const preview=fs.readFileSync(path.join(base,'index.html'),'utf8');
 const design=fs.readFileSync(path.join(root,'phaser-play','TRAINING_DESIGN.md'),'utf8');
 const game=fs.readFileSync(path.join(root,'phaser-play','game.js'),'utf8');

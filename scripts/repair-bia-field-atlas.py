@@ -6,8 +6,6 @@ Não altera as dimensões, pose, ordem nem atlas originais.
 """
 from pathlib import Path
 from PIL import Image, ImageChops, ImageStat
-from io import BytesIO
-import base64
 import hashlib
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -65,18 +63,5 @@ def main():
     assert all(out.crop((i%2*WIDTH,i//2*HEIGHT,(i%2+1)*WIDTH,(i//2+1)*HEIGHT)).size==(WIDTH,HEIGHT) for i in range(4))
     for i in (0,1):
         assert frames[i].tobytes()==sheet.crop((i%2*WIDTH,0,(i%2+1)*WIDTH,HEIGHT)).tobytes()
-    # Compare antes/depois, sem checkerboard nem reescala da arte salva.
-    original3=sheet.crop((580,622,1160,1244))
-    repaired3=out.crop((580,622,1160,1244))
-    contact=Image.new("RGB",(600,345),(240,232,209))
-    for col,img in enumerate((original3,repaired3)):
-        thumb=img.resize((300,322),Image.Resampling.LANCZOS)
-        contact.paste(thumb,(col*300,20),thumb)
-    from PIL import ImageDraw
-    draw=ImageDraw.Draw(contact)
-    draw.text((7,3),"ORIGINAL",fill=(20,20,20))
-    draw.text((315,3),"CAPACETE RESTAURADO",fill=(20,20,20))
-    buf=BytesIO();contact.save(buf,format="JPEG",quality=76,optimize=True)
-    print("BIA_REPAIRED_PREVIEW_JPEG_B64="+base64.b64encode(buf.getvalue()).decode("ascii"))
 if __name__=="__main__":
     main()

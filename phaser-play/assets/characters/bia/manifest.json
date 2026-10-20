@@ -161,5 +161,22 @@
         }
       ]
     }
+  ],
+  "derivedAtlases": [
+    {
+      "id": "field-repaired",
+      "sourceAtlas": "bia-field-4poses.webp",
+      "file": "bia-field-repaired-4poses.webp",
+      "bytes": 786602,
+      "sha256": "0df565e155bea199facfd3c6a0032c2afba59ad9d057c282cff877c538",
+      "dimensions": {
+        "width": 1160,
+        "height": 1244,
+        "frameWidth": 580,
+        "frameHeight": 622
+      },
+      "correction": "Recovered clipped upper helmet in frames 2 and 3 from upper frames of the same original atlas. Frames 0 and 1 pixel-identical. Lossless WebP RGBA. No AI redraw.",
+      "generator": "scripts/repair-bia-field-atlas.py"
+    }
   ]
 }
