@@ -2,10 +2,24 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 21/10/2026 · **v0.9.10 — 24 missões FMEA FPS e fluxo PCM–OS, 124 missões no total; QA visual e homologação OEM/SAP pendentes.**
+**Estado de referência:** 21/10/2026 · **v0.9.11 — Decisões PCM: comparação de compras, esperas, registro de ETA e custo de oportunidade virtual; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.9.11 — Decisões PCM e impacto econômico/operacional (21/10/2026)
+
+- [x] Criar `phaser-play/decision-impact.js`: módulo puro de consulta e comparação de decisões, com custos de oportunidade **fictícios** separados do caixa da campanha.
+- [x] Persistir `purchaseHistory[]` para pedidos normais e urgentes (desembolso, prazo, demanda conhecida, estoque no pedido e recebimento), mantendo `orders[]` como pedidos ainda em trânsito.
+- [x] Rastrear por OS `exposureShifts`, `materialWaitShifts`, `toolWaitShifts` e `diagnosisQueueShifts`. Os contadores de causa podem se sobrepor; não somá-los como horas adicionais de parada.
+- [x] Mostrar no Planejamento horas de OS abertas, espera por material/ferramenta, retrabalho, desembolso das compras e cenário de custo de oportunidade (prioridade 1/2/3: R$ 35/75/150 por hora virtual).
+- [x] Para OS com diagnóstico completo e falta de peça, comparar **normal** versus **urgente** com preços reais da economia do jogo: preço normal `round(unit)`, urgente `round(1,65 × unit)`, lead normal `2×lead` e urgente `max(1, ceil(lead/2))`, mais eventual atraso de um turno com chance simulada de 18%.
+- [x] Preservar recibo de pedidos ao fim do turno: ETA não significa peça disponível durante o turno da chegada. A compra continua ação consciente do jogador no Almoxarifado, sem pedido automático.
+- [x] Não antecipar material ou causa real de OS antes do estágio de diagnóstico concluído; compras erradas ou estratégicas continuam possíveis, sem atribuição automática de culpa.
+- [x] Adicionar testes determinísticos de caixa, estoque, tempo de parada, recompra, alternativa de compra, histórico e compatibilidade com saves antigos.
+- [ ] QA visual em telas estreitas, calibração de custos fictícios de oportunidade e teste de partidas longas com backlog de 32 OS.
+
+**Documentação:** [PCM — Impacto de decisão v8](../docs/PCM_IMPACTO_DECISOES_V8.md).
 
 ## Entrega 0.9.10 — Missões FMEA de FPS, ciclo 7 (21/10/2026)
 

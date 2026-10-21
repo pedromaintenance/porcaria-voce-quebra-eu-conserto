@@ -42,7 +42,7 @@ const html=fs.readFileSync(path.join(root,'phaser-play/index.html'),'utf8');
 const game=fs.readFileSync(path.join(root,'phaser-play/game.js'),'utf8');
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
 assert.ok(html.includes('training-view.js?v=0.8.30'));
-assert.ok(html.includes('game.js?v=0.9.4'));
+assert.ok(html.includes('game.js?v=0.9.11'));
 assert.ok(html.includes('.trainingWorkspace{display:grid;grid-template-columns:'));
 assert.ok(html.includes('.trainingBiaPortrait{display:block;width:min(232px,100%);height:auto;aspect-ratio:580/622'),'retrato proporcional em telas estreitas');
 assert.ok(html.includes('.trainingBiaStage{position:relative;display:flex;align-items:end;justify-content:center;width:100%;height:286px;isolation:isolate;overflow:visible}'),'palco não recorta poses');

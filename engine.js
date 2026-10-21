@@ -264,7 +264,7 @@
   function create(data,rng=Math.random){
     const s={version:'1.1.0',day:1,shift:0,tick:0,cash:15800,reputation:86,xp:0,productivityTarget:DEFAULT_PRODUCTIVITY_TARGET,
       player:{mental:86,physical:84},
-      team:[],jobs:[],done:[],orders:[],stock:{},tools:{},nextJob:1,nextPerson:1,nextPO:1,
+      team:[],jobs:[],done:[],orders:[],purchaseHistory:[],stock:{},tools:{},nextJob:1,nextPerson:1,nextPO:1,
       logs:[],kpi:[],lastUtilization:0,metrics:{hours:0,productive:0,wages:0,outsourced:0,incidents:0,safety:0},
       bays:3,closed:false};
     for(const [id,v] of Object.entries(data.items))s.stock[id]=v.initial;
@@ -284,7 +284,7 @@
       repairTarget:c.hours,repairRemaining:c.hours,
       options:options(d,c,Math.floor(rnd(rng)*2**30)),wrong:0,rework:false,
       materialUsed:false,worked:0,toolWait:0,blockedShifts:0,notes:[],scheduleShift:null,
-      costLabor:0,reworkHours:0,idleShifts:0};
+      costLabor:0,reworkHours:0,idleShifts:0,exposureShifts:0,materialWaitShifts:0,toolWaitShifts:0,diagnosisQueueShifts:0};
   }
   function spawn(s,d,n,rng=Math.random){
     let made=0;
@@ -421,6 +421,13 @@
     const lead=fast?Math.max(1,Math.ceil(it.lead/2)):it.lead*2;
     const delay= rnd(rng)<0.18?1:0;
     const po={id:`PC${String(s.nextPO++).padStart(3,'0')}`,item:id,qty,paid:cost,eta:s.tick+lead+delay,fast};s.orders.push(po);
+    // Rastreabilidade de compras: separada do pedido ativo, pois pedidos recebidos saem da lista.
+    // Não implica que o material comprado estava correto; estoque estratégico também é legítimo.
+    if(!Array.isArray(s.purchaseHistory))s.purchaseHistory=[];
+    const demandAtPurchase=s.jobs.filter(j=>j.stage>=6&&!j.materialUsed&&scenario(d,j.scene)?.material===id).length;
+    s.purchaseHistory.push({id:po.id,item:id,qty,paid:cost,orderedTick:s.tick,eta:po.eta,
+      receivedTick:null,fast,stockAtPurchase:s.stock[id]||0,demandAtPurchase});
+    s.purchaseHistory=s.purchaseHistory.slice(-200);
     msg(s,`Pedido ${po.id}: ${qty} × ${it.name}; previsão turno +${lead+delay} (${fast?'urgente':'normal'}).`,'info');return null;
   }
   function motivate(s,id){const m=employee(s,id);if(!m)return 'Mecânico inexistente.';
@@ -516,6 +523,16 @@
     const pressure=productivityProfile(s.productivityTarget);
     const availableCrew=s.team.filter(m=>m.restAt!==s.tick&&!TRAINING.active(s,m)).length;
     const operating=[...s.jobs];
+    // Todo ativo com OS ativa acumula indisponibilidade virtual por turno, incluindo o turno de conclusão.
+    // Esperas por material e ferramenta podem coincidir: são dimensões explicativas, NÃO somáveis.
+    for(const j of operating){
+      j.exposureShifts=(j.exposureShifts||0)+1;
+      const sc=scenario(d,j.scene);
+      if(j.stage>=6&&!j.materialUsed&&sc&&!(s.stock[sc.material]>0))
+        j.materialWaitShifts=(j.materialWaitShifts||0)+1;
+      if(sc&&!s.tools[sc.tool])j.toolWaitShifts=(j.toolWaitShifts||0)+1;
+      if(j.stage<6&&!j.assigned)j.diagnosisQueueShifts=(j.diagnosisQueueShifts||0)+1;
+    }
     // Contabiliza somente turnos sem alocação antes do diagnóstico (inclusive saves legados).
     for(const j of operating)if(!j.assigned&&j.stage===0)j.idleShifts=(j.idleShifts||0)+1;
     for(const j of operating){
@@ -591,7 +608,12 @@
     s.lastUtilization=nominalHH?Math.min(100,Math.round(hours/nominalHH*100)):0;
     s.tick++;
     const received=s.orders.filter(o=>o.eta<=s.tick);
-    for(const o of received){s.stock[o.item]=(s.stock[o.item]||0)+o.qty;msg(s,`Pedido ${o.id} recebido: ${o.qty} × ${d.items[o.item].name}.`,'ok')}
+    for(const o of received){
+      s.stock[o.item]=(s.stock[o.item]||0)+o.qty;
+      const history=(s.purchaseHistory||[]).find(p=>p.id===o.id);
+      if(history){history.receivedTick=s.tick;}
+      msg(s,`Pedido ${o.id} recebido: ${o.qty} × ${d.items[o.item].name}.`,'ok');
+    }
     s.orders=s.orders.filter(o=>o.eta>s.tick);
     for(const j of s.jobs)if(j.tickOpen<s.tick)j.blockedShifts += (j.status==='material' || j.status==='ferramenta')?1:0;
     if(s.shift===0){s.shift=1;s.player.mental=clamp(s.player.mental+5);s.player.physical=clamp(s.player.physical+4);}

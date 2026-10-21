@@ -85,7 +85,7 @@ const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
 assert.ok(game.includes('const diagnosis=window.PORCARIA_DIAGNOSTIC.compute(state,data,j);'));
 assert.ok(game.includes('PORCARIA_DIAGNOSTIC_VIEW.render(diagnosis,j.id)'), 'diagnóstico completo usa mesmo cálculo do resumo');
 assert.ok(html.includes('diagnostic-board.js?v=0.8.8')&&html.includes('diagnostic-view.js?v=0.8.8'));
-assert.ok(html.includes('game.js?v=0.9.4'));
+assert.ok(html.includes('game.js?v=0.9.11'));
 assert.ok(html.includes('.diagnosticStep.current')&&html.includes('.diagnosticGroups'));
 assert.ok(sw.includes("'./phaser-play/diagnostic-board.js'"));
 assert.ok(sw.includes("'./phaser-play/diagnostic-view.js'"));
