@@ -2,6 +2,7 @@
  * Fontes OEM validam famílias e sinais observáveis; conteúdo das ocorrências é ficcional.
  * Sem Part Number, montagem, horas de vida útil, percentuais de desgaste ou limites fabricados.
  * FPS001..004 permanecem somente no mapa de compatibilidade para saves históricos.
+ * FPS005..028 ligados a INC101..INC124 como roteiros investigativos NÃO OEM-homologados.
  */
 (function(root,factory){
  const api=factory();
@@ -9,7 +10,7 @@
  if(root)root.PORCARIA_FPS_EXPANSION=api;
 })(typeof window!=='undefined'?window:globalThis,function(){
  'use strict';
- const VERSION='6.0.0';
+ const VERSION='7.0.0';
  const SOURCES=Object.freeze({
   "CAT_FPS_BR": "https://www.cat.com/pt_BR/products/new/parts/ground-engaging-tools.html",
   "CAT_FPS_MINING": "https://www.cat.com/pt_BR/by-industry/mining/equipment-management/wear-maintenance-parts/ground-engaging-tools.html",
@@ -569,7 +570,7 @@
     "modelId": "EQ02",
     "title": "Ponta de caçamba: Ponta central",
     "baseline": "Ponta central com desgaste abrasivo progressivo, ainda sem medição de material remanescente.",
-    "escalationScenario": null,
+    "escalationScenario": "INC101",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -583,7 +584,7 @@
     "modelId": "EQ02",
     "title": "Ponta de caçamba: Posição 2",
     "baseline": "Falta uma ponta da caçamba; há indício de exposição do nariz do adaptador.",
-    "escalationScenario": null,
+    "escalationScenario": "INC102",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -596,7 +597,7 @@
     "modelId": "EQ02",
     "title": "Retentor e trava: Posição 3",
     "baseline": "Retentor aparenta deslocamento e a ponta tem movimento anormal na fixação.",
-    "escalationScenario": null,
+    "escalationScenario": "INC103",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -609,7 +610,7 @@
     "modelId": "EQ02",
     "title": "Adaptador de ponta: desgaste na posição 1",
     "baseline": "Face inferior do adaptador apresenta perda de material após desgaste da ponta.",
-    "escalationScenario": null,
+    "escalationScenario": "INC104",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -623,7 +624,7 @@
     "modelId": "EQ02",
     "title": "Adaptador de ponta: possível trinca na posição 4",
     "baseline": "Suspeita de trinca na região do adaptador, junto à transição com a borda da caçamba.",
-    "escalationScenario": null,
+    "escalationScenario": "INC105",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -636,7 +637,7 @@
     "modelId": "EQ02",
     "title": "Protetor entre pontas: Centro da borda de ataque",
     "baseline": "Protetor entre dentes está muito desgastado, com aumento de exposição da borda principal.",
-    "escalationScenario": null,
+    "escalationScenario": "INC106",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -650,7 +651,7 @@
     "modelId": "EQ02",
     "title": "Protetor lateral: Lado direito da caçamba",
     "baseline": "Protetor da barra lateral apresenta desgaste desigual, deixando parte do flanco exposta.",
-    "escalationScenario": null,
+    "escalationScenario": "INC107",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -664,7 +665,7 @@
     "modelId": "EQ02",
     "title": "Borda de ataque: Trecho entre adaptadores",
     "baseline": "Desgaste por escavação na borda de ataque parece alcançar a região de apoio de proteção.",
-    "escalationScenario": null,
+    "escalationScenario": "INC108",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -678,7 +679,7 @@
     "modelId": "EQ02",
     "title": "Solda de adaptador: Canto esquerdo da borda",
     "baseline": "Uma linha semelhante a trinca foi vista na região de solda do adaptador da caçamba.",
-    "escalationScenario": null,
+    "escalationScenario": "INC109",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -691,7 +692,7 @@
     "modelId": "EQ02",
     "title": "Conjunto de pontas: Lados esquerdo e direito",
     "baseline": "As pontas da mesma caçamba exibem desgaste bastante desigual entre posições.",
-    "escalationScenario": null,
+    "escalationScenario": "INC110",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -705,7 +706,7 @@
     "modelId": "EQ02",
     "title": "Sistema de retenção: Posição 5",
     "baseline": "Pino de retenção aparenta dano mecânico; a ponta ainda está instalada.",
-    "escalationScenario": null,
+    "escalationScenario": "INC111",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -718,7 +719,7 @@
     "modelId": "EQ02",
     "title": "Revestimento de desgaste: Fundo interno próximo à borda",
     "baseline": "Placa interna de desgaste aparenta levantamento em uma extremidade e redução de cobertura.",
-    "escalationScenario": null,
+    "escalationScenario": "INC112",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -732,7 +733,7 @@
     "modelId": "EQ03",
     "title": "Ponta de caçamba: Posição central",
     "baseline": "Ponta central da escavadeira 395 apresenta desgaste abrasivo com perda de perfil de penetração.",
-    "escalationScenario": null,
+    "escalationScenario": "INC113",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -746,7 +747,7 @@
     "modelId": "EQ03",
     "title": "Ponta de caçamba: Posição 2, alojamento",
     "baseline": "Há indicação de fissura no alojamento de uma ponta, junto à área de encaixe no adaptador.",
-    "escalationScenario": null,
+    "escalationScenario": "INC114",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -759,7 +760,7 @@
     "modelId": "EQ03",
     "title": "Retentor de ponta: Posição 3",
     "baseline": "Retentor da ponta parece solto e há movimento do conjunto na caçamba da 395.",
-    "escalationScenario": null,
+    "escalationScenario": "INC115",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -772,7 +773,7 @@
     "modelId": "EQ03",
     "title": "Adaptador de ponta: Posição 1",
     "baseline": "Adaptador de ponta da 395 apresenta marcas de desgaste na região inferior de apoio.",
-    "escalationScenario": null,
+    "escalationScenario": "INC116",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -786,7 +787,7 @@
     "modelId": "EQ03",
     "title": "Protetor lateral: Lado esquerdo da caçamba",
     "baseline": "Uma proteção lateral de FPS está ausente e há desgaste novo na barra da caçamba.",
-    "escalationScenario": null,
+    "escalationScenario": "INC117",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -799,7 +800,7 @@
     "modelId": "EQ03",
     "title": "Placa de desgaste: Fundo interno da caçamba",
     "baseline": "Placa de desgaste do fundo interno apresenta afinamento localizado próximo à borda.",
-    "escalationScenario": null,
+    "escalationScenario": "INC118",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -813,7 +814,7 @@
     "modelId": "EQ03",
     "title": "Solda de adaptador: Canto direito da caçamba",
     "baseline": "Linha suspeita de trinca apareceu entre o adaptador lateral e a borda de ataque da 395.",
-    "escalationScenario": null,
+    "escalationScenario": "INC119",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -826,7 +827,7 @@
     "modelId": "EQ03",
     "title": "Seleção do perfil de ponta: Conjunto de caçamba",
     "baseline": "A produtividade caiu após a troca do perfil de pontas, mas o material escavado também mudou.",
-    "escalationScenario": null,
+    "escalationScenario": "INC120",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -840,7 +841,7 @@
     "modelId": "EQ08",
     "title": "Borda cortante da caçamba: Centro da borda",
     "baseline": "Borda de corte da carregadeira 966 apresenta desgaste assimétrico ao longo da largura.",
-    "escalationScenario": null,
+    "escalationScenario": "INC121",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -854,7 +855,7 @@
     "modelId": "EQ08",
     "title": "Ponta e retenção: Lado direito da caçamba",
     "baseline": "Uma ponta da 966 mostra folga perceptível no encaixe depois de turno de carregamento.",
-    "escalationScenario": null,
+    "escalationScenario": "INC122",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -867,7 +868,7 @@
     "modelId": "EQ07",
     "title": "Borda cortante da lâmina: Trecho central da lâmina D9",
     "baseline": "A borda cortante do D9 está com perfil muito desgastado e redução perceptível da capacidade de corte.",
-    "escalationScenario": null,
+    "escalationScenario": "INC123",
     "followupTool": null,
     "followupCost": 0,
     "results": [
@@ -881,7 +882,7 @@
     "modelId": "EQ07",
     "title": "Ponteira lateral da lâmina: Lado esquerdo do D9",
     "baseline": "Ponteira lateral da lâmina apresenta fixador ausente e marca de movimento na interface.",
-    "escalationScenario": null,
+    "escalationScenario": "INC124",
     "followupTool": null,
     "followupCost": 0,
     "results": [
