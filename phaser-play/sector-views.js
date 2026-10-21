@@ -131,6 +131,10 @@
       +'<small>'+esc(modelName(p.modelId))+' · '+esc(p.id)+(p.compartment?' · '+esc(p.compartment):'')+'</small>'
       +'<p>'+esc(p.baseline)+'</p>'
       +(p.indicators?.length?'<p><strong>Indicadores:</strong> '+esc(p.indicators.join(', '))+'</p>':'')
+      +(p.signalClass?'<p><strong>'+esc(p.signalClass==='evento'?'Evento operacional':'Diagnóstico eletrônico')+'</strong> · '
+       +esc(({ativo:'ATIVO',registrado:'REGISTRADO',nao_confirmado:'ESTADO NÃO CONFIRMADO'}[p.codeState]||'SEM ESTADO'))
+       +' · Código OEM: '+esc(p.codeVerified&&p.codeValue?p.codeValue:'NÃO INFORMADO')+'</p>':'')
+      +(p.moduleContext?'<small>'+esc(p.moduleContext)+'</small>':'')
       +(p.triage==='avaliacao_prioritaria'?'<small>AVALIAÇÃO PRIORITÁRIA</small>':'')
       +(p.triage==='revisar_baseline'?'<small>REVISAR LINHA DE BASE</small>':'')
       +'</article>').join('')+'</div></section>').join('')
