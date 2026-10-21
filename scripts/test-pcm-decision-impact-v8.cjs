@@ -89,8 +89,8 @@ assert.equal(E.orderMaterial(legacy.s,D,'FPTP',1,false,()=>.5),null);
 assert.equal(legacy.s.purchaseHistory.length,1);
 assert.equal(E.validate(JSON.parse(JSON.stringify(legacy.s))),true);
 const html=fs.readFileSync('phaser-play/index.html','utf8'),ui=fs.readFileSync('phaser-play/game.js','utf8'),sw=fs.readFileSync('sw.js','utf8');
-assert.ok(html.indexOf('decision-impact.js?v=0.9.11')<html.indexOf('game.js?v=0.9.11'));
-assert.ok(html.includes('engine.js?v=0.9.11'));
+assert.ok(html.indexOf('decision-impact.js?v=0.9.11')<html.indexOf('game.js?v=0.9.13'));
+assert.ok(html.includes('engine.js?v=0.9.13'));
 for(const t of ['PORCARIA_DECISION_IMPACT.compute','CUSTO DA DECISÃO','DECISÃO DE COMPRA','NORMAL','turnos sem peça']){/* limites: interface ainda em PT */ }
 assert.ok(ui.includes('PORCARIA_DECISION_IMPACT.compute'));
 assert.ok(ui.includes('CUSTO DA DECISÃO'));

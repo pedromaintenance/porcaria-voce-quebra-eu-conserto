@@ -60,6 +60,7 @@ const FILTER={queue:'all',query:'',store:'all',stockQuery:''};
 let toastTimeout;
 let planningHorizon='turn';
 let decisionHistoryFilter='all'; // Controle de visualização; não altera save.
+let lessonFilter='all',lessonSelectedOrderId=null; // Navegação temporária.
 let stockReturnJobId=null; // Contexto de navegação, não faz parte do save.
 let completedOrderId=null;
 let completedSearch=''; // Estado transitório de interface, nunca no save.
@@ -294,7 +295,8 @@ function planningTabs(){
  return '<div class="planningTabs" role="group" aria-label="Horizonte de planejamento">'
   +'<button type="button" data-planning-horizon="turn" class="'+(planningHorizon==='turn'?'selected':'')+'" aria-pressed="'+(planningHorizon==='turn')+'">PRÓXIMO TURNO · 12H</button>'
   +'<button type="button" data-planning-horizon="week" class="'+(planningHorizon==='week'?'selected':'')+'" aria-pressed="'+(planningHorizon==='week')+'">JANELA SEMANAL · 14 TURNOS</button>'
-  +'<button type="button" data-planning-horizon="history" class="'+(planningHorizon==='history'?'selected':'')+'" aria-pressed="'+(planningHorizon==='history')+'">HISTÓRICO DE DECISÕES</button></div>';
+  +'<button type="button" data-planning-horizon="history" class="'+(planningHorizon==='history'?'selected':'')+'" aria-pressed="'+(planningHorizon==='history')+'">HISTÓRICO DE DECISÕES</button>'
+  +'<button type="button" data-planning-horizon="lessons" class="'+(planningHorizon==='lessons'?'selected':'')+'" aria-pressed="'+(planningHorizon==='lessons')+'">LIÇÕES APRENDIDAS</button></div>';
 }
 function drawWeekly(){
  const w=window.PORCARIA_WEEKLY.calculate(state,data);
@@ -393,10 +395,71 @@ function drawDecisionHistory(){
  out+='<p class="planningExplanation">Compras e aprovações permanecem ações manuais. A linha do tempo não altera a campanha. A ausência de um evento antigo não indica que a ação nunca ocorreu.</p>';
  $('planning').innerHTML=out;
 }
+function drawLessons(){
+ const report=window.PORCARIA_LESSONS_LEARNED.compute(state,data,{filter:lessonFilter,limit:60});
+ const metric=(name,value)=>'<div class="planningMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong></div>';
+ let out=planningTabs()+'<p class="planningIntro">Lições aprendidas da oficina: sintomas, investigação, decisão, resultado e reflexão. Experiências do jogo não substituem validação OEM ou evidência de campo.</p>';
+ out+='<div class="planningMetrics">'
+  +metric('OS concluídas no histórico',report.total)
+  +metric('Lições registradas',report.withReflection)
+  +metric('Aguardando reflexão',report.withoutReflection)+'</div>';
+ out+='<div class="planningDecisionLedger"><h3>COMPROMISSO TÉCNICO</h3><p>'+esc(report.note)+'</p></div>';
+ const related=(state.jobs||[]).map(j=>({job:j,previous:window.PORCARIA_LESSONS_LEARNED.similarForActive(state,j)})).filter(x=>x.previous.count>0);
+ if(related.length){
+  out+='<h3 class="resourceSection">EXPERIÊNCIAS EM OS ATIVAS</h3><div class="decisionHistoryGrid">';
+  out+=related.slice(0,8).map(({job,previous})=>{
+   let text='<article class="planningOrder"><strong>'+esc(job.id)+' · '+esc(job.modelId)+'</strong>'
+    +'<p>'+previous.count+' caso(s) semelhante(s) concluído(s) nesta campanha.</p>';
+   if(!previous.unlocked)text+='<small>Reflexões liberadas após concluir o diagnóstico (6/6). Nenhum gabarito antecipado.</small>';
+   else if(!previous.reflections.length)text+='<small>Diagnóstico concluído. Ainda não existem reflexões escritas para casos semelhantes.</small>';
+   else text+=previous.reflections.map(r=>'<p><strong>'+esc(window.PORCARIA_LESSONS_LEARNED.TAGS[r.tag]||r.tag)+':</strong> '+esc(r.text)+'</p>').join('');
+   return text+'</article>';
+  }).join('')+'</div>';
+ }
+ out+='<h3 class="resourceSection">DOSSIÊS DE OS CONCLUÍDAS</h3><div class="decisionHistoryFilters">';
+ for(const [key,label] of [['all','TODOS'],['pending','SEM REFLEXÃO'],['reviewed','COM LIÇÃO']])
+  out+='<button type="button" class="act '+(lessonFilter===key?'':'secondary')+'" data-lesson-filter="'+key+'" aria-pressed="'+(lessonFilter===key)+'">'+label+'</button>';
+ out+='</div>';
+ if(!report.rows.length)out+='<p class="muted">Ainda não há OS concluídas neste filtro. Avance a campanha e conclua serviços para registrar aprendizagens.</p>';
+ else out+='<div class="decisionHistoryGrid">'+report.rows.map(j=>
+   '<button type="button" class="lessonCard" data-lesson-open="'+esc(j.orderId)+'">'
+   +'<strong>'+esc(j.orderId)+' · '+esc(j.modelId)+'</strong>'
+   +'<span>'+esc(j.caseTitle)+'</span>'
+   +'<small>'+j.downtimeHours+'h de OS · '+j.reworkHH+' HH retrabalho · '+j.plannerErrors+' divergência(s) PCM</small>'
+   +'<small>'+(j.reflection?'✓ Lição registrada · '+esc(window.PORCARIA_LESSONS_LEARNED.TAGS[j.reflection.tag]||j.reflection.tag):'Pendente de reflexão')+'</small></button>'
+  ).join('')+'</div>';
+ const selected=window.PORCARIA_LESSONS_LEARNED.compute(state,data,{filter:'all'}).rows.find(x=>x.orderId===lessonSelectedOrderId);
+ if(selected){
+  out+='<section class="lessonDossier"><h3>ANÁLISE PÓS-INTERVENÇÃO · '+esc(selected.orderId)+'</h3>'
+  +'<p><strong>Sintoma recebido:</strong> '+esc(selected.report)+'</p>'
+  +'<p><strong>Resultado observado:</strong> '+esc(selected.classification)+'</p>'
+  +'<p><strong>Indicadores:</strong> '+selected.downtimeHours+'h de OS · '+selected.laborHH+' HH trabalhadas · '+selected.reworkHH+' HH de retrabalho'
+    +' · espera material '+selected.materialWaitShifts+' turno(s) · ferramenta '+selected.toolWaitShifts+' turno(s)</p>'
+  +'<p><strong>Investigações registradas:</strong> '+selected.diagnosisCount.confirmed+' confirmações no gabarito do jogo · '
+   +selected.diagnosisCount.rejected+' hipóteses rejeitadas · '+selected.diagnosisCount.inconclusive+' inconclusivas · '
+   +selected.diagnosisCount.evidence+' inspeções complementares solicitadas</p>';
+  if(selected.route)out+='<p><strong>Hipótese didática de encerramento:</strong> '+esc(selected.route.component)+' · '+esc(selected.route.damage)
+   +' · '+esc(selected.route.cause)+'</p>'
+   +'<p><strong>Verificação prevista no roteiro:</strong> '+esc(selected.route.verification)+'</p>'
+   +'<small>Esta hipótese é o gabarito da missão, não a causa raiz confirmada por análise real.</small>';
+  out+='<div class="lessonEditor"><label for="lessonTag">Tema da aprendizagem</label>'
+   +'<select id="lessonTag">';
+  for(const [key,label] of Object.entries(window.PORCARIA_LESSONS_LEARNED.TAGS))
+   out+='<option value="'+key+'"'+((selected.reflection?.tag||'diagnostico')===key?' selected':'')+'>'+esc(label)+'</option>';
+  out+='</select><label for="lessonText">O que inspecionar, planejar ou conferir na próxima ocorrência?</label>'
+   +'<textarea id="lessonText" rows="4" maxlength="300" placeholder="Registre uma ação verificável, sem tratar hipótese como certeza.">'+esc(selected.reflection?.text||'')+'</textarea>'
+   +'<small>20 a 300 caracteres. Reflexão escrita pelo jogador e associada à OS concluída.</small>'
+   +'<div class="actions"><button type="button" class="act" data-lesson-save="'+esc(selected.orderId)+'">SALVAR LIÇÃO</button>'
+   +'<button type="button" class="act secondary" data-lesson-close>FECHAR DOSSIÊ</button></div></div></section>';
+ }
+ out+='<p class="planningExplanation">As reflexões não são transmitidas a sistemas SAP, não alteram automaticamente peças, OS, pontuação ou a equipe e não revelam o diagnóstico durante a investigação.</p>';
+ $('planning').innerHTML=out;
+}
 function drawPlanning(){
  if($('planningNotifications'))$('planningNotifications').innerHTML=S.planning(state,data,I,E,IV);
  if(planningHorizon==='week'){drawWeekly();return}
  if(planningHorizon==='history'){drawDecisionHistory();return}
+ if(planningHorizon==='lessons'){drawLessons();return}
  const plan=window.PORCARIA_PLANNING.compute(state,data);
  const impact=window.PORCARIA_DECISION_IMPACT.compute(state,data);
  const metric=(title,value)=>'<div class="planningMetric"><small>'+esc(title)+'</small><strong>'+esc(value)+'</strong></div>';
@@ -898,13 +961,29 @@ function events(){
   }
   const planHorizon=ev.target.closest('[data-planning-horizon]');
   if(planHorizon){
-   planningHorizon=['turn','week','history'].includes(planHorizon.dataset.planningHorizon)?planHorizon.dataset.planningHorizon:'turn';
+   planningHorizon=['turn','week','history','lessons'].includes(planHorizon.dataset.planningHorizon)?planHorizon.dataset.planningHorizon:'turn';
    drawPlanning();return;
   }
   const decisionFilter=ev.target.closest('[data-decision-filter]');
   if(decisionFilter){
    const next=decisionFilter.dataset.decisionFilter;
    if(['all','supply','pcm','execution'].includes(next)){decisionHistoryFilter=next;drawDecisionHistory()}
+   return;
+  }
+  const lessonFilterBtn=ev.target.closest('[data-lesson-filter]');
+  if(lessonFilterBtn){
+   if(['all','pending','reviewed'].includes(lessonFilterBtn.dataset.lessonFilter)){lessonFilter=lessonFilterBtn.dataset.lessonFilter;lessonSelectedOrderId=null;drawLessons()}
+   return;
+  }
+  const lessonOpen=ev.target.closest('[data-lesson-open]');
+  if(lessonOpen){lessonSelectedOrderId=lessonOpen.dataset.lessonOpen;drawLessons();return;}
+  const lessonClose=ev.target.closest('[data-lesson-close]');
+  if(lessonClose){lessonSelectedOrderId=null;drawLessons();return;}
+  const lessonSave=ev.target.closest('[data-lesson-save]');
+  if(lessonSave){
+   const error=E.writeLesson(state,data,lessonSave.dataset.lessonSave,$('lessonTag')?.value,$('lessonText')?.value);
+   if(error){notify(error);return;}
+   drawLessons();notify('Lição registrada no diário desta campanha.');
    return;
   }
   const planAssignment=ev.target.closest('[data-plan-assign]');

@@ -1,0 +1,101 @@
+/* PORCARIA ciclo 10: lições pós-OS, registro manual e aprendizagem sem spoiler. */
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs');
+const D=require('../game-data.json'),E=require('../engine.js'),L=require('../phaser-play/lessons-learned.js');
+assert.equal(L.VERSION,'10.0.0');
+assert.equal(D.scenarios.length,124);
+const newState=()=>E.create(D,()=>.5);
+const s=newState();
+const original=JSON.stringify(s);
+let analysis=L.compute(s,D);
+assert.equal(analysis.total,0);assert.equal(analysis.withReflection,0);
+assert.equal(JSON.stringify(s),original,'consulta pura');
+assert.ok(E.writeLesson(s,D,s.jobs[0].id,'diagnostico','Repetir inspeção da região antes de condenar peça.')?.includes('Só é possível'));
+assert.equal(s.lessonNotes.length,0);
+const sc=D.scenarios.find(x=>x.id==='INC101'),base=s.jobs[0];
+const done={...base,id:'OS9001',scene:sc.id,modelId:sc.modelId,asset:sc.modelId+'·01',
+ report:'Ponta central desgastada sob serviço abrasivo.',status:'concluida',
+ finishedTick:5,tickOpen:1,elapsedHours:48,worked:9.5,
+ firstTime:false,wrong:2,reworkHours:1.5,materialWaitShifts:2,toolWaitShifts:1,
+ plannerDiagnosis:{errorCount:1},approvedScope:{estimatedHH:8},
+ diagnosticLog:[{outcome:'confirmed'},{outcome:'rejected'},{outcome:'inconclusive'},{outcome:'evidence'}]};
+s.jobs=[];s.done=[done];
+assert.equal(L.compute(s,D).total,1);
+assert.equal(L.compute(s,D).withoutReflection,1);
+assert.equal(L.compute(s,D).rows[0].diagnosisCount.confirmed,1);
+assert.equal(L.compute(s,D).rows[0].diagnosisCount.rejected,1);
+assert.equal(L.compute(s,D).rows[0].diagnosisCount.inconclusive,1);
+assert.equal(L.compute(s,D).rows[0].diagnosisCount.evidence,1);
+assert.equal(L.compute(s,D).rows[0].downtimeHours,48);
+assert.equal(L.compute(s,D).rows[0].laborHH,9.5);
+assert.ok(L.compute(s,D).rows[0].classification.includes('retrabalho'));
+assert.equal(L.compute(s,D).rows[0].route.component,sc.component);
+assert.equal(L.compute(s,D).rows[0].route.cause,sc.cause);
+const msg='Na próxima ocorrência, conferir o tipo da ponta e registrar fotos antes de concluir a hipótese de desgaste.';
+const beforeCash=s.cash,beforeXp=s.xp;
+assert.ok(E.writeLesson(s,D,'OS9001','causa_raiz',msg)?.includes('categoria'));
+assert.ok(E.writeLesson(s,D,'OS9001','diagnostico','texto curto')?.includes('20 a 300'));
+assert.ok(E.writeLesson(s,D,'OS9001','diagnostico','x'.repeat(301))?.includes('20 a 300'));
+assert.equal(s.lessonNotes.length,0);
+assert.equal(E.writeLesson(s,D,'OS9001','diagnostico',msg),null);
+assert.equal(s.lessonNotes.length,1);
+assert.equal(s.lessonNotes[0].text,msg);
+assert.equal(s.lessonNotes[0].revision,1);
+assert.equal(s.decisionHistory.at(-1).type,'lesson_reflection');
+assert.equal(s.decisionHistory.at(-1).orderId,'OS9001');
+assert.equal(s.decisionHistory.at(-1).tag,'diagnostico');
+assert.equal(s.decisionHistory.at(-1).text,undefined,'não duplicar nota no evento');
+assert.equal(s.cash,beforeCash);assert.equal(s.xp,beforeXp);
+assert.ok(E.writeLesson(s,D,'OS9001','diagnostico',msg)?.includes('já está registrada'));
+assert.equal(s.decisionHistory.filter(x=>x.type==='lesson_reflection').length,1);
+const revised='Verificar a fixação e o desgaste do adaptador, registrar evidências e consultar a ficha do conjunto antes do reparo.';
+assert.equal(E.writeLesson(s,D,'OS9001','planejamento',revised),null);
+assert.equal(s.lessonNotes.length,1);
+assert.equal(s.lessonNotes[0].revision,2);
+assert.equal(s.lessonNotes[0].text,revised);
+assert.equal(s.decisionHistory.filter(x=>x.type==='lesson_reflection').length,2);
+assert.equal(L.compute(s,D,{filter:'reviewed'}).rows.length,1);
+assert.equal(L.compute(s,D,{filter:'pending'}).rows.length,0);
+assert.equal(L.compute(s,D,{filter:'invalid'}).filter,'all');
+assert.equal(L.compute(s,D).rows[0].reflection.text,revised);
+assert.equal(L.compute(s,D).withReflection,1);
+const active={...base,id:'OS9002',scene:sc.id,modelId:sc.modelId,stage:3};
+s.jobs=[active];
+const blocked=L.similarForActive(s,active);
+assert.equal(blocked.count,1);assert.equal(blocked.unlocked,false);
+assert.deepEqual(blocked.reflections,[],'não revelar reflexão durante diagnóstico');
+active.stage=6;
+const exposed=L.similarForActive(s,active);
+assert.equal(exposed.unlocked,true);
+assert.equal(exposed.reflections.length,1);
+assert.equal(exposed.reflections[0].text,revised);
+const none=L.similarForActive(s,{...active,scene:'INC002'});
+assert.equal(none.count,0);
+assert.equal(E.validate(JSON.parse(JSON.stringify(s))),true,'salvar com lição');
+// Compatibilidade com saves antigos, ausência de eventos e limites de armazenamento.
+const legacy=newState();delete legacy.lessonNotes;delete legacy.decisionHistory;delete legacy.nextDecision;
+const snap=JSON.stringify(legacy);
+assert.equal(L.compute(legacy,D).total,0);
+assert.equal(JSON.stringify(legacy),snap,'consulta não migra estado');
+legacy.jobs=[];legacy.done=[done];
+assert.equal(E.writeLesson(legacy,D,'OS9001','materiais',msg),null);
+assert.equal(legacy.lessonNotes.length,1);
+assert.equal(legacy.decisionHistory.at(-1).type,'lesson_reflection');
+for(let i=0;i<201;i++){legacy.done.unshift({...done,id:'OSL'+i});}
+for(let i=0;i<201;i++)assert.equal(E.writeLesson(legacy,D,'OSL'+i,'execucao',msg),null);
+assert.equal(legacy.lessonNotes.length,200,'limite de 200 reflexões');
+assert.equal(new Set(legacy.lessonNotes.map(n=>n.orderId)).size,200);
+assert.equal(E.validate(JSON.parse(JSON.stringify(legacy))),true);
+// XSS: comentário é string no modelo, escapada exclusivamente no render.
+const attack='<script>alert("teste")</script> Confirme o mecanismo antes de propor manutenção da caçamba.';
+assert.equal(E.writeLesson(legacy,D,'OSL200','seguranca',attack),null);
+assert.ok(L.compute(legacy,D).rows[0].reflection.text.includes('<script>'));
+const html=fs.readFileSync('phaser-play/index.html','utf8'),ui=fs.readFileSync('phaser-play/game.js','utf8'),sw=fs.readFileSync('sw.js','utf8');
+assert.ok(html.indexOf('lessons-learned.js?v=0.9.13')<html.indexOf('game.js?v=0.9.13'));
+assert.ok(html.includes('engine.js?v=0.9.13'));
+assert.ok(ui.includes('function drawLessons()')&&ui.includes("data-lesson-save"));
+assert.ok(ui.includes("esc(selected.reflection?.text||'')"),'escaping de reflexão no textarea');
+assert.ok(ui.includes('data-planning-horizon="lessons"'));
+assert.ok(ui.includes('PORCARIA_LESSONS_LEARNED.similarForActive'));
+assert.ok(sw.includes("'./phaser-play/lessons-learned.js'")&&sw.includes('lessons0913'));
+console.log('OK lições v10: dossiê, diagnóstico protegido, reflexão, revisão, auditoria, save legado, limites e UI.');

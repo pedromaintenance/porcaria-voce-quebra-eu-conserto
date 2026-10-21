@@ -71,6 +71,6 @@ assert.ok(game.includes('const activeBays=this.activeBayLayout||BAY_LAYOUT'));
 assert.ok(game.includes("this.setBackdrop(img,key==='repoWorkshopBG'?'cropped':'fullFrame')"),'o dia e a noite usam fullFrame, mantendo fallback cropped');
 assert.deepEqual(map.bays.slice(0,2).map(b=>b.spriteWorld.x),[427,842]);
 assert.deepEqual(map.backgroundProfiles.fullFrame.bays.slice(0,2).map(b=>b.spriteWorld.x),[568,852]);
-assert.ok(html.includes('game.js?v=0.9.11'),'script versionado');
+assert.ok(html.includes('game.js?v=0.9.13'),'script versionado');
 assert.ok(sw.includes('porcaria-vqec-20261019-v111'),'cache PWA invalidado');
 console.log('OK: BOX 3 -5 px real nos perfis de dia e noite, HUD/hitboxes intactos e sombras 3/1 px acima.');
