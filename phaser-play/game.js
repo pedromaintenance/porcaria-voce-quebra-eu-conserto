@@ -295,8 +295,52 @@ function planningTabs(){
  return '<div class="planningTabs" role="group" aria-label="Horizonte de planejamento">'
   +'<button type="button" data-planning-horizon="turn" class="'+(planningHorizon==='turn'?'selected':'')+'" aria-pressed="'+(planningHorizon==='turn')+'">PRÓXIMO TURNO · 12H</button>'
   +'<button type="button" data-planning-horizon="week" class="'+(planningHorizon==='week'?'selected':'')+'" aria-pressed="'+(planningHorizon==='week')+'">JANELA SEMANAL · 14 TURNOS</button>'
+  +'<button type="button" data-planning-horizon="schedule" class="'+(planningHorizon==='schedule'?'selected':'')+'" aria-pressed="'+(planningHorizon==='schedule')+'">PROGRAMAR · 14 TURNOS</button>'
   +'<button type="button" data-planning-horizon="history" class="'+(planningHorizon==='history'?'selected':'')+'" aria-pressed="'+(planningHorizon==='history')+'">HISTÓRICO DE DECISÕES</button>'
   +'<button type="button" data-planning-horizon="lessons" class="'+(planningHorizon==='lessons'?'selected':'')+'" aria-pressed="'+(planningHorizon==='lessons')+'">LIÇÕES APRENDIDAS</button></div>';
+}
+
+function drawSchedule(){
+ const schedule=window.PORCARIA_WEEKLY_SCHEDULE.compute(state,data);
+ const metric=(name,value)=>'<div class="planningMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong></div>';
+ const booked=new Set(schedule.rows.filter(r=>r.status==='planned').map(r=>r.orderId));
+ const freeOrders=state.jobs.filter(j=>!j.assigned&&!booked.has(j.id));
+ const option=(value,label)=>'<option value="'+esc(value)+'">'+esc(label)+'</option>';
+ let out=planningTabs()
+  +'<p class="planningIntro">PROGRAMAÇÃO PCM · 14 turnos. Reserve manualmente profissional e box. A reserva protege o turno contra conflitos, sem executar a OS ou prever sua conclusão.</p>'
+  +'<div class="planningMetrics">'+metric('Reservas ativas',schedule.pending)
+  +metric('Cumpridas',schedule.fulfilled)+metric('Não realizadas',schedule.missed)
+  +metric('Canceladas',schedule.cancelled)+'</div>';
+ out+='<div class="scheduleSlots">'+schedule.slots.map(t=>
+   '<article class="scheduleSlot"><strong>D'+t.day+' · '+t.shift+'</strong><small>Turno '+t.tick+'</small>'
+   +'<b>'+t.reserved+'/'+state.bays+' reservas</b><small>'+t.free+' box(es) livres no calendário</small></article>').join('')+'</div>';
+ if(!freeOrders.length)out+='<p class="planningIntro">Nenhuma OS livre para nova reserva. Cancele uma programação para remarcar.</p>';
+ else out+='<section class="scheduleForm"><h3>RESERVAR PROGRAMAÇÃO</h3><div class="scheduleFields">'
+  +'<label>Ordem de serviço<select id="scheduleOrder">'
+  +freeOrders.map(j=>option(j.id,j.id+' · '+j.asset+' · '+(j.stage>=6?'Diagnóstico completo':'Investigação '+j.stage+'/6'))).join('')+'</select></label>'
+  +'<label>Profissional<select id="scheduleWorker">'
+  +state.team.map(m=>option(m.id,m.name+' · '+m.specialty)).join('')+'</select></label>'
+  +'<label>Box<select id="scheduleBay">'
+  +Array.from({length:state.bays},(_,i)=>option(i,'BOX '+(i+1))).join('')+'</select></label>'
+  +'<label>Turno<select id="scheduleTick">'
+  +schedule.slots.map(t=>option(t.tick,'D'+t.day+' · '+t.shift+' · turno '+t.tick)).join('')+'</select></label></div>'
+  +'<button type="button" class="act" data-schedule-book>REGISTRAR RESERVA</button>'
+  +'<p class="planningExplanation">A reserva não movimenta ferramentas, peças ou equipe. A análise de material só ocorre após diagnóstico 6/6; a condição precisa ser confirmada no turno.</p></section>';
+ out+='<h3 class="resourceSection">COMPROMISSOS E HISTÓRICO</h3>';
+ if(!schedule.rows.length)out+='<p class="muted">Sem reservas registradas nesta campanha.</p>';
+ else out+='<div class="scheduleHistory">'+schedule.rows.map(r=>{
+  const label={planned:'PROGRAMADA',fulfilled:'EXECUTADA',missed:'NÃO REALIZADA',cancelled:'CANCELADA'}[r.status]||'REGISTRADA';
+  return '<article class="planningOrder"><div class="planningOrderHeader"><strong>'
+   +esc(r.orderId)+' · '+esc(r.asset)+'</strong><span class="planningTag">'+label+'</span></div>'
+   +'<p>Turno '+r.tick+' · '+esc(r.mechanic)+' · BOX '+(r.bay+1)+'</p>'
+   +'<small>'+esc(r.availability)+(r.blocked?' · Há conflito operacional no turno atual':'')
+   +(r.remaining!==null&&r.remaining>10.5?' · Reparo pode exigir mais de um turno':'')+'</small>'
+   +(r.status==='planned'?'<div class="actions"><button type="button" class="act secondary" data-schedule-cancel="'+esc(r.id)+'">CANCELAR RESERVA</button>'
+    +(r.canStart?'<button type="button" class="act" data-schedule-start="'+esc(r.id)+'">ALOCAR NO TURNO ATUAL</button>':'')
+    +'</div>':'')+'</article>';
+ }).join('')+'</div>';
+ out+='<p class="planningExplanation">'+esc(schedule.note)+'</p>';
+ $('planning').innerHTML=out;
 }
 function drawWeekly(){
  const w=window.PORCARIA_WEEKLY.calculate(state,data);
@@ -458,6 +502,7 @@ function drawLessons(){
 function drawPlanning(){
  if($('planningNotifications'))$('planningNotifications').innerHTML=S.planning(state,data,I,E,IV);
  if(planningHorizon==='week'){drawWeekly();return}
+ if(planningHorizon==='schedule'){drawSchedule();return}
  if(planningHorizon==='history'){drawDecisionHistory();return}
  if(planningHorizon==='lessons'){drawLessons();return}
  const plan=window.PORCARIA_PLANNING.compute(state,data);
@@ -961,8 +1006,30 @@ function events(){
   }
   const planHorizon=ev.target.closest('[data-planning-horizon]');
   if(planHorizon){
-   planningHorizon=['turn','week','history','lessons'].includes(planHorizon.dataset.planningHorizon)?planHorizon.dataset.planningHorizon:'turn';
+   planningHorizon=['turn','week','schedule','history','lessons'].includes(planHorizon.dataset.planningHorizon)?planHorizon.dataset.planningHorizon:'turn';
    drawPlanning();return;
+  }
+  const scheduleBook=ev.target.closest('[data-schedule-book]');
+  if(scheduleBook){
+   const error=E.scheduleJob(state,data,$('scheduleOrder')?.value,$('scheduleWorker')?.value,
+    Number($('scheduleBay')?.value),Number($('scheduleTick')?.value));
+   if(error){notify(error);return}
+   save();drawSchedule();notify('Reserva confirmada. A OS não foi alocada automaticamente.');return;
+  }
+  const scheduleCancel=ev.target.closest('[data-schedule-cancel]');
+  if(scheduleCancel){
+   const error=E.cancelSchedule(state,scheduleCancel.dataset.scheduleCancel);
+   if(error){notify(error);return}
+   save();drawSchedule();notify('Programação cancelada.');return;
+  }
+  const scheduleStart=ev.target.closest('[data-schedule-start]');
+  if(scheduleStart){
+   const booking=(state.scheduleEntries||[]).find(r=>r.status==='planned'&&r.id===scheduleStart.dataset.scheduleStart);
+   if(!booking||booking.tick!==state.tick){drawSchedule();notify('Reserva desatualizada. Revise o turno.');return}
+   const error=E.attach(state,booking.orderId,booking.mechanicId,booking.bay,true);
+   if(error){drawSchedule();notify(error);return}
+   save();drawUI();if(scene)scene.refresh();drawSchedule();
+   notify('OS '+booking.orderId+' alocada manualmente no BOX '+(booking.bay+1)+'.');return;
   }
   const decisionFilter=ev.target.closest('[data-decision-filter]');
   if(decisionFilter){
@@ -1537,6 +1604,22 @@ class Workshop extends Phaser.Scene{
 }
 async function boot(){
  try{
+  // O motor carrega antes da cena: ativa o módulo de agenda antes da primeira leitura.
+  await import('./weekly-schedule.js?v=0.9.14');
+  if(!document.getElementById('weeklyScheduleStyle')){
+   const css=document.createElement('style');css.id='weeklyScheduleStyle';
+   css.textContent='.scheduleSlots{display:grid;grid-template-columns:repeat(7,minmax(100px,1fr));gap:7px;margin:12px 0}'
+    +'.scheduleSlot{display:grid;gap:6px;border:1px solid #4c7186;border-radius:8px;padding:10px;background:#102c3f}'
+    +'.scheduleSlot strong{color:#eacb8e}.scheduleSlot b{color:#c3e5ca}.scheduleSlot small{color:#b9d1dd}'
+    +'.scheduleForm{padding:15px;border:1px solid #4b7088;border-radius:9px;background:#102a3c;margin:15px 0}'
+    +'.scheduleForm h3{color:#e8cf9a;margin:0}.scheduleFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}'
+    +'.scheduleFields label{display:grid;gap:5px;color:#dfedf4;font-size:12px}'
+    +'.scheduleFields select{width:100%;min-width:0;padding:9px;background:#132e42;border:1px solid #65849a;color:#f3f7fa;border-radius:6px}'
+    +'.scheduleHistory{display:grid;gap:9px}'
+    +'@media(max-width:820px){.scheduleSlots{grid-template-columns:repeat(4,minmax(0,1fr))}}'
+    +'@media(max-width:560px){.scheduleSlots{grid-template-columns:repeat(2,minmax(0,1fr))}.scheduleFields{grid-template-columns:1fr}}';
+   document.head.appendChild(css);
+  }
   const res=await fetch('../game-data.json',{cache:'no-store'});if(!res.ok)throw Error('HTTP '+res.status);
   data=await res.json();
   try{
@@ -1559,7 +1642,7 @@ async function boot(){
   M.receive(state,data,I,{initial:true});
   save();
   selected=state.jobs[0]?.id;events();drawUI();
-  if(!I||!IV||!S||!T||!M||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
+  if(!I||!IV||!S||!T||!M||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_WEEKLY_SCHEDULE||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
   if(!window.PORCARIA_RENDER_QUALITY)throw Error('Configuração de nitidez indisponível.');
   renderProfile=window.PORCARIA_RENDER_QUALITY.profile({
    viewportWidth:window.innerWidth,devicePixelRatio:window.devicePixelRatio,
