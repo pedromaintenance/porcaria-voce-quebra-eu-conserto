@@ -2,10 +2,24 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 21/10/2026 · **v0.9.5 — Expansão de 24 casos de análise de fluidos e triagem prioritária no Monitoramento; QA visual pendente.**
+**Estado de referência:** 21/10/2026 · **v0.9.6 — Expansão para 24 sinais de diagnóstico/evento, com 64 condições monitoráveis; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.9.6 — Códigos de Falha e Eventos, catálogo v3 (21/10/2026)
+
+- [x] Expandir de **6 para 24 sinais eletrônicos**, acrescentando 18 ocorrências (`FLT007–FLT024`) e elevando o total geral de 46 para **64 registros**.
+- [x] Criar módulo independente `fault-catalog-expansion.js`, sem modificar as 100 missões de OS nem os 24 casos existentes de análise de óleo.
+- [x] Separar `signalClass` (**diagnóstico** × **evento operacional**), `codeState` (**ativo**, **registrado** ou **não confirmado**) e padrão de intermitência. Não tratar intermitência como estado do código.
+- [x] Registrar contexto do módulo, efeito relatado, hipóteses concorrentes, limitações e verificações recomendadas por sinal.
+- [x] **Não fabricar códigos MID/CID/FMI/EID, SPN/FMI ou de sistemas Sandvik.** Números seguem ausentes até haver literatura/relatório verificável específico por modelo/módulo.
+- [x] Sinais de perda de comando e eventos térmicos selecionados passam por triagem prioritária e encaminhamento PCM; sem cenário FMEA adequado, registro com `requiresScenarioMapping` bloqueia a conversão fictícia em OS.
+- [x] Preservar sinais legados, histórico de partidas, módulo de óleo v2 e lógica de chegada automática por turnos.
+- [x] Atualizar interface, PWA, documentação e regressões; executar testes da frota, monitoramento, PCM e recrutamento pelo CI.
+- [ ] Aceite visual em desktop/mobile e balanceamento dos resultados e da frequência das ocorrências.
+
+**Dossiê de fontes e 24 casos:** [Catálogo de Códigos de Falha v3](../docs/CATALOGO_CODIGOS_FALHA_V3.md). Critérios Cat ET são referencial técnico geral, não validação de código OEM por equipamento.
 
 ## Entrega 0.9.5 — Catálogo técnico de óleo e fluidos v2 (21/10/2026)
 
