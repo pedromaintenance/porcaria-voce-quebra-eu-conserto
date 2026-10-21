@@ -10,8 +10,8 @@ const C=require('../phaser-play/condition-catalog.js');
 const V=require('../phaser-play/inspection-view.js');
 const S=require('../phaser-play/sector-views.js');
 const cats=['oil','faults','undercarriage','fps','components'];
-assert.equal(C.ENTRIES.length,30);
-assert.deepEqual(cats.map(c=>C.byCategory(c).length),[8,6,6,4,6]);
+assert.equal(C.ENTRIES.length,46);
+assert.deepEqual(cats.map(c=>C.byCategory(c).length),[24,6,6,4,6]);
 assert.equal(new Set(C.ENTRIES.map(e=>e.id)).size,C.ENTRIES.length,'IDs imutáveis/únicos');
 for(const e of C.ENTRIES){
  assert.ok(e.title.length>15&&e.baseline.length>40,e.id+' observação rastreável');
@@ -79,8 +79,8 @@ assert.ok(!practice.includes('data-monitor-start'),'nenhum estudo legado na inte
 const html=fs.readFileSync('phaser-play/index.html','utf8');
 const game=fs.readFileSync('phaser-play/game.js','utf8');
 const sw=fs.readFileSync('sw.js','utf8');
-assert.ok(html.indexOf('condition-catalog.js')<html.indexOf('monitoring.js'),'script carregado primeiro');
+assert.ok(html.indexOf('oil-catalog-expansion.js')<html.indexOf('condition-catalog.js')&&html.indexOf('condition-catalog.js')<html.indexOf('monitoring.js'),'expansão e catálogo carregados antes do monitoramento');
 assert.ok(game.includes('M.receive(state,data,I,{initial:true})')&&game.includes('M.receive(state,data,I);'),'chegada ligada à campanha');
 assert.ok(!game.includes("data-monitor-start"));
 assert.ok(sw.includes("'./phaser-play/condition-catalog.js'"),'catálogo disponível offline');
-console.log('OK: 30 sintomas, 5 fontes, rodízio, idempotência, custo/ferramenta, FPS sem gabarito e interface.');
+console.log('OK: 46 sintomas, 5 fontes, rodízio, idempotência, custo/ferramenta, FPS sem gabarito e interface.');
