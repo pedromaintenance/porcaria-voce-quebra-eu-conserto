@@ -16,7 +16,7 @@ assert.ok(G.disciplines.some(x=>x.id==='fluid_mechanics'));
 assert.ok(G.disciplines.some(x=>x.id==='thermodynamics'));
 for(const id of ['undercarriage','fps','engines','tires','hydraulic_cylinders','hoses','valves','embedded_electronics'])assert.ok(G.systems.some(x=>x.id===id));
 
-const profiles={junior:E.baselineSkills('junior'),geovane:E.baselineSkills('geovane'),pedro:E.baselineSkills('pedro'),acassio:E.baselineSkills('acassio')};
+const profiles={junior:E.baselineSkills('junior'),geovane:E.baselineSkills('geovane'),pedro:E.baselineSkills('pedro'),acassio:E.baselineSkills('acassio'),nemuel:E.baselineSkills('nemuel')};
 for(const [id,p] of Object.entries(profiles)){
  assert.deepEqual(Object.keys(p),groups,'categorias '+id);
  for(const group of groups){
@@ -24,6 +24,7 @@ for(const [id,p] of Object.entries(profiles)){
   for(const value of Object.values(p[group]))assert.ok(Number.isInteger(value)&&value>=0&&value<=100,'escala 0..100');
  }
 }
+for(const [group,skills] of Object.entries(profiles.nemuel))for(const [key,value] of Object.entries(skills))assert.equal(value,group==='machines'&&['EQ05','EQ06'].includes(key)?50:70,'Nemuel: '+group+'/'+key);
 assert.equal(profiles.junior.disciplines.lubrication,100);
 for(const [group,values] of Object.entries(profiles.junior))
  for(const [key,value] of Object.entries(values))assert.equal(value,group==='machines'?70:group==='disciplines'&&key==='lubrication'?100:90);
@@ -55,7 +56,7 @@ for(const candidate of E.RECRUIT_POOL){
 }
 assert.notDeepEqual(E.baselineSkills('silva'),E.baselineSkills('santos'),'contratados com perfis distintos');
 const state=E.create(data,()=>0.42);
-assert.deepEqual(state.team.map(x=>x.name),['Pedro','Geovane','Junior','Acassio']);
+assert.deepEqual(state.team.map(x=>x.name),['Pedro','Geovane','Junior','Acassio','Nemuel']);
 for(const member of state.team)assert.deepEqual(member.competencies,E.baselineSkills(member.sprite));
 const initial=JSON.stringify(state);
 E.normalizeRoster(state);assert.equal(JSON.stringify(state),initial,'novo save idempotente');
@@ -63,7 +64,7 @@ const skillBefore=state.team.map(x=>x.skill);
 state.cash=100000;state.player.mental=100;
 assert.equal(E.hire(state,'costa',()=>0.1),null);
 assert.deepEqual(state.team.at(-1).competencies,E.baselineSkills('costa'),'contratação salva perfil');
-assert.deepEqual(state.team.slice(0,4).map(x=>x.skill),skillBefore,'skill global da simulação não foi modificado');
+assert.deepEqual(state.team.slice(0,5).map(x=>x.skill),skillBefore,'skill global da simulação não foi modificado');
 const old=E.create(data,()=>0.5);
 delete old.team[0].competencies;
 old.team[1].competencies={disciplines:{lubrication:73},systems:{tires:12},machines:{EQ05:99},unrecognized:5};
@@ -91,4 +92,4 @@ assert.ok(ui.includes("Índice geral histórico"));
 assert.ok(html.includes('game.js?v=0.8.32'));
 assert.ok(html.includes('.abilityGroups')&&html.includes('.abilityTrack'));
 assert.ok(sw.includes('porcaria-vqec-20261019-v111'));
-console.log('OK: habilidades 22+25+9; perfis Junior/Geovane/Pedro/Acassio; 10 recrutas; UI e saves retrocompatíveis.');
+console.log('OK: habilidades 22+25+9; perfis Junior/Geovane/Pedro/Acassio/Nemuel; 10 recrutas; UI e saves retrocompatíveis.');
