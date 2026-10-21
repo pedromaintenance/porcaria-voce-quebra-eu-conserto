@@ -6,8 +6,8 @@ const D=require('../game-data.json'),E=require('../engine.js');
 const I=require('../phaser-play/inspection.js');
 const T=require('../phaser-play/evidence.js');
 const V=require('../phaser-play/inspection-view.js');
-assert.equal(D.scenarios.length,100);
-assert.equal(D.paths.length,387);
+assert.equal(D.scenarios.length,124);
+assert.equal(D.paths.length,403);
 const ids=['INC066','INC067','INC076','INC077','INC086','INC087'];
 const cases=ids.map(id=>D.scenarios.find(c=>c.id===id));
 for(const [i,c] of cases.entries()){

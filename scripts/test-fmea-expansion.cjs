@@ -10,8 +10,8 @@ const expected={
   INC042:['EQ07','OIL-CASE-004'],INC043:['EQ01','OIL-CASE-070'],
   INC044:['EQ08',null],INC045:['EQ02','PB-SHOVEL-COOL-01']
 };
-assert.equal(D.scenarios.length,100);
-assert.equal(new Set(D.scenarios.map(s=>s.id)).size,100,'IDs únicos');
+assert.equal(D.scenarios.length,124);
+assert.equal(new Set(D.scenarios.map(s=>s.id)).size,124,'IDs únicos');
 const locs=new Set(D.paths.map(p=>[p.modelId,p.system,p.group,p.subgroup].join('|')));
 const modelIds=new Set(D.models.map(m=>m.id));
 for(const [id,[model,source]] of Object.entries(expected)){

@@ -10,9 +10,9 @@ const mapping={
  INC099:['INC076','EQ06','Compressor, Ar'],
  INC100:['INC094','EQ09','Pneu']
 };
-assert.equal(D.scenarios.length,100,'95 missões originais + 5 encadeadas');
-assert.equal(new Set(D.scenarios.map(c=>c.id)).size,100);
-assert.equal(D.paths.length,387,'nenhum caminho SAP novo');
+assert.equal(D.scenarios.length,124,'95 missões originais + 5 encadeadas');
+assert.equal(new Set(D.scenarios.map(c=>c.id)).size,124);
+assert.equal(D.paths.length,403,'nenhum caminho SAP novo');
 assert.deepEqual(D.scenarios.slice(0,95).map(s=>s.id),
   Array.from({length:95},(_,i)=>'INC'+String(i+1).padStart(3,'0')),
   '95 missões anteriores preservadas');
