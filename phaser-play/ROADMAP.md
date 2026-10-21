@@ -2,10 +2,23 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 21/10/2026 · **v0.9.11 — Decisões PCM: comparação de compras, esperas, registro de ETA e custo de oportunidade virtual; QA visual pendente.**
+**Estado de referência:** 21/10/2026 · **v0.9.12 — Histórico auditável de decisões PCM/Supervisor, comparação plano versus execução e filtros; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.9.12 — Histórico de Decisões PCM/Supervisor, ciclo 9 (21/10/2026)
+
+- [x] Implementar `decisionHistory[]` (até 400 eventos) e sequência de decisões no motor, compatíveis com saves anteriores.
+- [x] Rastrear decisões confirmadas de alocação, compra, recebimento, aprovação PCM, criação manual de OS, avaliação de hipótese e encerramento.
+- [x] Exibir painel **Planejamento → Histórico de Decisões** com filtros Todos/Compras/PCM/Execução e eventos ordenados por turno/sequência.
+- [x] Comparar HH planejadas pelo PCM com HH efetivamente registradas, retrabalho observado e horas corridas da OS, sem confundir esforço com indisponibilidade.
+- [x] Indicar compras sem demanda já diagnosticada sem classificar estoque estratégico como compra equivocada.
+- [x] Distinguir divergência PCM contra gabarito educativo de erro mecânico real; **não calcular retrabalho evitado sem contrafactual**.
+- [x] Fazer consulta não mutante, auditoria de eventos, cache PWA e regressões automatizadas, preservando as 124 missões e os 120 sintomas.
+- [ ] Homologação visual desktop/mobile, testes de campanha longa, validação de filtros e eventual exportação CSV.
+
+**Documentação:** [Histórico PCM v9](../docs/HISTORICO_DECISOES_PCM_V9.md).
 
 ## Entrega 0.9.11 — Decisões PCM e impacto econômico/operacional (21/10/2026)
 
