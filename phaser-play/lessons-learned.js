@@ -15,7 +15,7 @@
  function evidence(j){
   const log=Array.isArray(j.diagnosticLog)?j.diagnosticLog:[];
   const counts={confirmed:0,rejected:0,inconclusive:0,evidence:0};
-  for(const item of log)if(Object.hasOwn(counts,item.outcome||item.type||item.status)){counts[item.type||item.status]++}
+  for(const item of log)if(Object.hasOwn(counts,item.outcome||item.type||item.status)){counts[item.outcome||item.type||item.status]++}
   return counts;
  }
  function outcome(j){
