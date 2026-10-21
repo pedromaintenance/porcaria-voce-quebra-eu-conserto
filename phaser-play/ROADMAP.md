@@ -2,10 +2,24 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 21/10/2026 · **v0.9.8 — Monitoramento de Componentes com 24 ocorrências e 100 sinais totais; QA visual pendente.**
+**Estado de referência:** 21/10/2026 · **v0.9.9 — FPS/GET validado em 24 sintomas; 120 condições ativas; QA visual e missões FPS pendentes.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.9.9 — FPS = Ferramentas de Penetração no Solo / GET (21/10/2026)
+
+- [x] Confirmar FPS como **Ferramentas de Penetração no Solo** na literatura brasileira oficial Caterpillar e Sotreq; corrigir interpretação eletrônica antiga sem atribuição fictícia de código.
+- [x] Registrar módulo `fps-catalog-expansion.js` com **24 sintomas recebíveis** da 6030 (12), 395 (8), 966 (2) e D9 (2). Cada um dos cinco domínios passa a ter 24 registros: **120 sintomas ativos** no total.
+- [x] Preservar FPS001–FPS004 para leitura de **saves antigos**, mas removê-los do catálogo ativo e da chegada automática (nunca sortear evento genérico em 777E/DR410i).
+- [x] Modelar ponta, retenção, adaptador, proteção, borda e solda com localização, condição observável, incerteza e verificação recomendada.
+- [x] Aplicar prioridade de revisão PCM a pontas/retentores soltos ou ausentes e trincas suspeitas, sem gerar OS de forma automática.
+- [x] Não inventar Part Numbers, limites de desgaste, intervalos de substituição ou códigos SAP: dados quantitativos continuam pendentes por máquina, série e arranjo de FPS.
+- [x] Integrar dossiês, fontes OEM, cache PWA, testes e documentação com 100 missões anteriores preservadas.
+- [ ] **Ciclo 7:** modelar investigações FMEA específicas de FPS. Atualmente os 24 sintomas FPS são encaminháveis ao PCM, porém a OS não pode ser criada enquanto faltar roteiro específico (`requiresScenarioMapping`).
+- [ ] Homologar visualmente em desktop/mobile e balancear frequência/severidade com partidas reais.
+
+**Catálogo e fontes:** [FPS/GET v6](../docs/CATALOGO_FPS_GET_V6.md).
 
 ## Entrega 0.9.8 — Monitoramento de Componentes v5 (21/10/2026)
 
