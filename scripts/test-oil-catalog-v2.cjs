@@ -6,12 +6,12 @@ const C=require('../phaser-play/condition-catalog.js'),M=require('../phaser-play
 const S=require('../phaser-play/sector-views.js'),V=require('../phaser-play/inspection-view.js');
 const O=require('../phaser-play/oil-catalog-expansion.js');
 assert.equal(O.VERSION,'2.0.0');
-assert.equal(C.VERSION,'3.0.0');
-assert.equal(C.ENTRIES.length,64);
+assert.equal(C.VERSION,'4.0.0');
+assert.equal(C.ENTRIES.length,82);
 assert.equal(C.byCategory('oil').length,24);
 assert.equal(O.ENTRIES.length,16);
-assert.equal(new Set(C.ENTRIES.map(x=>x.id)).size,64,'IDs únicos');
-assert.deepEqual(C.ENTRIES.filter(x=>x.category!=='oil').map(x=>x.id).length,40,'outras famílias intactas');
+assert.equal(new Set(C.ENTRIES.map(x=>x.id)).size,82,'IDs únicos');
+assert.deepEqual(C.ENTRIES.filter(x=>x.category!=='oil').map(x=>x.id).length,58,'outras famílias intactas');
 for(let i=1;i<=24;i++){
  const id='OIL'+String(i).padStart(3,'0'),e=C.get(id);
  assert.ok(e,id+' cadastrado');
@@ -80,7 +80,7 @@ assert.ok(screen.includes('Sódio')&&screen.includes('REVISAR LINHA DE BASE'));
 const ui=fs.readFileSync('phaser-play/index.html','utf8');
 const sw=fs.readFileSync('sw.js','utf8');
 assert.ok(ui.indexOf('oil-catalog-expansion.js')<ui.indexOf('condition-catalog.js'));
-assert.ok(ui.includes('monitoring.js?v=0.9.5'));
+assert.ok(ui.includes('monitoring.js?v=0.9.7'));
 assert.ok(sw.includes("'./phaser-play/oil-catalog-expansion.js'"));
 assert.ok(sw.includes('-oil095'));
 assert.ok(E.validate(JSON.parse(JSON.stringify(baseline.s))),'save permanece válido após encerrar');
