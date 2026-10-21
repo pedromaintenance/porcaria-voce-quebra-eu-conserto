@@ -6,12 +6,12 @@ const C=require('../phaser-play/condition-catalog.js'),M=require('../phaser-play
 const S=require('../phaser-play/sector-views.js'),V=require('../phaser-play/inspection-view.js');
 const F=require('../phaser-play/fault-catalog-expansion.js');
 assert.equal(F.VERSION,'3.0.0');
-assert.equal(C.VERSION,'4.0.0');
+assert.equal(C.VERSION,'5.0.0');
 assert.equal(F.ENTRIES.length,18);
-assert.equal(C.ENTRIES.length,82);
+assert.equal(C.ENTRIES.length,100);
 assert.deepEqual(Object.fromEntries(['oil','faults','undercarriage','fps','components'].map(k=>[k,C.byCategory(k).length])),
- {oil:24,faults:24,undercarriage:24,fps:4,components:6});
-assert.equal(new Set(C.ENTRIES.map(x=>x.id)).size,82,'ids imutáveis');
+ {oil:24,faults:24,undercarriage:24,fps:4,components:24});
+assert.equal(new Set(C.ENTRIES.map(x=>x.id)).size,100,'ids imutáveis');
 assert.ok(C.get('OIL023')&&C.get('FPS001')&&C.get('CMP005'),'catálogos anteriores preservados');
 const ids=new Set(F.ENTRIES.map(x=>x.id));
 assert.equal(ids.size,18,'sinais novos distintos');
@@ -91,7 +91,7 @@ const overall=S.monitoring(fresh(),D,M,V,I,E,'overview');
 assert.ok(overall.includes('FLT023')&&overall.includes('OIL023')&&overall.includes('CMP001'));
 const html=fs.readFileSync('phaser-play/index.html','utf8');
 assert.ok(html.indexOf('fault-catalog-expansion.js')<html.indexOf('condition-catalog.js'),'ordem do carregamento');
-assert.ok(html.includes('inspection-view.js?v=0.9.7')&&html.includes('sector-views.js?v=0.9.7'));
+assert.ok(html.includes('inspection-view.js?v=0.9.8')&&html.includes('sector-views.js?v=0.9.8'));
 const sw=fs.readFileSync('sw.js','utf8');
 assert.ok(sw.includes("'./phaser-play/fault-catalog-expansion.js'"));
 assert.ok(sw.includes('fault096'));
