@@ -1,5 +1,7 @@
 # Monitoramento de Condição — Catálogo v1
 
+> Histórico da v0.9.4. Depois das expansões de óleo e códigos, a [v4 de Material Rodante](CATALOGO_MATERIAL_RODANTE_V4.md) amplia o total a **82 sinais** e diferencia CTS, pneus e risco de postergação.
+
 > Documento histórico. Além da v2 de óleo (24 casos), a [v3 de Códigos de Falha](CATALOGO_CODIGOS_FALHA_V3.md) adiciona 18 novos sinais, totalizando 64 entradas na carteira de condição.
 
 > Documento histórico da v0.9.4: catálogo base de 30 sinais. A expansão de óleo v2 adiciona 16 casos (total 46), documentados em [Catálogo de Óleo v2](CATALOGO_OLEO_V2.md).
