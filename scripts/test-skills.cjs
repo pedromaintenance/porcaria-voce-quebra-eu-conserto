@@ -89,7 +89,7 @@ assert.ok(ui.includes("function renderSkills(competencies)"));
 assert.ok(ui.includes("E.baselineSkills(m.sprite)"));
 assert.ok(ui.includes("E.skillsFor(m)"));
 assert.ok(ui.includes("Índice geral histórico"));
-assert.ok(html.includes('game.js?v=0.8.32'));
+assert.ok(html.includes('game.js?v=0.9.4'));
 assert.ok(html.includes('.abilityGroups')&&html.includes('.abilityTrack'));
 assert.ok(sw.includes('porcaria-vqec-20261019-v111'));
 console.log('OK: habilidades 22+25+9; perfis Junior/Geovane/Pedro/Acassio/Nemuel; 10 recrutas; UI e saves retrocompatíveis.');

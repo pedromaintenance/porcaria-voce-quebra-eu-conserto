@@ -134,7 +134,7 @@ assert.ok(ui.includes('data-training-action'));
 assert.ok(ui.includes('E.TRAINING.active(state'));
 assert.ok(html.includes('data-open-panel="training"')&&html.includes('id="trainingPanel"'));
 assert.ok(html.includes('training.js?v=0.8.28')&&html.includes('training-view.js?v=0.8.30'));
-assert.ok(html.includes('game.js?v=0.8.32')&&html.includes('trainingSticky'));
+assert.ok(html.includes('game.js?v=0.9.4')&&html.includes('trainingSticky'));
 assert.ok(plan.includes('normativeUntil>state.tick'));
 assert.ok(ready.includes('m.training'));
 assert.ok(sw.includes('porcaria-vqec-20261019-v111'));
