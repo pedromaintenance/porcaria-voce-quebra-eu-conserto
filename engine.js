@@ -261,10 +261,22 @@
     return s;
   }
   function mulberry32(seed){return ()=>{let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return ((t^t>>>14)>>>0)/4294967296}}
+  // Trilha de decisões da campanha: eventos observados, não causalidade presumida.
+  // IDs sequenciais e limite de armazenamento mantêm saves antigos e campanhas longas legíveis.
+  function recordDecision(s,type,fields={}){
+    if(!s||typeof s!=='object'||!type)return null;
+    if(!Array.isArray(s.decisionHistory))s.decisionHistory=[];
+    const next=Math.max(Number(s.nextDecision)||1,...s.decisionHistory.map(x=>(Number(x.seq)||0)+1));
+    const event={id:'DEC'+String(next).padStart(5,'0'),seq:next,tick:s.tick,day:s.day,shift:s.shift,type,...fields};
+    s.decisionHistory.push(event);
+    s.decisionHistory=s.decisionHistory.slice(-400);
+    s.nextDecision=next+1;
+    return event;
+  }
   function create(data,rng=Math.random){
     const s={version:'1.1.0',day:1,shift:0,tick:0,cash:15800,reputation:86,xp:0,productivityTarget:DEFAULT_PRODUCTIVITY_TARGET,
       player:{mental:86,physical:84},
-      team:[],jobs:[],done:[],orders:[],purchaseHistory:[],stock:{},tools:{},nextJob:1,nextPerson:1,nextPO:1,
+      team:[],jobs:[],done:[],orders:[],purchaseHistory:[],decisionHistory:[],nextDecision:1,stock:{},tools:{},nextJob:1,nextPerson:1,nextPO:1,
       logs:[],kpi:[],lastUtilization:0,metrics:{hours:0,productive:0,wages:0,outsourced:0,incidents:0,safety:0},
       bays:3,closed:false};
     for(const [id,v] of Object.entries(data.items))s.stock[id]=v.initial;
@@ -341,6 +353,9 @@
     if(s.jobs.some(a=>a.id!==id && a.bay===bay))return 'Esse box está ocupado.';
     j.assigned=mid;j.bay=bay;j.help=!!help;m.assigned=id;j.scheduleShift ??= s.tick;
     j.status=j.stage<6?'diagnostico':'apto';
+    recordDecision(s,'allocation',{orderId:id,scene:j.scene,asset:j.asset,modelId:j.modelId,
+      mechanicId:mid,mechanicName:m.name,bay,assistance:!!help,stage:j.stage,
+      classification:'alocacao_confirmada',origin:'oficina'});
     msg(s,`${m.name} assumiu ${id} no box ${bay+1}${help?' com apoio da chefia':''}.`,'ok');return null;
   }
   function release(s,id){
@@ -428,6 +443,9 @@
     s.purchaseHistory.push({id:po.id,item:id,qty,paid:cost,orderedTick:s.tick,eta:po.eta,
       receivedTick:null,fast,stockAtPurchase:s.stock[id]||0,demandAtPurchase});
     s.purchaseHistory=s.purchaseHistory.slice(-200);
+    recordDecision(s,'purchase',{purchaseId:po.id,item:id,quantity:qty,paid:cost,fast:!!fast,
+      orderedTick:s.tick,eta:po.eta,stockAtPurchase:s.stock[id]||0,demandAtPurchase,
+      classification:demandAtPurchase>0?'demanda_diagnosticada':'sem_demanda_diagnosticada'});
     msg(s,`Pedido ${po.id}: ${qty} × ${it.name}; previsão turno +${lead+delay} (${fast?'urgente':'normal'}).`,'info');return null;
   }
   function motivate(s,id){const m=employee(s,id);if(!m)return 'Mecânico inexistente.';
@@ -474,6 +492,11 @@
     s.xp+=firstTime?55:28;s.reputation=clamp(s.reputation+(firstTime?2:1));m.morale=clamp(m.morale+8);m.completed++;
     s.metrics.incidents++;
     s.done.unshift({...j,elapsedHours:elapsed,revenue:income,firstTime,materialCost:d.items[c.material].unit});s.done=s.done.slice(0,200);
+    recordDecision(s,'completion',{orderId:j.id,scene:j.scene,asset:j.asset,modelId:j.modelId,
+      downtimeHours:elapsed,reworkHours:j.reworkHours||0,plannerErrors:j.plannerDiagnosis?.errorCount||0,
+      materialWaitShifts:j.materialWaitShifts||0,toolWaitShifts:j.toolWaitShifts||0,
+      firstTime:!!firstTime,virtualOpportunityRate:null,
+      classification:'os_concluida'});
     s.jobs=s.jobs.filter(x=>x.id!==j.id);
     m.assigned=null;
     msg(s,`${j.id} concluída: ${c.title}. ${elapsed} h corridas, receita fictícia R${income}.`,'ok');
@@ -508,6 +531,8 @@
     const errors=plan.codes.filter((code,i)=>code!==''&&code!==trueCodes[i]).length;
     const perfect=errors===0&&plan.codes.every((code,i)=>code===trueCodes[i]);
     plan.evaluated=true;plan.executionTick=s.tick;plan.mechanicId=m.id;plan.errorCount=errors;
+    recordDecision(s,'planner_evaluation',{orderId:j.id,scene:j.scene,asset:j.asset,modelId:j.modelId,
+      mechanicId:m.id,errors,perfect,classification:errors?'hipoteses_divergentes':'sem_divergencias_detectadas'});
     if(errors){
       j.wrong+=errors;j.rework=true;j.reworkHours+=0.5*errors;
       j.diagRemaining+=0.5*errors;
@@ -612,6 +637,8 @@
       s.stock[o.item]=(s.stock[o.item]||0)+o.qty;
       const history=(s.purchaseHistory||[]).find(p=>p.id===o.id);
       if(history){history.receivedTick=s.tick;}
+      recordDecision(s,'receipt',{purchaseId:o.id,item:o.item,quantity:o.qty,
+        paid:o.paid,fast:!!o.fast,eta:o.eta,receivedTick:s.tick,classification:'recebimento_confirmado'});
       msg(s,`Pedido ${o.id} recebido: ${o.qty} × ${d.items[o.item].name}.`,'ok');
     }
     s.orders=s.orders.filter(o=>o.eta>s.tick);
@@ -659,7 +686,7 @@
       pendingMaterials:s.jobs.filter(j=>j.status==='material').length, pendingTools:s.jobs.filter(j=>j.status==='ferramenta').length};
   }
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
-  return {create,normalizeRoster,localizeDiagnosticOptions,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
+  return {create,recordDecision,normalizeRoster,localizeDiagnosticOptions,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
     SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
     model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
 });
