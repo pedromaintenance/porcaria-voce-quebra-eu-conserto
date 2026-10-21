@@ -82,7 +82,7 @@ assert.ok(game.includes('S.planning(state,data,I,E,IV)'));
 assert.ok(game.includes('S.monitoring(state,data,M,IV,I,E,monitorCategory)'));
 assert.ok(!game.includes('I.plan(state,data);save();drawInspection()'),'sem ronda automática');
 const html=fs.readFileSync(path.join(__dirname,'../phaser-play/index.html'),'utf8');
-assert.ok(html.includes('sector-views.js?v=0.9.5'));
+assert.ok(html.includes('sector-views.js?v=0.9.6'));
 assert.ok(html.includes('.controlRoomSidebar{')&&html.includes('background:#081b2c'),'painel opaco substitui hotspots transparentes');
 assert.ok(html.includes('.controlNavItem{')&&html.includes('.controlRoomMobileMenu{'),'menu de botões sólidos e fallback mobile');
 assert.ok(!html.includes('.controlHotspot'),'posicionamento individual antigo removido');

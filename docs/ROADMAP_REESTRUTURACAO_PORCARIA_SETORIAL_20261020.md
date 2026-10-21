@@ -111,6 +111,14 @@ As 100 missões e 387 caminhos cadastrados são um legado a preservar. As rotina
 - Formulações distintas não são automaticamente classificadas como defeito; confirmação de compatibilidade e linha de base permanece necessária.
 - Referência: [Catálogo de Óleo v2](CATALOGO_OLEO_V2.md).
 
+## Etapa 1D — Sinais eletrônicos e códigos de falha v3 (21/10/2026)
+
+- Acrescidos 18 cenários eletrônicos (`FLT007–FLT024`); 24 ocorrências da categoria, 64 sintomas totais na carteira.
+- Dados de código separaram diagnóstico/evento, ativo/registrado/não confirmado, ECM e padrão intermitente.
+- Hipóteses concorrentes e limitações são exibidas, sem criar numeração OEM fictícia.
+- Triagem prioritária para perda de comando e eventos térmicos; sem missão específica, encaminha à revisão PCM sem permitir OS automática.
+- Referência técnica: [Catálogo de Códigos de Falha v3](CATALOGO_CODIGOS_FALHA_V3.md).
+
 ## Critérios de aceite por entrega
 
 1. Commit por etapa em branch própria, PR revisável, CI Phaser e recrutamento sem regressões.

@@ -67,13 +67,25 @@
    +'<p><strong>Verificação sugerida:</strong> '+esc(record.verification)+'</p>'
    +(record.triage==='revisar_baseline'?'<p><strong>Revisar linha de base:</strong> perfil de aditivos não constitui diagnóstico isolado de falha.</p>':'')
    +'</div>':'';
+  const faultContext=record?.category==='faults'&&record?.signalClass?
+    '<div class="monitorOilContext monitorFaultContext">'
+    +'<p><strong>Tipo de registro:</strong> '+esc(record.signalClass==='evento'?'EVENTO OPERACIONAL':'DIAGNÓSTICO ELETRÔNICO')+'</p>'
+    +'<p><strong>Estado no relatório:</strong> '+esc(({ativo:'ATIVO',registrado:'REGISTRADO',nao_confirmado:'NÃO CONFIRMADO'}[record.codeState]||'NÃO INFORMADO'))+'</p>'
+    +(record.pattern==='intermitente'?'<p><strong>Comportamento:</strong> intermitente (não equivale a código ativo)</p>':'')
+    +'<p><strong>Código OEM:</strong> '+esc(record.codeVerified&&record.codeValue?record.codeValue:'NÃO INFORMADO · obter código integral e ECM')+'</p>'
+    +'<p><strong>Módulo:</strong> '+esc(record.moduleContext)+'</p>'
+    +'<p><strong>Efeito relatado:</strong> '+esc(record.observedEffect)+'</p>'
+    +'<p><strong>Hipóteses concorrentes (não confirmadas):</strong> '+esc(record.alternatives.join(' · '))+'</p>'
+    +'<p><strong>Incerteza:</strong> '+esc(record.uncertainty)+'</p>'
+    +'<p><strong>Verificação sugerida:</strong> '+esc(record.verification)+'</p>'
+    +'</div>':'';
   const history=(m.samples||[]).map(x=>'<li>Turno '+Number(x.tick)+' · <strong>'+esc(x.label)+'</strong>'
    +'<p>'+esc(x.reading)+'</p><small>Resultado registrado na carteira.</small></li>').join('');
   return '<section class="pcmMonitoringCard"><h4>📈 MONITORAMENTO DE CONDIÇÃO</h4>'
    +'<p><strong>Fonte:</strong> '+esc(n.monitorCategory&&M.CATALOG?.CATEGORIES[n.monitorCategory]||'Registro anterior')+' · '+esc(n.monitorProtocol||'')+'</p>'
     +'<p><strong>Observação inicial:</strong> '+esc(m.baseline||'')+'</p>'
-   +context+'<p>Acompanhe a evolução dos resultados e registre a decisão técnica.</p>'
-   +controls+(history?'<details open><summary>Histórico de recoletas ('+(m.samples||[]).length+')</summary><ol>'+history+'</ol></details>':'')
+   +context+faultContext+'<p>Acompanhe a evolução dos resultados e registre a decisão técnica.</p>'
+   +controls+(history?'<details open><summary>Histórico de verificações ('+(m.samples||[]).length+')</summary><ol>'+history+'</ol></details>':'')
    +'</section>';
  }
  function renderPCM(n,model,d,I,E,s,T,M){
