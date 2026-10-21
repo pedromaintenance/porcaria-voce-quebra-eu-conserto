@@ -5,6 +5,7 @@
  root.PORCARIA_MONITORING=api;
 })(typeof window!=='undefined'?window:globalThis,function(){
  'use strict';
+ const CATALOG=typeof require==='function'?require('./condition-catalog.js'):globalThis.PORCARIA_CONDITION_CATALOG;
  const PROTOCOLS=Object.freeze({
   baseline:{label:'777E · Formulação do lubrificante sob revisão',modelId:'EQ01',
    escalationScenario:'INC041',baseline:'Perfil químico diferente após reposição declarada; nenhuma falha mecânica confirmada.',
@@ -24,6 +25,46 @@
  const INTERVALS=[2,4];
  function init(s,I){I.normalized(s);return s;}
  function get(s,id){return (s.notifications||[]).find(n=>n.id===id&&n.monitorOnly);}
+ function protocol(id){return CATALOG?.get(id)||PROTOCOLS[id]||null}
+ /* Uma ocorrência chega pela fonte de condição; não é nota de inspeção e não cria OS.
+  * Recebimento automático a cada dois turnos, rotacionando os cinco domínios.
+  * Todas as decisões posteriores permanecem manuais.
+  */
+ function receive(s,d,I,opts={}){
+  init(s,I);
+  if(!opts.initial&&s.tick%2!==0)return {ok:true,received:[]};
+  if(s.monitoringLastFeedTick===s.tick)return {ok:true,received:[]};
+  const active=(s.notifications||[]).filter(n=>n.monitorOnly&&['aguarda_revisao_pcm','monitorando'].includes(n.status));
+  if(active.length>=8)return {ok:true,received:[],reason:'carteira_cheia'};
+  const order=Object.keys(CATALOG.CATEGORIES),start=(Number(s.monitoringFeedCursor)||0)%order.length;
+  const seen=Array.isArray(s.monitoringFeedSeen)?s.monitoringFeedSeen:[];
+  const busy=new Set((s.jobs||[]).map(j=>j.asset));
+  for(const n of s.notifications||[])if(n.asset&&['aguarda_revisao_pcm','aprovada_pcm','devolvida','monitorando'].includes(n.status))busy.add(n.asset);
+  for(const i of s.inspections||[])if(i.tick===s.tick&&i.asset)busy.add(i.asset);
+  for(let step=0;step<order.length;step++){
+   const category=order[(start+step)%order.length];
+   const pool=CATALOG.byCategory(category).filter(p=>d.models.some(m=>m.id===p.modelId)
+    &&(!p.escalationScenario||d.scenarios.some(sc=>sc.id===p.escalationScenario&&sc.modelId===p.modelId)));
+   const unseen=pool.filter(p=>!seen.includes(p.id));
+   const candidates=[...unseen,...pool.filter(p=>seen.includes(p.id))];
+   for(const p of candidates){
+    const asset=Array.from({length:6},(_,i)=>p.modelId+'·'+String(i+1).padStart(2,'0')).find(a=>!busy.has(a));
+    if(!asset)continue;
+    const id='NM'+String(s.nextNotification++).padStart(4,'0');
+    const n={id,inspectionId:null,asset,modelId:p.modelId,openedTick:s.tick,
+     origin:'monitoramento_de_condicao',description:p.baseline,reportedIndication:p.baseline,
+     priority:category==='faults'||category==='fps'?'media':'baixa',status:'aguarda_revisao_pcm',
+     sourceScenario:null,workOrderId:null,monitorOnly:true,monitorProtocol:p.id,monitorCategory:category,
+     monitoring:{status:'proposta',baseline:p.baseline,reason:null,interval:null,nextTick:null,samples:[],decisions:[]}};
+    s.notifications.push(n);
+    s.monitoringFeedSeen=[...seen.filter(id=>id!==p.id),p.id].slice(-CATALOG.ENTRIES.length);
+    s.monitoringFeedCursor=(start+step+1)%order.length;
+    s.monitoringLastFeedTick=s.tick;
+    return {ok:true,received:[n]};
+   }
+  }
+  return {ok:true,received:[],reason:'sem_ativo_disponivel'};
+ }
  function status(n){return n?.monitoring?.status||'nao_iniciado'}
  function open(s,d,I,protocol){
   init(s,I);
@@ -71,16 +112,17 @@
   const n=get(s,id),m=n?.monitoring;
   if(!n||n.status!=='monitorando'||m.status!=='programado')return {error:'Não existe recoleta programada para esta notificação.'};
   if(!Number.isSafeInteger(m.nextTick)||s.tick<m.nextTick)return {error:'Recoleta ainda não venceu. Turno programado: '+m.nextTick+'.'};
-  if(!s.tools?.COLETA)return {error:'Kit de coleta e inspeção de fluidos indisponível.'};
-  const cost=40; // Preço virtual do teste, não custo de laboratório real.
+  const p=protocol(n.monitorProtocol);
+  if(!p)return {error:'Registro de condição não encontrado no catálogo.'};
+  const requiredTool=p.followupTool===undefined?'COLETA':p.followupTool;
+  if(requiredTool&&!s.tools?.[requiredTool])return {error:'Instrumento requerido para verificação: '+requiredTool+'.'};
+  const cost=p.followupCost===undefined?40:p.followupCost; // Balanceamento do jogo.
   if(!Number.isFinite(s.cash)||s.cash<cost)return {error:'Saldo fictício insuficiente para recoleta.'};
-  const p=PROTOCOLS[n.monitorProtocol];
-  if(!p)return {error:'Protocolo não encontrado.'};
   const round=m.samples.length;
   const key=p.results[Math.min(round,p.results.length-1)];
   const desc=OUTCOMES[key];
   const entry={tick:s.tick,round:round+1,trend:key,label:desc.label,reading:desc.meaning,cost,
-   source:'coleta_e_comparacao_qualitativa_ficticia',oemValidated:false};
+   source:p.category||'oil',oemValidated:false,catalogId:n.monitorProtocol};
   s.cash-=cost;
   m.samples.push(entry);
   m.nextTick=null;
@@ -111,9 +153,9 @@
   if(!n||n.status!=='monitorando'||!['programado','aguarda_decisao','requer_avaliacao'].includes(m?.status))
    return {error:'Monitoramento não elegível para escalonamento.'};
   if(n.escalationNotificationId)return {error:'Já existe notificação escalonada.'};
-  const p=PROTOCOLS[n.monitorProtocol];
+  const p=protocol(n.monitorProtocol);
   const sc=d.scenarios.find(x=>x.id===p?.escalationScenario&&x.modelId===n.modelId);
-  if(!sc)return {error:'Cenário de investigação não encontrado; nenhuma notificação alterada.'};
+  if(!sc&&p?.category!=='fps')return {error:'Cenário de investigação não encontrado; nenhuma notificação alterada.'};
   if((s.jobs||[]).some(j=>j.asset===n.asset))return {error:'Ativo já possui OS aberta.'};
   const last=m.samples[m.samples.length-1];
   const result=last?'Última recoleta fictícia: '+last.label+'.':'Escalonado sem nova recoleta por decisão conservadora.';
@@ -122,7 +164,8 @@
   const escalation={id:newId,inspectionId:n.inspectionId,asset:n.asset,modelId:n.modelId,openedTick:s.tick,
    origin:'monitoramento_de_condicao_simulado',description,reportedIndication:description,
    priority:last?.trend==='agravamento'?'alta':'media',status:'aguarda_revisao_pcm',
-   sourceScenario:sc.id,evidenceType:'tendencia_qualitativa_simulada',workOrderId:null,
+   sourceScenario:sc?.id||null,requiresScenarioMapping:!sc,
+   evidenceType:'tendencia_qualitativa_simulada',workOrderId:null,
    previousMonitorId:n.id};
   s.notifications.push(escalation);
   n.status='escalonada_monitoramento';n.escalationNotificationId=newId;
@@ -138,5 +181,5 @@
    closed:notes.filter(n=>n.status==='encerrada_monitoramento').length,
    escalated:notes.filter(n=>n.status==='escalonada_monitoramento').length};
  }
- return {PROTOCOLS,REASONS,INTERVALS,OUTCOMES,open,decide,collect,continueWatch,close,escalate,summary};
+ return {PROTOCOLS,CATALOG,REASONS,INTERVALS,OUTCOMES,receive,open,decide,collect,continueWatch,close,escalate,summary};
 });
