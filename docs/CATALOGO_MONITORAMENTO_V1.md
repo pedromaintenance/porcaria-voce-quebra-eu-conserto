@@ -1,5 +1,7 @@
 # Monitoramento de Condição — Catálogo v1
 
+> Documento histórico. O [ciclo 6 de FPS/GET](CATALOGO_FPS_GET_V6.md) confirma FPS como Ferramentas de Penetração no Solo e eleva o total a 120 sintomas ativos. FPS001–004 são apenas legado de saves.
+
 > Documento histórico dos primeiros 30 sinais. O [Catálogo de Componentes v5](CATALOGO_COMPONENTES_V5.md) completa a expansão para **100 condições recebíveis**.
 
 > Histórico da v0.9.4. Depois das expansões de óleo e códigos, a [v4 de Material Rodante](CATALOGO_MATERIAL_RODANTE_V4.md) amplia o total a **82 sinais** e diferencia CTS, pneus e risco de postergação.
