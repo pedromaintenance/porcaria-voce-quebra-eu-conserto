@@ -19,7 +19,7 @@
  const METADATA=Object.freeze({
   "FLT001": {
     "signalClass": "diagnostico",
-    "codeState": "intermitente",
+    "codeState": "nao_confirmado",
     "moduleContext": "Controle elétrico auxiliar (módulo a identificar)",
     "observedEffect": "Aviso elétrico após lavagem sem tensão medida",
     "verification": "Verificar ECM/código, ocorrência, tensão real e conectores com multímetro conforme esquema.",
@@ -35,11 +35,12 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "intermitente"
   },
   "FLT002": {
     "signalClass": "diagnostico",
-    "codeState": "intermitente",
+    "codeState": "nao_confirmado",
     "moduleContext": "Controle do motor (módulo a identificar)",
     "observedEffect": "Avisos logo após partida e sob vibração",
     "verification": "Confirmar registros do módulo, tensão de carga e alimentação/terra antes da correção.",
@@ -55,7 +56,8 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "intermitente"
   },
   "FLT003": {
     "signalClass": "diagnostico",
@@ -75,7 +77,8 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "não especificado"
   },
   "FLT004": {
     "signalClass": "diagnostico",
@@ -95,7 +98,8 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "não especificado"
   },
   "FLT005": {
     "signalClass": "diagnostico",
@@ -115,11 +119,12 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "não especificado"
   },
   "FLT006": {
     "signalClass": "diagnostico",
-    "codeState": "intermitente",
+    "codeState": "nao_confirmado",
     "moduleContext": "Comando do joystick (módulo a identificar)",
     "observedEffect": "Não resposta do implemento ao vibrar a cabine",
     "verification": "Correlacionar código, sinal de entrada do joystick e resposta funcional com testes seguros.",
@@ -135,7 +140,8 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "intermitente"
   },
   "FLT007": {
     "signalClass": "diagnostico",
@@ -155,11 +161,12 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "não especificado"
   },
   "FLT008": {
     "signalClass": "diagnostico",
-    "codeState": "intermitente",
+    "codeState": "nao_confirmado",
     "moduleContext": "Controle elétrico auxiliar (módulo exato a identificar)",
     "observedEffect": "Aviso associado à vibração, sem queda elétrica medida",
     "verification": "Correlacionar horário, vibração, alimentação medida e integridade de fixação/roteamento com circuito isolado.",
@@ -175,7 +182,8 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "intermitente"
   },
   "FLT009": {
     "signalClass": "diagnostico",
@@ -195,11 +203,12 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "não especificado"
   },
   "FLT010": {
     "signalClass": "diagnostico",
-    "codeState": "intermitente",
+    "codeState": "nao_confirmado",
     "moduleContext": "Controle do motor (identificação do ECM pendente)",
     "observedEffect": "Alerta após partida, sem medição de tensão",
     "verification": "Conferir registros, sistema de carga, aterramento e alimentação nos pontos indicados pelo esquema elétrico.",
@@ -215,7 +224,8 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "intermitente"
   },
   "FLT011": {
     "signalClass": "diagnostico",
@@ -235,11 +245,12 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "avaliacao_prioritaria"
+    "triage": "avaliacao_prioritaria",
+    "pattern": "não especificado"
   },
   "FLT012": {
     "signalClass": "diagnostico",
-    "codeState": "intermitente",
+    "codeState": "nao_confirmado",
     "moduleContext": "Controle do implemento (módulo a confirmar)",
     "observedEffect": "Perda de comando condicionada à movimentação",
     "verification": "Conferir inspeção visual e continuidade do chicote com energias controladas, comparando registros antes/depois.",
@@ -255,11 +266,12 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "avaliacao_prioritaria"
+    "triage": "avaliacao_prioritaria",
+    "pattern": "intermitente"
   },
   "FLT013": {
     "signalClass": "diagnostico",
-    "codeState": "intermitente",
+    "codeState": "nao_confirmado",
     "moduleContext": "Controle dos comandos da cabine (módulo a identificar)",
     "observedEffect": "Função comandada não responde ocasionalmente",
     "verification": "Comparar entradas de joystick no ET com resposta da função, inspecionando conexões conforme esquema e bloqueio adequado.",
@@ -275,7 +287,8 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "avaliacao_prioritaria"
+    "triage": "avaliacao_prioritaria",
+    "pattern": "intermitente"
   },
   "FLT014": {
     "signalClass": "diagnostico",
@@ -295,7 +308,8 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "não especificado"
   },
   "FLT015": {
     "signalClass": "diagnostico",
@@ -315,11 +329,12 @@
       "CAT_ELECTRONICS_FUNDAMENTALS",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "não especificado"
   },
   "FLT016": {
     "signalClass": "diagnostico",
-    "codeState": "intermitente",
+    "codeState": "nao_confirmado",
     "moduleContext": "Comunicação do controlador de compressor (módulo a identificar)",
     "observedEffect": "Tela perde informação de estado durante deslocamento",
     "verification": "Correlacionar atualização da tela, estado do controlador e medição independente indicada no procedimento Sandvik.",
@@ -335,7 +350,8 @@
       "CAT_ELECTRONICS_FUNDAMENTALS",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "intermitente"
   },
   "FLT017": {
     "signalClass": "diagnostico",
@@ -355,7 +371,8 @@
       "CAT_ELECTRONICS_FUNDAMENTALS",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "não especificado"
   },
   "FLT018": {
     "signalClass": "diagnostico",
@@ -375,7 +392,8 @@
       "CAT_ELECTRONICS_FUNDAMENTALS",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "não especificado"
   },
   "FLT019": {
     "signalClass": "diagnostico",
@@ -395,11 +413,12 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "não especificado"
   },
   "FLT020": {
     "signalClass": "evento",
-    "codeState": "intermitente",
+    "codeState": "nao_confirmado",
     "moduleContext": "Controle do motor (módulo a confirmar)",
     "observedEffect": "Indicação intermitente associada a carga prolongada",
     "verification": "Revisar eventos, dados do motor e respiro; confirmar condição real conforme procedimento aplicável antes de afirmar blow-by.",
@@ -415,7 +434,8 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "intermitente"
   },
   "FLT021": {
     "signalClass": "diagnostico",
@@ -435,7 +455,8 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "não especificado"
   },
   "FLT022": {
     "signalClass": "diagnostico",
@@ -455,7 +476,8 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "não especificado"
   },
   "FLT023": {
     "signalClass": "evento",
@@ -475,7 +497,8 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "avaliacao_prioritaria"
+    "triage": "avaliacao_prioritaria",
+    "pattern": "não especificado"
   },
   "FLT024": {
     "signalClass": "diagnostico",
@@ -495,7 +518,8 @@
       "CAT_ET_CAPABILITIES",
       "CAT_ELECTRONICS_TROUBLESHOOT"
     ],
-    "triage": "acompanhar"
+    "triage": "acompanhar",
+    "pattern": "não especificado"
   }
 });
  const ENTRIES=Object.freeze([
