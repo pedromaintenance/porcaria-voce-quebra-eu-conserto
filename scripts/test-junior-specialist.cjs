@@ -5,7 +5,7 @@ const root=path.join(__dirname,'..'),dir=path.join(root,'phaser-play/assets/char
 const manifest=JSON.parse(fs.readFileSync(path.join(dir,'manifest.json'),'utf8'));
 const E=require(path.join(root,'engine.js')),data=JSON.parse(fs.readFileSync(path.join(root,'game-data.json'),'utf8'));
 const fresh=E.create(data,()=>0.42);
-assert.deepEqual(fresh.team.map(x=>x.name),['Pedro','Geovane','Junior','Acassio']);
+assert.deepEqual(fresh.team.map(x=>x.name),['Pedro','Geovane','Junior','Acassio','Nemuel']);
 const junior=fresh.team[2];assert.equal(junior.id,'M3');
 assert.equal(junior.role,'geral');assert.equal(junior.specialty,'Especialista');
 assert.equal(junior.sprite,'junior');assert.equal(junior.trainingSprite,'junior-training');
@@ -19,7 +19,7 @@ legacy.team=[
 ];
 legacy.nextPerson=8;j.assigned='M7';j.bay=0;
 E.normalizeRoster(legacy);
-assert.equal(legacy.team.length,4);assert.equal(j.assigned,'M7');
+assert.equal(legacy.team.length,5);assert.equal(legacy.team.at(-1).name,'Nemuel');assert.equal(j.assigned,'M7');
 assert.ok(!legacy.team.find(x=>x.name==='Junior'),'não inserir Junior automaticamente em save legado');
 assert.equal(manifest.characterId,'junior');assert.equal(manifest.field.purpose,'oficina-OS');
 assert.equal(manifest.grid.footMarginPx,12);
