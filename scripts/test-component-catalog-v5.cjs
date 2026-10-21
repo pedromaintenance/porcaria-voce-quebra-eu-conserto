@@ -10,7 +10,7 @@ assert.equal(X.VERSION,'5.0.0');
 assert.equal(C.VERSION,'6.0.0');
 assert.equal(X.ENTRIES.length,18);
 assert.equal(C.ENTRIES.length,120);
-assert.deepEqual(domains.map(x=>C.byCategory(x).length),[24,24,24,4,24]);
+assert.deepEqual(domains.map(x=>C.byCategory(x).length),[24,24,24,24,24]);
 assert.equal(new Set(C.ENTRIES.map(e=>e.id)).size,120);
 assert.equal(D.scenarios.length,100,'100 missões FMEA anteriores preservadas');
 assert.equal(D.paths.length,387,'estruturas funcionais existentes preservadas');
