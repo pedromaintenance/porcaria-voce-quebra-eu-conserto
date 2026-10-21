@@ -81,7 +81,7 @@ const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
 const ui=fs.readFileSync(path.join(root,'phaser-play/game.js'),'utf8');
 const plan=fs.readFileSync(path.join(root,'phaser-play/planning.js'),'utf8');
 assert.ok(html.indexOf('competency.js?v=0.8.27')<html.indexOf('engine.js'),'motor carrega mapa antes da simulação');
-assert.ok(html.includes('game.js?v=0.9.11'));
+assert.ok(html.includes('game.js?v=0.9.13'));
 assert.ok(sw.includes('porcaria-vqec-20261019-v111'));
 assert.ok(sw.includes("'./competency.js'"));
 assert.ok(plan.includes('COMPETENCY.evaluate(m,sc)'));
