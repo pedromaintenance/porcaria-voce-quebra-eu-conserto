@@ -44,7 +44,7 @@ assert.ok(!script.includes("ctx.drawImage(img,320,130,"),'recorte legado não re
 assert.ok(!script.includes("key==='repoNightWorkshopBG'?'fullFrame':'cropped'"),
  'não há mais diferença de geometria entre dia e noite');
 assert.ok(script.includes('const activeBays=this.activeBayLayout||BAY_LAYOUT'),'sprites seguem layout ativo');
-assert.ok(html.includes('game.js?v=0.9.4'),'cache da interface atualizado');
+assert.ok(html.includes('game.js?v=0.9.11'),'cache da interface atualizado');
 assert.ok(sw.includes('porcaria-vqec-20261019-v111'));
 assert.ok(sw.includes("'./phaser-play/assets/oficina-diurna-fullframe.avif'"));
 assert.ok(sw.includes("'./phaser-play/assets/oficina-noturna-hq.avif'"));
