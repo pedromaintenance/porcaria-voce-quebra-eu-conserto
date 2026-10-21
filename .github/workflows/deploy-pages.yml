@@ -48,7 +48,7 @@ jobs:
         run: |
           echo "32b708ae3c33555e26602730644f6848daa49bbd168a51aa6b1e31de9a4edcd2  phaser-play/assets/characters/costa-4poses.webp" | sha256sum --check
           echo "ba160e74d97ab8a469b26b524049f625f89ff08bf6997a6427efb79b4b637d44  phaser-play/assets/characters/pedro-v0829-4poses.png" | sha256sum --check
-          echo "229f8caddeb6fc332972c94841342424f74da65dcd37479bd51a3524c888470a  phaser-play/assets/characters/geovane-4poses.webp" | sha256sum --check
+          echo "05833e0e9de344f80258832c2754cbc82d3ce1d22e33119bb355aef5f2b20e73  phaser-play/assets/characters/geovane-4poses.webp" | sha256sum --check
           echo "26f68b092d14bfb940a7e44577b1d117d14571b27bd69fc0a248124102c849eb  phaser-play/assets/characters/silva-4poses.webp" | sha256sum --check
           echo "48105f1036d2b9693531abb349954f251e1c2d31c4a599e8cdd7ad9c0d5f89ce  phaser-play/assets/characters/santos-4poses.webp" | sha256sum --check
           echo "eba522ff337b6838cd4e2f5f77043c7e410bf32a425d2dd243a143f9b64fd99d  phaser-play/assets/characters/moura-4poses.webp" | sha256sum --check
