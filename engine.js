@@ -6,7 +6,9 @@
   const COMPETENCY=typeof require==='function'?require('./competency.js'):globalThis.PORCARIA_COMPETENCY;
   if(!COMPETENCY)throw Error('Módulo de competências indisponível.');
   const TRAINING=typeof require==='function'?require('./training.js'):globalThis.PORCARIA_TRAINING;
+  const SCHEDULE=typeof require==='function'?require('./phaser-play/weekly-schedule.js'):globalThis.PORCARIA_WEEKLY_SCHEDULE;
   if(!TRAINING)throw Error('Módulo de treinamento indisponível.');
+  if(!SCHEDULE)throw Error('Módulo de programação semanal indisponível.');
   // Elenco principal fixo. Saves antigos recebem o inspetor Nemuel uma vez, preservando IDs e OS.
   const INITIAL_TEAM=Object.freeze([
     {name:'Pedro',avatar:'🧯',role:'geral',specialty:'Brigadista',sprite:'pedro'},
@@ -301,7 +303,7 @@
   function create(data,rng=Math.random){
     const s={version:'1.1.0',day:1,shift:0,tick:0,cash:15800,reputation:86,xp:0,productivityTarget:DEFAULT_PRODUCTIVITY_TARGET,
       player:{mental:86,physical:84},
-      team:[],jobs:[],done:[],orders:[],purchaseHistory:[],decisionHistory:[],lessonNotes:[],nextDecision:1,stock:{},tools:{},nextJob:1,nextPerson:1,nextPO:1,
+      team:[],jobs:[],done:[],orders:[],purchaseHistory:[],decisionHistory:[],lessonNotes:[],scheduleEntries:[],nextSchedule:1,nextDecision:1,stock:{},tools:{},nextJob:1,nextPerson:1,nextPO:1,
       logs:[],kpi:[],lastUtilization:0,metrics:{hours:0,productive:0,wages:0,outsourced:0,incidents:0,safety:0},
       bays:3,closed:false};
     for(const [id,v] of Object.entries(data.items))s.stock[id]=v.initial;
@@ -364,6 +366,17 @@
     msg(s,`Evolução DIDÁTICA: ${prior.asset} retornou após ${prior.id} com ${next.id} (${next.title}). Atraso de ${idle} turno(s) sem equipe. Não é previsão real de falha.`,'bad');
     return sequel;
   }
+  function scheduleJob(s,d,orderId,mechanicId,bay,tick){
+    const result=SCHEDULE.book(s,d,orderId,mechanicId,bay,tick,
+      (type,fields)=>recordDecision(s,type,fields));
+    if(!result)msg(s,'Programação registrada para a OS '+orderId+'.','ok');
+    return result;
+  }
+  function cancelSchedule(s,id){
+    const result=SCHEDULE.cancel(s,id,(type,fields)=>recordDecision(s,type,fields));
+    if(!result)msg(s,'Reserva PCM cancelada.','info');
+    return result;
+  }
   function attach(s,id,mid,bay,help){
     const j=job(s,id),m=employee(s,mid);
     if(!j||!m)return 'Serviço ou mecânico não encontrado.';
@@ -376,8 +389,11 @@
     if(j.bay!==null && j.bay!==bay)return 'A OS já ocupa outro box.';
     if(!Number.isInteger(bay)||bay<0||bay>=s.bays)return 'Box inválido.';
     if(s.jobs.some(a=>a.id!==id && a.bay===bay))return 'Esse box está ocupado.';
+    const bookingError=SCHEDULE.allocationBlock(s,id,mid,bay);
+    if(bookingError)return bookingError;
     j.assigned=mid;j.bay=bay;j.help=!!help;m.assigned=id;j.scheduleShift ??= s.tick;
     j.status=j.stage<6?'diagnostico':'apto';
+    SCHEDULE.fulfill(s,id,mid,bay,(type,fields)=>recordDecision(s,type,fields));
     recordDecision(s,'allocation',{orderId:id,scene:j.scene,asset:j.asset,modelId:j.modelId,
       mechanicId:mid,mechanicName:m.name,bay,assistance:!!help,stage:j.stage,
       classification:'alocacao_confirmada',origin:'oficina'});
@@ -657,6 +673,7 @@
     s.metrics.hours+=nominalHH;s.metrics.productive+=hours;
     s.lastUtilization=nominalHH?Math.min(100,Math.round(hours/nominalHH*100)):0;
     s.tick++;
+    SCHEDULE.afterAdvance(s,(type,fields)=>recordDecision(s,type,fields));
     const received=s.orders.filter(o=>o.eta<=s.tick);
     for(const o of received){
       s.stock[o.item]=(s.stock[o.item]||0)+o.qty;
@@ -711,7 +728,7 @@
       pendingMaterials:s.jobs.filter(j=>j.status==='material').length, pendingTools:s.jobs.filter(j=>j.status==='ferramenta').length};
   }
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
-  return {create,recordDecision,writeLesson,normalizeRoster,localizeDiagnosticOptions,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
+  return {create,recordDecision,writeLesson,scheduleJob,cancelSchedule,normalizeRoster,localizeDiagnosticOptions,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
     SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
     model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
 });
