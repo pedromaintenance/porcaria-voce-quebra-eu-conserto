@@ -352,6 +352,7 @@ function drawPlanning(){
  if($('planningNotifications'))$('planningNotifications').innerHTML=S.planning(state,data,I,E,IV);
  if(planningHorizon==='week'){drawWeekly();return}
  const plan=window.PORCARIA_PLANNING.compute(state,data);
+ const impact=window.PORCARIA_DECISION_IMPACT.compute(state,data);
  const metric=(title,value)=>'<div class="planningMetric"><small>'+esc(title)+'</small><strong>'+esc(value)+'</strong></div>';
  let out=planningTabs()+'<p class="planningIntro">DIA '+plan.day+' · TURNO '+plan.shift+' · Compare as OS não alocadas e programe um serviço por vez. '
    +'A sugestão não substitui seu julgamento; a decisão fica registrada no motor da oficina.</p>';
@@ -359,7 +360,16 @@ function drawPlanning(){
    +metric('OS aguardando',plan.countWaiting)
    +metric('Críticas sem equipe',plan.countCriticalWaiting)
    +metric('Mecânicos livres',plan.freeMechanics.length)
-   +metric('HH brutas restantes',plan.remainingGrossHours+'h')+'</div>';
+   +metric('HH brutas restantes',plan.remainingGrossHours+'h')
+   +metric('Horas paradas em OS abertas',impact.metrics.activeDowntimeHours+'h')
+   +metric('Turnos sem peça',impact.metrics.materialWaitShifts)
+   +metric('Turnos sem ferramenta',impact.metrics.toolWaitShifts)
+   +metric('Retrabalho registrado',impact.metrics.reworkHours+'h')+'</div>';
+ out+='<section class="planningDecisionLedger"><h3>📊 CUSTO DA DECISÃO · REGRAS DE JOGO</h3>'
+   +'<p><strong>Oportunidade virtual acumulada:</strong> R$ '+brl(impact.metrics.virtualOpportunityCost)
+   +' · <strong>Compras registradas:</strong> R$ '+brl(impact.metrics.purchaseTotal)
+   +' · <strong>Pedidos em trânsito:</strong> '+impact.metrics.openPurchases+'</p>'
+   +'<small>'+esc(impact.warning)+'</small></section>';
  out+='<div class="planningExplanation">'+esc(plan.method)+'<p>'+esc(plan.capacityNote)+'</p><p>'+esc(plan.etaNote)+'</p></div>';
  if(!plan.ranked.length){
   out+='<div class="planningOrder"><strong>Todas as OS estão alocadas ou a carteira está vazia.</strong><p>Verifique os bloqueios e o progresso no briefing de turno.</p><div class="actions"><button class="act secondary" data-open-panel="shift">ABRIR BRIEFING</button></div></div>';
@@ -385,6 +395,24 @@ function drawPlanning(){
    }else{
     const reason=[j.blockers,...j.inbound.map(o=>o.id+' chega em '+o.turnsRemaining+' turno(s) (ao final)')].filter(Boolean).join(' · ');
     html+='<p class="planningNoResource">'+esc(reason||'Sem recurso de execução disponível para alocação assistida.')+'</p>';
+   }
+   const cost=impact.active.find(x=>x.id===j.id);
+   if(cost){
+    html+='<p class="planningExposure"><strong>Impacto acumulado:</strong> '
+      +cost.downtimeHours+'h de OS aberta · '+cost.materialWaitShifts+' turno(s) sem peça · '
+      +cost.toolWaitShifts+' sem ferramenta · '+cost.reworkHours+'h de retrabalho'
+      +' · estimativa virtual R$ '+brl(cost.costOpportunity)+'</p>';
+    const procurement=cost.procurement;
+    if(procurement&&!procurement.couldReserveNow&&procurement.comparison){
+     const q=procurement.comparison;
+     html+='<div class="planningPurchaseComparison"><strong>DECISÃO DE COMPRA · '+esc(procurement.item)+'</strong>'
+      +'<p>Saldo: '+procurement.onHand+' · demanda diagnosticada: '+procurement.demandDiagnosed
+      +' · pedidos em trânsito: '+procurement.inbound.length+' · necessidade não coberta: '+procurement.shortfall+'</p>'
+      +'<div class="planningPurchaseOptions">'
+      +'<span>Normal: R$ '+brl(q.normal.cost)+' · '+q.normal.turnsMin+'–'+q.normal.turnsMax+' turnos</span>'
+      +'<span>Urgente: R$ '+brl(q.urgent.cost)+' · '+q.urgent.turnsMin+'–'+q.urgent.turnsMax+' turnos</span></div>'
+      +'<small>Urgência custa +R$ '+brl(q.premium)+' por unidade. '+esc(q.deliveryRule)+' '+esc(procurement.warning)+'</small></div>';
+    }
    }
    html+='<div class="actions"><button class="act secondary" data-pick="'+esc(j.id)+'">VER / ALOCAR MANUALMENTE</button>';
    if(j.recommended)html+='<button class="act" data-plan-assign="'+esc(j.id)+'" data-plan-tick="'+plan.tick+'">✓ ALOCAR SUGESTÃO</button>';
