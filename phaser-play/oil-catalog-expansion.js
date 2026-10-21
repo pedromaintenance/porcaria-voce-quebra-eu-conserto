@@ -133,204 +133,244 @@
     ]
   },
   "OIL009": {
-    "compartment": "Ferro, cobre, horas da amostra",
+    "compartment": "Motor diesel",
     "indicators": [
-      "A série de óleo do motor registra crescimento concomitante de Fe e Cu",
-      "ainda sem confirmação de desgaste interno."
+      "Ferro",
+      "cobre",
+      "horas da amostra"
     ],
-    "verification": "Indícios elementares não isolam peça ou mecanismo.",
-    "uncertainty": "acompanhar",
+    "verification": "Conferir horas do óleo e histórico de filtro; repetir amostra representativa antes da troca.",
+    "uncertainty": "Indícios elementares não isolam peça ou mecanismo.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
       "CAT_DRIVETRAIN"
-    ]
+    ],
+    "triage": "acompanhar"
   },
   "OIL010": {
-    "compartment": "Partículas, Fe, resposta do freio",
+    "compartment": "Circuito hidráulico dos freios",
     "indicators": [
-      "Laudos do circuito de freios apontam partículas ferrosas crescentes; a operação registra resposta irregular eventual."
+      "Partículas",
+      "Fe",
+      "resposta do freio"
     ],
-    "verification": "As partículas não confirmam bomba avariada.",
-    "uncertainty": "acompanhar",
+    "verification": "Correlacionar histórico da amostra ao relato funcional e encaminhar prioridade técnica se houver alteração de resposta.",
+    "uncertainty": "As partículas não confirmam bomba avariada.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
       "CAT_DRIVETRAIN"
-    ]
+    ],
+    "triage": "acompanhar"
   },
   "OIL011": {
-    "compartment": "Ferro, partículas, ruído",
+    "compartment": "Redutor de giro",
     "indicators": [
-      "A tendência do óleo do redutor de giro aponta aumento de Fe e o histórico menciona ruído intermitente ao girar."
+      "Ferro",
+      "partículas",
+      "ruído"
     ],
-    "verification": "Fe no óleo não identifica engrenagem específica.",
-    "uncertainty": "acompanhar",
+    "verification": "Confirmar lado/redutor e horas do lubrificante; correlacionar ruído e inspeção segura.",
+    "uncertainty": "Fe no óleo não identifica engrenagem específica.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
       "CAT_DRIVETRAIN"
-    ]
+    ],
+    "triage": "acompanhar"
   },
   "OIL012": {
-    "compartment": "Ferro, partículas, vibração sob tração",
+    "compartment": "Transmissão",
     "indicators": [
-      "Na transmissão",
-      "a tendência de partículas e metais aumenta e há relato de vibração sob esforço."
+      "Ferro",
+      "partículas",
+      "vibração sob tração"
     ],
-    "verification": "A origem do desgaste não é conhecida.",
-    "uncertainty": "acompanhar",
+    "verification": "Conferir compartimento",
+    "uncertainty": "A origem do desgaste não é conhecida.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
       "CAT_DRIVETRAIN"
-    ]
+    ],
+    "triage": "acompanhar"
   },
   "OIL013": {
-    "compartment": "Silício, alumínio, partículas",
+    "compartment": "Comando final (posição 2)",
     "indicators": [
-      "O comando final do D9 volta a apresentar silício",
-      "alumínio e material particulado após histórico de entrada ambiental."
+      "Silício",
+      "alumínio",
+      "partículas"
     ],
-    "verification": "Silício pode ter outras origens; não prova falha de vedação.",
-    "uncertainty": "acompanhar",
+    "verification": "Confirmar limpeza do ponto de amostra e integridade de respiro/vedações.",
+    "uncertainty": "Silício pode ter outras origens; não prova falha de vedação.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
       "CAT_DRIVETRAIN"
-    ]
+    ],
+    "triage": "acompanhar"
   },
   "OIL014": {
-    "compartment": "Fe, Cu, vibração",
+    "compartment": "Diferencial do eixo motriz",
     "indicators": [
-      "Duas análises do diferencial sugerem desgaste progressivo e a operação reporta vibração em transporte carregado."
+      "Fe",
+      "Cu",
+      "vibração"
     ],
-    "verification": "Fe e Cu não identificam rolamento específico.",
-    "uncertainty": "acompanhar",
+    "verification": "Conferir histórico",
+    "uncertainty": "Fe e Cu não identificam rolamento específico.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
       "CAT_DRIVETRAIN"
-    ]
+    ],
+    "triage": "acompanhar"
   },
   "OIL015": {
-    "compartment": "Silício, partículas, condições de coleta",
+    "compartment": "Diferencial dianteiro",
     "indicators": [
-      "A análise do diferencial dianteiro da 966 mostra indício de ingresso ambiental após lavagem na região do eixo."
+      "Silício",
+      "partículas",
+      "condições de coleta"
     ],
-    "verification": "Contaminação de amostra não equivale a ingresso no sistema.",
-    "uncertainty": "acompanhar",
+    "verification": "Verificar técnica de coleta e condições de tampas",
+    "uncertainty": "Contaminação de amostra não equivale a ingresso no sistema.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
       "CAT_DRIVETRAIN"
-    ]
+    ],
+    "triage": "acompanhar"
   },
   "OIL016": {
-    "compartment": "Fe, Cu, condição do filtro",
+    "compartment": "Motor diesel (posição 1)",
     "indicators": [
-      "Laudos do motor diesel apontam metais acima do histórico e manutenção de filtro de óleo próxima do prazo."
+      "Fe",
+      "Cu",
+      "condição do filtro"
     ],
-    "verification": "Metal elevado não prova que o filtro é a causa.",
-    "uncertainty": "acompanhar",
+    "verification": "Verificar identidade do motor",
+    "uncertainty": "Metal elevado não prova que o filtro é a causa.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
       "CAT_DRIVETRAIN"
-    ]
+    ],
+    "triage": "acompanhar"
   },
   "OIL017": {
-    "compartment": "Água, partículas, ruído",
+    "compartment": "Comando final (posição 1)",
     "indicators": [
-      "Após correção tardia de vedação",
-      "o comando final ainda apresenta umidade",
-      "resíduos e ruído sob carga."
+      "Água",
+      "partículas",
+      "ruído"
     ],
-    "verification": "Persistência da condição não comprova rolamento danificado.",
-    "uncertainty": "avaliacao_prioritaria",
+    "verification": "Encaminhar ao PCM para avaliação prioritária e correlação com inspeção de ruído.",
+    "uncertainty": "Persistência da condição não comprova rolamento danificado.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
       "CAT_DRIVETRAIN"
-    ]
+    ],
+    "triage": "avaliacao_prioritaria"
   },
   "OIL018": {
-    "compartment": "Silício, Fe, resíduos",
+    "compartment": "Comando final (posição 2)",
     "indicators": [
-      "Após intervenção em vedação do comando final do D9",
-      "surge novo resíduo metálico e ruído em tração."
+      "Silício",
+      "Fe",
+      "resíduos"
     ],
-    "verification": "Partículas não demonstram dano em engrenagem sem evidência.",
-    "uncertainty": "acompanhar",
+    "verification": "Confrontar amostras anterior/posterior e solicitar verificação de contaminação residual.",
+    "uncertainty": "Partículas não demonstram dano em engrenagem sem evidência.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
       "CAT_DRIVETRAIN"
-    ]
+    ],
+    "triage": "acompanhar"
   },
   "OIL019": {
-    "compartment": "Contagem de partículas, tendência, temperatura",
+    "compartment": "Sistema hidráulico de implementos",
     "indicators": [
-      "O sistema hidráulico da 6030 apresenta elevação do particulado e resposta irregular de função após esforço."
+      "Contagem de partículas",
+      "tendência",
+      "temperatura"
     ],
-    "verification": "O dado não individualiza bomba nem válvula.",
-    "uncertainty": "acompanhar",
+    "verification": "Inspecionar condições do ponto de amostra",
+    "uncertainty": "O dado não individualiza bomba nem válvula.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
       "CAT_DRIVETRAIN"
-    ]
+    ],
+    "triage": "acompanhar"
   },
   "OIL020": {
-    "compartment": "Ferro, partículas, ruído",
+    "compartment": "Conjunto tandem/transmissão",
     "indicators": [
-      "O conjunto tandem da CAT 16 registra tendência de Fe/partículas e novo ruído sob esforço."
+      "Ferro",
+      "partículas",
+      "ruído"
     ],
-    "verification": "Não existe confirmação de engrenagem danificada.",
-    "uncertainty": "acompanhar",
+    "verification": "Confirmar lado/posição",
+    "uncertainty": "Não existe confirmação de engrenagem danificada.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
       "CAT_DRIVETRAIN"
-    ]
+    ],
+    "triage": "acompanhar"
   },
   "OIL021": {
-    "compartment": "Viscosidade, combustível diluído",
+    "compartment": "Óleo do motor diesel",
     "indicators": [
-      "O laudo do motor da CAT 395 aponta viscosidade abaixo da referência e possível diluição por combustível."
+      "Viscosidade",
+      "combustível diluído"
     ],
-    "verification": "A viscosidade isolada não determina causa; roteiro FMEA específico ainda não cadastrado.",
-    "uncertainty": "acompanhar",
+    "verification": "Correlacionar horas",
+    "uncertainty": "A viscosidade isolada não determina causa; roteiro FMEA específico ainda não cadastrado.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
       "CAT_DRIVETRAIN"
-    ]
+    ],
+    "triage": "acompanhar"
   },
   "OIL022": {
-    "compartment": "Fuligem, oxidação, viscosidade",
+    "compartment": "Óleo do motor diesel",
     "indicators": [
-      "A série de óleo do motor registra elevação de fuligem e índice de oxidação; condição do lubrificante requer avaliação."
+      "Fuligem",
+      "oxidação",
+      "viscosidade"
     ],
-    "verification": "Oxidação e fuligem não definem peça responsável; falta roteiro específico.",
-    "uncertainty": "acompanhar",
+    "verification": "Verificar horas",
+    "uncertainty": "Oxidação e fuligem não definem peça responsável; falta roteiro específico.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
       "CAT_DRIVETRAIN"
-    ]
+    ],
+    "triage": "acompanhar"
   },
   "OIL023": {
-    "compartment": "Sódio, glicol, água, viscosidade",
+    "compartment": "Óleo do motor diesel",
     "indicators": [
-      "Laudo do motor diesel da 6030 indica possível contaminação por arrefecimento",
-      "com traços que requerem confirmação."
+      "Sódio",
+      "glicol",
+      "água",
+      "viscosidade"
     ],
-    "verification": "Sódio isolado não confirma vazamento; rota de investigação específica não cadastrada.",
-    "uncertainty": "avaliacao_prioritaria",
+    "verification": "Priorizar avaliação técnica e confirmar contaminante e condição do sistema antes de decisão operacional.",
+    "uncertainty": "Sódio isolado não confirma vazamento; rota de investigação específica não cadastrada.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
       "CAT_SOS_CAPACIDADES"
-    ]
+    ],
+    "triage": "avaliacao_prioritaria"
   },
   "OIL024": {
-    "compartment": "Aditivos, viscosidade, registro de troca",
+    "compartment": "Comando final",
     "indicators": [
-      "O laudo do comando final apresenta perfil de aditivos diferente após substituição declarada do produto",
-      "sem outros indícios de falha."
+      "Aditivos",
+      "viscosidade",
+      "registro de troca"
     ],
-    "verification": "Mudança de assinatura química pode refletir formulação distinta, mas a compatibilidade precisa ser confirmada.",
-    "uncertainty": "revisar_baseline",
+    "verification": "Conferir produto/compatibilidade",
+    "uncertainty": "Mudança de assinatura química pode refletir formulação distinta, mas a compatibilidade precisa ser confirmada.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
       "CAT_OLEOS"
-    ]
+    ],
+    "triage": "revisar_baseline"
   }
 });
  const ENTRIES=Object.freeze([
@@ -339,12 +379,13 @@
     "category": "oil",
     "modelId": "EQ03",
     "title": "Motor diesel: ferro e cobre com tendência crescente",
-    "baseline": "INC069",
-    "escalationScenario": "inconclusivo,agravamento",
+    "baseline": "A série de óleo do motor registra crescimento concomitante de Fe e Cu, ainda sem confirmação de desgaste interno.",
+    "escalationScenario": "INC069",
     "followupTool": "COLETA",
     "followupCost": 40,
     "results": [
-      "Conferir horas do óleo e histórico de filtro; repetir amostra representativa antes da troca."
+      "inconclusivo",
+      "agravamento"
     ]
   },
   {
@@ -352,12 +393,13 @@
     "category": "oil",
     "modelId": "EQ01",
     "title": "Freios hidráulicos: partículas ferrosas em elevação",
-    "baseline": "INC065",
-    "escalationScenario": "inconclusivo,agravamento",
+    "baseline": "Laudos do circuito de freios apontam partículas ferrosas crescentes; a operação registra resposta irregular eventual.",
+    "escalationScenario": "INC065",
     "followupTool": "COLETA",
     "followupCost": 40,
     "results": [
-      "Correlacionar histórico da amostra ao relato funcional e encaminhar prioridade técnica se houver alteração de resposta."
+      "inconclusivo",
+      "agravamento"
     ]
   },
   {
@@ -365,12 +407,13 @@
     "category": "oil",
     "modelId": "EQ02",
     "title": "Redutor de giro: ferro crescente e ruído intermitente",
-    "baseline": "INC089",
-    "escalationScenario": "estavel,agravamento",
+    "baseline": "A tendência do óleo do redutor de giro aponta aumento de Fe e o histórico menciona ruído intermitente ao girar.",
+    "escalationScenario": "INC089",
     "followupTool": "COLETA",
     "followupCost": 40,
     "results": [
-      "Confirmar lado/redutor e horas do lubrificante; correlacionar ruído e inspeção segura."
+      "estavel",
+      "agravamento"
     ]
   },
   {
@@ -378,13 +421,13 @@
     "category": "oil",
     "modelId": "EQ01",
     "title": "Transmissão: aumento de metais associado a vibração",
-    "baseline": "INC088",
-    "escalationScenario": "inconclusivo,agravamento",
+    "baseline": "Na transmissão, a tendência de partículas e metais aumenta e há relato de vibração sob esforço.",
+    "escalationScenario": "INC088",
     "followupTool": "COLETA",
     "followupCost": 40,
     "results": [
-      "Conferir compartimento",
-      " lubrificante e vibração; planejar diagnóstico da transmissão."
+      "inconclusivo",
+      "agravamento"
     ]
   },
   {
@@ -392,12 +435,13 @@
     "category": "oil",
     "modelId": "EQ07",
     "title": "Comando final: abrasivos recorrentes após contaminação",
-    "baseline": "INC042",
-    "escalationScenario": "estavel,agravamento",
+    "baseline": "O comando final do D9 volta a apresentar silício, alumínio e material particulado após histórico de entrada ambiental.",
+    "escalationScenario": "INC042",
     "followupTool": "COLETA",
     "followupCost": 40,
     "results": [
-      "Confirmar limpeza do ponto de amostra e integridade de respiro/vedações."
+      "estavel",
+      "agravamento"
     ]
   },
   {
@@ -405,13 +449,13 @@
     "category": "oil",
     "modelId": "EQ01",
     "title": "Diferencial: metais de desgaste e vibração sob carga",
-    "baseline": "INC043",
-    "escalationScenario": "estavel,agravamento",
+    "baseline": "Duas análises do diferencial sugerem desgaste progressivo e a operação reporta vibração em transporte carregado.",
+    "escalationScenario": "INC043",
     "followupTool": "COLETA",
     "followupCost": 40,
     "results": [
-      "Conferir histórico",
-      " compartimento e evidência operacional antes de concluir dano interno."
+      "estavel",
+      "agravamento"
     ]
   },
   {
@@ -419,13 +463,13 @@
     "category": "oil",
     "modelId": "EQ08",
     "title": "Diferencial dianteiro: silício e partículas ambientais",
-    "baseline": "INC092",
-    "escalationScenario": "inconclusivo,agravamento",
+    "baseline": "A análise do diferencial dianteiro da 966 mostra indício de ingresso ambiental após lavagem na região do eixo.",
+    "escalationScenario": "INC092",
     "followupTool": "COLETA",
     "followupCost": 40,
     "results": [
-      "Verificar técnica de coleta e condições de tampas",
-      " respiros e vedações."
+      "inconclusivo",
+      "agravamento"
     ]
   },
   {
@@ -433,13 +477,13 @@
     "category": "oil",
     "modelId": "EQ02",
     "title": "Motor diesel: metais elevados com troca de filtro próxima",
-    "baseline": "INC068",
-    "escalationScenario": "estavel,agravamento",
+    "baseline": "Laudos do motor diesel apontam metais acima do histórico e manutenção de filtro de óleo próxima do prazo.",
+    "escalationScenario": "INC068",
     "followupTool": "COLETA",
     "followupCost": 40,
     "results": [
-      "Verificar identidade do motor",
-      " horas do óleo e histórico do elemento filtrante."
+      "estavel",
+      "agravamento"
     ]
   },
   {
@@ -447,12 +491,12 @@
     "category": "oil",
     "modelId": "EQ01",
     "title": "Comando final: umidade residual e ruído após correção",
-    "baseline": "INC096",
-    "escalationScenario": "agravamento",
+    "baseline": "Após correção tardia de vedação, o comando final ainda apresenta umidade, resíduos e ruído sob carga.",
+    "escalationScenario": "INC096",
     "followupTool": "COLETA",
     "followupCost": 40,
     "results": [
-      "Encaminhar ao PCM para avaliação prioritária e correlação com inspeção de ruído."
+      "agravamento"
     ]
   },
   {
@@ -460,12 +504,13 @@
     "category": "oil",
     "modelId": "EQ07",
     "title": "Comando final: partículas após intervenção em vedação",
-    "baseline": "INC097",
-    "escalationScenario": "inconclusivo,agravamento",
+    "baseline": "Após intervenção em vedação do comando final do D9, surge novo resíduo metálico e ruído em tração.",
+    "escalationScenario": "INC097",
     "followupTool": "COLETA",
     "followupCost": 40,
     "results": [
-      "Confrontar amostras anterior/posterior e solicitar verificação de contaminação residual."
+      "inconclusivo",
+      "agravamento"
     ]
   },
   {
@@ -473,13 +518,13 @@
     "category": "oil",
     "modelId": "EQ02",
     "title": "Sistema hidráulico: partículas crescentes e resposta irregular",
-    "baseline": "INC061",
-    "escalationScenario": "inconclusivo,agravamento",
+    "baseline": "O sistema hidráulico da 6030 apresenta elevação do particulado e resposta irregular de função após esforço.",
+    "escalationScenario": "INC061",
     "followupTool": "COLETA",
     "followupCost": 40,
     "results": [
-      "Inspecionar condições do ponto de amostra",
-      " filtragem e sintoma da função."
+      "inconclusivo",
+      "agravamento"
     ]
   },
   {
@@ -487,13 +532,13 @@
     "category": "oil",
     "modelId": "EQ09",
     "title": "Tandem: tendência de Fe e partículas com ruído novo",
-    "baseline": "INC093",
-    "escalationScenario": "estavel,agravamento",
+    "baseline": "O conjunto tandem da CAT 16 registra tendência de Fe/partículas e novo ruído sob esforço.",
+    "escalationScenario": "INC093",
     "followupTool": "COLETA",
     "followupCost": 40,
     "results": [
-      "Confirmar lado/posição",
-      " histórico de óleo e ocorrência do ruído."
+      "estavel",
+      "agravamento"
     ]
   },
   {
@@ -501,14 +546,13 @@
     "category": "oil",
     "modelId": "EQ03",
     "title": "Motor diesel: viscosidade reduzida e suspeita de combustível",
-    "baseline": "null",
-    "escalationScenario": "inconclusivo,agravamento",
+    "baseline": "O laudo do motor da CAT 395 aponta viscosidade abaixo da referência e possível diluição por combustível.",
+    "escalationScenario": null,
     "followupTool": "COLETA",
     "followupCost": 40,
     "results": [
-      "Correlacionar horas",
-      " nível de óleo",
-      " integridade da amostra e confirmação de diluição; avaliar necessidade de intervenção."
+      "inconclusivo",
+      "agravamento"
     ]
   },
   {
@@ -516,13 +560,13 @@
     "category": "oil",
     "modelId": "EQ01",
     "title": "Motor diesel: fuligem e oxidação em elevação",
-    "baseline": "null",
-    "escalationScenario": "estavel,agravamento",
+    "baseline": "A série de óleo do motor registra elevação de fuligem e índice de oxidação; condição do lubrificante requer avaliação.",
+    "escalationScenario": null,
     "followupTool": "COLETA",
     "followupCost": 40,
     "results": [
-      "Verificar horas",
-      " aplicação e qualidade da amostra; confrontar viscosidade e histórico."
+      "estavel",
+      "agravamento"
     ]
   },
   {
@@ -530,12 +574,12 @@
     "category": "oil",
     "modelId": "EQ02",
     "title": "Motor diesel: suspeita de líquido de arrefecimento no óleo",
-    "baseline": "null",
-    "escalationScenario": "agravamento",
+    "baseline": "Laudo do motor diesel da 6030 indica possível contaminação por arrefecimento, com traços que requerem confirmação.",
+    "escalationScenario": null,
     "followupTool": "COLETA",
     "followupCost": 40,
     "results": [
-      "Priorizar avaliação técnica e confirmar contaminante e condição do sistema antes de decisão operacional."
+      "agravamento"
     ]
   },
   {
@@ -543,13 +587,13 @@
     "category": "oil",
     "modelId": "EQ01",
     "title": "Comando final: aditivos alterados após troca declarada de óleo",
-    "baseline": "null",
-    "escalationScenario": "estavel,estavel",
+    "baseline": "O laudo do comando final apresenta perfil de aditivos diferente após substituição declarada do produto, sem outros indícios de falha.",
+    "escalationScenario": null,
     "followupTool": "COLETA",
     "followupCost": 40,
     "results": [
-      "Conferir produto/compatibilidade",
-      " histórico e nova linha de base com o analista; não condenar o conjunto pelo perfil isolado."
+      "estavel",
+      "estavel"
     ]
   }
 ].map(x=>Object.freeze({...x,results:Object.freeze(x.results)})));
