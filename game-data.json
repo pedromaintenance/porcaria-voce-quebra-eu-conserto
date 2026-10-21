@@ -3563,6 +3563,182 @@
       "subgroupName": "Roda-Guia;Posição 2 (didático)",
       "origin": "trilha_didatica_simulada",
       "sapValidated": false
+    },
+    {
+      "modelId": "EQ02",
+      "system": "IMAT",
+      "systemName": "Implemento",
+      "group": "BUCK",
+      "groupName": "Caçamba",
+      "subgroup": "TIPS",
+      "subgroupName": "Pontas FPS",
+      "origin": "trilha_didatica_fps",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ02",
+      "system": "IMAT",
+      "systemName": "Implemento",
+      "group": "BUCK",
+      "groupName": "Caçamba",
+      "subgroup": "RETN",
+      "subgroupName": "Sistema Retenção FPS",
+      "origin": "trilha_didatica_fps",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ02",
+      "system": "IMAT",
+      "systemName": "Implemento",
+      "group": "BUCK",
+      "groupName": "Caçamba",
+      "subgroup": "ADPT",
+      "subgroupName": "Adaptadores FPS",
+      "origin": "trilha_didatica_fps",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ02",
+      "system": "IMAT",
+      "systemName": "Implemento",
+      "group": "BUCK",
+      "groupName": "Caçamba",
+      "subgroup": "PROT",
+      "subgroupName": "Proteções FPS",
+      "origin": "trilha_didatica_fps",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ02",
+      "system": "IMAT",
+      "systemName": "Implemento",
+      "group": "BUCK",
+      "groupName": "Caçamba",
+      "subgroup": "EDGE",
+      "subgroupName": "Borda Cortante FPS",
+      "origin": "trilha_didatica_fps",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ02",
+      "system": "IMAT",
+      "systemName": "Implemento",
+      "group": "BUCK",
+      "groupName": "Caçamba",
+      "subgroup": "WELD",
+      "subgroupName": "Região Soldada FPS",
+      "origin": "trilha_didatica_fps",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ02",
+      "system": "IMAT",
+      "systemName": "Implemento",
+      "group": "BUCK",
+      "groupName": "Caçamba",
+      "subgroup": "PLAT",
+      "subgroupName": "Placas de Desgaste FPS",
+      "origin": "trilha_didatica_fps",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ03",
+      "system": "IMAT",
+      "systemName": "Implemento",
+      "group": "BUCK",
+      "groupName": "Caçamba",
+      "subgroup": "TIPS",
+      "subgroupName": "Pontas FPS",
+      "origin": "trilha_didatica_fps",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ03",
+      "system": "IMAT",
+      "systemName": "Implemento",
+      "group": "BUCK",
+      "groupName": "Caçamba",
+      "subgroup": "ADPT",
+      "subgroupName": "Adaptadores FPS",
+      "origin": "trilha_didatica_fps",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ03",
+      "system": "IMAT",
+      "systemName": "Implemento",
+      "group": "BUCK",
+      "groupName": "Caçamba",
+      "subgroup": "RETN",
+      "subgroupName": "Sistema Retenção FPS",
+      "origin": "trilha_didatica_fps",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ03",
+      "system": "IMAT",
+      "systemName": "Implemento",
+      "group": "BUCK",
+      "groupName": "Caçamba",
+      "subgroup": "PROT",
+      "subgroupName": "Proteções FPS",
+      "origin": "trilha_didatica_fps",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ03",
+      "system": "IMAT",
+      "systemName": "Implemento",
+      "group": "BUCK",
+      "groupName": "Caçamba",
+      "subgroup": "PLAT",
+      "subgroupName": "Placas de Desgaste FPS",
+      "origin": "trilha_didatica_fps",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ03",
+      "system": "IMAT",
+      "systemName": "Implemento",
+      "group": "BUCK",
+      "groupName": "Caçamba",
+      "subgroup": "WELD",
+      "subgroupName": "Região Soldada FPS",
+      "origin": "trilha_didatica_fps",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ08",
+      "system": "IMAT",
+      "systemName": "Implemento",
+      "group": "BUCK",
+      "groupName": "Caçamba",
+      "subgroup": "EDGE",
+      "subgroupName": "Borda Cortante FPS",
+      "origin": "trilha_didatica_fps",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ08",
+      "system": "IMAT",
+      "systemName": "Implemento",
+      "group": "BUCK",
+      "groupName": "Caçamba",
+      "subgroup": "RETN",
+      "subgroupName": "Sistema Retenção FPS",
+      "origin": "trilha_didatica_fps",
+      "sapValidated": false
+    },
+    {
+      "modelId": "EQ07",
+      "system": "IMAT",
+      "systemName": "Implemento",
+      "group": "BLAS",
+      "groupName": "Conj Lâmina",
+      "subgroup": "EDGE",
+      "subgroupName": "Borda Cortante FPS",
+      "origin": "trilha_didatica_fps",
+      "sapValidated": false
     }
   ],
   "scenarios": [
@@ -7870,6 +8046,1230 @@
         "releasePolicy": "restrito_ao_instrutor_ate_conclusao",
         "realConsequenceVerified": false
       }
+    },
+    {
+      "id": "INC101",
+      "modelId": "EQ02",
+      "category": "fps",
+      "title": "FPS — Ponta de caçamba: Ponta central",
+      "operator": "Ponta central com desgaste abrasivo progressivo, ainda sem medição de material remanescente.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Inspecionar perfil e desgaste por posição; comparar com peça compatível e histórico do conjunto. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "TIPS"
+      ],
+      "component": "Ponta FPS",
+      "damage": "Desgastado",
+      "cause": "Abrasão",
+      "priority": 2,
+      "material": "FPTP",
+      "tool": "METR",
+      "hours": 4,
+      "diagHours": 2.5,
+      "estimatedCost": 520,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Ponta central com desgaste abrasivo progressivo, ainda sem medição de material remanescente. Hipótese didática selecionada para a missão: Ponta FPS desgastado por abrasão. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS005",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS005",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC102",
+      "modelId": "EQ02",
+      "category": "fps",
+      "title": "FPS — Ponta de caçamba: Posição 2",
+      "operator": "Falta uma ponta da caçamba; há indício de exposição do nariz do adaptador.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Registrar perda e avaliar adaptador e retenção em inspeção segura antes de retornar à escavação. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "TIPS"
+      ],
+      "component": "Ponta FPS",
+      "damage": "Ausente",
+      "cause": "Fixação incorreta",
+      "priority": 3,
+      "material": "FPTP",
+      "tool": "INSP",
+      "hours": 5,
+      "diagHours": 3,
+      "estimatedCost": 520,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Falta uma ponta da caçamba; há indício de exposição do nariz do adaptador. Hipótese didática selecionada para a missão: Ponta FPS ausente por fixação incorreta. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS006",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS006",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC103",
+      "modelId": "EQ02",
+      "category": "fps",
+      "title": "FPS — Retentor e trava: Posição 3",
+      "operator": "Retentor aparenta deslocamento e a ponta tem movimento anormal na fixação.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Verificar integridade do sistema de retenção e especificação do conjunto instalado sem golpear retentor desconhecido. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "RETN"
+      ],
+      "component": "Retentor FPS",
+      "damage": "Afrouxado",
+      "cause": "Desgaste",
+      "priority": 3,
+      "material": "FPRT",
+      "tool": "TORQ",
+      "hours": 3,
+      "diagHours": 2.5,
+      "estimatedCost": 180,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Retentor aparenta deslocamento e a ponta tem movimento anormal na fixação. Hipótese didática selecionada para a missão: Retentor FPS afrouxado por desgaste. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS007",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS007",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC104",
+      "modelId": "EQ02",
+      "category": "fps",
+      "title": "FPS — Adaptador de ponta: desgaste na posição 1",
+      "operator": "Face inferior do adaptador apresenta perda de material após desgaste da ponta.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Documentar desgaste no nariz e alças do adaptador e consultar critérios do sistema instalado. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "ADPT"
+      ],
+      "component": "Adaptador FPS",
+      "damage": "Desgastado",
+      "cause": "Abrasão",
+      "priority": 2,
+      "material": "FPAD",
+      "tool": "METR",
+      "hours": 6,
+      "diagHours": 3,
+      "estimatedCost": 1350,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Face inferior do adaptador apresenta perda de material após desgaste da ponta. Hipótese didática selecionada para a missão: Adaptador FPS desgastado por abrasão. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS008",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS008",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC105",
+      "modelId": "EQ02",
+      "category": "fps",
+      "title": "FPS — Adaptador de ponta: possível trinca na posição 4",
+      "operator": "Suspeita de trinca na região do adaptador, junto à transição com a borda da caçamba.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Priorizar avaliação técnica, limpeza e inspeção de trincas conforme procedimento de solda/estrutura. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "ADPT"
+      ],
+      "component": "Adaptador FPS",
+      "damage": "Trincado",
+      "cause": "Fadiga",
+      "priority": 3,
+      "material": "FPAD",
+      "tool": "ENDP",
+      "hours": 12,
+      "diagHours": 5,
+      "estimatedCost": 1350,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Suspeita de trinca na região do adaptador, junto à transição com a borda da caçamba. Hipótese didática selecionada para a missão: Adaptador FPS trincado por fadiga. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS009",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS009",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC106",
+      "modelId": "EQ02",
+      "category": "fps",
+      "title": "FPS — Protetor entre pontas: Centro da borda de ataque",
+      "operator": "Protetor entre dentes está muito desgastado, com aumento de exposição da borda principal.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Inspecionar retenção, desgaste do protetor e integridade da borda, registrando posição e fotos. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "PROT"
+      ],
+      "component": "Protetor FPS",
+      "damage": "Desgastado",
+      "cause": "Abrasão",
+      "priority": 2,
+      "material": "FPPR",
+      "tool": "INSP",
+      "hours": 4,
+      "diagHours": 2,
+      "estimatedCost": 470,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Protetor entre dentes está muito desgastado, com aumento de exposição da borda principal. Hipótese didática selecionada para a missão: Protetor FPS desgastado por abrasão. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS010",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS010",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC107",
+      "modelId": "EQ02",
+      "category": "fps",
+      "title": "FPS — Protetor lateral: Lado direito da caçamba",
+      "operator": "Protetor da barra lateral apresenta desgaste desigual, deixando parte do flanco exposta.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Conferir fixação, integridade da proteção e diferença de desgaste por lado. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "PROT"
+      ],
+      "component": "Protetor FPS",
+      "damage": "Desgastado",
+      "cause": "Abrasão",
+      "priority": 2,
+      "material": "FPPR",
+      "tool": "INSP",
+      "hours": 4,
+      "diagHours": 2,
+      "estimatedCost": 470,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Protetor da barra lateral apresenta desgaste desigual, deixando parte do flanco exposta. Hipótese didática selecionada para a missão: Protetor FPS desgastado por abrasão. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS011",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS011",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC108",
+      "modelId": "EQ02",
+      "category": "fps",
+      "title": "FPS — Borda de ataque: Trecho entre adaptadores",
+      "operator": "Desgaste por escavação na borda de ataque parece alcançar a região de apoio de proteção.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Registrar desgaste e possíveis alterações geométricas; confrontar com desenho e padrão de referência do conjunto. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "EDGE"
+      ],
+      "component": "Borda cortante FPS",
+      "damage": "Desgastado",
+      "cause": "Abrasão",
+      "priority": 2,
+      "material": "FPBR",
+      "tool": "METR",
+      "hours": 6,
+      "diagHours": 2.5,
+      "estimatedCost": 950,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Desgaste por escavação na borda de ataque parece alcançar a região de apoio de proteção. Hipótese didática selecionada para a missão: Borda cortante FPS desgastado por abrasão. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS012",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS012",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC109",
+      "modelId": "EQ02",
+      "category": "fps",
+      "title": "FPS — Solda de adaptador: Canto esquerdo da borda",
+      "operator": "Uma linha semelhante a trinca foi vista na região de solda do adaptador da caçamba.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Isolar e solicitar inspeção estrutural especializada, com método compatível e referência OEM. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "WELD"
+      ],
+      "component": "Solda do adaptador FPS",
+      "damage": "Trincado",
+      "cause": "Fadiga",
+      "priority": 3,
+      "material": "FPSO",
+      "tool": "ENDP",
+      "hours": 14,
+      "diagHours": 5,
+      "estimatedCost": 390,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Uma linha semelhante a trinca foi vista na região de solda do adaptador da caçamba. Hipótese didática selecionada para a missão: Solda do adaptador FPS trincado por fadiga. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS013",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS013",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC110",
+      "modelId": "EQ02",
+      "category": "fps",
+      "title": "FPS — Conjunto de pontas: Lados esquerdo e direito",
+      "operator": "As pontas da mesma caçamba exibem desgaste bastante desigual entre posições.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Mapear posição, perfil e aplicação; verificar rocha, operação e compatibilidade dos tipos instalados. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "TIPS"
+      ],
+      "component": "Ponta FPS",
+      "damage": "Desgastado",
+      "cause": "Abrasão",
+      "priority": 2,
+      "material": "FPTP",
+      "tool": "METR",
+      "hours": 4,
+      "diagHours": 2.5,
+      "estimatedCost": 520,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: As pontas da mesma caçamba exibem desgaste bastante desigual entre posições. Hipótese didática selecionada para a missão: Ponta FPS desgastado por abrasão. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS014",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS014",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC111",
+      "modelId": "EQ02",
+      "category": "fps",
+      "title": "FPS — Sistema de retenção: Posição 5",
+      "operator": "Pino de retenção aparenta dano mecânico; a ponta ainda está instalada.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Priorizar inspeção do mecanismo de trava e condição de retenção, sem assumir método de montagem. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "RETN"
+      ],
+      "component": "Retentor FPS",
+      "damage": "Afrouxado",
+      "cause": "Desgaste",
+      "priority": 3,
+      "material": "FPRT",
+      "tool": "TORQ",
+      "hours": 3,
+      "diagHours": 2.5,
+      "estimatedCost": 180,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Pino de retenção aparenta dano mecânico; a ponta ainda está instalada. Hipótese didática selecionada para a missão: Retentor FPS afrouxado por desgaste. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS015",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS015",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC112",
+      "modelId": "EQ02",
+      "category": "fps",
+      "title": "FPS — Revestimento de desgaste: Fundo interno próximo à borda",
+      "operator": "Placa interna de desgaste aparenta levantamento em uma extremidade e redução de cobertura.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Verificar fixação, integridade da placa e condição do substrato com inspeção segura. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "PLAT"
+      ],
+      "component": "Placa de desgaste FPS",
+      "damage": "Afrouxado",
+      "cause": "Fadiga",
+      "priority": 2,
+      "material": "FPPL",
+      "tool": "INSP",
+      "hours": 8,
+      "diagHours": 3,
+      "estimatedCost": 680,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Placa interna de desgaste aparenta levantamento em uma extremidade e redução de cobertura. Hipótese didática selecionada para a missão: Placa de desgaste FPS afrouxado por fadiga. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS016",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS016",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC113",
+      "modelId": "EQ03",
+      "category": "fps",
+      "title": "FPS — Ponta de caçamba: Posição central",
+      "operator": "Ponta central da escavadeira 395 apresenta desgaste abrasivo com perda de perfil de penetração.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Comparar com as demais pontas, identificar família instalada e registrar tendência por horas de trabalho. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "TIPS"
+      ],
+      "component": "Ponta FPS",
+      "damage": "Desgastado",
+      "cause": "Abrasão",
+      "priority": 2,
+      "material": "FPTP",
+      "tool": "METR",
+      "hours": 4,
+      "diagHours": 2.5,
+      "estimatedCost": 520,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Ponta central da escavadeira 395 apresenta desgaste abrasivo com perda de perfil de penetração. Hipótese didática selecionada para a missão: Ponta FPS desgastado por abrasão. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS017",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS017",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC114",
+      "modelId": "EQ03",
+      "category": "fps",
+      "title": "FPS — Ponta de caçamba: Posição 2, alojamento",
+      "operator": "Há indicação de fissura no alojamento de uma ponta, junto à área de encaixe no adaptador.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Encaminhar avaliação técnica e inspeção do acoplamento e trava antes de serviço com carga. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "ADPT"
+      ],
+      "component": "Adaptador FPS",
+      "damage": "Trincado",
+      "cause": "Fadiga",
+      "priority": 3,
+      "material": "FPAD",
+      "tool": "ENDP",
+      "hours": 12,
+      "diagHours": 5,
+      "estimatedCost": 1350,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Há indicação de fissura no alojamento de uma ponta, junto à área de encaixe no adaptador. Hipótese didática selecionada para a missão: Adaptador FPS trincado por fadiga. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS018",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS018",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC115",
+      "modelId": "EQ03",
+      "category": "fps",
+      "title": "FPS — Retentor de ponta: Posição 3",
+      "operator": "Retentor da ponta parece solto e há movimento do conjunto na caçamba da 395.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Verificar retenção e sistema de montagem conforme a família de FPS instalada; evitar procedimentos de outro sistema. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "RETN"
+      ],
+      "component": "Retentor FPS",
+      "damage": "Afrouxado",
+      "cause": "Desgaste",
+      "priority": 3,
+      "material": "FPRT",
+      "tool": "TORQ",
+      "hours": 3,
+      "diagHours": 2.5,
+      "estimatedCost": 180,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Retentor da ponta parece solto e há movimento do conjunto na caçamba da 395. Hipótese didática selecionada para a missão: Retentor FPS afrouxado por desgaste. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS019",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS019",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC116",
+      "modelId": "EQ03",
+      "category": "fps",
+      "title": "FPS — Adaptador de ponta: Posição 1",
+      "operator": "Adaptador de ponta da 395 apresenta marcas de desgaste na região inferior de apoio.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Avaliar nariz, cinta e borda com procedimento de inspeção do sistema instalado. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "ADPT"
+      ],
+      "component": "Adaptador FPS",
+      "damage": "Desgastado",
+      "cause": "Abrasão",
+      "priority": 2,
+      "material": "FPAD",
+      "tool": "METR",
+      "hours": 6,
+      "diagHours": 3,
+      "estimatedCost": 1350,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Adaptador de ponta da 395 apresenta marcas de desgaste na região inferior de apoio. Hipótese didática selecionada para a missão: Adaptador FPS desgastado por abrasão. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS020",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS020",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC117",
+      "modelId": "EQ03",
+      "category": "fps",
+      "title": "FPS — Protetor lateral: Lado esquerdo da caçamba",
+      "operator": "Uma proteção lateral de FPS está ausente e há desgaste novo na barra da caçamba.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Priorizar avaliação de proteção, encaixe e substrato para limitar exposição estrutural. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "PROT"
+      ],
+      "component": "Protetor FPS",
+      "damage": "Ausente",
+      "cause": "Fixação incorreta",
+      "priority": 3,
+      "material": "FPPR",
+      "tool": "INSP",
+      "hours": 5,
+      "diagHours": 3,
+      "estimatedCost": 470,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Uma proteção lateral de FPS está ausente e há desgaste novo na barra da caçamba. Hipótese didática selecionada para a missão: Protetor FPS ausente por fixação incorreta. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS021",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS021",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC118",
+      "modelId": "EQ03",
+      "category": "fps",
+      "title": "FPS — Placa de desgaste: Fundo interno da caçamba",
+      "operator": "Placa de desgaste do fundo interno apresenta afinamento localizado próximo à borda.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Registrar área e estado do substrato; consultar plano de proteção e especificação aplicável. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "PLAT"
+      ],
+      "component": "Placa de desgaste FPS",
+      "damage": "Desgastado",
+      "cause": "Abrasão",
+      "priority": 2,
+      "material": "FPPL",
+      "tool": "METR",
+      "hours": 7,
+      "diagHours": 3,
+      "estimatedCost": 680,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Placa de desgaste do fundo interno apresenta afinamento localizado próximo à borda. Hipótese didática selecionada para a missão: Placa de desgaste FPS desgastado por abrasão. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS022",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS022",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC119",
+      "modelId": "EQ03",
+      "category": "fps",
+      "title": "FPS — Solda de adaptador: Canto direito da caçamba",
+      "operator": "Linha suspeita de trinca apareceu entre o adaptador lateral e a borda de ataque da 395.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Solicitar avaliação estrutural e registrar posição, desenho e necessidade de ensaio adequado. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "WELD"
+      ],
+      "component": "Solda do adaptador FPS",
+      "damage": "Trincado",
+      "cause": "Fadiga",
+      "priority": 3,
+      "material": "FPSO",
+      "tool": "ENDP",
+      "hours": 14,
+      "diagHours": 5,
+      "estimatedCost": 390,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Linha suspeita de trinca apareceu entre o adaptador lateral e a borda de ataque da 395. Hipótese didática selecionada para a missão: Solda do adaptador FPS trincado por fadiga. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS023",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS023",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC120",
+      "modelId": "EQ03",
+      "category": "fps",
+      "title": "FPS — Seleção do perfil de ponta: Conjunto de caçamba",
+      "operator": "A produtividade caiu após a troca do perfil de pontas, mas o material escavado também mudou.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Comparar aplicação, tipo da ponta e desgaste sem concluir erro de especificação antes de correlacionar o material. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "TIPS"
+      ],
+      "component": "Perfil de ponta FPS",
+      "damage": "Com função degradada",
+      "cause": "Aplicação incorreta de componente ou material",
+      "priority": 2,
+      "material": "FPTP",
+      "tool": "INSP",
+      "hours": 3,
+      "diagHours": 3,
+      "estimatedCost": 520,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: A produtividade caiu após a troca do perfil de pontas, mas o material escavado também mudou. Hipótese didática selecionada para a missão: Perfil de ponta FPS com função degradada por aplicação incorreta de componente ou material. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS024",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS024",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC121",
+      "modelId": "EQ08",
+      "category": "fps",
+      "title": "FPS — Borda cortante da caçamba: Centro da borda",
+      "operator": "Borda de corte da carregadeira 966 apresenta desgaste assimétrico ao longo da largura.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Inspecionar borda, fixações e aplicação e conferir perfil com referência da ferramenta instalada. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "EDGE"
+      ],
+      "component": "Borda cortante FPS",
+      "damage": "Desgastado",
+      "cause": "Abrasão",
+      "priority": 2,
+      "material": "FPBR",
+      "tool": "METR",
+      "hours": 6,
+      "diagHours": 2.5,
+      "estimatedCost": 950,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Borda de corte da carregadeira 966 apresenta desgaste assimétrico ao longo da largura. Hipótese didática selecionada para a missão: Borda cortante FPS desgastado por abrasão. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS025",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS025",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC122",
+      "modelId": "EQ08",
+      "category": "fps",
+      "title": "FPS — Ponta e retenção: Lado direito da caçamba",
+      "operator": "Uma ponta da 966 mostra folga perceptível no encaixe depois de turno de carregamento.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Avaliar fixação do sistema e desgaste do adaptador antes de liberar esforço, conforme OMM. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BUCK",
+        "RETN"
+      ],
+      "component": "Retentor FPS",
+      "damage": "Afrouxado",
+      "cause": "Desgaste",
+      "priority": 3,
+      "material": "FPRT",
+      "tool": "TORQ",
+      "hours": 3,
+      "diagHours": 2.5,
+      "estimatedCost": 180,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Uma ponta da 966 mostra folga perceptível no encaixe depois de turno de carregamento. Hipótese didática selecionada para a missão: Retentor FPS afrouxado por desgaste. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS026",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS026",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC123",
+      "modelId": "EQ07",
+      "category": "fps",
+      "title": "FPS — Borda cortante da lâmina: Trecho central da lâmina D9",
+      "operator": "A borda cortante do D9 está com perfil muito desgastado e redução perceptível da capacidade de corte.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Inspecionar desgaste por segmento e fixações; comparar com conjunto especificado sem presumir medida de descarte. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BLAS",
+        "EDGE"
+      ],
+      "component": "Borda cortante FPS",
+      "damage": "Desgastado",
+      "cause": "Abrasão",
+      "priority": 2,
+      "material": "FPBR",
+      "tool": "METR",
+      "hours": 6,
+      "diagHours": 2.5,
+      "estimatedCost": 950,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: A borda cortante do D9 está com perfil muito desgastado e redução perceptível da capacidade de corte. Hipótese didática selecionada para a missão: Borda cortante FPS desgastado por abrasão. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS027",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS027",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
+    },
+    {
+      "id": "INC124",
+      "modelId": "EQ07",
+      "category": "fps",
+      "title": "FPS — Ponteira lateral da lâmina: Lado esquerdo do D9",
+      "operator": "Ponteira lateral da lâmina apresenta fixador ausente e marca de movimento na interface.",
+      "verification": "Imobilizar o equipamento, assegurar a caçamba/lâmina apoiada e executar inspeção por equipe habilitada. Priorizar avaliação da ponteira, estado dos fixadores e assento antes da continuidade do trabalho. Registrar fotos, posição e arranjo OEM; investigar retenção, trinca, desgaste e condições de aplicação. Confirmar o defeito e o escopo antes de solicitar peças e programar serviço. Nenhum valor técnico aqui substitui manual por série.",
+      "path": [
+        "IMAT",
+        "BLAS",
+        "EDGE"
+      ],
+      "component": "Fixador de borda FPS",
+      "damage": "Ausente",
+      "cause": "Fixação incorreta",
+      "priority": 3,
+      "material": "FPFX",
+      "tool": "TORQ",
+      "hours": 5,
+      "diagHours": 2.5,
+      "estimatedCost": 145,
+      "sourcePartMatch": false,
+      "lesson": "Sintoma observado: Ponteira lateral da lâmina apresenta fixador ausente e marca de movimento na interface. Hipótese didática selecionada para a missão: Fixador de borda FPS ausente por fixação incorreta. Essa hipótese não está confirmada em campo. Verificar posição, geometria, retenção, trincas e especificação do FPS instalado; confrontar alternativas antes de aprovar materiais ou condenar peças. Não utilizar código de peça, limite dimensional ou torque fictícios.",
+      "fmeaSource": {
+        "repository": "pedromaintenance/porcaria-voce-quebra-eu-conserto",
+        "recordId": "FPS-FMEA-FPS028",
+        "layer": "docs/CATALOGO_FPS_GET_V6.md",
+        "version": "0.9.10",
+        "status": "roteiro_fps_didatico_pendente_revisao_OEM"
+      },
+      "simulation": {
+        "nature": "ficcao_didatica",
+        "evidence": "verificacoes_propostas_nao_executadas",
+        "answer": "hipotese_escolhida_para_jogo",
+        "oemValidated": false,
+        "applicabilityValidated": false
+      },
+      "fpsMapping": {
+        "protocol": "FPS028",
+        "origin": "catalogo_fps_get_v6",
+        "scope": "roteiro_investigativo_nao_homologado",
+        "partNumber": null,
+        "retirementLimit": null,
+        "torqueOEM": null,
+        "alternatives": [
+          "Desgaste ou dano preexistente da peça",
+          "Condições operacionais e material escavado",
+          "Aplicação/instalação incompatível com o arranjo"
+        ]
+      }
     }
   ],
   "catalog": {
@@ -7907,7 +9307,16 @@
       "Respiro, Cárter",
       "Válvula, Pneumática",
       "Roda-Guia",
-      "Compressor, Ar"
+      "Compressor, Ar",
+      "Ponta FPS",
+      "Retentor FPS",
+      "Adaptador FPS",
+      "Solda do adaptador FPS",
+      "Protetor FPS",
+      "Borda cortante FPS",
+      "Placa de desgaste FPS",
+      "Perfil de ponta FPS",
+      "Fixador de borda FPS"
     ],
     "damages": [
       {
@@ -9454,6 +10863,62 @@
       "lead": 5,
       "initial": 0,
       "emoji": "💨"
+    },
+    "FPTP": {
+      "name": "Conjunto didático de pontas FPS",
+      "unit": 520,
+      "lead": 2,
+      "initial": 2,
+      "emoji": "🦷"
+    },
+    "FPRT": {
+      "name": "Kit didático de travas e retentores FPS",
+      "unit": 180,
+      "lead": 1,
+      "initial": 2,
+      "emoji": "🔒"
+    },
+    "FPAD": {
+      "name": "Adaptador FPS genérico simulado",
+      "unit": 1350,
+      "lead": 4,
+      "initial": 0,
+      "emoji": "⚙️"
+    },
+    "FPPR": {
+      "name": "Conjunto de proteção FPS simulado",
+      "unit": 470,
+      "lead": 2,
+      "initial": 1,
+      "emoji": "🛡️"
+    },
+    "FPBR": {
+      "name": "Borda cortante FPS genérica simulada",
+      "unit": 950,
+      "lead": 3,
+      "initial": 0,
+      "emoji": "🪚"
+    },
+    "FPPL": {
+      "name": "Placa de desgaste FPS genérica simulada",
+      "unit": 680,
+      "lead": 3,
+      "initial": 0,
+      "emoji": "🛡️"
+    },
+    "FPSO": {
+      "name": "Consumíveis virtuais para reparo estrutural FPS",
+      "unit": 390,
+      "lead": 2,
+      "initial": 0,
+      "emoji": "🔥"
+    },
+    "FPFX": {
+      "name": "Kit virtual de fixação de borda FPS",
+      "unit": 145,
+      "lead": 1,
+      "initial": 2,
+      "emoji": "🔩"
     }
   },
   "tools": {
@@ -9564,6 +11029,30 @@
       "cost": 520,
       "initial": false,
       "icon": "📐"
+    },
+    "INSP": {
+      "name": "Kit de inspeção visual e registro fotográfico FPS",
+      "cost": 260,
+      "initial": true,
+      "icon": "🔎"
+    },
+    "METR": {
+      "name": "Kit metrologia FPS (sem referência OEM cadastrada)",
+      "cost": 610,
+      "initial": false,
+      "icon": "📐"
+    },
+    "TORQ": {
+      "name": "Torquímetro FPS (ajuste OEM não cadastrado)",
+      "cost": 590,
+      "initial": false,
+      "icon": "🔧"
+    },
+    "ENDP": {
+      "name": "Kit simulado de END superficial FPS (equipe qualificada)",
+      "cost": 980,
+      "initial": false,
+      "icon": "🔬"
     }
   }
 }

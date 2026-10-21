@@ -8,7 +8,7 @@ const C=E.COMPETENCY;
 const data=JSON.parse(fs.readFileSync(path.join(root,'game-data.json'),'utf8'));
 const catalog=E.SKILL_CATALOG;
 assert.equal(data.models.length,9);
-assert.equal(data.scenarios.length,100);
+assert.equal(data.scenarios.length,124);
 for(const sc of data.scenarios){
  const keys=C.resolve(sc);
  for(const group of E.SKILL_GROUPS){

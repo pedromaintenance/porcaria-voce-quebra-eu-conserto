@@ -15,10 +15,10 @@ const expected={
  INC084:['EQ05',null,'Motor, Hidráulico'],
  INC085:['EQ05',null,'Rolamento']
 };
-assert.equal(D.scenarios.length,100,'75 anteriores + 10 perfuratrizes + 10 rodante + 5 progressivas');
-assert.equal(new Set(D.scenarios.map(s=>s.id)).size,100,'IDs únicos');
+assert.equal(D.scenarios.length,124,'75 anteriores + 10 perfuratrizes + 10 rodante + 5 progressivas');
+assert.equal(new Set(D.scenarios.map(s=>s.id)).size,124,'IDs únicos');
 assert.deepEqual(D.scenarios.slice(0,75).map(x=>x.id),Array.from({length:75},(_,i)=>'INC'+String(i+1).padStart(3,'0')),'missões anteriores preservadas');
-assert.equal(D.paths.length,387,'382 caminhos anteriores + dois de perfuratrizes + três de rodante');
+assert.equal(D.paths.length,403,'382 caminhos anteriores + dois de perfuratrizes + três de rodante');
 const added=D.paths.filter(p=>p.origin==='trilha_didatica_simulada'&&p.modelId==='EQ06'&&p.system==='AISY'&&p.group==='COMR'&&['INFL','HSVV'].includes(p.subgroup));
 assert.equal(added.length,2,'filtração/admissão e linha do compressor DI650i');
 for(const p of added)assert.equal(p.sapValidated,false);

@@ -101,5 +101,5 @@ assert.ok(game.includes('I.review(state,id,decision,payload,data,E)'),'opções 
 assert.ok(game.includes('E.orderMaterial(state,data,item,qty,speed)'),'solicitar peças');
 assert.ok(game.includes('E.buyTool(state,data,tool)'),'comprar ferramenta');
 const html=fs.readFileSync(path.resolve(__dirname,'../phaser-play/index.html'),'utf8');
-assert.ok(html.includes('inspection.js?v=0.9.2')&&html.includes('inspection-view.js?v=0.9.9'));
+assert.ok(html.includes('inspection.js?v=0.9.10')&&html.includes('inspection-view.js?v=0.9.10'));
 console.log('OK PCM: hipóteses fechadas, causa vazia, custos de erro, bônus total, compras, saves e nenhuma descrição livre.');

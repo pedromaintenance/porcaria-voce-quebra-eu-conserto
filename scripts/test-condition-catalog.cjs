@@ -20,7 +20,7 @@ for(const e of C.ENTRIES){
  assert.ok(e.followupTool===null||Object.hasOwn(D.tools,e.followupTool),e.id+' ferramental cadastrado');
  assert.ok(e.results.every(x=>['estavel','inconclusivo','agravamento'].includes(x)));
 }
-assert.ok(C.byCategory('fps').every(e=>e.escalationScenario===null),'FPS não recebe roteiro OEM inventado');
+assert.ok(C.byCategory('fps').every(e=>D.scenarios.some(sc=>sc.id===e.escalationScenario&&sc.category==='fps'&&sc.modelId===e.modelId&&sc.simulation.oemValidated===false)),'FPS recebe roteiro didático, nunca OEM homologado');
 const s=E.create(D,()=>.5);I.normalized(s);
 const baseJobs=s.jobs.length;
 const inbound=[];
@@ -62,10 +62,10 @@ assert.equal(M.collect(s,fps.id).ok,true,'FPS não recebe instrumento inventado'
 assert.equal(s.cash,afterOil);
 const fpsRaised=M.escalate(s,D,I,fps.id);
 assert.equal(fpsRaised.ok,true);
-assert.equal(fpsRaised.escalation.sourceScenario,null);
-assert.equal(fpsRaised.escalation.requiresScenarioMapping,true,'roteiro FPS pendente de curadoria');
+assert.equal(fpsRaised.escalation.sourceScenario,C.get(fps.monitorProtocol).escalationScenario);
+assert.equal(fpsRaised.escalation.requiresScenarioMapping,false,'roteiro investigativo didático disponível');
 assert.equal(s.jobs.length,baseJobs,'escalonamento não cria OS');
-assert.equal(I.review(s,fpsRaised.escalation.id,'approve',{},D,E).error!==undefined,true,'PCM não aprova sem roteiro');
+assert.equal(I.review(s,fpsRaised.escalation.id,'approve',{},D,E).error!==undefined,true,'PCM FPS não aprova sem diagnóstico técnico');
 const screen=S.monitoring(s,D,M,V,I,E,'faults');
 assert.ok(screen.includes('SINAIS RECEBIDOS'));
 assert.ok(screen.includes('CATÁLOGO DE SINTOMAS'));

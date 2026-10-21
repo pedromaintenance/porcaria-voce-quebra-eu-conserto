@@ -14,10 +14,10 @@ const expected={
  INC074:['EQ08',null,'Mangueira'],
  INC075:['EQ09','ELEC-CF-19-1','Respiro, Cárter']
 };
-assert.equal(D.scenarios.length,100,'65 existentes + 10 diesel + 10 perfuratrizes + 10 rodante + 5 progressivas');
-assert.equal(new Set(D.scenarios.map(s=>s.id)).size,100,'identificadores únicos');
+assert.equal(D.scenarios.length,124,'65 existentes + 10 diesel + 10 perfuratrizes + 10 rodante + 5 progressivas');
+assert.equal(new Set(D.scenarios.map(s=>s.id)).size,124,'identificadores únicos');
 assert.deepEqual(D.scenarios.slice(0,65).map(x=>x.id),Array.from({length:65},(_,i)=>'INC'+String(i+1).padStart(3,'0')),'65 cenários preexistentes preservados');
-assert.equal(D.paths.length,387);
+assert.equal(D.paths.length,403);
 const recent=D.paths.filter(p=>p.origin==='trilha_didatica_simulada'&&['FILF','SENF','CLFL','CCBR'].includes(p.subgroup));
 assert.equal(recent.length,4,'quatro trilhas novas de motor');
 for(const path of recent)assert.equal(path.sapValidated,false,'não afirmar caminho SAP homologado');

@@ -7,13 +7,13 @@ const V=require('../phaser-play/inspection-view.js'),S=require('../phaser-play/s
 const X=require('../phaser-play/component-catalog-expansion.js');
 const domains=['oil','faults','undercarriage','fps','components'];
 assert.equal(X.VERSION,'5.0.0');
-assert.equal(C.VERSION,'6.0.0');
+assert.equal(C.VERSION,'7.0.0');
 assert.equal(X.ENTRIES.length,18);
 assert.equal(C.ENTRIES.length,120);
 assert.deepEqual(domains.map(x=>C.byCategory(x).length),[24,24,24,24,24]);
 assert.equal(new Set(C.ENTRIES.map(e=>e.id)).size,120);
-assert.equal(D.scenarios.length,100,'100 missões FMEA anteriores preservadas');
-assert.equal(D.paths.length,387,'estruturas funcionais existentes preservadas');
+assert.equal(D.scenarios.length,124,'100 missões FMEA anteriores preservadas');
+assert.equal(D.paths.length,403,'estruturas funcionais existentes preservadas');
 for(let k=1;k<=24;k++){
  const id='CMP'+String(k).padStart(3,'0'),p=C.get(id);
  assert.ok(p&&p.category==='components',id+' existe');
@@ -95,7 +95,7 @@ assert.ok(overview.includes('CMP024')&&overview.includes('FLT024')&&overview.inc
 const html=fs.readFileSync('phaser-play/index.html','utf8');
 const sw=fs.readFileSync('sw.js','utf8');
 assert.ok(html.indexOf('component-catalog-expansion.js')<html.indexOf('condition-catalog.js'));
-assert.ok(html.includes('monitoring.js?v=0.9.8')&&html.includes('inspection-view.js?v=0.9.9'));
+assert.ok(html.includes('monitoring.js?v=0.9.8')&&html.includes('inspection-view.js?v=0.9.10'));
 assert.ok(sw.includes("'./phaser-play/component-catalog-expansion.js'")&&sw.includes('comp098'));
 assert.equal(E.validate(JSON.parse(JSON.stringify(late.s))),true,'save segue válido');
 console.log('OK: 120 sintomas; Componentes 24, triagem, instrumentos, postergação fictícia, PCM e saves.');

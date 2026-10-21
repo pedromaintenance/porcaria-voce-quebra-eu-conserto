@@ -14,10 +14,10 @@ const expected={
  INC094:['EQ09','PB-GRADER-TIRE-01','Pneu'],
  INC095:['EQ05',null,'Vedação']
 };
-assert.equal(D.scenarios.length,100,'85 anteriores + 10 rodante/transmissão + 5 progressivas');
-assert.equal(new Set(D.scenarios.map(s=>s.id)).size,100,'IDs distintos');
+assert.equal(D.scenarios.length,124,'85 anteriores + 10 rodante/transmissão + 5 progressivas');
+assert.equal(new Set(D.scenarios.map(s=>s.id)).size,124,'IDs distintos');
 assert.deepEqual(D.scenarios.slice(0,85).map(x=>x.id),Array.from({length:85},(_,i)=>'INC'+String(i+1).padStart(3,'0')),'85 missões anteriores sem remoção ou reordenação');
-assert.equal(D.paths.length,387,'384 caminhos anteriores + 3 didáticos');
+assert.equal(D.paths.length,403,'384 caminhos anteriores + 3 didáticos');
 const added=D.paths.filter(p=>p.origin==='trilha_didatica_simulada'&&['TRGE','REDG','GUID'].includes(p.subgroup));
 assert.equal(added.length,3,'três caminhos funcionais didáticos novos');
 for(const p of added)assert.equal(p.sapValidated,false);

@@ -201,6 +201,8 @@
    if(n.status!=='aguarda_revisao_pcm')return {error:'Aprovação exige uma notificação aguardando revisão.'};
    const proposed=Array.isArray(payload.diagnosis)?diagnosisPayload(s,d,E,n,payload):null;
    if(proposed?.error)return {error:proposed.error};
+   const mapped=d?.scenarios?.find(x=>x.id===n.sourceScenario&&x.modelId===n.modelId);
+   if(mapped?.category==='fps'&&!proposed)return {error:'FPS: registre Sistema, Grupo, Subgrupo, Componente e Dano no diagnóstico PCM; a causa pode permanecer indefinida.'};
    const action=Object.hasOwn(ACTIONS,payload.action)?ACTIONS[payload.action]:null;
    const scope=proposed ? (action||ACTIONS.verificar) : trim(payload.scope,700);
    const trade=String(payload.trade||'');
@@ -233,6 +235,8 @@
   if(!Array.isArray(s.jobs)||s.jobs.length>=32)return {error:'A carteira atingiu o limite interno de 32 OS. Conclua algum serviço antes de converter.'};
   const sc=d.scenarios.find(x=>x.id===n.sourceScenario&&x.modelId===n.modelId);
   if(!sc)return {error:'Roteiro de cenário incompatível com a notificação. Nenhuma OS foi criada.'};
+  if(sc.category==='fps'&&(!Array.isArray(n.planningDiagnosis?.codes)||n.planningDiagnosis.codes.slice(0,5).some(x=>!x)))
+   return {error:'OS FPS bloqueada: diagnóstico e revisão PCM incompletos.'};
   if(!d.models.some(x=>x.id===n.modelId)||!String(n.asset).startsWith(n.modelId+'·'))
    return {error:'Equipamento inválido para conversão.'};
   if(!Number.isSafeInteger(s.nextJob)||s.nextJob<1)return {error:'Sequência de ordens inválida.'};
