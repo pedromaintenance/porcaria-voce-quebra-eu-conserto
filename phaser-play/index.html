@@ -737,6 +737,12 @@ body{min-height:100vh}
 .radioDispatchCount.is-critical b{color:#ff9d8d}
 @media(max-width:700px){.radioDispatchBar{flex-direction:column;align-items:flex-start;padding:10px}.radioDispatchCounts{justify-content:flex-start;gap:5px}.radioDispatchCount{font-size:10px}.radioDispatchCount b{font-size:12px}}
 
+
+/* Ambientação da sala de Planejamento PCM — sem impactos na simulação. */
+.planningRoomStage{position:relative;width:100%;max-width:1120px;max-height:min(64vh,680px);margin:0 auto 16px;overflow:hidden;border:2px solid #54758a;border-radius:10px;background:#0b1826;aspect-ratio:1447/1087}
+.planningRoomStage img{display:block;width:100%;height:100%;object-fit:contain}
+.planningRoomStage figcaption{position:absolute;bottom:0;left:0;right:0;padding:12px 18px;font-weight:900;font-size:clamp(10px,1.25vw,15px);letter-spacing:.08em;color:#ffe1a4;background:linear-gradient(transparent,rgba(3,16,27,.92));text-shadow:0 1px 3px #000}
+@media(max-width:690px){.planningRoomStage{max-height:none;border-radius:6px;margin-bottom:12px}.planningRoomStage figcaption{padding:8px 10px}}
 </style></head><body>
 <div id="layout">
 <header class="top" role="banner">
@@ -801,7 +807,7 @@ body{min-height:100vh}
 </section>
 <div class="planningShortcut"><span>Priorize e programe os serviços em boxes disponíveis.</span><button class="act secondary" type="button" data-open-panel="planning">🗓️ PLANEJAR OS</button></div><div class="queueToolbar"><input type="search" id="queueSearch" placeholder="Buscar OS, modelo ou sintoma…" aria-label="Pesquisar ordens"><select id="queueFilter" aria-label="Filtrar ordens"><option value="all">Todas</option><option value="critical">Críticas</option><option value="waiting">Aguardando</option><option value="assigned">Alocadas</option></select></div><div id="queue"></div><div class="hint">Selecione uma ordem aqui ou clique num box para abrir o serviço.</div></section>
 <section class="panel" data-panel="inspection"><h2>🔎 Inspeções de Campo</h2><div id="inspectionPanel"></div></section>
-<section class="panel" data-panel="planning"><h2>🗓️ Planejamento PCM · Notificações, Materiais e Programação</h2><div id="planning"></div><div id="planningNotifications"></div></section>
+<section class="panel" data-panel="planning"><h2>🗓️ Planejamento PCM · Notificações, Materiais e Programação</h2><figure class="planningRoomStage" aria-label="Sala de Planejamento de Manutenção"><img src="./assets/sala-planejamento.avif" width="1447" height="1087" loading="lazy" decoding="async" alt="Equipe do PCM em sala de planejamento com quadro de programação semanal, vários monitores e equipamentos de mineração"><figcaption>PLANEJAMENTO DE MANUTENÇÃO · PCM</figcaption></figure><div id="planning"></div><div id="planningNotifications"></div></section>
 <section class="panel" data-panel="monitoring"><h2>📈 Sala de Controle · Monitoramento de Condição</h2><div id="monitoringPanel"></div></section>
 <section class="panel" data-panel="detail"><h2>🔧 Resumo da OS</h2><div id="detail"></div></section>
 <section class="panel" data-panel="full-detail"><h2>🔧 Detalhes completos da OS</h2><div class="orderDetailNav"><button class="act secondary" data-order-back type="button">← VOLTAR AO RESUMO</button></div><div id="detailFull"></div></section>

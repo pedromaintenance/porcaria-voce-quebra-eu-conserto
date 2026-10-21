@@ -7,6 +7,20 @@
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
 
+## Entrega 0.9.3 — Sala visual do Planejamento PCM (20/10/2026)
+
+**Objetivo:** apresentar o novo asset da sala de planejamento no menu Planejamento do jogo, sem alterar regras de programação, materiais ou notificações.
+
+- [x] Asset enviado pelo usuário, convertido para AVIF em `phaser-play/assets/sala-planejamento.avif` com resolução 1447 × 1087 px, 99.728 bytes e SHA-256 `d0602ed2c71460e45166f4c2c4518cca1af6478b2d0ed80273d2c33027ffa06e`. O PNG original permanece inalterado fora do repositório.
+- [x] Hero visual inserido exclusivamente no menu `data-panel="planning"`, antes dos cartões de OS e notificações, com legenda e `alt` acessível, proporção preservada e layout adaptável ao celular.
+- [x] Asset incluído no pré-cache offline do Service Worker; identificador de cache versionado preservando o prefixo para limpeza de caches antigos.
+- [x] Teste automatizado de integridade do AVIF, inclusão no HTML, cache e documentação adicionado aos workflows CI e Pages.
+- [x] `engine.js`, `game.js`, `planning.js`, dados e formato de save mantidos intactos.
+- [ ] Conferir workflow de publicação e validar visualmente desktop e celular.
+- [ ] Registrar a aceitação visual do jogador, incluindo proporção entre a imagem e a carteira de serviços.
+
+**Critério de aceite:** a arte aparece no menu Planejamento, as abas de 12h e 14 turnos e as notificações continuam operacionais e os arquivos permanecem acessíveis offline após pré-cache.
+
 ## Entrega 0.9.2 — PCM gamificado, hipóteses técnicas e consequências mecânicas (20/10/2026)
 
 - [x] **Nenhum campo de texto livre na inspeção ou revisão:** achado é preenchido automaticamente pelo evento simulado; motivo de devolução/arquivamento, disciplina, HH e estratégia são selecionados de listas.

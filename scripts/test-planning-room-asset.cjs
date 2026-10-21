@@ -1,0 +1,28 @@
+/* Testes estáticos do asset da sala de planejamento PCM. */
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const crypto=require('node:crypto');
+const path=require('node:path');
+const root=path.join(__dirname,'..');
+const img=fs.readFileSync(path.join(root,'phaser-play/assets/sala-planejamento.avif'));
+assert.equal(img.length,99728,'AVIF completo e não truncado');
+assert.equal(crypto.createHash('sha256').update(img).digest('hex'),'d0602ed2c71460e45166f4c2c4518cca1af6478b2d0ed80273d2c33027ffa06e','hash da imagem original otimizada');
+assert.equal(img.toString('ascii',4,8),'ftyp','cabeçalho AVIF');
+const html=fs.readFileSync(path.join(root,'phaser-play/index.html'),'utf8');
+const begin=html.indexOf('<section class="panel" data-panel="planning">');
+assert.ok(begin>=0,'menu de planejamento existe');
+const end=html.indexOf('</section>',begin);
+const planning=html.slice(begin,end);
+assert.ok(planning.includes('class="planningRoomStage"'),'asset presente no menu PCM');
+assert.ok(planning.includes('src="./assets/sala-planejamento.avif"'),'caminho relativo correto');
+assert.ok(planning.includes('alt="Equipe do PCM'),'texto alternativo presente');
+assert.ok(planning.indexOf('planningRoomStage')<planning.indexOf('id="planning"'),'imagem acima das ferramentas');
+assert.equal((html.match(/class="planningRoomStage"/g)||[]).length,1,'imagem sem duplicação');
+assert.ok(html.includes('object-fit:contain'),'imagem sem deformação');
+const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
+assert.ok(sw.includes("'./phaser-play/assets/sala-planejamento.avif'"),'asset no cache PWA');
+assert.match(sw,/const CACHE='porcaria-vqec-.*planning-room093'/,'cache atualizado');
+const roadmap=fs.readFileSync(path.join(root,'phaser-play/ROADMAP.md'),'utf8');
+assert.ok(roadmap.includes('## Entrega 0.9.3 — Sala visual do Planejamento PCM'),'roadmap da entrega');
+console.log('OK: asset PCM, SHA-256, interface, acessibilidade, cache e roadmap.');

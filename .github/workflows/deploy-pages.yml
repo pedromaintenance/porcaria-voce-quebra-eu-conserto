@@ -77,6 +77,8 @@ jobs:
         run: |
           test -s phaser-play/assets/oficina-noturna-hq.avif
           echo "0637e55b3a1978842c7aa71e27c763b176ea7c8438a82ee5bc711140e1a72c15  phaser-play/assets/oficina-noturna-hq.avif" | sha256sum --check
+      - name: Verify Planning PCM room artwork
+        run: node scripts/test-planning-room-asset.cjs
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload website
