@@ -145,6 +145,13 @@ As 100 missões e 387 caminhos cadastrados são um legado a preservar. As rotina
 - Necessário **novo ciclo de missões FMEA** para transformar diagnóstico GET em OS planejável; no ciclo 6 a revisão PCM permanece bloqueada sem cenário.
 - Documentação: [FPS/GET v6](CATALOGO_FPS_GET_V6.md).
 
+## Etapa 1H — Missões FMEA próprias de FPS (21/10/2026)
+
+- 24 investigações didáticas, com mapeamento FPS005–028 para INC101–124 (124 missões totais).
+- Novos itens de estoque e instrumentos de jogo sem Part Number ou especificação OEM, 16 locais didáticos marcados não homologados no SAP.
+- PCM exige diagnóstico com cinco dimensões obrigatórias (Causa opcional) e aprovação prévia. OS criada manualmente somente após revisão; planejamento usa a carteira existente.
+- 100 missões anteriores e 120 sintomas monitoráveis preservados. Fontes e mapa: [Missões FPS FMEA v7](MISSOES_FPS_FMEA_V7.md).
+
 ## Critérios de aceite por entrega
 
 1. Commit por etapa em branch própria, PR revisável, CI Phaser e recrutamento sem regressões.
