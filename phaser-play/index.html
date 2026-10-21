@@ -722,6 +722,21 @@ body{min-height:100vh}
 @media(max-width:690px){.controlRoomSidebar{display:none}.controlRoomMobileMenu{display:grid}}
 @media(max-width:570px){.fieldScheduleInputs{grid-template-columns:1fr}.controlRoomStage{border-radius:5px}.controlRoomReport p{font-size:11px}}
 
+
+/* Rádio da Operação: cena de Elton e status vivo dos chamados; controles da fila permanecem abaixo. */
+#menuOverlay [data-panel="queue"] .radioDispatchScene{margin:10px 0 15px;border:1px solid #5b7891;border-radius:10px;overflow:hidden;background:#0b1f30;box-shadow:0 8px 25px #0007}
+.radioDispatchScene>img{display:block;width:100%;height:auto;aspect-ratio:1672/941;object-fit:contain;background:#0d1b29}
+.radioDispatchBar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 15px;background:#102d42;border-top:2px solid #e0a341}
+.radioDispatchIdentity{display:flex;flex-direction:column;gap:4px;min-width:0}
+.radioDispatchIdentity span{color:#f7bc5b;font-size:11px;font-weight:900;letter-spacing:.12em}
+.radioDispatchIdentity strong{color:#f8e5c1;font-size:clamp(12px,1.25vw,16px);font-weight:900}
+.radioDispatchCounts{color:#d9e6f1;display:flex;justify-content:flex-end;align-items:center;gap:10px;flex-wrap:wrap;font-size:11px}
+.radioDispatchCount{padding:5px 9px;border-radius:6px;background:#173b50;border:1px solid #41657d;white-space:nowrap}
+.radioDispatchCount b{color:#ffd18a;font-size:14px;font-variant-numeric:tabular-nums;margin-left:5px}
+.radioDispatchCount.is-critical{border-color:#a85d51;background:#4b2631}
+.radioDispatchCount.is-critical b{color:#ff9d8d}
+@media(max-width:700px){.radioDispatchBar{flex-direction:column;align-items:flex-start;padding:10px}.radioDispatchCounts{justify-content:flex-start;gap:5px}.radioDispatchCount{font-size:10px}.radioDispatchCount b{font-size:12px}}
+
 </style></head><body>
 <div id="layout">
 <header class="top" role="banner">
@@ -776,7 +791,15 @@ body{min-height:100vh}
   </div>
 </header>
 <div class="stageWrap"><div class="bayHUD" id="bayHUD" aria-live="polite"></div><div class="stageLabel">OFICINA CENTRAL · PROTÓTIPO PHASER</div><div id="game"></div></div>
-<div class="dashboard" id="menuOverlay" role="dialog" aria-modal="true" aria-label="Menu de manutenção" hidden><div class="modalShell"><div class="modalTop"><strong id="modalHeading">MENU DA OFICINA</strong><button type="button" class="closeModal" id="closePanel" aria-label="Fechar menu">✕ FECHAR</button></div><div class="modalContent"><section class="panel" data-panel="management"><h2>📋 Gestão da Oficina</h2><div id="management"></div></section><section class="panel" data-panel="queue"><h2>📻 Rádio da Operação · Fila de OS</h2><div class="planningShortcut"><span>Priorize e programe os serviços em boxes disponíveis.</span><button class="act secondary" type="button" data-open-panel="planning">🗓️ PLANEJAR OS</button></div><div class="queueToolbar"><input type="search" id="queueSearch" placeholder="Buscar OS, modelo ou sintoma…" aria-label="Pesquisar ordens"><select id="queueFilter" aria-label="Filtrar ordens"><option value="all">Todas</option><option value="critical">Críticas</option><option value="waiting">Aguardando</option><option value="assigned">Alocadas</option></select></div><div id="queue"></div><div class="hint">Selecione uma ordem aqui ou clique num box para abrir o serviço.</div></section>
+<div class="dashboard" id="menuOverlay" role="dialog" aria-modal="true" aria-label="Menu de manutenção" hidden><div class="modalShell"><div class="modalTop"><strong id="modalHeading">MENU DA OFICINA</strong><button type="button" class="closeModal" id="closePanel" aria-label="Fechar menu">✕ FECHAR</button></div><div class="modalContent"><section class="panel" data-panel="management"><h2>📋 Gestão da Oficina</h2><div id="management"></div></section><section class="panel" data-panel="queue"><h2>📻 Rádio da Operação · Fila de OS</h2>
+<section class="radioDispatchScene" aria-label="Central de rádio da manutenção">
+<img src="./assets/elton-sala-radio.webp" alt="Elton recebendo chamadas pelo rádio, acompanhando ordens de serviço e a situação da frota na central de manutenção" decoding="async" loading="lazy">
+<div class="radioDispatchBar">
+<div class="radioDispatchIdentity"><span>📻 CENTRAL DE RÁDIO</span><strong>ELTON · DESPACHO DE MANUTENÇÃO</strong></div>
+<div class="radioDispatchCounts" id="radioQueueSummary" role="status" aria-live="polite">Carregando chamados da operação…</div>
+</div>
+</section>
+<div class="planningShortcut"><span>Priorize e programe os serviços em boxes disponíveis.</span><button class="act secondary" type="button" data-open-panel="planning">🗓️ PLANEJAR OS</button></div><div class="queueToolbar"><input type="search" id="queueSearch" placeholder="Buscar OS, modelo ou sintoma…" aria-label="Pesquisar ordens"><select id="queueFilter" aria-label="Filtrar ordens"><option value="all">Todas</option><option value="critical">Críticas</option><option value="waiting">Aguardando</option><option value="assigned">Alocadas</option></select></div><div id="queue"></div><div class="hint">Selecione uma ordem aqui ou clique num box para abrir o serviço.</div></section>
 <section class="panel" data-panel="inspection"><h2>🔎 Inspeções de Campo</h2><div id="inspectionPanel"></div></section>
 <section class="panel" data-panel="planning"><h2>🗓️ Planejamento PCM · Notificações, Materiais e Programação</h2><div id="planning"></div><div id="planningNotifications"></div></section>
 <section class="panel" data-panel="monitoring"><h2>📈 Sala de Controle · Monitoramento de Condição</h2><div id="monitoringPanel"></div></section>
@@ -791,4 +814,4 @@ body{min-height:100vh}
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.9.2"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./inspection.js?v=0.9.2"></script><script src="./evidence.js?v=0.9.3"></script><script src="./monitoring.js?v=0.9.4"></script><script src="./inspection-view.js?v=0.9.2-monitor9"></script><script src="./sector-views.js?v=0.9.6"></script><script src="./game.js?v=0.8.32-pt1412-inspection3-monitor9-sectors1"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
+<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.9.2"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./inspection.js?v=0.9.2"></script><script src="./evidence.js?v=0.9.3"></script><script src="./monitoring.js?v=0.9.4"></script><script src="./inspection-view.js?v=0.9.2-monitor9"></script><script src="./sector-views.js?v=0.9.6"></script><script src="./game.js?v=0.8.32-pt1412-inspection3-monitor9-sectors1-eltonradio1"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
