@@ -2,10 +2,23 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 21/10/2026 · **v0.9.13 — Lições Aprendidas com reflexões por OS, recorrência e proteção contra spoiler; QA visual pendente.**
+**Estado de referência:** 21/10/2026 · **v0.9.15 — Preventiva versus corretiva, com custo, HH e redução temporária de probabilidade fictícia; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.9.15 — Preventiva versus corretiva, ciclo 12 (21/10/2026)
+
+- [x] Autorizar preventiva para ativo identificado com profissional, box, desembolso e HH, sem converter a ação em OS corretiva automática.
+- [x] Oferecer pacote de inspeção (2 HH, R$120, redução hipotética 25%/4 turnos) ou serviço (4 HH, R$360, redução hipotética 45%/8 turnos).
+- [x] Bloquear conflitos com OS ativa, reserva PCM no turno, descanso, treinamento, falta de disponibilidade de HH, ferramentas e caixa.
+- [x] Cancelamento antes da execução devolve o valor integral; conclusão do turno aplica efeito temporário e registra HH/custos realizados.
+- [x] Apenas sorteios **aleatórios de novos incidentes** podem ser filtrados pela proteção; ocorrências em andamento, consequências encadeadas e notificações não são alteradas.
+- [x] Auditar decisões e preservar saves legados; contabilizar sorteios filtrados sem tratá-los como falhas reais evitadas.
+- [x] Testar custos, conflitos, redução probabilística determinística e regressão automatizada no CI e Pages.
+- [ ] Homologar visual em desktop e smartphone, calibrar parâmetros com telemetria didática e testar campanhas longas.
+
+**Documentação:** [Preventiva x Corretiva — Ciclo 12](../docs/PREVENTIVA_CORRETIVA_CICLO12.md). Valores fictícios de jogo, não recomendações OEM.
 
 ## Entrega 0.9.13 — Lições Aprendidas, ciclo 10 (21/10/2026)
 
