@@ -37,7 +37,7 @@ for(const p of E.RECRUIT_POOL){
  s.player.mental=100;s.cash+=1050;
  assert.equal(E.hire(s,p.sprite,()=>.43),null,'nomeado '+p.name);
 }
-assert.equal(s.team.length,14);
+assert.equal(s.team.length,15);
 assert.deepEqual(E.availableRecruits(s).map(p=>p.sprite),['generic']);
 const initialJobs=JSON.stringify(s.jobs);
 for(let i=0;i<25;i++){
@@ -48,8 +48,8 @@ for(let i=0;i<25;i++){
  assert.equal(m.sprite,null);
  assert.deepEqual(m.competencies,E.baselineSkills(m.name),'perfil individual reprodutível');
 }
-assert.equal(s.team.length,39,'nenhum limite em 14 ou 20 contratados');
-assert.equal(new Set(s.team.map(m=>m.id)).size,39,'nenhum ID repetido');
+assert.equal(s.team.length,40,'nenhum limite em 15 ou 20 contratados');
+assert.equal(new Set(s.team.map(m=>m.id)).size,40,'nenhum ID repetido');
 assert.equal(E.availableRecruits(s).length,1,'contratação genérica continua disponível');
 assert.equal(JSON.stringify(s.jobs),initialJobs,'OS intactas após contratações');
 const snapshot=JSON.stringify(s);E.normalizeRoster(s);

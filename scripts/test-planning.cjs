@@ -12,7 +12,7 @@ const initial=JSON.stringify(state);
 let p=P.compute(state,data);
 assert.equal(JSON.stringify(state),initial,'planejamento apenas lê o save');
 assert.equal(p.freeBays.length,3,'boxes livres na abertura');
-assert.equal(p.freeMechanics.length,4,'quatro titulares em campanha nova');
+assert.equal(p.freeMechanics.length,5,'cinco titulares em campanha nova');
 assert.equal(p.remainingStarts,3,'capacidade limitada pelo número de boxes');
 assert.equal(p.remainingGrossHours,31.5,'HH úteis = 3 profissionais × 10,5h e 3 boxes');
 assert.equal(p.ranked.length,3,'todas as OS iniciais entram na fila planejável');

@@ -4,9 +4,9 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const root=path.resolve(__dirname,'..'),E=require(path.join(root,'engine.js'));
 const data=JSON.parse(fs.readFileSync(path.join(root,'game-data.json'),'utf8'));
 const s=E.create(data,()=>.42);
-assert.deepEqual(s.team.map(m=>m.name),['Pedro','Geovane','Junior','Acassio']);
-assert.deepEqual(s.team.map(m=>m.id),['M1','M2','M3','M4']);
-assert.equal(E.MAX_TEAM,undefined);assert.equal(s.nextPerson,5);
+assert.deepEqual(s.team.map(m=>m.name),['Pedro','Geovane','Junior','Acassio','Nemuel']);
+assert.deepEqual(s.team.map(m=>m.id),['M1','M2','M3','M4','M5']);
+assert.equal(E.MAX_TEAM,undefined);assert.equal(s.nextPerson,6);
 const m=s.team[3];assert.equal(m.role,'geral');assert.equal(m.specialty,'Instrutor');assert.equal(m.sprite,'acassio');
 const c=m.competencies;
 for(const {id} of E.SKILL_CATALOG.machines)

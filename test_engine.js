@@ -4,7 +4,7 @@ const rng=E.mulberry32(28948);
 const s=E.create(D,rng);
 assert.equal(D.scenarios.length,100);
 assert.equal(D.models.length,9);
-assert.equal(s.team.length,4);
+assert.equal(s.team.length,5);
 assert.equal(s.jobs.length,3);
 // Validate every scenario has technical codes and six selectable options.
 for(const sc of D.scenarios){

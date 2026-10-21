@@ -60,7 +60,7 @@ assert.ok(phaserHtml.includes('layout-math.js?v=0.8.2'),'funções de geometria 
 const state=engine.create(data,()=>0.42);
 assert.ok(engine.validate(state),'save inicial válido');
 assert.equal(state.jobs.length,3,'iniciar com três OS');
-assert.deepEqual(state.team.map(m=>m.name),['Pedro','Geovane','Junior','Acassio'],'quatro titulares na nova campanha');
+assert.deepEqual(state.team.map(m=>m.name),['Pedro','Geovane','Junior','Acassio','Nemuel'],'cinco titulares na nova campanha');
 assert.equal(engine.SHIFT_HOURS,12,'turnos de dia/noite de 12h');
 assert.equal(engine.EFFECTIVE_HOURS,10.5,'DDS 30min e almoço 1h');
 assert.equal(state.productivityTarget,60,'meta padrão de produtividade estável');
