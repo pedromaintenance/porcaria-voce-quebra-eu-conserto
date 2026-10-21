@@ -105,6 +105,19 @@
     +(record.delayThresholdTurns?'<p><strong>Regra fictícia:</strong> verificação atrasada em '+Number(record.delayThresholdTurns)+' turnos após o vencimento agrava o resultado. Não é limite OEM.</p>':'')
     +(record.oemSpecificPending?'<p><strong>Documentação Sandvik:</strong> obter manual por modelo/arranjo antes de aplicar pressões, tempos ou critérios.</p>':'')
    +'</div>':'';
+  const fpsContext=record?.category==='fps'&&(record?.componentFamily||record?.legacyOnly)?
+   '<div class="monitorOilContext monitorFPSContext">'
+   +(record.legacyOnly?'<p><strong>REGISTRO LEGADO:</strong> criado antes de FPS ser identificado como Ferramentas de Penetração no Solo; confirme a classificação da ocorrência, sem criar OS automática.</p>':
+    '<p><strong>FPS / GET:</strong> Ferramentas de Penetração no Solo</p>'
+    +'<p><strong>Componente:</strong> '+esc(record.componentFamily)+'</p>'
+    +'<p><strong>Posição:</strong> '+esc(record.assetZone)+'</p>'
+    +'<p><strong>Condição observada:</strong> '+esc(record.observedSigns)+'</p>'
+    +'<p><strong>Desgaste / limite / código de peça:</strong> NÃO MEDIDOS · consultar sistema instalado por máquina e arranjo</p>'
+    +'<p><strong>Incerteza:</strong> '+esc(record.uncertainty)+'</p>'
+    +'<p><strong>Verificação recomendada:</strong> '+esc(record.verification)+'</p>'
+    +'<p><strong>Risco de postergação:</strong> '+esc(record.riskOnDelay)+'</p>'
+    +'<p><strong>Roteiro de OS:</strong> PENDENTE de investigação FMEA específica de FPS; encaminhamento PCM não equivale a diagnóstico de falha.</p>')
+   +'</div>':'';
   const history=(m.samples||[]).map(x=>'<li>Turno '+Number(x.tick)+' · <strong>'+esc(x.label)+'</strong>'
    +'<p>'+esc(x.reading)+'</p>'
    +(x.delayEscalation?'<p><strong>AGRAVAMENTO POR POSTERGAÇÃO SIMULADA:</strong> '+Number(x.lateTurns)+' turnos após o vencimento. '+esc(x.delayExplanation||'')+'</p>':'')
@@ -112,7 +125,7 @@
   return '<section class="pcmMonitoringCard"><h4>📈 MONITORAMENTO DE CONDIÇÃO</h4>'
    +'<p><strong>Fonte:</strong> '+esc(n.monitorCategory&&M.CATALOG?.CATEGORIES[n.monitorCategory]||'Registro anterior')+' · '+esc(n.monitorProtocol||'')+'</p>'
     +'<p><strong>Observação inicial:</strong> '+esc(m.baseline||'')+'</p>'
-   +context+faultContext+undercarriageContext+componentContext+'<p>Acompanhe a evolução dos resultados e registre a decisão técnica.</p>'
+   +context+faultContext+undercarriageContext+componentContext+fpsContext+'<p>Acompanhe a evolução dos resultados e registre a decisão técnica.</p>'
    +controls+(history?'<details open><summary>Histórico de verificações ('+(m.samples||[]).length+')</summary><ol>'+history+'</ol></details>':'')
    +'</section>';
  }
