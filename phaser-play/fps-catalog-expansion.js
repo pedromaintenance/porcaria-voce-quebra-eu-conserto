@@ -573,7 +573,8 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "moderado"
+      "estavel",
+      "agravamento"
     ]
   },
   {
@@ -586,7 +587,7 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "alto"
+      "agravamento"
     ]
   },
   {
@@ -599,7 +600,7 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "alto"
+      "agravamento"
     ]
   },
   {
@@ -612,7 +613,8 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "moderado"
+      "inconclusivo",
+      "agravamento"
     ]
   },
   {
@@ -625,7 +627,7 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "alto"
+      "agravamento"
     ]
   },
   {
@@ -638,7 +640,8 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "moderado"
+      "inconclusivo",
+      "agravamento"
     ]
   },
   {
@@ -651,7 +654,8 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "moderado"
+      "inconclusivo",
+      "agravamento"
     ]
   },
   {
@@ -664,7 +668,8 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "moderado"
+      "inconclusivo",
+      "agravamento"
     ]
   },
   {
@@ -677,7 +682,7 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "alto"
+      "agravamento"
     ]
   },
   {
@@ -690,7 +695,8 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "moderado"
+      "estavel",
+      "agravamento"
     ]
   },
   {
@@ -703,7 +709,7 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "alto"
+      "agravamento"
     ]
   },
   {
@@ -716,7 +722,8 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "moderado"
+      "inconclusivo",
+      "agravamento"
     ]
   },
   {
@@ -729,7 +736,8 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "moderado"
+      "estavel",
+      "agravamento"
     ]
   },
   {
@@ -742,7 +750,7 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "alto"
+      "agravamento"
     ]
   },
   {
@@ -755,7 +763,7 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "alto"
+      "agravamento"
     ]
   },
   {
@@ -768,7 +776,8 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "moderado"
+      "inconclusivo",
+      "agravamento"
     ]
   },
   {
@@ -781,7 +790,7 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "alto"
+      "agravamento"
     ]
   },
   {
@@ -794,7 +803,8 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "moderado"
+      "estavel",
+      "agravamento"
     ]
   },
   {
@@ -807,7 +817,7 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "alto"
+      "agravamento"
     ]
   },
   {
@@ -820,7 +830,8 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "moderado"
+      "inconclusivo",
+      "estavel"
     ]
   },
   {
@@ -833,7 +844,8 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "moderado"
+      "estavel",
+      "agravamento"
     ]
   },
   {
@@ -846,7 +858,7 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "alto"
+      "agravamento"
     ]
   },
   {
@@ -859,7 +871,8 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "moderado"
+      "inconclusivo",
+      "agravamento"
     ]
   },
   {
@@ -872,7 +885,7 @@
     "followupTool": null,
     "followupCost": 0,
     "results": [
-      "alto"
+      "agravamento"
     ]
   }
 ].map(x=>Object.freeze({...x,results:Object.freeze(x.results)})));
