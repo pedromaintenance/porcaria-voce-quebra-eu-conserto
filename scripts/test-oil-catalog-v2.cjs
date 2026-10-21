@@ -21,7 +21,8 @@ for(let i=1;i<=24;i++){
  assert.ok(e.verification.length>25&&e.uncertainty.length>20,id+' verificação e incerteza');
  assert.ok(['acompanhar','revisar_baseline','avaliacao_prioritaria'].includes(e.triage));
  assert.ok(e.sourceKeys.length>0&&e.sourceKeys.every(k=>/^https:\/\/www\.cat\.com\//.test(C.SOURCES[k]||'')),id+' fontes OEM rastreáveis');
- assert.equal(e.followupTool,'COLETA');assert.equal(e.followupCost,40);
+ assert.equal(e.followupTool,id==='OIL008'?'REFR':'COLETA','ferramenta correta por fluido');
+ assert.equal(e.followupCost,id==='OIL008'?0:40,'custo do caso de arrefecimento preservado');
  assert.ok(e.results.length>=1&&e.results.every(r=>['estavel','inconclusivo','agravamento'].includes(r)));
  assert.ok(D.models.some(m=>m.id===e.modelId),'modelo da frota: '+id);
  assert.ok(!e.escalationScenario||D.scenarios.some(s=>s.id===e.escalationScenario&&s.modelId===e.modelId),'investigação compatível: '+id);
