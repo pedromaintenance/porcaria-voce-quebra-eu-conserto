@@ -14,5 +14,5 @@ const html=fs.readFileSync(path.join(root,'phaser-play/index.html'),'utf8');
 assert.ok(game.includes("excavator:'./assets/equipment/cat395.png?v=20261019-3px'"));
 assert.ok(sw.includes("'./phaser-play/assets/equipment/cat395.png'"));
 assert.ok(sw.includes('porcaria-vqec-20261019-v111'));
-assert.ok(html.includes('game.js?v=0.9.4'));
+assert.ok(html.includes('game.js?v=0.9.11'));
 console.log('OK: CAT 395 1536x1027 RGBA, SHA-256 validado, cache PWA e Phaser versionados.');
