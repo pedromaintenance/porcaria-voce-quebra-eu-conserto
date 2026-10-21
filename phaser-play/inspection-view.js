@@ -91,6 +91,20 @@
     +(record.delayThresholdTurns?'<p><strong>Regra do jogo:</strong> após '+Number(record.delayThresholdTurns)+' turnos de atraso da verificação programada, o resultado simulado vira agravamento. Não é um limite OEM.</p>':'')
     +(record.oemSpecificPending?'<p><strong>Referência Sandvik:</strong> parâmetros de ajuste e desgaste pendentes de documentação OEM.</p>':'')
    +'</div>':'';
+  const componentContext=record?.category==='components'&&record?.componentFamily?
+   '<div class="monitorOilContext monitorComponentContext">'
+    +'<p><strong>Sistema/componente:</strong> '+esc(record.componentFamily)+'</p>'
+    +'<p><strong>Posição/área:</strong> '+esc(record.assetZone)+'</p>'
+    +'<p><strong>Tipo de verificação:</strong> '+esc(({tendencia_termica:'Tendência térmica',pressao_resposta:'Pressão/resposta funcional',sucção_pressão:'Sucção/pressão hidráulica',pressao_diferencial:'Pressão diferencial',inspecao_vazamento:'Inspeção de vazamento',deriva_cilindro:'Deriva de cilindro',inspecao_sensitiva:'Inspeção sensitiva'}[record.measurementMethod]||record.measurementMethod))+'</p>'
+    +'<p><strong>Medida / referência OEM:</strong> PENDENTES · não existe leitura dimensionada no catálogo</p>'
+    +'<p><strong>Evidência inicial:</strong> '+esc(record.observedSigns)+'</p>'
+    +'<p><strong>Hipóteses concorrentes (não confirmadas):</strong> '+esc(record.alternatives.join(' · '))+'</p>'
+    +'<p><strong>Incerteza:</strong> '+esc(record.uncertainty)+'</p>'
+    +'<p><strong>Verificação sugerida:</strong> '+esc(record.verification)+'</p>'
+    +'<p><strong>Risco de postergação:</strong> '+esc(record.riskOnDelay)+'</p>'
+    +(record.delayThresholdTurns?'<p><strong>Regra fictícia:</strong> verificação atrasada em '+Number(record.delayThresholdTurns)+' turnos após o vencimento agrava o resultado. Não é limite OEM.</p>':'')
+    +(record.oemSpecificPending?'<p><strong>Documentação Sandvik:</strong> obter manual por modelo/arranjo antes de aplicar pressões, tempos ou critérios.</p>':'')
+   +'</div>':'';
   const history=(m.samples||[]).map(x=>'<li>Turno '+Number(x.tick)+' · <strong>'+esc(x.label)+'</strong>'
    +'<p>'+esc(x.reading)+'</p>'
    +(x.delayEscalation?'<p><strong>AGRAVAMENTO POR POSTERGAÇÃO SIMULADA:</strong> '+Number(x.lateTurns)+' turnos após o vencimento. '+esc(x.delayExplanation||'')+'</p>':'')
@@ -98,7 +112,7 @@
   return '<section class="pcmMonitoringCard"><h4>📈 MONITORAMENTO DE CONDIÇÃO</h4>'
    +'<p><strong>Fonte:</strong> '+esc(n.monitorCategory&&M.CATALOG?.CATEGORIES[n.monitorCategory]||'Registro anterior')+' · '+esc(n.monitorProtocol||'')+'</p>'
     +'<p><strong>Observação inicial:</strong> '+esc(m.baseline||'')+'</p>'
-   +context+faultContext+undercarriageContext+'<p>Acompanhe a evolução dos resultados e registre a decisão técnica.</p>'
+   +context+faultContext+undercarriageContext+componentContext+'<p>Acompanhe a evolução dos resultados e registre a decisão técnica.</p>'
    +controls+(history?'<details open><summary>Histórico de verificações ('+(m.samples||[]).length+')</summary><ol>'+history+'</ol></details>':'')
    +'</section>';
  }

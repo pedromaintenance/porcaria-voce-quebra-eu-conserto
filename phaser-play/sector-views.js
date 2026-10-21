@@ -136,6 +136,8 @@
        +' · Código OEM: '+esc(p.codeVerified&&p.codeValue?p.codeValue:'NÃO INFORMADO')+'</p>':'')
       +(p.moduleContext?'<small>'+esc(p.moduleContext)+'</small>':'')
       +(p.componentGroup?'<p><strong>Componente:</strong> '+esc(p.componentGroup)+' · '+esc(p.assetZone)+'</p>':'')
+      +(p.componentFamily?'<p><strong>Sistema:</strong> '+esc(p.componentFamily)+' · '+esc(p.assetZone)+'</p>':'')
+      +(p.componentFamily&&p.measurementMethod?'<small>Verificação: '+esc(p.measurementMethod.replaceAll('_',' '))+' · medição pendente</small>':'')
       +(p.measurementMethod?'<small>Critério: '+esc(p.measurementMethod==='cts'?'CTS (leitura pendente)':/pneu/.test(p.measurementMethod)?'Pneus (não CTS)':'Inspeção/condição (leitura pendente)')+'</small>':'')
       +(p.triage==='avaliacao_prioritaria'?'<small>AVALIAÇÃO PRIORITÁRIA</small>':'')
       +(p.triage==='revisar_baseline'?'<small>REVISAR LINHA DE BASE</small>':'')

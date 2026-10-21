@@ -122,7 +122,7 @@
   if(!Number.isFinite(s.cash)||s.cash<cost)return {error:'Saldo fictício insuficiente para recoleta.'};
   const round=m.samples.length;
   const lateTurns=Math.max(0,s.tick-m.nextTick);
-  const delayEscalation=p.category==='undercarriage'&&p.delayRisk==='alto'
+  const delayEscalation=['undercarriage','components'].includes(p.category)&&p.delayRisk==='alto'
    &&Number.isSafeInteger(p.delayThresholdTurns)&&lateTurns>=p.delayThresholdTurns;
   const planned=p.results[Math.min(round,p.results.length-1)];
   const key=delayEscalation?'agravamento':planned;
@@ -134,7 +134,7 @@
   m.samples.push(entry);
   m.nextTick=null;
   m.status=key==='agravamento'?'requer_avaliacao':'aguarda_decisao';
-  m.decisions.push({tick:s.tick,action:p.category==='undercarriage'?'verificacao_rodante':'recoleta',result:key,lateTurns,delayEscalation});
+  m.decisions.push({tick:s.tick,action:p.category==='undercarriage'?'verificacao_rodante':p.category==='components'?'verificacao_componente':'recoleta',result:key,lateTurns,delayEscalation});
   return {ok:true,notification:n,sample:entry};
  }
  function continueWatch(s,id,interval){

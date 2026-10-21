@@ -127,6 +127,15 @@ As 100 missões e 387 caminhos cadastrados são um legado a preservar. As rotina
 - Riscos críticos: triagem imediata ao PCM, sem OS automática. Atraso de quatro turnos é penalidade qualitativa **apenas do jogo**, nunca recomendação de manutenção.
 - Fontes e índices: [Material Rodante v4](CATALOGO_MATERIAL_RODANTE_V4.md).
 
+## Etapa 1F — Componentes hidráulicos, motores e compressores (21/10/2026)
+
+- Expansão Componentes de seis para 24 sinais, somando 100 entradas no monitoramento.
+- Dossiês de bomba, cilindro, válvulas, filtros, motor diesel, transmissão e compressor com método e hipóteses concorrentes.
+- Sem pressão, temperatura, deriva, vazão, vida remanescente ou limites OEM fictícios. Procedimentos por série/configuração ainda necessários.
+- Risco de direção: triagem prioritária ao PCM. Casos sem FMEA aplicável não podem gerar OS automaticamente.
+- Consequência de atraso por quatro turnos após vencimento: narrativa **apenas do jogo**, sem valor de recomendação técnica.
+- Fonte e índice: [Catálogo de Componentes v5](CATALOGO_COMPONENTES_V5.md).
+
 ## Critérios de aceite por entrega
 
 1. Commit por etapa em branch própria, PR revisável, CI Phaser e recrutamento sem regressões.

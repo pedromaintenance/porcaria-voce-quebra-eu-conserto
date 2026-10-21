@@ -2,10 +2,24 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 21/10/2026 · **v0.9.7 — Material Rodante com CTS, pneus e regras fictícias de postergação, total 82 condições; QA visual pendente.**
+**Estado de referência:** 21/10/2026 · **v0.9.8 — Monitoramento de Componentes com 24 ocorrências e 100 sinais totais; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.9.8 — Monitoramento de Componentes v5 (21/10/2026)
+
+- [x] Ampliar Componentes de **6 para 24 sintomas**, incluindo 18 novos `CMP007–CMP024` e elevando o catálogo de condição de 82 para **100 sinais**; preservar as 100 missões de OS e 387 locais funcionais.
+- [x] Criar `component-catalog-expansion.js`, com metadados para os seis casos anteriores, preservando IDs e históricos de jogo.
+- [x] Distinguir **sintoma, hipóteses concorrentes, efeito operacional, localização, método de verificação e incerteza**. Trabalhar com pressão, sucção, deriva, resposta, diferencial de filtro e tendência térmica sem diagnosticar automaticamente bomba, válvula ou cilindro.
+- [x] Obter referências primárias Cat de inspeção, análise hidráulica e cilindros; usar fontes Sandvik DR410i/DI650i para escopo, com limites/procedimentos quantitativos ainda pendentes do manual específico.
+- [x] Exibir leituras, referência e unidades como **pendentes**; proibir limites de falha, pressões ou percentuais OEM fictícios.
+- [x] Triagem prioritária da perda de resposta da direção e risco em haste de cilindro de direção, com encaminhamento PCM sem OS automática e `requiresScenarioMapping` quando falta investigação aplicável.
+- [x] Estender aos componentes de risco alto a regra de postergação **fictícia** já usada para rodante: após quatro turnos de atraso da verificação programada, o resultado do jogo vira agravamento. Nunca interpretar como prazo de segurança ou intervalo P-F.
+- [x] Integrar dossiês, histórico e ferramentas ao Monitoramento; atualizar cache offline, documentação técnica e regressões do CI.
+- [ ] Homologação visual em dispositivos e ajuste de tempo entre sintomas, gravidade e resultados durante partida real.
+
+**Documentação completa:** [Catálogo de Componentes v5](../docs/CATALOGO_COMPONENTES_V5.md).
 
 ## Entrega 0.9.7 — Material Rodante v4: CTS, pneus e postergação (21/10/2026)
 
