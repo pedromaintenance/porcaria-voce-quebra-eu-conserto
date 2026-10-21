@@ -184,7 +184,7 @@
       "partículas",
       "vibração sob tração"
     ],
-    "verification": "Conferir compartimento",
+    "verification": "Conferir compartimento, lubrificante e vibração; planejar diagnóstico da transmissão.",
     "uncertainty": "A origem do desgaste não é conhecida.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
@@ -214,7 +214,7 @@
       "Cu",
       "vibração"
     ],
-    "verification": "Conferir histórico",
+    "verification": "Conferir histórico, compartimento e evidência operacional antes de concluir dano interno.",
     "uncertainty": "Fe e Cu não identificam rolamento específico.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
@@ -229,7 +229,7 @@
       "partículas",
       "condições de coleta"
     ],
-    "verification": "Verificar técnica de coleta e condições de tampas",
+    "verification": "Verificar técnica de coleta e condições de tampas, respiros e vedações.",
     "uncertainty": "Contaminação de amostra não equivale a ingresso no sistema.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
@@ -244,7 +244,7 @@
       "Cu",
       "condição do filtro"
     ],
-    "verification": "Verificar identidade do motor",
+    "verification": "Verificar identidade do motor, horas do óleo e histórico do elemento filtrante.",
     "uncertainty": "Metal elevado não prova que o filtro é a causa.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
@@ -289,7 +289,7 @@
       "tendência",
       "temperatura"
     ],
-    "verification": "Inspecionar condições do ponto de amostra",
+    "verification": "Inspecionar condições do ponto de amostra, filtragem e sintoma da função.",
     "uncertainty": "O dado não individualiza bomba nem válvula.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
@@ -304,7 +304,7 @@
       "partículas",
       "ruído"
     ],
-    "verification": "Confirmar lado/posição",
+    "verification": "Confirmar lado/posição, histórico de óleo e ocorrência do ruído.",
     "uncertainty": "Não existe confirmação de engrenagem danificada.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
@@ -318,7 +318,7 @@
       "Viscosidade",
       "combustível diluído"
     ],
-    "verification": "Correlacionar horas",
+    "verification": "Correlacionar horas, nível de óleo, integridade da amostra e confirmação de diluição; avaliar necessidade de intervenção.",
     "uncertainty": "A viscosidade isolada não determina causa; roteiro FMEA específico ainda não cadastrado.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
@@ -333,7 +333,7 @@
       "oxidação",
       "viscosidade"
     ],
-    "verification": "Verificar horas",
+    "verification": "Verificar horas, aplicação e qualidade da amostra; confrontar viscosidade e histórico.",
     "uncertainty": "Oxidação e fuligem não definem peça responsável; falta roteiro específico.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
@@ -364,7 +364,7 @@
       "viscosidade",
       "registro de troca"
     ],
-    "verification": "Conferir produto/compatibilidade",
+    "verification": "Conferir produto/compatibilidade, histórico e nova linha de base com o analista; não condenar o conjunto pelo perfil isolado.",
     "uncertainty": "Mudança de assinatura química pode refletir formulação distinta, mas a compatibilidade precisa ser confirmada.",
     "sourceKeys": [
       "CAT_SOS_RESULTADOS",
