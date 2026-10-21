@@ -1,6 +1,6 @@
 /* P.O.R.C.A.R.I.A. — catálogo de condições recebíveis, v1. Ciclos futuros acrescentam registros.
  * Sintomas e evolução são cenários de jogo, NÃO dados reais de máquinas ou limites OEM.
- * FPS fica tecnicamente não especificado até a definição do sistema pelo projeto.
+ * FPS = Ferramentas de Penetração no Solo (GET) confirmado em literatura Caterpillar e Sotreq.
  */
 (function(root,factory){
  const api=factory();
@@ -16,7 +16,9 @@
  if(!UNDERCARRIAGE_V4||!Array.isArray(UNDERCARRIAGE_V4.ENTRIES))throw Error('Expansão de material rodante não carregada.');
  const COMPONENT_V5=typeof require==='function'?require('./component-catalog-expansion.js'):globalThis.PORCARIA_COMPONENT_EXPANSION;
  if(!COMPONENT_V5||!Array.isArray(COMPONENT_V5.ENTRIES))throw Error('Expansão de Componentes não carregada.');
- const VERSION='5.0.0';
+ const FPS_V6=typeof require==='function'?require('./fps-catalog-expansion.js'):globalThis.PORCARIA_FPS_EXPANSION;
+ if(!FPS_V6||!Array.isArray(FPS_V6.ENTRIES))throw Error('Expansão de FPS não carregada.');
+ const VERSION='6.0.0';
  const CATEGORIES=Object.freeze({"oil":"Análises de óleo","faults":"Códigos de falha","undercarriage":"Material rodante","fps":"FPS","components":"Componentes"});
  const ENTRIES=Object.freeze([
   {id:"OIL001",category:"oil",modelId:"EQ01",title:"Comando final: presença de água ou emulsão no lubrificante",baseline:"Laudo de óleo aponta água no comando final; confirmar histórico, amostragem e condição das vedações.",escalationScenario:"INC041",followupTool:"COLETA",followupCost:40,results:["inconclusivo","agravamento"]},
@@ -49,16 +51,23 @@
   {id:"CMP004",category:"components",modelId:"EQ06",title:"Pulldown: queda de rendimento com óleo aquecido",baseline:"Conjunto de avanço perde desempenho após aquecimento; origem hidráulica ou mecânica indeterminada.",escalationScenario:"INC064",followupTool:"MANO",followupCost:0,results:["inconclusivo","agravamento"]},
   {id:"CMP005",category:"components",modelId:"EQ02",title:"Motor diesel: aquecimento sob carga prolongada",baseline:"Histórico de temperatura do motor aumenta em ciclos intensos, sem origem isolada.",escalationScenario:"INC071",followupTool:"TERM",followupCost:0,results:["estavel","agravamento"]},
   {id:"CMP006",category:"components",modelId:"EQ01",title:"Transmissão: tendência de vibração sob tração",baseline:"Conjunto de transmissão apresenta vibração em carga, com histórico de partículas no lubrificante.",escalationScenario:"INC088",followupTool:"TERM",followupCost:0,results:["estavel","agravamento"]}
- ].concat(OIL_V2.ENTRIES,FAULT_V3.ENTRIES,UNDERCARRIAGE_V4.ENTRIES,COMPONENT_V5.ENTRIES).map(x=>{
-  const meta=OIL_V2.METADATA[x.id]||FAULT_V3.METADATA[x.id]||UNDERCARRIAGE_V4.METADATA[x.id]||COMPONENT_V5.METADATA[x.id];
+ ].filter(x=>x.category!=='fps').concat(OIL_V2.ENTRIES,FAULT_V3.ENTRIES,UNDERCARRIAGE_V4.ENTRIES,COMPONENT_V5.ENTRIES,FPS_V6.ENTRIES).map(x=>{
+  const meta=OIL_V2.METADATA[x.id]||FAULT_V3.METADATA[x.id]||UNDERCARRIAGE_V4.METADATA[x.id]||COMPONENT_V5.METADATA[x.id]||FPS_V6.METADATA[x.id];
   return Object.freeze({...x,...(meta||{}),
    ...(meta?.indicators?{indicators:Object.freeze(meta.indicators.slice())}:{}),
    ...(meta?.alternatives?{alternatives:Object.freeze(meta.alternatives.slice())}:{}),
    ...(meta?.sourceKeys?{sourceKeys:Object.freeze(meta.sourceKeys.slice())}:{}),
    results:Object.freeze(x.results.slice())});
  }));
- const BY_ID=new Map(ENTRIES.map(e=>[e.id,e]));
+ // Preservar os quatro IDs FPS genéricos SOMENTE para leitura de saves legados.
+ const LEGACY_FPS=Object.freeze([
+  {id:"FPS001",category:"fps",modelId:"EQ01",title:FPS_V6.LEGACY_LABELS.FPS001,baseline:"Registro FPS criado antes da definição técnica da sigla.",escalationScenario:null,followupTool:null,followupCost:0,results:["inconclusivo","agravamento"],legacyOnly:true},
+  {id:"FPS002",category:"fps",modelId:"EQ05",title:FPS_V6.LEGACY_LABELS.FPS002,baseline:"Registro histórico sem identificação de ferramenta física GET.",escalationScenario:null,followupTool:null,followupCost:0,results:["inconclusivo","agravamento"],legacyOnly:true},
+  {id:"FPS003",category:"fps",modelId:"EQ02",title:FPS_V6.LEGACY_LABELS.FPS003,baseline:"Registro FPS histórico não classificado.",escalationScenario:null,followupTool:null,followupCost:0,results:["inconclusivo","agravamento"],legacyOnly:true},
+  {id:"FPS004",category:"fps",modelId:"EQ08",title:FPS_V6.LEGACY_LABELS.FPS004,baseline:"Registro FPS histórico sem verificação de componente.",escalationScenario:null,followupTool:null,followupCost:0,results:["inconclusivo","agravamento"],legacyOnly:true}
+ ].map(x=>Object.freeze({...x,results:Object.freeze(x.results)})));
+ const BY_ID=new Map([...LEGACY_FPS,...ENTRIES].map(e=>[e.id,e]));
  function get(id){return BY_ID.get(id)||null}
  function byCategory(category){return ENTRIES.filter(e=>e.category===category)}
- return {VERSION,CATEGORIES,ENTRIES,get,byCategory,SOURCES:Object.freeze({...OIL_V2.SOURCES,...FAULT_V3.SOURCES,...UNDERCARRIAGE_V4.SOURCES,...COMPONENT_V5.SOURCES})};
+ return {VERSION,CATEGORIES,ENTRIES,LEGACY_FPS,get,byCategory,SOURCES:Object.freeze({...OIL_V2.SOURCES,...FAULT_V3.SOURCES,...UNDERCARRIAGE_V4.SOURCES,...COMPONENT_V5.SOURCES,...FPS_V6.SOURCES})};
 });

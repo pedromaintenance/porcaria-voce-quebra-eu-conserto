@@ -10,8 +10,8 @@ const C=require('../phaser-play/condition-catalog.js');
 const V=require('../phaser-play/inspection-view.js');
 const S=require('../phaser-play/sector-views.js');
 const cats=['oil','faults','undercarriage','fps','components'];
-assert.equal(C.ENTRIES.length,100);
-assert.deepEqual(cats.map(c=>C.byCategory(c).length),[24,24,24,4,24]);
+assert.equal(C.ENTRIES.length,120);
+assert.deepEqual(cats.map(c=>C.byCategory(c).length),[24,24,24,24,24]);
 assert.equal(new Set(C.ENTRIES.map(e=>e.id)).size,C.ENTRIES.length,'IDs imutáveis/únicos');
 for(const e of C.ENTRIES){
  assert.ok(e.title.length>15&&e.baseline.length>40,e.id+' observação rastreável');
@@ -73,7 +73,7 @@ assert.ok(screen.includes('FLT001'));
 assert.ok(!screen.includes('data-monitor-start'),'sem botões de estudo');
 assert.ok(!screen.includes('OIL001'),'aba individual respeita domínio');
 const overview=S.monitoring(s,D,M,V,I,E,'overview');
-assert.ok(overview.includes('FPS001')&&overview.includes('CMP001'));
+assert.ok(overview.includes('FPS005')&&overview.includes('CMP001'),'visão geral exibe FPS reais, não legado');
 const practice=V.render(s,D,I,E,null,M);
 assert.ok(!practice.includes('data-monitor-start'),'nenhum estudo legado na interface');
 const html=fs.readFileSync('phaser-play/index.html','utf8');
@@ -83,4 +83,4 @@ assert.ok(html.indexOf('oil-catalog-expansion.js')<html.indexOf('condition-catal
 assert.ok(game.includes('M.receive(state,data,I,{initial:true})')&&game.includes('M.receive(state,data,I);'),'chegada ligada à campanha');
 assert.ok(!game.includes("data-monitor-start"));
 assert.ok(sw.includes("'./phaser-play/condition-catalog.js'"),'catálogo disponível offline');
-console.log('OK: 100 sintomas, 5 fontes, rodízio, idempotência, custo/ferramenta, FPS sem gabarito e interface.');
+console.log('OK: 120 sintomas, 5 fontes, rodízio, idempotência, custo/ferramenta, FPS sem gabarito e interface.');

@@ -1,0 +1,94 @@
+/* FPS v6: GET físico, 24 condições novas, 4 saves antigos, 100 FMEA preservadas. */
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs');
+const D=require('../game-data.json'),E=require('../engine.js'),I=require('../phaser-play/inspection.js');
+const C=require('../phaser-play/condition-catalog.js'),M=require('../phaser-play/monitoring.js');
+const V=require('../phaser-play/inspection-view.js'),S=require('../phaser-play/sector-views.js');
+const FPS=require('../phaser-play/fps-catalog-expansion.js');
+const cats=['oil','faults','undercarriage','fps','components'];
+assert.equal(FPS.VERSION,'6.0.0');assert.equal(C.VERSION,'6.0.0');
+assert.equal(FPS.ENTRIES.length,24);assert.equal(C.ENTRIES.length,120);
+assert.deepEqual(cats.map(k=>C.byCategory(k).length),[24,24,24,24,24]);
+assert.equal(new Set(C.ENTRIES.map(x=>x.id)).size,120,'IDs de catálogo únicos');
+assert.equal(D.scenarios.length,100,'nenhuma missão FMEA criada artificialmente');
+assert.equal(D.paths.length,387,'locais preservados');
+for(let i=1;i<=4;i++){
+ const id='FPS'+String(i).padStart(3,'0');
+ const old=C.get(id);
+ assert.ok(old?.legacyOnly,id+' apenas retrocompatível');
+ assert.ok(!C.ENTRIES.includes(old),'legado não pode chegar como nova ocorrência');
+}
+assert.ok(C.LEGACY_FPS.length===4);
+for(let i=5;i<=28;i++){
+ const id='FPS'+String(i).padStart(3,'0'),p=C.get(id);
+ assert.ok(p&&p.category==='fps',id+' cadastrado');
+ assert.ok(p.title?.length>24&&p.baseline?.length>50,id+' sintoma observável');
+ assert.ok(['EQ02','EQ03','EQ08','EQ07'].includes(p.modelId),'FPS somente frota aplicável');
+ assert.ok(p.componentFamily?.length>5&&p.assetZone?.length>5,id+' posição/componente');
+ assert.equal(p.inspectionMethod,'inspecao_visual_fps');
+ assert.ok(p.verification?.length>45&&p.uncertainty?.length>35,id+' verificação e incerteza');
+ assert.equal(p.measurementStatus,'pendente');
+ assert.equal(p.measurementValue,null);assert.equal(p.referenceLimit,null);
+ assert.equal(p.wearPercent,null);assert.equal(p.unit,null);
+ assert.equal(p.escalationScenario,null,'sem missão FMEA adequada ainda');
+ assert.equal(p.followupTool,null,'inspeção visual sem exigir equipamento fictício');
+ assert.equal(p.followupCost,0);
+ assert.ok(p.sourceKeys.length>0&&p.sourceKeys.every(k=>/^https:\/\/(www\.cat\.com|www\.sotreq\.com\.br)/.test(C.SOURCES[k]||'')),id+' fonte OEM');
+ assert.ok(['acompanhar','avaliacao_prioritaria'].includes(p.triage));
+ assert.ok(p.results.length&&p.results.every(r=>['estavel','inconclusivo','agravamento'].includes(r)));
+ assert.ok(p.triage!=='avaliacao_prioritaria'||p.delayRisk==='alto');
+}
+assert.deepEqual(Object.fromEntries(['EQ02','EQ03','EQ08','EQ07'].map(m=>[m,C.byCategory('fps').filter(p=>p.modelId===m).length])),
+ {EQ02:12,EQ03:8,EQ08:2,EQ07:2});
+assert.equal(C.byCategory('fps').filter(x=>x.modelId==='EQ05'||x.modelId==='EQ01').length,0,'nenhum FPS genérico em perfuratriz ou caminhão');
+const fresh=()=>{const s=E.create(D,()=>.5);I.normalized(s);return s};
+function receive(id){
+ const s=fresh();s.monitoringFeedCursor=3;
+ s.monitoringFeedSeen=C.byCategory('fps').filter(p=>p.id!==id).map(p=>p.id);
+ const r=M.receive(s,D,I,{initial:true});
+ assert.equal(r.received.length,1,id+' deve chegar');
+ const n=r.received[0];assert.equal(n.monitorProtocol,id);
+ assert.equal(n.monitorCategory,'fps');assert.equal(n.sourceScenario,null);
+ assert.equal(n.inspectionId,null);assert.equal(n.workOrderId,null);
+ return {s,n};
+}
+const urgent=receive('FPS006');
+assert.equal(urgent.n.priority,'alta');
+const visual=V.monitorWidget(urgent.n,urgent.s,M);
+assert.ok(visual.includes('Ferramentas de Penetração no Solo'));
+assert.ok(visual.includes('Ponta de caçamba')&&visual.includes('NÃO MEDIDOS'));
+assert.ok(visual.includes('AVALIAÇÃO PRIORITÁRIA'));
+assert.ok(!visual.includes('data-monitor-action="decide"'));
+assert.ok(M.decide(urgent.s,urgent.n.id,'trend',2).error,'não adiar ponta ausente');
+const before=urgent.s.jobs.length;
+const escalated=M.escalate(urgent.s,D,I,urgent.n.id);
+assert.equal(escalated.ok,true);assert.equal(escalated.escalation.requiresScenarioMapping,true);
+assert.equal(escalated.escalation.sourceScenario,null);assert.equal(urgent.s.jobs.length,before);
+assert.ok(I.review(urgent.s,escalated.escalation.id,'approve',{},D,E).error,'sem roteiro FMEA, não aprovar OS');
+const ordinary=receive('FPS005');
+assert.equal(M.decide(ordinary.s,ordinary.n.id,'trend',2).ok,true);
+ordinary.s.tick+=2;
+const read=M.collect(ordinary.s,ordinary.n.id);
+assert.equal(read.ok,true);assert.equal(read.sample.trend,'estavel');
+assert.equal(read.sample.cost,0);
+assert.equal(M.continueWatch(ordinary.s,ordinary.n.id,2).ok,true);
+ordinary.s.tick+=2;
+assert.equal(M.collect(ordinary.s,ordinary.n.id).sample.trend,'agravamento');
+assert.equal(ordinary.n.monitoring.status,'requer_avaliacao');
+assert.equal(M.escalate(ordinary.s,D,I,ordinary.n.id).ok,true,'avaliar desgaste agravado no PCM');
+const screen=S.monitoring(fresh(),D,M,V,I,E,'fps');
+assert.ok(screen.includes('24 ENTRADAS')&&screen.includes('FPS028'));
+assert.ok(screen.includes('FPS / GET'));
+assert.ok(!screen.includes('FPS001'),'legado não aparece na lista de novos sintomas');
+assert.ok(!screen.includes('FLT024'),'categorias isoladas');
+const whole=S.monitoring(fresh(),D,M,V,I,E,'overview');
+assert.ok(whole.includes('FPS028')&&whole.includes('CMP024')&&whole.includes('UND024'));
+const legacy=C.get('FPS001');
+const legacyNote={id:'NM0099',monitorOnly:true,monitorCategory:'fps',monitorProtocol:'FPS001',status:'aguarda_revisao_pcm',priority:'media',monitoring:{status:'proposta',samples:[],baseline:legacy.baseline}};
+assert.ok(V.monitorWidget(legacyNote,fresh(),M).includes('REGISTRO LEGADO'),'save antigo continua interpretável');
+const html=fs.readFileSync('phaser-play/index.html','utf8'),sw=fs.readFileSync('sw.js','utf8');
+assert.ok(html.indexOf('fps-catalog-expansion.js')<html.indexOf('condition-catalog.js'));
+assert.ok(html.includes('inspection-view.js?v=0.9.9'));
+assert.ok(sw.includes("'./phaser-play/fps-catalog-expansion.js'")&&sw.includes('fps099'));
+assert.equal(E.validate(JSON.parse(JSON.stringify(ordinary.s))),true,'save serializado com FPS real');
+console.log('OK FPS v6: 120 condições, 24 GET atuais, 4 legados, triagem, PCM e 100 missões preservadas.');
