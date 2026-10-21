@@ -7,12 +7,13 @@
   if(!COMPETENCY)throw Error('Módulo de competências indisponível.');
   const TRAINING=typeof require==='function'?require('./training.js'):globalThis.PORCARIA_TRAINING;
   if(!TRAINING)throw Error('Módulo de treinamento indisponível.');
-  // Campanhas novas iniciam com quatro personagens fixos. Saves antigos não recebem injeção automática.
+  // Elenco principal fixo. Saves antigos recebem o inspetor Nemuel uma vez, preservando IDs e OS.
   const INITIAL_TEAM=Object.freeze([
     {name:'Pedro',avatar:'🧯',role:'geral',specialty:'Brigadista',sprite:'pedro'},
     {name:'Geovane',avatar:'📋',role:'geral',specialty:'Instrutor',sprite:'geovane'},
     {name:'Junior',avatar:'🧑‍💼',role:'geral',specialty:'Especialista',sprite:'junior',trainingSprite:'junior-training'},
-    {name:'Acassio',avatar:'📏',role:'geral',specialty:'Instrutor',sprite:'acassio'}
+    {name:'Acassio',avatar:'📏',role:'geral',specialty:'Instrutor',sprite:'acassio'},
+    {name:'Nemuel',avatar:'🔎',role:'inspecao',specialty:'Inspetor',sprite:'nemuel'}
   ]);
   // Contratacoes nomeadas, personagens unicos, sem criacao de mecanicos genericos.
   const RECRUIT_POOL=Object.freeze([
@@ -83,6 +84,7 @@
             :group==='systems'?(bySystem[entry.id]??93)
             :(['welding','machining'].includes(entry.id)?0:91);
         }
+        else if(key==='nemuel')score=group==='machines'&&['EQ05','EQ06'].includes(entry.id)?50:70;
         else if(key==='junior')score=group==='disciplines'&&entry.id==='lubrication'?100:group==='machines'?70:90;
         else if(key==='geovane')score=group==='machines'?(['EQ05','EQ06'].includes(entry.id)?50:100):group==='disciplines'?80:90;
         else if(key==='pedro'){
@@ -161,13 +163,12 @@
     const name=generic?'Mecânico '+id:profile.name;
     const m={id,name,avatar:profile.avatar,role:profile.role,
       specialty:profile.specialty,sprite:generic?null:profile.sprite,trainingSprite:profile.trainingSprite||null,
-      skill:Math.round(54+rnd(rng)*35),competencies:baselineSkills(generic?name:profile.sprite),mental:Math.round(72+rnd(rng)*25),
+      skill:profile.sprite==='nemuel'?70:Math.round(54+rnd(rng)*35),competencies:baselineSkills(generic?name:profile.sprite),mental:Math.round(72+rnd(rng)*25),
       physical:Math.round(70+rnd(rng)*27),morale:Math.round(74+rnd(rng)*20),
       assigned:null,restAt:null,normativeUntil:null,normativeReason:null,completed:0,tenure:0};return m;
   }
   function normalizeRoster(s){
-    // Saves antigos preservam nomes, IDs, atributos, contratados e suas OS.
-    // Nenhum funcionario adicional e injetado automaticamente.
+    // Preserva membros, IDs, contratados e OS. Adiciona somente o novo inspetor aos saves legados.
     if(!s||!Array.isArray(s.team))return s;
     TRAINING.normal(s);
     const catalog=[...INITIAL_TEAM,...RECRUIT_POOL];
@@ -188,6 +189,11 @@
       m.competencies=normalizeSkills(m.competencies,identity);
     }
     s.nextPerson=Math.max(1,Number.isInteger(s.nextPerson)?s.nextPerson:1,maxId+1);
+    // Migração idempotente: nenhuma OS antiga nem profissional existente muda de ID.
+    if(!s.team.some(m=>m.sprite==='nemuel'||m.name==='Nemuel')){
+      const profile=INITIAL_TEAM.find(p=>p.sprite==='nemuel');
+      s.team.push(newMechanic(s,()=>0.5,profile));
+    }
     return s;
   }
   function availableRecruits(s){
