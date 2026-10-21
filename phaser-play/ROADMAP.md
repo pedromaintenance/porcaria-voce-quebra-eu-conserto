@@ -2,10 +2,23 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 21/10/2026 · **v0.9.6 — Expansão para 24 sinais de diagnóstico/evento, com 64 condições monitoráveis; QA visual pendente.**
+**Estado de referência:** 21/10/2026 · **v0.9.7 — Material Rodante com CTS, pneus e regras fictícias de postergação, total 82 condições; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.9.7 — Material Rodante v4: CTS, pneus e postergação (21/10/2026)
+
+- [x] Ampliar Material Rodante de 6 para **24 sintomas** (`UND007–UND024`), elevando total geral de 64 para **82 condições recebíveis**; manter 100 missões de OS e locações funcionais.
+- [x] Criar `undercarriage-catalog-expansion.js`, contendo 18 novos casos e metadados para seis anteriores (componente, posição, método, risco e fontes).
+- [x] Separar **CTS** (desgaste de esteira Caterpillar), inspeção térmica/visual de rodante e **pneus OTR** (Michelin, sem CTS); solicitar procedimento Sandvik para tensionadores DR410i.
+- [x] Manter `wearPercent`, `measurementValue`, `referenceLimit` e `unit` como **null**: não inventar medidas, pressões, limites OEM nem vida remanescente.
+- [x] Marcar condições selecionadas como **avaliação prioritária PCM**, com possibilidade de encaminhamento imediato e sem OS automática. Ausência de FMEA correspondente continua bloqueando conversão.
+- [x] Incluir **mecânica de postergação fictícia**: em ocorrências com risco alto, verificação atrasada em pelo menos quatro turnos após o vencimento produz agravamento narrativo, gravado no histórico. Quatro turnos é parâmetro de jogo, não tolerância de segurança OEM.
+- [x] Incluir dossiês por ocorrência, indicadores no catálogo, cache PWA, testes e documentação com fontes primárias Caterpillar/Michelin.
+- [ ] Homologação visual em mobile/desktop e ajuste de balanceamento de frequência/penalidades após partidas reais.
+
+**Catálogo completo:** [Material Rodante v4](../docs/CATALOGO_MATERIAL_RODANTE_V4.md).
 
 ## Entrega 0.9.6 — Códigos de Falha e Eventos, catálogo v3 (21/10/2026)
 
