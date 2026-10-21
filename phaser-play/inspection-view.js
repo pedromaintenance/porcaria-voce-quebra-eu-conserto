@@ -83,7 +83,7 @@
    '<div class="monitorOilContext monitorUndercarriageContext">'
     +'<p><strong>Componente:</strong> '+esc(record.componentGroup)+'</p>'
     +'<p><strong>Posição/área:</strong> '+esc(record.assetZone)+'</p>'
-    +'<p><strong>Método:</strong> '+esc(({cts:'CTS — medição de desgaste de esteira',termica:'Inspeção térmica',temperatura:'Inspeção térmica',inspecao_esteira:'Inspeção de esteira',pneu:'Inspeção de pneu — não CTS',inspecao_pneu:'Inspeção de pneu — não CTS',pressao_pneu:'Pressão de pneu — não CTS'}[record.measurementMethod]||record.measurementMethod)+'</p>'
+    +'<p><strong>Método:</strong> '+esc(({cts:'CTS — medição de desgaste de esteira',termica:'Inspeção térmica',temperatura:'Inspeção térmica',inspecao_esteira:'Inspeção de esteira',pneu:'Inspeção de pneu — não CTS',inspecao_pneu:'Inspeção de pneu — não CTS',pressao_pneu:'Pressão de pneu — não CTS'}[record.measurementMethod]||record.measurementMethod))+'</p>'
     +'<p><strong>Medida / % desgaste / limite:</strong> PENDENTES · sem leituras e sem referência OEM cadastradas</p>'
     +'<p><strong>Incerteza:</strong> '+esc(record.uncertainty)+'</p>'
     +'<p><strong>Verificação sugerida:</strong> '+esc(record.verification)+'</p>'
