@@ -116,7 +116,7 @@
     +'<p><strong>Incerteza:</strong> '+esc(record.uncertainty)+'</p>'
     +'<p><strong>Verificação recomendada:</strong> '+esc(record.verification)+'</p>'
     +'<p><strong>Risco de postergação:</strong> '+esc(record.riskOnDelay)+'</p>'
-    +'<p><strong>Roteiro de OS:</strong> PENDENTE de investigação FMEA específica de FPS; encaminhamento PCM não equivale a diagnóstico de falha.</p>')
+    +'<p><strong>Roteiro investigativo:</strong> '+esc(record.escalationScenario||'PENDENTE')+' · missão didática disponível para revisão PCM; a hipótese de causa NÃO é diagnóstico confirmado nem reparo autorizado pelo OEM.</p>')
    +'</div>':'';
   const history=(m.samples||[]).map(x=>'<li>Turno '+Number(x.tick)+' · <strong>'+esc(x.label)+'</strong>'
    +'<p>'+esc(x.reading)+'</p>'

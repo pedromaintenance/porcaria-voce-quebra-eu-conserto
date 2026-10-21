@@ -18,7 +18,7 @@
  if(!COMPONENT_V5||!Array.isArray(COMPONENT_V5.ENTRIES))throw Error('Expansão de Componentes não carregada.');
  const FPS_V6=typeof require==='function'?require('./fps-catalog-expansion.js'):globalThis.PORCARIA_FPS_EXPANSION;
  if(!FPS_V6||!Array.isArray(FPS_V6.ENTRIES))throw Error('Expansão de FPS não carregada.');
- const VERSION='6.0.0';
+ const VERSION='7.0.0';
  const CATEGORIES=Object.freeze({"oil":"Análises de óleo","faults":"Códigos de falha","undercarriage":"Material rodante","fps":"FPS","components":"Componentes"});
  const ENTRIES=Object.freeze([
   {id:"OIL001",category:"oil",modelId:"EQ01",title:"Comando final: presença de água ou emulsão no lubrificante",baseline:"Laudo de óleo aponta água no comando final; confirmar histórico, amostragem e condição das vedações.",escalationScenario:"INC041",followupTool:"COLETA",followupCost:40,results:["inconclusivo","agravamento"]},
