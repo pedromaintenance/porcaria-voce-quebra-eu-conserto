@@ -73,7 +73,7 @@ assert.ok(screen.includes('FLT001'));
 assert.ok(!screen.includes('data-monitor-start'),'sem botões de estudo');
 assert.ok(!screen.includes('OIL001'),'aba individual respeita domínio');
 const overview=S.monitoring(s,D,M,V,I,E,'overview');
-assert.ok(overview.includes('FPS001')&&overview.includes('CMP001'));
+assert.ok(overview.includes('FPS005')&&overview.includes('CMP001'),'visão geral exibe FPS reais, não legado');
 const practice=V.render(s,D,I,E,null,M);
 assert.ok(!practice.includes('data-monitor-start'),'nenhum estudo legado na interface');
 const html=fs.readFileSync('phaser-play/index.html','utf8');
