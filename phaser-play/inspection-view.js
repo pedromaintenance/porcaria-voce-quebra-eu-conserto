@@ -95,7 +95,7 @@
    '<div class="monitorOilContext monitorComponentContext">'
     +'<p><strong>Sistema/componente:</strong> '+esc(record.componentFamily)+'</p>'
     +'<p><strong>Posição/área:</strong> '+esc(record.assetZone)+'</p>'
-    +'<p><strong>Tipo de verificação:</strong> '+esc(({tendencia_termica:'Tendência térmica',pressao_resposta:'Pressão/resposta funcional',sucção_pressão:'Sucção/pressão hidráulica',pressao_diferencial:'Pressão diferencial',inspecao_vazamento:'Inspeção de vazamento',deriva_cilindro:'Deriva de cilindro',inspecao_sensitiva:'Inspeção sensitiva'}[record.measurementMethod]||record.measurementMethod)+'</p>'
+    +'<p><strong>Tipo de verificação:</strong> '+esc(({tendencia_termica:'Tendência térmica',pressao_resposta:'Pressão/resposta funcional',sucção_pressão:'Sucção/pressão hidráulica',pressao_diferencial:'Pressão diferencial',inspecao_vazamento:'Inspeção de vazamento',deriva_cilindro:'Deriva de cilindro',inspecao_sensitiva:'Inspeção sensitiva'}[record.measurementMethod]||record.measurementMethod))+'</p>'
     +'<p><strong>Medida / referência OEM:</strong> PENDENTES · não existe leitura dimensionada no catálogo</p>'
     +'<p><strong>Evidência inicial:</strong> '+esc(record.observedSigns)+'</p>'
     +'<p><strong>Hipóteses concorrentes (não confirmadas):</strong> '+esc(record.alternatives.join(' · '))+'</p>'
