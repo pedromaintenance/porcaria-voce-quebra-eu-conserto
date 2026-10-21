@@ -9,7 +9,7 @@ const cats=['oil','faults','undercarriage','fps','components'];
 assert.equal(U.VERSION,'4.0.0');assert.equal(C.VERSION,'6.0.0');
 assert.equal(U.ENTRIES.length,18);
 assert.equal(C.ENTRIES.length,120);
-assert.deepEqual(cats.map(k=>C.byCategory(k).length),[24,24,24,4,24]);
+assert.deepEqual(cats.map(k=>C.byCategory(k).length),[24,24,24,24,24]);
 assert.equal(new Set(C.ENTRIES.map(x=>x.id)).size,120,'sem ids duplicados');
 for(let k=1;k<=24;k++){
  const id='UND'+String(k).padStart(3,'0'),e=C.get(id);
