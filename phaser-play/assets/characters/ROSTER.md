@@ -1,5 +1,7 @@
 > **Atualização 19/10/2026 — Lotação e tentativas:** removidos os tetos de profissionais e de decisões assistidas por turno. Dez personagens nomeados permanecem únicos; mecânicos avulsos podem ser contratados sem limite numérico (respeitando custos e integração). Saves preservados e três boxes continuam limitando OS simultâneas. O registro abaixo conserva o histórico de versões anteriores.
 
+> **Atualização 21/10/2026 — Geovane:** substituída cartela de quatro poses fornecida pelo usuário, normalizada em 1160×1244 RGBA WebP, preservando identificador, layout 2×2 e comportamento das versões anteriores.
+
 > **Atualização 19/10/2026 — Acassio (Instrutor):** novo quarto membro inicial (M4) em campanhas novas. Matriz de competências especificada em `engine.js`; atlas RGBA 1160×1244, quatro poses 580×622, em `acassio-4poses.png`. A imagem é obrigatória antes de integrar o PR, validada por `scripts/test-acassio.cjs`. Saves antigos permanecem com o elenco e as ordens que já tinham. O teto de elenco passa a 14.
 
 > **Atualização 19/10/2026 — v0.8.29:** nova cartela de Pedro enviada pelo usuário; o arquivo original e o procedimento de separação, escala e alinhamento estão registrados em [PEDRO_ASSET_0829.md](PEDRO_ASSET_0829.md). Nenhum atributo de personagem ou OS foi modificado.
@@ -14,7 +16,7 @@
 |---|---|---|---:|---|
 | Costa | Eletricista, uniforme cinza com capacete amarelo; antigo Isaias | `costa-4poses.webp` | 171.914 | `32b708ae3c33555e26602730644f6848daa49bbd168a51aa6b1e31de9a4edcd2` |
 | Pedro | Brigadista de resgate, capacete vermelho, chave de tubo e furadeira | `pedro-v0829-4poses.png` | 1.136.848 | `ba160e74d97ab8a469b26b524049f625f89ff08bf6997a6427efb79b4b637d44` |
-| Geovane | Instrutor, uniforme amarelo | `geovane-4poses.webp` | 175.328 | `229f8caddeb6fc332972c94841342424f74da65dcd37479bd51a3524c888470a` |
+| Geovane | Instrutor, uniforme amarelo e cinza, capacete branco com lanterna (poses: tablet, aprovação, orientação e chave) | `geovane-4poses.webp` | 182.220 | `1d771a8111ab65b0f39e0495d62647c1ba283fc28885baedf89231be25e3e958` |
 | Silva | Mecânico com marreta, capacete amarelo e uniforme azul/amarelo | `silva-4poses.webp` | 287.544 | `26f68b092d14bfb940a7e44577b1d117d14571b27bd69fc0a248124102c849eb` |
 | Santos | Mecânico com chave, capacete amarelo e uniforme cinza/amarelo | `santos-4poses.webp` | 281.232 | `48105f1036d2b9693531abb349954f251e1c2d31c4a599e8cdd7ad9c0d5f89ce` |
 | Moura | Mecânico com proteção facial, rádio e uniforme amarelo/cinza | `moura-4poses.webp` | 313.970 | `eba522ff337b6838cd4e2f5f77043c7e410bf32a425d2dd243a143f9b64fd99d` |
