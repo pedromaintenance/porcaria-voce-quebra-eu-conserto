@@ -18,7 +18,7 @@ assert.equal(D.paths.filter(x=>x.origin==='trilha_didatica_fps').length,16,'loca
 assert.ok(D.paths.filter(x=>x.origin==='trilha_didatica_fps').every(x=>x.sapValidated===false));
 const materials=['FPTP','FPRT','FPAD','FPPR','FPBR','FPPL','FPSO','FPFX'];
 const tools=['INSP','METR','TORQ','ENDP'];
-for(const id of materials){assert.ok(D.items[id]&&D.items[id].unit>0&&D.items[id].name.includes('simulad')||D.items[id]?.name.includes('didático')||D.items[id]?.name.includes('virtual'),'material virtual '+id);}
+for(const id of materials){assert.ok(D.items[id]&&D.items[id].unit>0&&/simulad|didátic|virtua/i.test(D.items[id].name),'material fictício '+id);}
 for(const id of tools)assert.ok(D.tools[id]&&D.tools[id].cost>0,'instrumento do jogo '+id);
 const keys=new Set(D.paths.map(p=>[p.modelId,p.system,p.group,p.subgroup].join('|')));
 for(let i=0;i<24;i++){
