@@ -15,7 +15,7 @@
  function evidence(j){
   const log=Array.isArray(j.diagnosticLog)?j.diagnosticLog:[];
   const counts={confirmed:0,rejected:0,inconclusive:0,evidence:0};
-  for(const item of log)if(Object.hasOwn(counts,item.type||item.status)){counts[item.type||item.status]++}
+  for(const item of log)if(Object.hasOwn(counts,item.outcome||item.type||item.status)){counts[item.type||item.status]++}
   return counts;
  }
  function outcome(j){
@@ -63,7 +63,7 @@
  function similarForActive(state,job){
   const related=(state.done||[]).filter(x=>x.scene===job.scene&&x.id!==job.id);
   if(!related.length)return {count:0,unlocked:false,reflections:[]};
-  if(Number(job.stage)<6)return {count:related.length,unlocked:false,reflections:[]};
+  if(Number(job.stage??0)<6)return {count:related.length,unlocked:false,reflections:[]};
   const notes=Array.isArray(state.lessonNotes)?state.lessonNotes:[];
   const ids=new Set(related.map(x=>x.id));
   const selected=notes.filter(n=>ids.has(n.orderId)).slice(-3).reverse();
