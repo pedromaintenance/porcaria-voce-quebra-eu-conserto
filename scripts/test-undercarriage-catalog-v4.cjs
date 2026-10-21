@@ -6,11 +6,11 @@ const C=require('../phaser-play/condition-catalog.js'),M=require('../phaser-play
 const S=require('../phaser-play/sector-views.js'),V=require('../phaser-play/inspection-view.js');
 const U=require('../phaser-play/undercarriage-catalog-expansion.js');
 const cats=['oil','faults','undercarriage','fps','components'];
-assert.equal(U.VERSION,'4.0.0');assert.equal(C.VERSION,'5.0.0');
+assert.equal(U.VERSION,'4.0.0');assert.equal(C.VERSION,'6.0.0');
 assert.equal(U.ENTRIES.length,18);
-assert.equal(C.ENTRIES.length,100);
+assert.equal(C.ENTRIES.length,120);
 assert.deepEqual(cats.map(k=>C.byCategory(k).length),[24,24,24,4,24]);
-assert.equal(new Set(C.ENTRIES.map(x=>x.id)).size,100,'sem ids duplicados');
+assert.equal(new Set(C.ENTRIES.map(x=>x.id)).size,120,'sem ids duplicados');
 for(let k=1;k<=24;k++){
  const id='UND'+String(k).padStart(3,'0'),e=C.get(id);
  assert.ok(e&&e.category==='undercarriage',id+' cadastrado');
@@ -98,4 +98,4 @@ assert.ok(html.indexOf('undercarriage-catalog-expansion.js')<html.indexOf('condi
 assert.ok(html.includes('monitoring.js?v=0.9.8'));
 assert.ok(sw.includes("'./phaser-play/undercarriage-catalog-expansion.js'")&&sw.includes('und097'));
 assert.equal(E.validate(JSON.parse(JSON.stringify(late.s))),true,'save do atraso serializável');
-console.log('OK: 100 sintomas, 24 rodante, CTS sem leitura falsa, pneu separado, postergação e PCM.');
+console.log('OK: 120 sintomas, 24 rodante, CTS sem leitura falsa, pneu separado, postergação e PCM.');
