@@ -219,6 +219,10 @@
    if(proposed)n.planningDiagnosis={codes:proposed.codes,labels:proposed.labels,optionalCause:proposed.optionalCause,evaluated:false};
    n.reviewedTick=s.tick;n.reviewReason=null;n.status='aprovada_pcm';
    audit(n,s,'approve','Escopo aprovado: '+TRADES[trade]+' · '+hh+' HH.');
+   if(typeof E?.recordDecision==='function')E.recordDecision(s,'pcm_review',{
+     notificationId:n.id,scene:n.sourceScenario,asset:n.asset,modelId:n.modelId,
+     estimatedHH:hh,trade,diagnosisRecorded:!!proposed,optionalCause:!!proposed?.optionalCause,
+     classification:'aprovacao_com_escopo'});
    return {ok:true,status:n.status,notification:n};
   }
   return {error:'Decisão PCM desconhecida.'};
@@ -273,6 +277,9 @@
   const n=checked.notification;
   n.workOrderId=draft.id;n.status='convertida_os';n.convertedTick=s.tick;
   audit(n,s,'convert','OS '+draft.id+' criada manualmente; programação e alocação pendentes.');
+  if(typeof E?.recordDecision==='function')E.recordDecision(s,'pcm_conversion',{
+    notificationId:n.id,orderId:draft.id,scene:draft.scene,asset:draft.asset,modelId:draft.modelId,
+    classification:'os_criada_apos_pcm'});
   return {ok:true,order:draft,notification:n};
  }
 
