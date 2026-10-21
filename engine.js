@@ -6,7 +6,8 @@
   const COMPETENCY=typeof require==='function'?require('./competency.js'):globalThis.PORCARIA_COMPETENCY;
   if(!COMPETENCY)throw Error('Módulo de competências indisponível.');
   const TRAINING=typeof require==='function'?require('./training.js'):globalThis.PORCARIA_TRAINING;
-  const SCHEDULE=typeof require==='function'?require('./phaser-play/weekly-schedule.js'):globalThis.PORCARIA_WEEKLY_SCHEDULE;
+  const SCHEDULE=typeof require==='function'?require('./phaser-play/weekly-schedule.js')
+    :new Proxy({}, {get(_obj,key){return (...args)=>globalThis.PORCARIA_WEEKLY_SCHEDULE[key](...args)}});
   if(!TRAINING)throw Error('Módulo de treinamento indisponível.');
   if(!SCHEDULE)throw Error('Módulo de programação semanal indisponível.');
   // Elenco principal fixo. Saves antigos recebem o inspetor Nemuel uma vez, preservando IDs e OS.
