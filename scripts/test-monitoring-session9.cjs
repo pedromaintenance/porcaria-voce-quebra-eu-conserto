@@ -117,7 +117,7 @@ severe.tick+=4;
 assert.equal(M.collect(severe,n3.id).sample.trend,'agravamento');
 assert.equal(M.escalate(severe,D,I,n3.id).escalation.sourceScenario,'INC092');
 const view=V.render(initial,D,I,E,null,M);
-assert.ok(view.includes('CARTEIRA · MONITORAMENTO POR CONDIÇÃO'));
+assert.ok(view.includes('MONITORAMENTOS ATIVOS'),'monitoramentos seguem resumidos sem estudos de teste');
 assert.ok(view.includes('RECOLETAS VENCIDAS'));
 assert.ok(view.includes('ENCERRADO SEM OS')||view.includes('Monitoramento didático encerrado'));
 assert.ok(!view.includes('data-monitor-start="baseline"'),'botões de teste não aparecem mais');
