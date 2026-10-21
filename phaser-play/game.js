@@ -296,6 +296,7 @@ function planningTabs(){
   +'<button type="button" data-planning-horizon="turn" class="'+(planningHorizon==='turn'?'selected':'')+'" aria-pressed="'+(planningHorizon==='turn')+'">PRÓXIMO TURNO · 12H</button>'
   +'<button type="button" data-planning-horizon="week" class="'+(planningHorizon==='week'?'selected':'')+'" aria-pressed="'+(planningHorizon==='week')+'">JANELA SEMANAL · 14 TURNOS</button>'
   +'<button type="button" data-planning-horizon="schedule" class="'+(planningHorizon==='schedule'?'selected':'')+'" aria-pressed="'+(planningHorizon==='schedule')+'">PROGRAMAR · 14 TURNOS</button>'
+  +'<button type="button" data-planning-horizon="preventive" class="'+(planningHorizon==='preventive'?'selected':'')+'" aria-pressed="'+(planningHorizon==='preventive')+'">PREVENTIVA × CORRETIVA</button>'
   +'<button type="button" data-planning-horizon="history" class="'+(planningHorizon==='history'?'selected':'')+'" aria-pressed="'+(planningHorizon==='history')+'">HISTÓRICO DE DECISÕES</button>'
   +'<button type="button" data-planning-horizon="lessons" class="'+(planningHorizon==='lessons'?'selected':'')+'" aria-pressed="'+(planningHorizon==='lessons')+'">LIÇÕES APRENDIDAS</button></div>';
 }
@@ -340,6 +341,52 @@ function drawSchedule(){
     +'</div>':'')+'</article>';
  }).join('')+'</div>';
  out+='<p class="planningExplanation">'+esc(schedule.note)+'</p>';
+ $('planning').innerHTML=out;
+}
+
+function drawPreventive(){
+ const p=window.PORCARIA_PREVENTIVE.compute(state,data);
+ const metric=(name,value)=>'<div class="planningMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong></div>';
+ const opt=(value,label)=>'<option value="'+esc(value)+'">'+esc(label)+'</option>';
+ const candidates=p.assets.filter(a=>!a.blocked);
+ const free=state.team.filter(m=>!m.assigned&&m.restAt!==state.tick&&!E.TRAINING.active(state,m));
+ let out=planningTabs()
+  +'<p class="planningIntro">MANUTENÇÃO PREVENTIVA · Decisão de recurso com custo e HH de jogo. A redução de ocorrências futuras é probabilística e temporária, sem garantia sobre falhas reais ou corretivas já abertas.</p>'
+  +'<div class="planningMetrics">'+metric('Preventivas executadas',p.completed)
+  +metric('Desembolso de preventivas', 'R$ '+brl(p.spent))
+  +metric('HH preventivas executadas',p.hours+' h')
+  +metric('Reservas neste turno',p.planned)
+  +metric('Sorteios aleatórios barrados*',p.screened)+'</div>';
+ out+='<div class="planningExplanation"><b>Custos e efeito demonstrativos:</b> Inspeção: R$ 120, 2 HH, redução de 25% por 4 turnos. '
+  +'Serviço: R$ 360, 4 HH, redução de 45% por 8 turnos. Valores não correspondem a uma máquina real e não representam economia comprovada.</div>';
+ if(!candidates.length||!free.length)out+='<p class="planningIntro">Sem ativos ou profissionais disponíveis para autorizar uma preventiva agora.</p>';
+ else out+='<section class="scheduleForm"><h3>AUTORIZAR PREVENTIVA DE UM ATIVO</h3>'
+  +'<div class="scheduleFields"><label>Equipamento<select id="preventiveAsset">'
+  +candidates.map(a=>opt(a.asset,a.model+' · '+a.asset+(a.covered?' · proteção ativa':''))).join('')+'</select></label>'
+  +'<label>Profissional<select id="preventiveWorker">'
+  +free.map(m=>opt(m.id,m.name+' · '+(m.specialty||m.role))).join('')+'</select></label>'
+  +'<label>Box<select id="preventiveBay">'+Array.from({length:state.bays},(_,i)=>opt(i,'BOX '+(i+1))).join('')+'</select></label>'
+  +'<label>Pacote<select id="preventivePackage">'
+  +Object.entries(window.PORCARIA_PREVENTIVE.PACKAGES).map(([id,x])=>opt(id,x.label+' · R$ '+brl(x.cost)+' · '+x.hours+' HH')).join('')+'</select></label></div>'
+  +'<button class="act" type="button" data-preventive-book>AUTORIZAR · DESCONTAR VALOR DO CAIXA</button>'
+  +'<p class="planningExplanation">Autorização é explícita; a equipe realiza o serviço no fechamento do turno. '
+  +'Os recursos do box e do mecânico ficam reservados. Cancelar antes do avanço devolve o valor integral.</p></section>';
+ out+='<h3 class="resourceSection">ATIVOS COM PROTEÇÃO DIDÁTICA ATIVA</h3>';
+ const protectedAssets=p.assets.filter(a=>a.covered);
+ out+=protectedAssets.length?'<div class="scheduleHistory">'+protectedAssets.map(a=>
+  '<article class="planningOrder"><strong>'+esc(a.asset)+' · '+esc(a.model)+'</strong>'
+  +'<p>Redução simulada de '+Math.round(a.reduction*100)+'% nos sorteios de nova ocorrência até o início do turno '+a.expiresTick+'.</p></article>'
+ ).join('')+'</div>':'<p class="muted">Ainda não há ativos em janela de proteção preventiva.</p>';
+ out+='<h3 class="resourceSection">REGISTROS DE PREVENTIVA</h3>';
+ out+=p.rows.length?'<div class="scheduleHistory">'+p.rows.map(r=>{
+  const label={planned:'PROGRAMADA',completed:'EXECUTADA',cancelled:'CANCELADA'}[r.status]||'HISTÓRICO';
+  return '<article class="planningOrder"><div class="planningOrderHeader"><strong>'+esc(r.asset)+' · '+esc(r.label)+'</strong>'
+   +'<span class="planningTag">'+label+'</span></div><p>Turno '+r.tick+' · '+esc(r.mechanic)
+   +' · BOX '+(r.bay+1)+' · '+r.hours+' HH · R$ '+brl(r.cost)+'</p>'
+   +(r.status==='planned'?'<div class="actions"><button class="act secondary" type="button" data-preventive-cancel="'+esc(r.id)+'">CANCELAR E REEMBOLSAR</button></div>':'')
+   +'</article>';
+ }).join('')+'</div>':'<p class="muted">Nenhum serviço preventivo autorizado nesta campanha.</p>';
+ out+='<p class="planningExplanation">* '+esc(p.note)+'</p>';
  $('planning').innerHTML=out;
 }
 function drawWeekly(){
@@ -503,6 +550,7 @@ function drawPlanning(){
  if($('planningNotifications'))$('planningNotifications').innerHTML=S.planning(state,data,I,E,IV);
  if(planningHorizon==='week'){drawWeekly();return}
  if(planningHorizon==='schedule'){drawSchedule();return}
+ if(planningHorizon==='preventive'){drawPreventive();return}
  if(planningHorizon==='history'){drawDecisionHistory();return}
  if(planningHorizon==='lessons'){drawLessons();return}
  const plan=window.PORCARIA_PLANNING.compute(state,data);
@@ -1006,8 +1054,21 @@ function events(){
   }
   const planHorizon=ev.target.closest('[data-planning-horizon]');
   if(planHorizon){
-   planningHorizon=['turn','week','schedule','history','lessons'].includes(planHorizon.dataset.planningHorizon)?planHorizon.dataset.planningHorizon:'turn';
+   planningHorizon=['turn','week','schedule','preventive','history','lessons'].includes(planHorizon.dataset.planningHorizon)?planHorizon.dataset.planningHorizon:'turn';
    drawPlanning();return;
+  }
+  const preventiveBook=ev.target.closest('[data-preventive-book]');
+  if(preventiveBook){
+   const error=E.bookPreventive(state,data,$('preventiveAsset')?.value,$('preventiveWorker')?.value,
+    Number($('preventiveBay')?.value),$('preventivePackage')?.value);
+   if(error){notify(error);return}
+   save();drawUI();drawPreventive();notify('Preventiva autorizada. HH e recurso serão utilizados no turno.');return;
+  }
+  const preventiveCancel=ev.target.closest('[data-preventive-cancel]');
+  if(preventiveCancel){
+   const error=E.cancelPreventive(state,preventiveCancel.dataset.preventiveCancel);
+   if(error){notify(error);return}
+   save();drawUI();drawPreventive();notify('Preventiva cancelada; valor restituído ao caixa.');return;
   }
   const scheduleBook=ev.target.closest('[data-schedule-book]');
   if(scheduleBook){
@@ -1606,6 +1667,7 @@ async function boot(){
  try{
   // O motor carrega antes da cena: ativa o módulo de agenda antes da primeira leitura.
   await import('./weekly-schedule.js?v=0.9.14');
+  await import('./preventive.js?v=0.9.15');
   if(!document.getElementById('weeklyScheduleStyle')){
    const css=document.createElement('style');css.id='weeklyScheduleStyle';
    css.textContent='.scheduleSlots{display:grid;grid-template-columns:repeat(7,minmax(100px,1fr));gap:7px;margin:12px 0}'
@@ -1642,7 +1704,7 @@ async function boot(){
   M.receive(state,data,I,{initial:true});
   save();
   selected=state.jobs[0]?.id;events();drawUI();
-  if(!I||!IV||!S||!T||!M||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_WEEKLY_SCHEDULE||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
+  if(!I||!IV||!S||!T||!M||!window.PORCARIA_PREVENTIVE||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_WEEKLY_SCHEDULE||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
   if(!window.PORCARIA_RENDER_QUALITY)throw Error('Configuração de nitidez indisponível.');
   renderProfile=window.PORCARIA_RENDER_QUALITY.profile({
    viewportWidth:window.innerWidth,devicePixelRatio:window.devicePixelRatio,

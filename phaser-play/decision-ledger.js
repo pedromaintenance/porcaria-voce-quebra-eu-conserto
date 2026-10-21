@@ -11,12 +11,13 @@
  const typeLabels=Object.freeze({
   allocation:'Alocação',purchase:'Compra',receipt:'Recebimento',
   pcm_review:'Revisão PCM',pcm_conversion:'OS criada',planner_evaluation:'Diagnóstico avaliado',completion:'OS concluída',
-  schedule_created:'Programação confirmada',schedule_cancelled:'Programação cancelada',schedule_fulfilled:'Reserva cumprida',schedule_missed:'Programação não realizada'
+  schedule_created:'Programação confirmada',schedule_cancelled:'Programação cancelada',schedule_fulfilled:'Reserva cumprida',schedule_missed:'Programação não realizada',
+  preventive_authorized:'Preventiva autorizada',preventive_cancelled:'Preventiva cancelada',preventive_completed:'Preventiva executada'
  });
  const safe=n=>Math.max(0,Number(n)||0),round=n=>Math.round(n*10)/10;
  function typeGroup(e){
   if(['purchase','receipt'].includes(e.type))return 'supply';
-  if(['pcm_review','pcm_conversion','planner_evaluation','schedule_created','schedule_cancelled','schedule_fulfilled','schedule_missed'].includes(e.type))return 'pcm';
+  if(['pcm_review','pcm_conversion','planner_evaluation','schedule_created','schedule_cancelled','schedule_fulfilled','schedule_missed','preventive_authorized','preventive_cancelled','preventive_completed'].includes(e.type))return 'pcm';
   return 'execution';
  }
  function compute(state,data,{filter='all',limit=MAX_VISIBLE}={}){
