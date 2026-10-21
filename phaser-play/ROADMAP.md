@@ -2,10 +2,23 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 21/10/2026 · **v0.9.12 — Histórico auditável de decisões PCM/Supervisor, comparação plano versus execução e filtros; QA visual pendente.**
+**Estado de referência:** 21/10/2026 · **v0.9.13 — Lições Aprendidas com reflexões por OS, recorrência e proteção contra spoiler; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.9.13 — Lições Aprendidas, ciclo 10 (21/10/2026)
+
+- [x] Criar dossiês pós-OS concluída relacionando relato, eventos do diagnóstico, hipótese didática FMEA, retrabalho, indisponibilidade, espera por insumo e resultado observado.
+- [x] Implementar **Planejamento → Lições Aprendidas**, com filtros de revisão, dossiês e formulário de reflexão técnica do supervisor.
+- [x] Adicionar `lessonNotes[]` (até 200 reflexões), uma por OS concluída, com tema, texto limitado a 20–300 caracteres, revisão e histórico auditável de gravações.
+- [x] Registrar `lesson_reflection` na trilha de decisões, sem copiar o texto integral no evento, sem premiar/penalizar a equipe e sem compras ou OS automáticas.
+- [x] Liberar reflexões dos casos anteriores de um mesmo cenário **somente após a sexta etapa de diagnóstico** da OS atual, evitando antecipar gabaritos.
+- [x] Distinguir explicitamente gabarito fictício, hipótese de causa, evidências do jogo e diagnóstico físico confirmado; não calcular retrabalho evitado ou lucro hipotético.
+- [x] Compatibilidade com saves anteriores, campos novos opcionais, escaping de notas e regressão CI/PWA.
+- [ ] Homologação visual desktop/mobile, campanha longa e acessibilidade de cadastro/edição das reflexões.
+
+**Documentação:** [Lições Aprendidas v10](../docs/LICOES_APRENDIDAS_V10.md).
 
 ## Entrega 0.9.12 — Histórico de Decisões PCM/Supervisor, ciclo 9 (21/10/2026)
 
