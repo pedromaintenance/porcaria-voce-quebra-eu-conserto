@@ -22,6 +22,20 @@
 
 **Critério de aceite:** a arte aparece no menu Planejamento, as abas de 12h e 14 turnos e as notificações continuam operacionais e os arquivos permanecem acessíveis offline após pré-cache.
 
+## Entrega 0.9.4 — Monitoramento de condição com catálogo de sintomas (20/10/2026)
+
+- [x] Substituir os botões dos três estudos de óleo por uma **carteira de sinais recebidos**, separada do catálogo de condições possíveis.
+- [x] Criar catálogo independente `phaser-play/condition-catalog.js` com 30 sintomas técnicos em cinco famílias (óleo 8, códigos 6, rodante 6, FPS 4, componentes 6).
+- [x] Gerar um primeiro sinal na inicialização e, depois, até um registro a cada dois turnos, com rodízio de domínio, anti-duplicação e limite de oito ativos.
+- [x] Identificar cada ocorrência como notificação de condição vinculada ao ativo, sem criar inspeção fictícia, OS ou causa-raiz confirmada.
+- [x] Aplicar instrumentos de leitura por fonte; coleta de óleo usa seu kit/custo virtual específico, sem exigir o mesmo kit para sinais eletrônicos, rodante e FPS.
+- [x] Preservar triagem, continuidade, decisão, encerramento e escalonamento para revisão PCM; preservar as três sequências antigas apenas para saves existentes.
+- [x] FPS fica sem mapeamento de investigação até a definição do sistema, com notificação para PCM mas sem autorização de gerar OS fictícia por roteiro incorreto.
+- [x] Atualizar navegação do monitoramento, cache PWA, documentação e testes dedicados.
+- [ ] Homologar visual e balancear frequência, custo e evolução com a jogabilidade. Próximos ciclos ampliarão o catálogo, sem mudar este contrato.
+
+**Especificação e lista completa:** [Catálogo de Monitoramento v1](../docs/CATALOGO_MONITORAMENTO_V1.md). Sintomas e resultados são conteúdo de jogo, não leitura operacional real ou limites OEM.
+
 ## Entrega 0.9.2 — PCM gamificado, hipóteses técnicas e consequências mecânicas (20/10/2026)
 
 - [x] **Nenhum campo de texto livre na inspeção ou revisão:** achado é preenchido automaticamente pelo evento simulado; motivo de devolução/arquivamento, disciplina, HH e estratégia são selecionados de listas.
