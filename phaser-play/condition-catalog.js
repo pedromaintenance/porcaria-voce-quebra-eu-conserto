@@ -12,7 +12,9 @@
  if(!OIL_V2||!Array.isArray(OIL_V2.ENTRIES))throw Error('Expansão do catálogo de óleo não carregada.');
  const FAULT_V3=typeof require==='function'?require('./fault-catalog-expansion.js'):globalThis.PORCARIA_FAULT_EXPANSION;
  if(!FAULT_V3||!Array.isArray(FAULT_V3.ENTRIES))throw Error('Expansão do catálogo eletrônico não carregada.');
- const VERSION='3.0.0';
+ const UNDERCARRIAGE_V4=typeof require==='function'?require('./undercarriage-catalog-expansion.js'):globalThis.PORCARIA_UNDERCARRIAGE_EXPANSION;
+ if(!UNDERCARRIAGE_V4||!Array.isArray(UNDERCARRIAGE_V4.ENTRIES))throw Error('Expansão de material rodante não carregada.');
+ const VERSION='4.0.0';
  const CATEGORIES=Object.freeze({"oil":"Análises de óleo","faults":"Códigos de falha","undercarriage":"Material rodante","fps":"FPS","components":"Componentes"});
  const ENTRIES=Object.freeze([
   {id:"OIL001",category:"oil",modelId:"EQ01",title:"Comando final: presença de água ou emulsão no lubrificante",baseline:"Laudo de óleo aponta água no comando final; confirmar histórico, amostragem e condição das vedações.",escalationScenario:"INC041",followupTool:"COLETA",followupCost:40,results:["inconclusivo","agravamento"]},
@@ -45,8 +47,8 @@
   {id:"CMP004",category:"components",modelId:"EQ06",title:"Pulldown: queda de rendimento com óleo aquecido",baseline:"Conjunto de avanço perde desempenho após aquecimento; origem hidráulica ou mecânica indeterminada.",escalationScenario:"INC064",followupTool:"MANO",followupCost:0,results:["inconclusivo","agravamento"]},
   {id:"CMP005",category:"components",modelId:"EQ02",title:"Motor diesel: aquecimento sob carga prolongada",baseline:"Histórico de temperatura do motor aumenta em ciclos intensos, sem origem isolada.",escalationScenario:"INC071",followupTool:"TERM",followupCost:0,results:["estavel","agravamento"]},
   {id:"CMP006",category:"components",modelId:"EQ01",title:"Transmissão: tendência de vibração sob tração",baseline:"Conjunto de transmissão apresenta vibração em carga, com histórico de partículas no lubrificante.",escalationScenario:"INC088",followupTool:"TERM",followupCost:0,results:["estavel","agravamento"]}
- ].concat(OIL_V2.ENTRIES,FAULT_V3.ENTRIES).map(x=>{
-  const meta=OIL_V2.METADATA[x.id]||FAULT_V3.METADATA[x.id];
+ ].concat(OIL_V2.ENTRIES,FAULT_V3.ENTRIES,UNDERCARRIAGE_V4.ENTRIES).map(x=>{
+  const meta=OIL_V2.METADATA[x.id]||FAULT_V3.METADATA[x.id]||UNDERCARRIAGE_V4.METADATA[x.id];
   return Object.freeze({...x,...(meta||{}),
    ...(meta?.indicators?{indicators:Object.freeze(meta.indicators.slice())}:{}),
    ...(meta?.alternatives?{alternatives:Object.freeze(meta.alternatives.slice())}:{}),
@@ -56,5 +58,5 @@
  const BY_ID=new Map(ENTRIES.map(e=>[e.id,e]));
  function get(id){return BY_ID.get(id)||null}
  function byCategory(category){return ENTRIES.filter(e=>e.category===category)}
- return {VERSION,CATEGORIES,ENTRIES,get,byCategory,SOURCES:Object.freeze({...OIL_V2.SOURCES,...FAULT_V3.SOURCES})};
+ return {VERSION,CATEGORIES,ENTRIES,get,byCategory,SOURCES:Object.freeze({...OIL_V2.SOURCES,...FAULT_V3.SOURCES,...UNDERCARRIAGE_V4.SOURCES})};
 });

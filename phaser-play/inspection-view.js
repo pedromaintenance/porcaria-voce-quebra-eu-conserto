@@ -79,12 +79,26 @@
     +'<p><strong>Incerteza:</strong> '+esc(record.uncertainty)+'</p>'
     +'<p><strong>Verificação sugerida:</strong> '+esc(record.verification)+'</p>'
     +'</div>':'';
+  const undercarriageContext=record?.category==='undercarriage'&&record?.componentGroup?
+   '<div class="monitorOilContext monitorUndercarriageContext">'
+    +'<p><strong>Componente:</strong> '+esc(record.componentGroup)+'</p>'
+    +'<p><strong>Posição/área:</strong> '+esc(record.assetZone)+'</p>'
+    +'<p><strong>Método:</strong> '+esc(({cts:'CTS — medição de desgaste de esteira',termica:'Inspeção térmica',temperatura:'Inspeção térmica',inspecao_esteira:'Inspeção de esteira',pneu:'Inspeção de pneu — não CTS',inspecao_pneu:'Inspeção de pneu — não CTS',pressao_pneu:'Pressão de pneu — não CTS'}[record.measurementMethod]||record.measurementMethod))+'</p>'
+    +'<p><strong>Medida / % desgaste / limite:</strong> PENDENTES · sem leituras e sem referência OEM cadastradas</p>'
+    +'<p><strong>Incerteza:</strong> '+esc(record.uncertainty)+'</p>'
+    +'<p><strong>Verificação sugerida:</strong> '+esc(record.verification)+'</p>'
+    +'<p><strong>Risco de postergação:</strong> '+esc(record.riskOnDelay)+'</p>'
+    +(record.delayThresholdTurns?'<p><strong>Regra do jogo:</strong> após '+Number(record.delayThresholdTurns)+' turnos de atraso da verificação programada, o resultado simulado vira agravamento. Não é um limite OEM.</p>':'')
+    +(record.oemSpecificPending?'<p><strong>Referência Sandvik:</strong> parâmetros de ajuste e desgaste pendentes de documentação OEM.</p>':'')
+   +'</div>':'';
   const history=(m.samples||[]).map(x=>'<li>Turno '+Number(x.tick)+' · <strong>'+esc(x.label)+'</strong>'
-   +'<p>'+esc(x.reading)+'</p><small>Resultado registrado na carteira.</small></li>').join('');
+   +'<p>'+esc(x.reading)+'</p>'
+   +(x.delayEscalation?'<p><strong>AGRAVAMENTO POR POSTERGAÇÃO SIMULADA:</strong> '+Number(x.lateTurns)+' turnos após o vencimento. '+esc(x.delayExplanation||'')+'</p>':'')
+   +'<small>Resultado registrado na carteira.</small></li>').join('');
   return '<section class="pcmMonitoringCard"><h4>📈 MONITORAMENTO DE CONDIÇÃO</h4>'
    +'<p><strong>Fonte:</strong> '+esc(n.monitorCategory&&M.CATALOG?.CATEGORIES[n.monitorCategory]||'Registro anterior')+' · '+esc(n.monitorProtocol||'')+'</p>'
     +'<p><strong>Observação inicial:</strong> '+esc(m.baseline||'')+'</p>'
-   +context+faultContext+'<p>Acompanhe a evolução dos resultados e registre a decisão técnica.</p>'
+   +context+faultContext+undercarriageContext+'<p>Acompanhe a evolução dos resultados e registre a decisão técnica.</p>'
    +controls+(history?'<details open><summary>Histórico de verificações ('+(m.samples||[]).length+')</summary><ol>'+history+'</ol></details>':'')
    +'</section>';
  }

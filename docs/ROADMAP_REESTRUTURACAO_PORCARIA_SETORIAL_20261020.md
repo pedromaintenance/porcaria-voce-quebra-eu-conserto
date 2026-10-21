@@ -119,6 +119,14 @@ As 100 missões e 387 caminhos cadastrados são um legado a preservar. As rotina
 - Triagem prioritária para perda de comando e eventos térmicos; sem missão específica, encaminha à revisão PCM sem permitir OS automática.
 - Referência técnica: [Catálogo de Códigos de Falha v3](CATALOGO_CODIGOS_FALHA_V3.md).
 
+## Etapa 1E — Material Rodante CTS e pneus (21/10/2026)
+
+- 18 novos registros de rodante, total 24 na categoria e 82 condições no catálogo geral.
+- Componentes, localização, método de medição e investigação separados entre CTS Cat, pneu e inspeção visual/térmica.
+- Sem valores de desgaste, pressão ou limites OEM inventados; fichas exibem medições pendentes e exigem documentação específica.
+- Riscos críticos: triagem imediata ao PCM, sem OS automática. Atraso de quatro turnos é penalidade qualitativa **apenas do jogo**, nunca recomendação de manutenção.
+- Fontes e índices: [Material Rodante v4](CATALOGO_MATERIAL_RODANTE_V4.md).
+
 ## Critérios de aceite por entrega
 
 1. Commit por etapa em branch própria, PR revisável, CI Phaser e recrutamento sem regressões.
