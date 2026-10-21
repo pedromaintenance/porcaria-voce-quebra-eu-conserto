@@ -2,10 +2,24 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 19/10/2026 · **v0.8.30 — Setor de Treinamentos com Bia grande em poses animadas e quatro abas funcionais; QA visual pendente.**
+**Estado de referência:** 21/10/2026 · **v0.9.5 — Expansão de 24 casos de análise de fluidos e triagem prioritária no Monitoramento; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.9.5 — Catálogo técnico de óleo e fluidos v2 (21/10/2026)
+
+- [x] Ampliar análises de óleo/fluidos de **8 para 24 casos** (`OIL009–OIL024`), elevando o catálogo geral de 30 para **46 sinais**; preservar IDs e 100 missões antigas.
+- [x] Extrair módulo independente `oil-catalog-expansion.js`, carregado antes do catálogo principal, com 16 novos registros e 24 conjuntos de metadados.
+- [x] Registrar **compartimento, indicadores, incerteza, verificação e fontes Caterpillar** por caso; não produzir valores de laboratório ou limites OEM inventados.
+- [x] Tratar suspeita de arrefecimento no óleo e condição persistente após intervenção com **triagem prioritária e encaminhamento PCM**; impedir simples adiamento por recoleta.
+- [x] Tratar diferença declarada de aditivos por mudança de produto como **revisão do baseline**, sem diagnóstico automático de dano.
+- [x] Sem roteiro FMEA correspondente, encaminhar notificação com `requiresScenarioMapping:true` e bloquear a geração de OS fictícia por causa incorreta.
+- [x] Preservar jogos anteriores, leitura de laudos, encaminhamento manual e fluxo de programação PCM sem modificar `game-data.json` ou engine.
+- [x] Atualizar dossiês, catálogo visual, cache PWA, testes de regressão e documentação das fontes.
+- [ ] Homologação visual e balanceamento de frequência, prioridade e resultados em desktop/mobile após publicação.
+
+**Fontes e lista completa:** [Catálogo de Óleo v2](../docs/CATALOGO_OLEO_V2.md). Todas as ocorrências simuladas continuam ficcionais; a literatura suporta famílias de sintomas, não diagnósticos nem resultados determinísticos.
 
 ## Entrega 0.9.3 — Sala visual do Planejamento PCM (20/10/2026)
 

@@ -53,8 +53,9 @@
     const id='NM'+String(s.nextNotification++).padStart(4,'0');
     const n={id,inspectionId:null,asset,modelId:p.modelId,openedTick:s.tick,
      origin:'monitoramento_de_condicao',description:p.baseline,reportedIndication:p.baseline,
-     priority:category==='faults'||category==='fps'?'media':'baixa',status:'aguarda_revisao_pcm',
+     priority:p.triage==='avaliacao_prioritaria'?'alta':category==='faults'||category==='fps'?'media':'baixa',status:'aguarda_revisao_pcm',
      sourceScenario:null,workOrderId:null,monitorOnly:true,monitorProtocol:p.id,monitorCategory:category,
+     monitorCatalogVersion:CATALOG.VERSION,
      monitoring:{status:'proposta',baseline:p.baseline,reason:null,interval:null,nextTick:null,samples:[],decisions:[]}};
     s.notifications.push(n);
     s.monitoringFeedSeen=[...seen.filter(id=>id!==p.id),p.id].slice(-CATALOG.ENTRIES.length);
@@ -95,6 +96,7 @@
   const n=get(s,id);
   if(!n||n.status!=='aguarda_revisao_pcm'||status(n)!=='proposta')return {error:'A decisão exige notificação de monitoramento em revisão.'};
   if(!Object.hasOwn(REASONS,reason))return {error:'Justificativa de monitoramento inválida.'};
+  if(protocol(n.monitorProtocol)?.triage==='avaliacao_prioritaria')return {error:'Condição prioritária: encaminhe para avaliação PCM antes de programar nova amostra.'};
   const days=Number(interval);
   if(!INTERVALS.includes(days))return {error:'Selecione dois ou quatro turnos simulados.'};
   if((s.jobs||[]).some(j=>j.asset===n.asset))return {error:'Este ativo já possui OS aberta.'};
@@ -150,12 +152,14 @@
  function escalate(s,d,I,id){
   init(s,I);
   const n=get(s,id),m=n?.monitoring;
-  if(!n||n.status!=='monitorando'||!['programado','aguarda_decisao','requer_avaliacao'].includes(m?.status))
+  const p=protocol(n?.monitorProtocol);
+  const urgent=n?.status==='aguarda_revisao_pcm'&&m?.status==='proposta'&&p?.triage==='avaliacao_prioritaria';
+  if(!n||!urgent&&!(n.status==='monitorando'&&['programado','aguarda_decisao','requer_avaliacao'].includes(m?.status)))
    return {error:'Monitoramento não elegível para escalonamento.'};
   if(n.escalationNotificationId)return {error:'Já existe notificação escalonada.'};
-  const p=protocol(n.monitorProtocol);
-  const sc=d.scenarios.find(x=>x.id===p?.escalationScenario&&x.modelId===n.modelId);
-  if(!sc&&p?.category!=='fps')return {error:'Cenário de investigação não encontrado; nenhuma notificação alterada.'};
+  if(!p)return {error:'Registro de condição não encontrado.'};
+  const sc=d.scenarios.find(x=>x.id===p.escalationScenario&&x.modelId===n.modelId);
+  if(!sc&&p.escalationScenario)return {error:'Cenário de investigação não encontrado; nenhuma notificação alterada.'};
   if((s.jobs||[]).some(j=>j.asset===n.asset))return {error:'Ativo já possui OS aberta.'};
   const last=m.samples[m.samples.length-1];
   const result=last?'Última recoleta fictícia: '+last.label+'.':'Escalonado sem nova recoleta por decisão conservadora.';
@@ -163,14 +167,14 @@
   const newId='NM'+String(s.nextNotification++).padStart(4,'0');
   const escalation={id:newId,inspectionId:n.inspectionId,asset:n.asset,modelId:n.modelId,openedTick:s.tick,
    origin:'monitoramento_de_condicao_simulado',description,reportedIndication:description,
-   priority:last?.trend==='agravamento'?'alta':'media',status:'aguarda_revisao_pcm',
+   priority:last?.trend==='agravamento'||n.priority==='alta'?'alta':'media',status:'aguarda_revisao_pcm',
    sourceScenario:sc?.id||null,requiresScenarioMapping:!sc,
    evidenceType:'tendencia_qualitativa_simulada',workOrderId:null,
    previousMonitorId:n.id};
   s.notifications.push(escalation);
   n.status='escalonada_monitoramento';n.escalationNotificationId=newId;
   m.status='escalonado';m.nextTick=null;
-  m.decisions.push({tick:s.tick,action:'escalonar_pcm',notificationId:newId,reason:result});
+  m.decisions.push({tick:s.tick,action:'escalonar_pcm',notificationId:newId,reason:result,urgent});
   return {ok:true,notification:n,escalation};
  }
  function summary(s){

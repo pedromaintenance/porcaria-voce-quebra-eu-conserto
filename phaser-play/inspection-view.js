@@ -27,6 +27,8 @@
  function monitorWidget(n,s,M){
   if(!M)return '';
   const m=n.monitoring||{},state=m.status||'proposta';
+  const record=M.CATALOG?.get(n.monitorProtocol);
+  const urgent=record?.triage==='avaliacao_prioritaria';
   const select=(id,choices)=>'<select id="'+id+'">'+choices.map(([v,label])=>'<option value="'+esc(v)+'">'+esc(label)+'</option>').join('')+'</select>';
   const followup=n.monitorCategory==='oil'||!n.monitorCategory?'RECOLETA':'NOVA VERIFICAÇÃO';
   const period=id=>'<label>Intervalo para '+followup.toLowerCase()+' (turnos) '+select(id,[[2,'2 turnos'],[4,'4 turnos']])+'</label>';
@@ -34,7 +36,9 @@
   const btn=(kind,label,disabled=false)=>'<button type="button" class="act'+(kind==='escalate'?' secondary':'')+'" data-monitor-action="'+kind+'" data-monitor-note="'+esc(n.id)+'" '+(disabled?'disabled':'')+'>'+label+'</button>';
   let controls='';
   if(n.status==='aguarda_revisao_pcm'){
-   controls='<p>Avalie o sinal recebido e programe o acompanhamento, sem abrir OS.</p>'
+   controls=urgent?'<p class="inspectionAttention">AVALIAÇÃO PRIORITÁRIA: a condição requer triagem no PCM antes de programar recoleta.</p>'
+    +actions(btn('escalate','ENCAMINHAR AO PCM'))
+    :'<p>Avalie o sinal recebido e programe o acompanhamento, sem abrir OS.</p>'
     +'<label>Justificativa '+select('monitor-reason-'+esc(n.id),Object.entries(M.REASONS))+'</label>'
     +period('monitor-interval-'+esc(n.id))
     +actions(btn('decide','INICIAR MONITORAMENTO SEM OS'));
@@ -56,12 +60,19 @@
    controls='<p>⚠ Monitoramento convertido em nova notificação <strong>'+esc(n.escalationNotificationId||'')+
     '</strong>. Revisão PCM pendente; nenhuma OS foi criada automaticamente.</p>';
   }
+  const context=record?.compartment?'<div class="monitorOilContext">'
+   +'<p><strong>Compartimento:</strong> '+esc(record.compartment)+'</p>'
+   +'<p><strong>Indicadores:</strong> '+esc(record.indicators.join(' · '))+'</p>'
+   +'<p><strong>Incerteza:</strong> '+esc(record.uncertainty)+'</p>'
+   +'<p><strong>Verificação sugerida:</strong> '+esc(record.verification)+'</p>'
+   +(record.triage==='revisar_baseline'?'<p><strong>Revisar linha de base:</strong> perfil de aditivos não constitui diagnóstico isolado de falha.</p>':'')
+   +'</div>':'';
   const history=(m.samples||[]).map(x=>'<li>Turno '+Number(x.tick)+' · <strong>'+esc(x.label)+'</strong>'
    +'<p>'+esc(x.reading)+'</p><small>Resultado registrado na carteira.</small></li>').join('');
   return '<section class="pcmMonitoringCard"><h4>📈 MONITORAMENTO DE CONDIÇÃO</h4>'
    +'<p><strong>Fonte:</strong> '+esc(n.monitorCategory&&M.CATALOG?.CATEGORIES[n.monitorCategory]||'Registro anterior')+' · '+esc(n.monitorProtocol||'')+'</p>'
     +'<p><strong>Observação inicial:</strong> '+esc(m.baseline||'')+'</p>'
-   +'<p>Acompanhe a evolução dos resultados e registre a decisão técnica.</p>'
+   +context+'<p>Acompanhe a evolução dos resultados e registre a decisão técnica.</p>'
    +controls+(history?'<details open><summary>Histórico de recoletas ('+(m.samples||[]).length+')</summary><ol>'+history+'</ol></details>':'')
    +'</section>';
  }

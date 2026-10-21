@@ -103,6 +103,14 @@ As 100 missões e 387 caminhos cadastrados são um legado a preservar. As rotina
 - FPS: quatro padrões genéricos enquanto não houver definição aprovada; encaminhamento ao PCM exige mapeamento de cenário antes de converter em OS.
 - Detalhes: [Catálogo de Monitoramento v1](CATALOGO_MONITORAMENTO_V1.md).
 
+## Etapa 1C — Catálogo de óleo v2 (21/10/2026)
+
+- Publicada no código a extensão modular dos casos de óleo, de 8 para 24 e catálogo total de 46 sinais.
+- Cada sintoma de fluido recebe compartimento, indicadores, verificação recomendada, incerteza e fonte OEM rastreável.
+- Suspeitas prioritárias não seguem espera por recoleta; são encaminháveis imediatamente à avaliação PCM, sem OS automática.
+- Formulações distintas não são automaticamente classificadas como defeito; confirmação de compatibilidade e linha de base permanece necessária.
+- Referência: [Catálogo de Óleo v2](CATALOGO_OLEO_V2.md).
+
 ## Critérios de aceite por entrega
 
 1. Commit por etapa em branch própria, PR revisável, CI Phaser e recrutamento sem regressões.

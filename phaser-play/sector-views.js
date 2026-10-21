@@ -128,8 +128,12 @@
    +categories.map(k=>'<section class="monitorCatalogCategory"><h4>'+esc(M.CATALOG.CATEGORIES[k])+'</h4>'
      +'<div class="monitorCatalogList">'+M.CATALOG.byCategory(k).map(p=>
       '<article class="monitorCatalogEntry"><strong>'+esc(p.title)+'</strong>'
-      +'<small>'+esc(modelName(p.modelId))+' · '+esc(p.id)+'</small>'
-      +'<p>'+esc(p.baseline)+'</p></article>').join('')+'</div></section>').join('')
+      +'<small>'+esc(modelName(p.modelId))+' · '+esc(p.id)+(p.compartment?' · '+esc(p.compartment):'')+'</small>'
+      +'<p>'+esc(p.baseline)+'</p>'
+      +(p.indicators?.length?'<p><strong>Indicadores:</strong> '+esc(p.indicators.join(', '))+'</p>':'')
+      +(p.triage==='avaliacao_prioritaria'?'<small>AVALIAÇÃO PRIORITÁRIA</small>':'')
+      +(p.triage==='revisar_baseline'?'<small>REVISAR LINHA DE BASE</small>':'')
+      +'</article>').join('')+'</div></section>').join('')
    +'</section>';
   const content=feed+catalog;
   return top+'<section class="controlRoomDashboard"><div class="controlRoomHeading"><h3>'+esc(active.title)+'</h3><p>'+esc(active.subtitle)+'</p></div>'+metrics+content+'</section>';
