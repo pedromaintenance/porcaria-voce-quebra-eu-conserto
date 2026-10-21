@@ -91,7 +91,7 @@ const game=fs.readFileSync(path.join(__dirname,'../phaser-play/game.js'),'utf8')
 assert.ok(game.includes('I.commitConversion(state,data,E,id)'),'criação manual conectada ao motor');
 assert.ok(game.includes('I.review(state,id,decision,payload,data,E)'),'revisão conectada à UI');
 assert.ok(html.includes('inspection.js?v=0.9.10'));
-assert.ok(html.includes('inspection-view.js?v=0.9.9'));
+assert.ok(html.includes('inspection-view.js?v=0.9.10'));
 assert.ok(html.includes('pcmScopeRow')&&html.includes('pcmActions'),'interface PCM responsiva');
 const saveLegacy=E.create(data,()=>.5);
 I.normalized(saveLegacy);assert.equal(I.summary(saveLegacy).approved,0,'compatível com saves anteriores');

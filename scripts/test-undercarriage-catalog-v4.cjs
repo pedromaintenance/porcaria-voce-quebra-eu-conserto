@@ -6,7 +6,7 @@ const C=require('../phaser-play/condition-catalog.js'),M=require('../phaser-play
 const S=require('../phaser-play/sector-views.js'),V=require('../phaser-play/inspection-view.js');
 const U=require('../phaser-play/undercarriage-catalog-expansion.js');
 const cats=['oil','faults','undercarriage','fps','components'];
-assert.equal(U.VERSION,'4.0.0');assert.equal(C.VERSION,'6.0.0');
+assert.equal(U.VERSION,'4.0.0');assert.equal(C.VERSION,'7.0.0');
 assert.equal(U.ENTRIES.length,18);
 assert.equal(C.ENTRIES.length,120);
 assert.deepEqual(cats.map(k=>C.byCategory(k).length),[24,24,24,24,24]);

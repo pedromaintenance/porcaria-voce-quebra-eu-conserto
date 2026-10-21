@@ -6,7 +6,7 @@ const C=require('../phaser-play/condition-catalog.js'),M=require('../phaser-play
 const S=require('../phaser-play/sector-views.js'),V=require('../phaser-play/inspection-view.js');
 const F=require('../phaser-play/fault-catalog-expansion.js');
 assert.equal(F.VERSION,'3.0.0');
-assert.equal(C.VERSION,'6.0.0');
+assert.equal(C.VERSION,'7.0.0');
 assert.equal(F.ENTRIES.length,18);
 assert.equal(C.ENTRIES.length,120);
 assert.deepEqual(Object.fromEntries(['oil','faults','undercarriage','fps','components'].map(k=>[k,C.byCategory(k).length])),
@@ -91,7 +91,7 @@ const overall=S.monitoring(fresh(),D,M,V,I,E,'overview');
 assert.ok(overall.includes('FLT023')&&overall.includes('OIL023')&&overall.includes('CMP001'));
 const html=fs.readFileSync('phaser-play/index.html','utf8');
 assert.ok(html.indexOf('fault-catalog-expansion.js')<html.indexOf('condition-catalog.js'),'ordem do carregamento');
-assert.ok(html.includes('inspection-view.js?v=0.9.9')&&html.includes('sector-views.js?v=0.9.9'));
+assert.ok(html.includes('inspection-view.js?v=0.9.10')&&html.includes('sector-views.js?v=0.9.9'));
 const sw=fs.readFileSync('sw.js','utf8');
 assert.ok(sw.includes("'./phaser-play/fault-catalog-expansion.js'"));
 assert.ok(sw.includes('fault096'));

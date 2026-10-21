@@ -6,7 +6,7 @@ const C=require('../phaser-play/condition-catalog.js'),M=require('../phaser-play
 const S=require('../phaser-play/sector-views.js'),V=require('../phaser-play/inspection-view.js');
 const O=require('../phaser-play/oil-catalog-expansion.js');
 assert.equal(O.VERSION,'2.0.0');
-assert.equal(C.VERSION,'6.0.0');
+assert.equal(C.VERSION,'7.0.0');
 assert.equal(C.ENTRIES.length,120);
 assert.equal(C.byCategory('oil').length,24);
 assert.equal(O.ENTRIES.length,16);
