@@ -3,7 +3,7 @@
 const assert=require('node:assert/strict');
 const E=require('../engine.js');
 const d=require('../game-data.json');
-assert.equal(d.paths.length,387);
+assert.equal(d.paths.length,403);
 assert.equal(d.models.length,9);
 const sample=d.paths.find(p=>p.modelId==='EQ01'&&p.system==='DRTR'&&p.group==='AXAS'&&p.subgroup==='FID1');
 assert.ok(sample);
@@ -60,4 +60,4 @@ assert.equal((app.match(/E\.localizeDiagnosticOptions\(/g)||[]).length,2,'iníci
 assert.ok(html.includes('game.js?v=0.9.4'));
 assert.ok(html.includes('engine.js?v=0.9.2'));
 assert.ok(sw.includes('porcaria-vqec-20261019-v111-sap-v1-bia2-pt1412'));
-console.log('OK: 387 caminhos PT (16 didáticos), hipóteses de 100 cenários, saves antigos, cache e progresso.');
+console.log('OK: 403 caminhos PT (32 didáticos), hipóteses de 124 cenários, saves antigos, cache e progresso.');
