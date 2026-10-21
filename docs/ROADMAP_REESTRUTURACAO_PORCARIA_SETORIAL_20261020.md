@@ -136,6 +136,15 @@ As 100 missões e 387 caminhos cadastrados são um legado a preservar. As rotina
 - Consequência de atraso por quatro turnos após vencimento: narrativa **apenas do jogo**, sem valor de recomendação técnica.
 - Fonte e índice: [Catálogo de Componentes v5](CATALOGO_COMPONENTES_V5.md).
 
+## Etapa 1G — Ferramentas de Penetração no Solo (FPS/GET) — 21/10/2026
+
+- Nomenclatura confirmada pela Caterpillar/Sotreq: FPS = Ferramentas de Penetração no Solo.
+- 24 ocorrências físicas recebíveis de FPS em 6030, 395, 966 e D9; 120 condições totais em cinco categorias.
+- Posições, componentes e verificações por ponta, adaptador, fixador, protetor e borda; sem números de desgaste e P/N não verificados.
+- Preservar quatro IDs históricos genéricos somente para saves; não sorteá-los novamente.
+- Necessário **novo ciclo de missões FMEA** para transformar diagnóstico GET em OS planejável; no ciclo 6 a revisão PCM permanece bloqueada sem cenário.
+- Documentação: [FPS/GET v6](CATALOGO_FPS_GET_V6.md).
+
 ## Critérios de aceite por entrega
 
 1. Commit por etapa em branch própria, PR revisável, CI Phaser e recrutamento sem regressões.
