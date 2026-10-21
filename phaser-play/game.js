@@ -59,6 +59,7 @@ let renderProfile={scale:1,width:1080,height:450,centerX:859,centerY:270};
 const FILTER={queue:'all',query:'',store:'all',stockQuery:''};
 let toastTimeout;
 let planningHorizon='turn';
+let decisionHistoryFilter='all'; // Controle de visualização; não altera save.
 let stockReturnJobId=null; // Contexto de navegação, não faz parte do save.
 let completedOrderId=null;
 let completedSearch=''; // Estado transitório de interface, nunca no save.
@@ -292,7 +293,8 @@ function drawShiftBrief(){
 function planningTabs(){
  return '<div class="planningTabs" role="group" aria-label="Horizonte de planejamento">'
   +'<button type="button" data-planning-horizon="turn" class="'+(planningHorizon==='turn'?'selected':'')+'" aria-pressed="'+(planningHorizon==='turn')+'">PRÓXIMO TURNO · 12H</button>'
-  +'<button type="button" data-planning-horizon="week" class="'+(planningHorizon==='week'?'selected':'')+'" aria-pressed="'+(planningHorizon==='week')+'">JANELA SEMANAL · 14 TURNOS</button></div>';
+  +'<button type="button" data-planning-horizon="week" class="'+(planningHorizon==='week'?'selected':'')+'" aria-pressed="'+(planningHorizon==='week')+'">JANELA SEMANAL · 14 TURNOS</button>'
+  +'<button type="button" data-planning-horizon="history" class="'+(planningHorizon==='history'?'selected':'')+'" aria-pressed="'+(planningHorizon==='history')+'">HISTÓRICO DE DECISÕES</button></div>';
 }
 function drawWeekly(){
  const w=window.PORCARIA_WEEKLY.calculate(state,data);
@@ -348,9 +350,53 @@ function drawWeekly(){
   +'<button class="act secondary" data-open-panel="shift">BRIEFING DO PRÓXIMO TURNO</button></div>';
  $('planning').innerHTML=out;
 }
+function drawDecisionHistory(){
+ const report=window.PORCARIA_DECISION_LEDGER.compute(state,data,{filter:decisionHistoryFilter,limit:24});
+ const m=report.metrics;
+ const metric=(name,value)=>'<div class="planningMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong></div>';
+ let out=planningTabs()+'<p class="planningIntro">Histórico de decisões do Supervisor e PCM por turno. Exibe decisões registradas e resultados observados, sem inferir causalidade não comprovada.</p>';
+ out+='<div class="planningMetrics">'
+  +metric('Eventos registrados',m.recordedEvents)
+  +metric('Avaliações PCM',m.pcmReviews)
+  +metric('Divergências detectadas',m.detectedDivergences)
+  +metric('OS concluídas',m.completed)
+  +metric('Compras',m.purchases)
+  +metric('Compras sem demanda diagnosticada',m.earlyWithoutDiagnosedDemand)
+  +metric('Compras urgentes',m.urgentPurchases)
+  +metric('HH de retrabalho encerradas',m.recordedReworkHours+'h')
+  +'</div>';
+ out+='<section class="planningDecisionLedger"><h3>📑 INTERPRETAÇÃO RESPONSÁVEL</h3><p>'+esc(report.interpretation)+'</p><small>'+esc(report.caveat)+'</small></section>';
+ out+='<h3 class="resourceSection">PLANO APROVADO × EXECUÇÃO REGISTRADA</h3>';
+ if(!report.plans.length)out+='<p class="muted">Ainda não há OS concluídas com estimativa HH aprovada no PCM. A comparação aparecerá aqui quando houver dados.</p>';
+ else out+='<div class="decisionHistoryGrid">'+report.plans.map(p=>
+  '<article class="planningOrder"><strong>'+esc(p.orderId)+' · '+esc(p.modelId)+'</strong>'
+  +'<p>Plano PCM: '+p.plannedHH+' HH · Esforço registrado: '+p.workedHH+' HH · Diferença: '+(p.effortDifferenceHH>0?'+':'')+p.effortDifferenceHH+' HH</p>'
+  +'<p>Tempo de OS: '+p.downtimeHours+'h corridas · Retrabalho: '+p.reworkHours+' HH · Divergências PCM: '+p.plannerErrors+'</p>'
+  +'<small>HH de esforço não equivalem a horas de parada. '+(p.firstTime?'Conclusão sem retrabalho no critério do jogo.':'Conclusão com ocorrências adicionais registradas.')+'</small></article>'
+ ).join('')+'</div>';
+ out+='<h3 class="resourceSection">LINHA DO TEMPO · DECISÕES</h3><div class="decisionHistoryFilters">';
+ for(const [key,name] of [['all','TODOS'],['supply','COMPRAS'],['pcm','PCM'],['execution','EXECUÇÃO']]){
+  out+='<button type="button" class="act '+(decisionHistoryFilter===key?'':'secondary')+'" data-decision-filter="'+key+'" aria-pressed="'+(decisionHistoryFilter===key)+'">'+name+'</button>';
+ }
+ out+='</div>';
+ if(!report.timeline.length)out+='<p class="muted">Sem eventos nesta categoria. Saves anteriores continuam legíveis, mas suas decisões passadas não são reconstruídas artificialmente.</p>';
+ else out+='<div class="decisionTimeline">'+report.timeline.map(e=>{
+  const detail=e.type==='purchase'?' · '+esc(e.item)+' ×'+e.quantity+' · R$ '+brl(e.paid)+' · '+(e.fast?'urgente':'normal')+' · pedido '+esc(e.purchaseId)
+   :e.type==='receipt'?' · '+esc(e.purchaseId)+' · '+esc(e.item)+' ×'+e.quantity
+   :e.type==='allocation'?' · '+esc(e.orderId)+' · '+esc(e.mechanicName||e.mechanicId)+' · BOX '+(Number(e.bay)+1)
+   :e.type==='pcm_review'?' · '+esc(e.notificationId)+' · '+e.estimatedHH+' HH estimadas'
+   :e.type==='pcm_conversion'?' · '+esc(e.notificationId)+' → '+esc(e.orderId)
+   :e.type==='planner_evaluation'?' · '+esc(e.orderId)+' · '+e.errors+' divergência(s) detectada(s)'
+   :e.type==='completion'?' · '+esc(e.orderId)+' · '+e.downtimeHours+'h de OS · '+e.reworkHours+' HH retrabalho':'';
+  return '<article class="decisionTimelineEvent"><span>TURNO '+esc(e.tick)+' · DIA '+esc(e.day)+'</span><strong>'+esc(e.label)+'</strong><p>'+detail+'</p></article>';
+ }).join('')+'</div>';
+ out+='<p class="planningExplanation">Compras e aprovações permanecem ações manuais. A linha do tempo não altera a campanha. A ausência de um evento antigo não indica que a ação nunca ocorreu.</p>';
+ $('planning').innerHTML=out;
+}
 function drawPlanning(){
  if($('planningNotifications'))$('planningNotifications').innerHTML=S.planning(state,data,I,E,IV);
  if(planningHorizon==='week'){drawWeekly();return}
+ if(planningHorizon==='history'){drawDecisionHistory();return}
  const plan=window.PORCARIA_PLANNING.compute(state,data);
  const impact=window.PORCARIA_DECISION_IMPACT.compute(state,data);
  const metric=(title,value)=>'<div class="planningMetric"><small>'+esc(title)+'</small><strong>'+esc(value)+'</strong></div>';
@@ -852,8 +898,14 @@ function events(){
   }
   const planHorizon=ev.target.closest('[data-planning-horizon]');
   if(planHorizon){
-   planningHorizon=planHorizon.dataset.planningHorizon==='week'?'week':'turn';
+   planningHorizon=['turn','week','history'].includes(planHorizon.dataset.planningHorizon)?planHorizon.dataset.planningHorizon:'turn';
    drawPlanning();return;
+  }
+  const decisionFilter=ev.target.closest('[data-decision-filter]');
+  if(decisionFilter){
+   const next=decisionFilter.dataset.decisionFilter;
+   if(['all','supply','pcm','execution'].includes(next)){decisionHistoryFilter=next;drawDecisionHistory()}
+   return;
   }
   const planAssignment=ev.target.closest('[data-plan-assign]');
   if(planAssignment){
