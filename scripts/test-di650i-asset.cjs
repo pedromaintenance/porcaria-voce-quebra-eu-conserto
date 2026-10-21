@@ -29,7 +29,7 @@ assert.equal(map.modelPresentation.EQ06.maximumHeight,302);
 assert.deepEqual(map.modelPresentation.EQ06.sourcePixelSize,{width:1536,height:1024});
 assert.equal(map.modelPresentation.EQ06.publishedAssetSHA256,'371ba7f11dca88fcb29e29fc876747c5231f1c14614512c36240b8b9a908f36d');
 assert.ok(game.includes('trimmedEquipment(key)')&&game.includes('node.setDisplaySize(plan.width,plan.height)'));
-assert.ok(html.includes('game.js?v=0.8.32'));
+assert.ok(html.includes('game.js?v=0.9.4'));
 assert.ok(html.includes('training-view.js?v=0.8.30'));
 assert.ok(sw.includes('porcaria-vqec-20261019-v111'));
 assert.ok(sw.includes('./phaser-play/assets/equipment/sandvik_di650i_v0828.webp'));

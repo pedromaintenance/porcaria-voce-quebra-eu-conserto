@@ -709,6 +709,14 @@ body{min-height:100vh}
 .controlRoomReport strong{color:#ffd28a;font-size:12px}
 .controlRoomReport p{font-size:12px;line-height:1.6;margin:6px 0}
 .controlRoomHint{padding:16px;border-left:3px solid #4d92ad;color:#c5d8e4;font-size:13px}
+.monitorCatalogCategory{margin-top:14px;border-top:1px solid #45637a;padding-top:9px}
+.monitorCatalogCategory h4{color:#ffce78;font-size:13px;margin:6px 0 10px}
+.monitorCatalogList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.monitorCatalogEntry{border:1px solid #37576d;background:#142d40;border-radius:7px;padding:11px}
+.monitorCatalogEntry strong{display:block;color:#e4f0f6;font-size:12px;line-height:1.5}
+.monitorCatalogEntry small{display:block;color:#f4c77e;font-size:11px;margin-top:4px}
+.monitorCatalogEntry p{color:#acc6d7;font-size:11px;line-height:1.5;margin:7px 0 0}
+@media(max-width:660px){.monitorCatalogList{grid-template-columns:1fr}}
 .fieldSchedule,.pcmInbox{background:#132c40;border:1px solid #4a6d84;border-radius:8px;padding:14px;margin:12px 0}
 .fieldSchedule h3,.pcmInbox>h3{color:#ffd089;margin:0 0 9px;font-size:14px}
 .fieldSchedule p,.pcmInbox>p{font-size:12px;line-height:1.5}
@@ -820,4 +828,4 @@ body{min-height:100vh}
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.9.2"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./inspection.js?v=0.9.2"></script><script src="./evidence.js?v=0.9.3"></script><script src="./monitoring.js?v=0.9.4"></script><script src="./inspection-view.js?v=0.9.2-monitor9"></script><script src="./sector-views.js?v=0.9.6"></script><script src="./game.js?v=0.8.32-pt1412-inspection3-monitor9-sectors1-eltonradio1"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
+<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.9.2"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./inspection.js?v=0.9.2"></script><script src="./evidence.js?v=0.9.3"></script><script src="./condition-catalog.js?v=0.9.4"></script><script src="./monitoring.js?v=0.9.4-catalog1"></script><script src="./inspection-view.js?v=0.9.4-condition1"></script><script src="./sector-views.js?v=0.9.7-condition1"></script><script src="./game.js?v=0.9.4-condition-catalog1"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>

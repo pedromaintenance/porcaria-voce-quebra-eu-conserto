@@ -82,7 +82,7 @@ const page=fs.readFileSync(path.join(base,'phaser-play/index.html'),'utf8');
 const sw=fs.readFileSync(path.join(base,'sw.js'),'utf8');
 assert.ok(page.includes('diagnostic-board.js?v=0.8.8'));
 assert.ok(page.includes('diagnostic-view.js?v=0.8.8'));
-assert.ok(page.includes('game.js?v=0.8.32'));
+assert.ok(page.includes('game.js?v=0.9.4'));
 assert.ok(page.includes('.diagnosticCoach'));
 assert.ok(page.includes('.diagnosticLearning'));
 assert.ok(page.includes('.diagnosticCaseStudy'));

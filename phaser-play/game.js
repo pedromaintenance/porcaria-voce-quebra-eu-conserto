@@ -756,14 +756,6 @@ function events(){
    drawMonitoring();
    return;
   }
-  const monitorStart=ev.target.closest('[data-monitor-start]');
-  if(monitorStart){
-   const result=M.open(state,data,I,monitorStart.dataset.monitorStart);
-   if(result.error){notify(result.error);return}
-   save();drawUI();
-   notify('Monitoramento didático '+result.notification.id+' criado para revisão; nenhuma OS aberta.');
-   return;
-  }
   const monitorAction=ev.target.closest('[data-monitor-action]');
   if(monitorAction){
    const id=monitorAction.dataset.monitorNote,kind=monitorAction.dataset.monitorAction;
@@ -777,7 +769,7 @@ function events(){
     {error:'Ação de monitoramento não reconhecida.'};
    if(result.error){notify(result.error);return}
    save();drawUI();
-   const notices={decide:'Monitoramento registrado, recoleta programada.',collect:'Recoleta simulada registrada; avalie a tendência.',continue:'Nova recoleta programada.',close:'Controle encerrado sem OS.',escalate:'Nova notificação '+(result.escalation?.id||'')+' encaminhada para revisão PCM; nenhuma OS criada.'};
+   const notices={decide:'Monitoramento registrado, recoleta programada.',collect:'Nova verificação de condição registrada; avalie a tendência.',continue:'Próxima verificação programada.',close:'Controle encerrado sem OS.',escalate:'Nova notificação '+(result.escalation?.id||'')+' encaminhada para revisão PCM; nenhuma OS criada.'};
    notify(notices[kind]);
    return;
   }
@@ -867,9 +859,10 @@ function events(){
     shiftAction.disabled=true;
     const beforeDone=state.done.length;
     const result=E.advance(state,data);
+    const inbound=M.receive(state,data,I);
     selected=E.job(state,selected)?.id||state.jobs[0]?.id;
     closePanel();action(null);if(scene)scene.applyOfficialBackdrop();$('advance').focus();
-    notify((state.done.length-beforeDone)+' OS concluída(s), '+result.blocks+' bloqueio(s) no turno.');
+    notify((state.done.length-beforeDone)+' OS concluída(s), '+result.blocks+' bloqueio(s) no turno.'+(inbound.received?.length?' '+inbound.received.length+' nova condição recebida na sala de controle.':''));
     return;
    }
   }
@@ -1404,6 +1397,8 @@ async function boot(){
   E.localizeDiagnosticOptions(state,data); // traduz opções legadas sem alterar códigos.
    I.normalized(state); // saves antigos recebem uma carteira vazia.
   state.productivityTarget=E.productivityProfile(state.productivityTarget).target;
+  M.receive(state,data,I,{initial:true});
+  save();
   selected=state.jobs[0]?.id;events();drawUI();
   if(!I||!IV||!S||!T||!M||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
   if(!window.PORCARIA_RENDER_QUALITY)throw Error('Configuração de nitidez indisponível.');

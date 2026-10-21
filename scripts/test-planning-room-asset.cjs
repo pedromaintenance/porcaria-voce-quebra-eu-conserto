@@ -22,7 +22,7 @@ assert.equal((html.match(/class="planningRoomStage"/g)||[]).length,1,'imagem sem
 assert.ok(html.includes('object-fit:contain'),'imagem sem deformação');
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
 assert.ok(sw.includes("'./phaser-play/assets/sala-planejamento.avif'"),'asset no cache PWA');
-assert.match(sw,/const CACHE='porcaria-vqec-.*planning-room093'/,'cache atualizado');
+assert.ok(sw.includes('planning-room093-condition094'),'cache atualizado com sala PCM e catálogo');
 const roadmap=fs.readFileSync(path.join(root,'phaser-play/ROADMAP.md'),'utf8');
 assert.ok(roadmap.includes('## Entrega 0.9.3 — Sala visual do Planejamento PCM'),'roadmap da entrega');
 console.log('OK: asset PCM, SHA-256, interface, acessibilidade, cache e roadmap.');

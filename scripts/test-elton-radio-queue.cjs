@@ -18,7 +18,7 @@ assert.ok(radio.includes('id="queueSearch"')&&radio.includes('id="queueFilter"')
 assert.ok(radio.includes('id="queue"'),'lista de OS continua presente');
 assert.ok(radio.indexOf('radioDispatchScene')<radio.indexOf('queueToolbar'),'hero acima da fila, sem ocultar controles');
 assert.ok(html.includes('.radioDispatchScene>img{')&&html.includes('aspect-ratio:1672/941'),'proporções da arte preservadas');
-assert.ok(html.includes('game.js?v=0.8.32-pt1412-inspection3-monitor9-sectors1-eltonradio1'),'script sem cache antigo');
+assert.ok(html.includes('game.js?v=0.9.4'),'script sem cache antigo');
 const game=fs.readFileSync(path.join(base,'phaser-play/game.js'),'utf8');
 assert.ok(game.includes("function renderQueue(){"),'fluxo original preservado');
 assert.ok(game.includes("const radioSummary=$('radioQueueSummary')"),'placar recebe dados ativos');

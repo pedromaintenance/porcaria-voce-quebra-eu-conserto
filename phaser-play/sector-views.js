@@ -108,28 +108,30 @@
    +'<div><small>RECOLETAS VENCIDAS</small><strong>'+summary.due+'</strong></div>'
    +'<div><small>AGRAVAMENTOS</small><strong>'+summary.attention+'</strong></div>'
    +'<div><small>ENCERRADOS SEM OS</small><strong>'+summary.closed+'</strong></div></div>';
-  let content='';
-  if(current==='overview'||current==='oil'){
-   content+='<section class="controlRoomOperations"><h3>CARTEIRA DE ANÁLISES DE ÓLEO</h3>'
-    +'<p>Receba o laudo, compare a tendência e decida a próxima ação.</p>'
-    +Object.entries(M.PROTOCOLS).map(([id,p])=>'<button class="act secondary" type="button" data-monitor-start="'+esc(id)+'">'+esc(p.label)+'</button>').join(' ')
-    +'</section>';
-  }
-  if(current==='overview'||current==='oil'){
-   const notes=monitorNotes.slice().sort((a,b)=>b.openedTick-a.openedTick);
-   content+='<section class="controlRoomOperations"><h3>HISTÓRICO DE CONDIÇÃO · '+notes.length+' REGISTROS</h3>'
-    +(notes.length?notes.map(n=>IV.renderPCM(n,id=>model(d,id),d,I,E,s,null,M)).join('')
-      :'<p class="muted">Nenhum laudo em acompanhamento. Selecione uma análise para abrir a carteira.</p>')+'</section>';
-  }
-  if(current!=='overview'){
-   const entries=reports(d,current);
-   content+='<section class="controlRoomOperations"><h3>ARQUIVO TÉCNICO · '+esc(active.title.toUpperCase())+'</h3>'
-    +(entries.length?'<p>Ocorrências anteriores disponíveis para consulta técnica.</p>'
-      +entries.map(sc=>'<article class="controlRoomReport"><strong>'+esc(model(d,sc.modelId))+'</strong><p>'+esc(sc.operator)+'</p></article>').join('')
-      :'<p class="muted">Nenhum relatório recebido nesta categoria. Esta área está disponível para futuras entradas do sistema.</p>')
-    +'</section>';
-  }
-  if(current==='overview')content+='<div class="controlRoomHint">Selecione um dos painéis da sala de controle para consultar análises de óleo, códigos de falha, material rodante, FPS ou componentes.</div>';
+  const selected=current==='overview'?monitorNotes:monitorNotes.filter(n=>n.monitorCategory===current
+   ||(!n.monitorCategory&&(current==='oil')));
+  const pending=selected.filter(n=>n.status==='aguarda_revisao_pcm').length;
+  const modelName=id=>model(d,id);
+  const feed='<section class="controlRoomOperations" aria-label="Carteira de condições recebidas">'
+   +'<h3>📥 SINAIS RECEBIDOS · '+selected.length+' REGISTROS</h3>'
+   +'<p>Ocorrências chegam automaticamente ao avançar os turnos. Avalie cada registro, programe o acompanhamento ou encaminhe ao PCM. Nenhuma OS nasce automaticamente.</p>'
+   +'<div class="inspectionMetrics"><div><small>AGUARDANDO TRIAGEM</small><strong>'+pending+'</strong></div>'
+   +'<div><small>EM ACOMPANHAMENTO</small><strong>'+selected.filter(n=>n.status==='monitorando').length+'</strong></div></div>'
+   +(selected.length?selected.slice().sort((a,b)=>b.openedTick-a.openedTick)
+    .map(n=>IV.renderPCM(n,modelName,d,I,E,s,null,M)).join('')
+     :'<p class="muted">Nenhuma condição recebida neste setor até o momento. Avance os turnos para alimentar a carteira.</p>')
+   +'</section>';
+  const categories=current==='overview'?Object.keys(M.CATALOG.CATEGORIES):[current];
+  const catalog='<section class="controlRoomOperations" aria-label="Catálogo de sintomas de condição">'
+   +'<h3>📚 CATÁLOGO DE SINTOMAS · '+categories.reduce((a,k)=>a+M.CATALOG.byCategory(k).length,0)+' ENTRADAS</h3>'
+   +'<p>Modelos de ocorrência que podem chegar à carteira. Sintomas não são diagnósticos concluídos.</p>'
+   +categories.map(k=>'<section class="monitorCatalogCategory"><h4>'+esc(M.CATALOG.CATEGORIES[k])+'</h4>'
+     +'<div class="monitorCatalogList">'+M.CATALOG.byCategory(k).map(p=>
+      '<article class="monitorCatalogEntry"><strong>'+esc(p.title)+'</strong>'
+      +'<small>'+esc(modelName(p.modelId))+' · '+esc(p.id)+'</small>'
+      +'<p>'+esc(p.baseline)+'</p></article>').join('')+'</div></section>').join('')
+   +'</section>';
+  const content=feed+catalog;
   return top+'<section class="controlRoomDashboard"><div class="controlRoomHeading"><h3>'+esc(active.title)+'</h3><p>'+esc(active.subtitle)+'</p></div>'+metrics+content+'</section>';
  }
  return {CATEGORIES,inspections,planning,monitoring};
