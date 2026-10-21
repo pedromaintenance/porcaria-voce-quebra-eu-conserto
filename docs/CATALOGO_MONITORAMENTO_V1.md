@@ -1,5 +1,7 @@
 # Monitoramento de Condição — Catálogo v1
 
+> Documento histórico da v0.9.4: catálogo base de 30 sinais. A expansão de óleo v2 adiciona 16 casos (total 46), documentados em [Catálogo de Óleo v2](CATALOGO_OLEO_V2.md).
+
 Entrega v0.9.4 — estrutura para ciclos incrementais de expansão. Fonte canônica: [condition-catalog.js](../phaser-play/condition-catalog.js).
 
 ## Fluxo operacional
