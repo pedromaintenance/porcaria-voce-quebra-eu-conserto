@@ -273,10 +273,35 @@
     s.nextDecision=next+1;
     return event;
   }
+  // Reflexão do supervisor vinculada a OS realmente concluída; não pontua trabalhadores,
+  // não altera diagnóstico, custos ou execução, e não converte hipótese em causa real.
+  function writeLesson(s,d,orderId,tag,note){
+    const done=(s?.done||[]).find(j=>j.id===orderId);
+    if(!done)return 'Só é possível registrar uma lição de OS concluída presente no histórico.';
+    if(!d?.scenarios?.some(x=>x.id===done.scene))return 'Cenário FMEA não encontrado.';
+    const validTags=['diagnostico','planejamento','materiais','execucao','seguranca'];
+    if(!validTags.includes(tag))return 'Selecione uma categoria válida para a lição.';
+    const clean=String(note??'').trim().replace(/\s+/g,' ');
+    if(clean.length<20||clean.length>300)return 'Descreva a aprendizagem em 20 a 300 caracteres.';
+    if(!Array.isArray(s.lessonNotes))s.lessonNotes=[];
+    const found=s.lessonNotes.find(x=>x.orderId===orderId);
+    if(found){
+      if(found.text===clean&&found.tag===tag)return 'A lição já está registrada sem alterações.';
+      found.tag=tag;found.text=clean;found.updatedTick=s.tick;found.revision=(Number(found.revision)||1)+1;
+    }else{
+      s.lessonNotes.push({orderId,scene:done.scene,modelId:done.modelId,
+        tag,text:clean,createdTick:s.tick,updatedTick:s.tick,revision:1});
+      s.lessonNotes=s.lessonNotes.slice(-200);
+    }
+    recordDecision(s,'lesson_reflection',{orderId,scene:done.scene,modelId:done.modelId,
+      tag,revision:found?found.revision:1,classification:found?'revisao_reflexao':'aprendizagem_registrada'});
+    msg(s,'Lição aprendida vinculada à '+orderId+'. Nenhuma OS ou custo foi alterado.','ok');
+    return null;
+  }
   function create(data,rng=Math.random){
     const s={version:'1.1.0',day:1,shift:0,tick:0,cash:15800,reputation:86,xp:0,productivityTarget:DEFAULT_PRODUCTIVITY_TARGET,
       player:{mental:86,physical:84},
-      team:[],jobs:[],done:[],orders:[],purchaseHistory:[],decisionHistory:[],nextDecision:1,stock:{},tools:{},nextJob:1,nextPerson:1,nextPO:1,
+      team:[],jobs:[],done:[],orders:[],purchaseHistory:[],decisionHistory:[],lessonNotes:[],nextDecision:1,stock:{},tools:{},nextJob:1,nextPerson:1,nextPO:1,
       logs:[],kpi:[],lastUtilization:0,metrics:{hours:0,productive:0,wages:0,outsourced:0,incidents:0,safety:0},
       bays:3,closed:false};
     for(const [id,v] of Object.entries(data.items))s.stock[id]=v.initial;
@@ -686,7 +711,7 @@
       pendingMaterials:s.jobs.filter(j=>j.status==='material').length, pendingTools:s.jobs.filter(j=>j.status==='ferramenta').length};
   }
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
-  return {create,recordDecision,normalizeRoster,localizeDiagnosticOptions,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
+  return {create,recordDecision,writeLesson,normalizeRoster,localizeDiagnosticOptions,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
     SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
     model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
 });
