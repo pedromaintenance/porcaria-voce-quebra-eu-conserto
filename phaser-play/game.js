@@ -1604,6 +1604,22 @@ class Workshop extends Phaser.Scene{
 }
 async function boot(){
  try{
+  // O motor carrega antes da cena: ativa o módulo de agenda antes da primeira leitura.
+  await import('./weekly-schedule.js?v=0.9.14');
+  if(!document.getElementById('weeklyScheduleStyle')){
+   const css=document.createElement('style');css.id='weeklyScheduleStyle';
+   css.textContent='.scheduleSlots{display:grid;grid-template-columns:repeat(7,minmax(100px,1fr));gap:7px;margin:12px 0}'
+    +'.scheduleSlot{display:grid;gap:6px;border:1px solid #4c7186;border-radius:8px;padding:10px;background:#102c3f}'
+    +'.scheduleSlot strong{color:#eacb8e}.scheduleSlot b{color:#c3e5ca}.scheduleSlot small{color:#b9d1dd}'
+    +'.scheduleForm{padding:15px;border:1px solid #4b7088;border-radius:9px;background:#102a3c;margin:15px 0}'
+    +'.scheduleForm h3{color:#e8cf9a;margin:0}.scheduleFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}'
+    +'.scheduleFields label{display:grid;gap:5px;color:#dfedf4;font-size:12px}'
+    +'.scheduleFields select{width:100%;min-width:0;padding:9px;background:#132e42;border:1px solid #65849a;color:#f3f7fa;border-radius:6px}'
+    +'.scheduleHistory{display:grid;gap:9px}'
+    +'@media(max-width:820px){.scheduleSlots{grid-template-columns:repeat(4,minmax(0,1fr))}}'
+    +'@media(max-width:560px){.scheduleSlots{grid-template-columns:repeat(2,minmax(0,1fr))}.scheduleFields{grid-template-columns:1fr}}';
+   document.head.appendChild(css);
+  }
   const res=await fetch('../game-data.json',{cache:'no-store'});if(!res.ok)throw Error('HTTP '+res.status);
   data=await res.json();
   try{
