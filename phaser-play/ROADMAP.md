@@ -2,10 +2,24 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 21/10/2026 · **v0.9.9 — FPS/GET validado em 24 sintomas; 120 condições ativas; QA visual e missões FPS pendentes.**
+**Estado de referência:** 21/10/2026 · **v0.9.10 — 24 missões FMEA FPS e fluxo PCM–OS, 124 missões no total; QA visual e homologação OEM/SAP pendentes.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.9.10 — Missões FMEA de FPS, ciclo 7 (21/10/2026)
+
+- [x] Criar **24 novas missões FMEA (`INC101–INC124`)**, conectadas uma a uma às 24 ocorrências FPS (`FPS005–FPS028`), totalizando **124 missões**.
+- [x] Criar **16 locais funcionais didáticos de FPS** (ponta, retenção, adaptador, proteção, borda, solda e revestimento), totalizando 403 caminhos. Marcar `origin=trilha_didatica_fps` e `sapValidated=false` até homologação da estrutura real.
+- [x] Expandir catálogos com oito materiais e quatro instrumentos de inspeção/diagnóstico FPS. Custos, estoque e prazos são valores **fictícios** de jogo; não são P/N SAP nem valores OEM.
+- [x] Cada missão separa relato, verificação, hipótese de componente/dano/causa, risco, ferramenta e material; marca `simulation.oemValidated=false`, `sourcePartMatch=false` e roteiro pendente de revisão técnica OEM.
+- [x] Conectar o fluxo **Monitoramento → Notificação PCM → Diagnóstico → Aprovação PCM → OS manual → Planejamento**, preservando ausência de OS automática.
+- [x] Tornar obrigatória para FPS a investigação PCM de Sistema, Grupo, Subgrupo, Componente e Dano, deixando **Causa opcional**; não revelar gabarito na mesa de revisão.
+- [x] Preservar as 100 missões antigas, os cinco catálogos de 24 sintomas e os quatro IDs FPS legados acessíveis em saves anteriores.
+- [x] Adicionar teste de ponta a ponta de três famílias FPS no fluxo PCM–OS, atualização da interface, cache PWA e documentar proveniência.
+- [ ] Homologar visualmente desktop/mobile, balancear dificuldade e validar locais, P/N, torques e limites reais com documentação OEM e dados SAP.
+
+**Documentação:** [Missões FMEA FPS v7](../docs/MISSOES_FPS_FMEA_V7.md).
 
 ## Entrega 0.9.9 — FPS = Ferramentas de Penetração no Solo / GET (21/10/2026)
 
@@ -16,7 +30,7 @@
 - [x] Aplicar prioridade de revisão PCM a pontas/retentores soltos ou ausentes e trincas suspeitas, sem gerar OS de forma automática.
 - [x] Não inventar Part Numbers, limites de desgaste, intervalos de substituição ou códigos SAP: dados quantitativos continuam pendentes por máquina, série e arranjo de FPS.
 - [x] Integrar dossiês, fontes OEM, cache PWA, testes e documentação com 100 missões anteriores preservadas.
-- [ ] **Ciclo 7:** modelar investigações FMEA específicas de FPS. Atualmente os 24 sintomas FPS são encaminháveis ao PCM, porém a OS não pode ser criada enquanto faltar roteiro específico (`requiresScenarioMapping`).
+- [x] **Ciclo 7 concluído em v0.9.10:** 24 missões FPS investigativas vinculadas; OS possível somente após revisão e diagnóstico PCM.
 - [ ] Homologar visualmente em desktop/mobile e balancear frequência/severidade com partidas reais.
 
 **Catálogo e fontes:** [FPS/GET v6](../docs/CATALOGO_FPS_GET_V6.md).
