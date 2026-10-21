@@ -411,6 +411,19 @@ function drawBays(){
 function drawInspection(){if($('inspectionPanel'))$('inspectionPanel').innerHTML=S.inspections(state,data,I,E)}
 function drawMonitoring(){if($('monitoringPanel'))$('monitoringPanel').innerHTML=S.monitoring(state,data,M,IV,I,E,monitorCategory)}
 function renderQueue(){
+ const calls=state.jobs||[];
+ const radioSummary=$('radioQueueSummary');
+ if(radioSummary){
+  const counts=[
+   {label:'CHAMADOS ATIVOS',n:calls.length},
+   {label:'CRÍTICOS',n:calls.filter(j=>j.priority===3).length,critical:true},
+   {label:'AGUARDANDO',n:calls.filter(j=>!j.assigned).length},
+   {label:'ALOCADOS',n:calls.filter(j=>!!j.assigned).length}
+  ];
+  radioSummary.innerHTML=counts.map(c=>
+   '<span class="radioDispatchCount'+(c.critical?' is-critical':'')+'">'+c.label
+   +'<b>'+c.n+'</b></span>').join('');
+ }
  $('queue').innerHTML=[...state.jobs].filter(j=>{
  const m=E.model(data,j.modelId),q=FILTER.query.toLowerCase();
  const matched=!q||[j.id,j.report,m?.title,j.asset].some(x=>String(x||'').toLowerCase().includes(q));
