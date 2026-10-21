@@ -94,6 +94,15 @@ As 100 missões e 387 caminhos cadastrados são um legado a preservar. As rotina
 
 **Pendências para confirmar em implementação posterior:** interpretação interna da sigla **FPS** e seu modelo de dados; parâmetros de consumo HH por tipo de inspeção; custo e duração de cada ensaio; probabilidades de transição de achados; quantidade de categorias de monitoramento com dados novos e critérios para casos sem ação corretiva.
 
+## Etapa 1B — Catálogo de sintomas e entrada automática (20/10/2026)
+
+- Implementado catálogo v1 de 30 sintomas distribuídos entre análise de óleo, códigos de falha, material rodante, FPS e componentes.
+- Interface de monitoramento recebe registros no decorrer dos turnos e mostra sinais efetivamente recebidos; botões de estudos-piloto saíram dos menus.
+- Sistema de leitura utiliza ferramental pertinente, mantém histórico, impede conversão automática em OS e conserva saves anteriores.
+- Critérios de entrada: um registro inicial, depois tentativa a cada dois turnos pares; rodízio de cinco fontes e máximo oito ativos.
+- FPS: quatro padrões genéricos enquanto não houver definição aprovada; encaminhamento ao PCM exige mapeamento de cenário antes de converter em OS.
+- Detalhes: [Catálogo de Monitoramento v1](CATALOGO_MONITORAMENTO_V1.md).
+
 ## Critérios de aceite por entrega
 
 1. Commit por etapa em branch própria, PR revisável, CI Phaser e recrutamento sem regressões.
