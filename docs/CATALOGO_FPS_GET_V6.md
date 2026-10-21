@@ -1,5 +1,7 @@
 # FPS v6 — Ferramentas de Penetração no Solo (GET)
 
+> Registro histórico do catálogo de sintomas v0.9.9. As **24 missões FMEA**, sua vinculação e a passagem ao PCM/OS foram implementadas no ciclo seguinte: [Missões FPS FMEA v7](MISSOES_FPS_FMEA_V7.md). As afirmações abaixo sobre ausência de roteiros descrevem apenas a versão antiga.
+
 **PORCARIA v0.9.9 · Ciclo 6 do Monitoramento de Condição.**
 
 FPS significa **Ferramentas de Penetração no Solo**, equivalente a Ground Engaging Tools (GET), confirmado em documentação Caterpillar e Sotreq. **Não representa alarme eletrônico, módulo de proteção contra incêndio ou métrica de vídeo.**
