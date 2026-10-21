@@ -121,15 +121,20 @@
   const cost=p.followupCost===undefined?40:p.followupCost; // Balanceamento do jogo.
   if(!Number.isFinite(s.cash)||s.cash<cost)return {error:'Saldo fictício insuficiente para recoleta.'};
   const round=m.samples.length;
-  const key=p.results[Math.min(round,p.results.length-1)];
+  const lateTurns=Math.max(0,s.tick-m.nextTick);
+  const delayEscalation=p.category==='undercarriage'&&p.delayRisk==='alto'
+   &&Number.isSafeInteger(p.delayThresholdTurns)&&lateTurns>=p.delayThresholdTurns;
+  const planned=p.results[Math.min(round,p.results.length-1)];
+  const key=delayEscalation?'agravamento':planned;
   const desc=OUTCOMES[key];
   const entry={tick:s.tick,round:round+1,trend:key,label:desc.label,reading:desc.meaning,cost,
-   source:p.category||'oil',oemValidated:false,catalogId:n.monitorProtocol};
+   source:p.category||'oil',oemValidated:false,catalogId:n.monitorProtocol,
+   lateTurns,delayEscalation,delayExplanation:delayEscalation?(p.riskOnDelay||'Postergação simulada de condição crítica.'):null};
   s.cash-=cost;
   m.samples.push(entry);
   m.nextTick=null;
   m.status=key==='agravamento'?'requer_avaliacao':'aguarda_decisao';
-  m.decisions.push({tick:s.tick,action:'recoleta',result:key});
+  m.decisions.push({tick:s.tick,action:p.category==='undercarriage'?'verificacao_rodante':'recoleta',result:key,lateTurns,delayEscalation});
   return {ok:true,notification:n,sample:entry};
  }
  function continueWatch(s,id,interval){
