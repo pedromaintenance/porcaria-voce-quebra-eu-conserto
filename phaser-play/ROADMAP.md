@@ -16,7 +16,8 @@
 - [x] Asset incluído no pré-cache offline do Service Worker; identificador de cache versionado preservando o prefixo para limpeza de caches antigos.
 - [x] Teste automatizado de integridade do AVIF, inclusão no HTML, cache e documentação adicionado aos workflows CI e Pages.
 - [x] `engine.js`, `game.js`, `planning.js`, dados e formato de save mantidos intactos.
-- [ ] Conferir workflow de publicação e validar visualmente desktop e celular.
+- [x] **Publicação confirmada:** workflow [Deploy P.O.R.C.A.R.I.A. to GitHub Pages](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/actions/runs/39533578322) e workflow nativo de Pages concluídos com sucesso (20/10/2026, 23h32 BRT), incluindo verificação de SHA-256 e testes de regressão. Commit funcional: [`ed485a3`](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/commit/ed485a3262e13d2236694ec8d05de51686a4a393).
+- [ ] Verificação visual manual em desktop e celular após a publicação.
 - [ ] Registrar a aceitação visual do jogador, incluindo proporção entre a imagem e a carteira de serviços.
 
 **Critério de aceite:** a arte aparece no menu Planejamento, as abas de 12h e 14 turnos e as notificações continuam operacionais e os arquivos permanecem acessíveis offline após pré-cache.
