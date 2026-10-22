@@ -2,10 +2,25 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 21/10/2026 · **v0.9.17 — Horímetros e estados operacionais virtuais, disponibilidade simulada e MTBF entre ocorrências; QA visual pendente.**
+**Estado de referência:** 21/10/2026 · **v0.9.18 — Standby, utilização configurável por ativo, disponibilidade separada e paradas corretivas parciais; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.9.18 — Standby, utilização e parada parcial, ciclo 15 (21/10/2026)
+
+- [x] Jornada de operação virtual individual de 0/4/8/12 horas por turno, configurável e auditada no histórico PCM.
+- [x] Classificar mutuamente exclusivas as horas em **operação presumida, standby, preventiva e corretiva**, mantendo 12 horas por ativo em cada turno.
+- [x] Disponibilidade virtual = (operação + standby) / total; utilização virtual = operação / tempo disponível.
+- [x] Corrigir a premissa de utilização contínua: novas campanhas partem de 8h operando + 4h standby quando não há manutenção.
+- [x] Simular liberação parcial no fechamento de OS corretiva utilizando HH de reparo do turno como *proxy*, nunca como timestamp real.
+- [x] Preservar preventivas, OS e ocorrências progressivas; não liberar equipamento se a falha evolutiva gerar OS imediata.
+- [x] Migrar dados V14 sem reclassificar retrospectivamente amostras, separando denominadores nas janelas V15.
+- [x] Exibir jornada, standby, utilização, disponibilidade, MTBF virtual e cobertura por equipamento no painel de KPIs.
+- [x] Executar suíte de testes V15 e regressão V14 nos workflows Phaser e Pages.
+- [ ] Homologar UX desktop/mobile, turno de campanha longa e dados parciais com timestamps de produção reais.
+
+**Documentação:** [Standby, utilização e parada parcial — Ciclo 15](../docs/STANDBY_UTILIZACAO_CICLO15.md). Todas as taxas e durações são regras de jogo, não resultados da frota real.
 
 ## Entrega 0.9.17 — Horímetros virtuais e estados operacionais, ciclo 14 (21/10/2026)
 

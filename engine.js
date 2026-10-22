@@ -612,9 +612,18 @@
     return {mechanic:m,errors,perfect};
   }
   function initFleet(s,d){return FLEET.normalize(s,d)}
+  function setFleetDuty(s,d,asset,hours){
+    const previous=s.fleetTelemetry?.dutyHours?.[asset];
+    const error=FLEET.setDuty(s,d,asset,hours);
+    if(!error&&Number(previous)!==Number(hours))recordDecision(s,'fleet_duty_changed',
+      {asset,fromHours:previous,toHours:Number(hours),classification:'jornada_operacional_virtual'});
+    return error;
+  }
   function advance(s,d,rng=Math.random){
-    const reading=FLEET.advance(s,d); // Classifica o turno antes da conclusão das OS.
-    if(reading.error)throw Error(reading.error);
+    FLEET.normalize(s,d);
+    if(s.fleetTelemetry.throughTick!==s.tick)throw Error('Avanço do turno fora da sequência da telemetria.');
+    const correctiveAtStart=s.jobs.map(j=>j.asset);
+    const completedRepairHours={};
     let hours=0;let completed=0;let blocks=0;
     const inspected=(s.inspections||[]).filter(i=>i.tick===s.tick&&i.inspectorId&&['clear','finding','notified'].includes(i.status));
     hours+=inspected.reduce((sum,i)=>sum+Number(i.estimatedHH||0),0);
@@ -685,7 +694,11 @@
       if(workedHH>0)learnByDoing(s,m,j,c,rng);
       applyWorkPressure(s,m,workedHH,pressure);
       if(j.help){s.player.physical=clamp(s.player.physical-4);s.player.mental=clamp(s.player.mental-1.5);}
-      if(j.repairRemaining<=0.01){complete(s,j,d,m);completed++}
+      if(j.repairRemaining<=0.01){
+        // HH reais do reparo neste turno são o proxy de momento de liberação.
+        completedRepairHours[j.asset]=workedHH;
+        complete(s,j,d,m);completed++;
+      }
     }
     // Rest is taken during the shift just completed.
     for(const m of s.team){
@@ -708,6 +721,8 @@
     const nominalHH=availableCrew*EFFECTIVE_HOURS;
     s.metrics.hours+=nominalHH;s.metrics.productive+=hours;
     s.lastUtilization=nominalHH?Math.min(100,Math.round(hours/nominalHH*100)):0;
+    const balance=FLEET.advance(s,d,{correctiveAssets:correctiveAtStart,completedRepairHours});
+    if(balance.error)throw Error(balance.error);
     s.tick++;
     SCHEDULE.afterAdvance(s,(type,fields)=>recordDecision(s,type,fields));
     const received=s.orders.filter(o=>o.eta<=s.tick);
@@ -764,7 +779,7 @@
       pendingMaterials:s.jobs.filter(j=>j.status==='material').length, pendingTools:s.jobs.filter(j=>j.status==='ferramenta').length};
   }
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
-  return {create,initFleet,recordDecision,writeLesson,scheduleJob,cancelSchedule,bookPreventive,cancelPreventive,normalizeRoster,localizeDiagnosticOptions,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
+  return {create,initFleet,setFleetDuty,recordDecision,writeLesson,scheduleJob,cancelSchedule,bookPreventive,cancelPreventive,normalizeRoster,localizeDiagnosticOptions,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
     SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
     model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
 });
