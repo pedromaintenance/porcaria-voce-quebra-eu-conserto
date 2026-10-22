@@ -31,7 +31,7 @@
    +r.confirmed.map(x=>'<li><strong>'+esc(x.label)+' · '+esc(x.result)+'</strong><p>'+esc(x.explanation||'Confirmação registrada, sem explicação adicional.')+'</p></li>').join('')
    +'</ol></details>':'';
   const caseStudy=r.complete&&r.caseStudy?
-   '<section class="diagnosticCaseStudy"><small>APRENDIZADO DO CASO · CENÁRIO DIDÁTICO</small>'
+   '<section class="diagnosticCaseStudy"><small>APRENDIZADO DO CASO · RELATÓRIO TÉCNICO</small>'
    +'<h4>Verificação técnica recomendada</h4><p>'+esc(r.caseStudy.verification)+'</p>'
    +'<h4>Interpretação e lição</h4><p>'+esc(r.caseStudy.lesson)+'</p>'
    +'<small>'+esc(r.caseStudy.provenance)+'</small></section>':'';
