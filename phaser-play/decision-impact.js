@@ -79,7 +79,7 @@
     purchaseCount:purchaseHistory.length,openPurchases:inTransit.length,
     indicativeInventoryValue:Math.round(heldFunds)},
    lossRates:{...VIRTUAL_LOSS_PER_HOUR},
-   warning:'Custo de oportunidade e valor de estoque são estimativas de referência, não descontos do caixa. Indicadores de espera se sobrepõem e não são somáveis. O tempo parado por OS não corresponde à disponibilidade física da frota.'};
+   warning:'Custo de oportunidade e valor de estoque são estimativas de referência, NÃO descontos do caixa. Indicadores de espera se sobrepõem e não são somáveis. O tempo parado por OS não corresponde à disponibilidade física da frota.'};
  }
  return {VERSION,SHIFT_HOURS,VIRTUAL_LOSS_PER_HOUR,quote,orderExposure,procurementFor,compute};
 });
