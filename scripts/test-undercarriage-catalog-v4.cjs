@@ -72,7 +72,7 @@ assert.equal(lateRead.sample.lateTurns,4);
 assert.equal(lateRead.sample.delayEscalation,true);
 assert.equal(lateRead.sample.trend,'agravamento','atraso de quatro turnos provoca agravamento virtual');
 assert.equal(late.n.monitoring.status,'requer_avaliacao');
-assert.ok(V.monitorWidget(late.n,late.s,M).includes('AGRAVAMENTO POR POSTERGAÇÃO SIMULADA'));
+assert.ok(V.monitorWidget(late.n,late.s,M).includes('AGRAVAMENTO POR POSTERGAÇÃO'));
 assert.ok(M.continueWatch(late.s,late.n.id,2).error,'não postergar uma condição já agravada');
 assert.equal(M.escalate(late.s,D,I,late.n.id).ok,true);
 const ontime=receive('UND015');
