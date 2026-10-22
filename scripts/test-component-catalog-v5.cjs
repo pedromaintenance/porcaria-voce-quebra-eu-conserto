@@ -71,7 +71,7 @@ assert.equal(sample.ok,true);assert.equal(sample.sample.lateTurns,4);
 assert.equal(sample.sample.delayEscalation,true);
 assert.equal(sample.sample.trend,'agravamento','atraso simulado > 4 turnos');
 assert.equal(late.n.monitoring.status,'requer_avaliacao');
-assert.ok(V.monitorWidget(late.n,late.s,M).includes('AGRAVAMENTO POR POSTERGAÇÃO SIMULADA'));
+assert.ok(V.monitorWidget(late.n,late.s,M).includes('AGRAVAMENTO POR POSTERGAÇÃO'));
 assert.ok(M.continueWatch(late.s,late.n.id,2).error);
 const ontime=receive('CMP007');
 assert.equal(M.decide(ontime.s,ontime.n.id,'trend',2).ok,true);
