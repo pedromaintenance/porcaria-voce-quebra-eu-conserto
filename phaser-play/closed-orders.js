@@ -5,7 +5,7 @@
  if(root)root.PORCARIA_CLOSED_ORDERS=api;
 })(typeof window!=='undefined'?window:null,function(){
  'use strict';
- const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const esc=s=>String((typeof globalThis!=='undefined'&&globalThis.PORCARIA_IMMERSIVE_COPY?.clean(s))??s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const fmt=n=>Number.isFinite(Number(n))?Math.round(Number(n)).toLocaleString('pt-BR'):'—';
  const safeNum=n=>Number.isFinite(Number(n))?Math.max(0,Number(n)):null;
  function compute(state,data,query='',selectedId=null,limit=24){
