@@ -59,6 +59,7 @@ let renderProfile={scale:1,width:1080,height:450,centerX:859,centerY:270};
 const FILTER={queue:'all',query:'',store:'all',stockQuery:''};
 let toastTimeout;
 let planningHorizon='turn';
+let reliabilityDays=14; // Janela de indicadores, estado só visual.
 let decisionHistoryFilter='all'; // Controle de visualização; não altera save.
 let lessonFilter='all',lessonSelectedOrderId=null; // Navegação temporária.
 let stockReturnJobId=null; // Contexto de navegação, não faz parte do save.
@@ -297,6 +298,7 @@ function planningTabs(){
   +'<button type="button" data-planning-horizon="week" class="'+(planningHorizon==='week'?'selected':'')+'" aria-pressed="'+(planningHorizon==='week')+'">JANELA SEMANAL · 14 TURNOS</button>'
   +'<button type="button" data-planning-horizon="schedule" class="'+(planningHorizon==='schedule'?'selected':'')+'" aria-pressed="'+(planningHorizon==='schedule')+'">PROGRAMAR · 14 TURNOS</button>'
   +'<button type="button" data-planning-horizon="preventive" class="'+(planningHorizon==='preventive'?'selected':'')+'" aria-pressed="'+(planningHorizon==='preventive')+'">PREVENTIVA × CORRETIVA</button>'
+  +'<button type="button" data-planning-horizon="kpis" class="'+(planningHorizon==='kpis'?'selected':'')+'" aria-pressed="'+(planningHorizon==='kpis')+'">KPIs DA MANUTENÇÃO</button>'
   +'<button type="button" data-planning-horizon="history" class="'+(planningHorizon==='history'?'selected':'')+'" aria-pressed="'+(planningHorizon==='history')+'">HISTÓRICO DE DECISÕES</button>'
   +'<button type="button" data-planning-horizon="lessons" class="'+(planningHorizon==='lessons'?'selected':'')+'" aria-pressed="'+(planningHorizon==='lessons')+'">LIÇÕES APRENDIDAS</button></div>';
 }
@@ -387,6 +389,68 @@ function drawPreventive(){
    +'</article>';
  }).join('')+'</div>':'<p class="muted">Nenhum serviço preventivo autorizado nesta campanha.</p>';
  out+='<p class="planningExplanation">* '+esc(p.note)+'</p>';
+ $('planning').innerHTML=out;
+}
+
+function drawReliability(){
+ const report=window.PORCARIA_RELIABILITY.compute(state,data,{days:reliabilityDays}),m=report.metrics;
+ const num=n=>Number(n).toLocaleString('pt-BR',{maximumFractionDigits:1});
+ const val=n=>n==null?'—':num(n);
+ const metric=(name,value,note='')=>'<div class="planningMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong>'
+  +(note?'<small>'+esc(note)+'</small>':'')+'</div>';
+ let out=planningTabs()+'<p class="planningIntro">ENGENHARIA DE MANUTENÇÃO · Resultados observados na campanha. Custos fictícios, esforço (HH) e exposição em horas corridas são grandezas diferentes.</p>'
+  +'<div class="reliabilityFilters" role="group" aria-label="Janela de indicadores">';
+ for(const days of [7,14,30])out+='<button type="button" class="act '+(reliabilityDays===days?'':'secondary')+'" data-reliability-days="'+days+'" aria-pressed="'+(reliabilityDays===days)+'">ÚLTIMOS '+days+' DIAS</button>';
+ out+='</div><div class="planningMetrics">'
+  +metric('OS corretivas concluídas',m.correctiveOrders)
+  +metric('Preventivas executadas',m.preventiveServices)
+  +metric('HH corretivas (OS encerradas)',val(m.correctiveHH)+' HH')
+  +metric('HH preventivas executadas',val(m.preventiveHH)+' HH')
+  +metric('Participação preventiva',m.resourceSharePreventivePct===null?'—':val(m.resourceSharePreventivePct)+'%','Sobre HH executadas no período')
+  +metric('Backlog atual',m.backlog+' OS','Críticas: '+m.critical)
+  +metric('Primeira execução sem retrabalho',m.firstPassPct===null?'—':val(m.firstPassPct)+'%','Base: '+m.firstPassEvaluated+' OS classificadas')
+  +metric('Reincidências observadas',m.recurrenceEvents,'Em '+m.recurringAssets+' ativo(s)')
+  +'</div>';
+ out+='<h3 class="resourceSection">ESFORÇO EXECUTADO POR DIA · SÉRIE DO SAVE</h3>';
+ const max=Math.max(1,...report.trend.map(x=>Math.max(x.preventiveHH,x.correctiveHH)));
+ out+='<div class="reliabilityGraph" role="img" aria-label="Comparação diária de horas de preventiva e corretiva na janela selecionada">';
+ for(const t of report.trend){
+  const pm=(t.preventiveHH/max*100).toFixed(2),cm=(t.correctiveHH/max*100).toFixed(2);
+  out+='<div class="reliabilityColumn" title="Turnos '+t.fromTick+' a '+t.toTick+': '+val(t.preventiveHH)+' HH preventivas; '+val(t.correctiveHH)+' HH corretivas">'
+   +'<div class="reliabilityBars"><span class="reliabilityBar pm" style="height:'+pm+'%"></span>'
+   +'<span class="reliabilityBar cm" style="height:'+cm+'%"></span></div>'
+   +'<small>'+t.index+'</small></div>';
+ }
+ out+='</div><p class="planningExplanation"><b>Legenda:</b> <span style="color:#8bd8b3">■ Preventiva</span> · <span style="color:#ffbb70">■ Corretiva</span>. '
+  +'Apenas OS concluídas e preventivas executadas aparecem na série; sem projeções de HH pendentes.</p>';
+ out+='<h3 class="resourceSection">CUSTOS REGISTRADOS · SEM DUPLA CONTAGEM</h3><div class="planningMetrics">'
+  +metric('Preventiva executada (caixa)', 'R$ '+brl(m.preventiveCost))
+  +metric('Preventiva autorizada pendente', 'R$ '+brl(m.preventiveCommittedCost))
+  +metric('Mão de obra corretiva (contábil)', 'R$ '+brl(m.correctiveLaborCost))
+  +metric('Material aplicado (valor indicativo)', 'R$ '+brl(m.materialConsumedValuation))
+  +metric('Compras no período (caixa)', 'R$ '+brl(m.purchasesCash))
+  +metric('Retrabalho em OS fechadas', val(m.reworkHH)+' HH')
+  +'</div>';
+ out+='<h3 class="resourceSection">PRAZO DAS OS E EXPOSIÇÃO</h3><div class="planningMetrics">'
+  +metric('Prazo médio das OS encerradas',m.meanClosedLeadHours===null?'—':val(m.meanClosedLeadHours)+' h','Abertura até conclusão; não é MTTR físico')
+  +metric('Esforço médio por OS',m.meanCorrectiveEffortHH===null?'—':val(m.meanCorrectiveEffortHH)+' HH')
+  +metric('Exposição das OS em aberto',val(m.activeOrderExposureHours)+' h','Soma de horas corridas por OS; não da frota')
+  +metric('Turnos aguardando peças',val(m.materialShifts))
+  +metric('Turnos aguardando ferramentas',val(m.toolShifts))
+  +metric('Turnos em fila de diagnóstico',val(m.diagnosisQueueShifts))
+  +'</div>';
+ out+='<h3 class="resourceSection">REINCIDÊNCIA POR ATIVO · REGISTROS CONHECIDOS</h3>';
+ if(!report.repeated.length)out+='<p class="planningIntro">Sem nova OS no mesmo ativo depois de uma conclusão anterior dentro da janela e do histórico disponível.</p>';
+ else out+='<div class="scheduleHistory">'+report.repeated.map(r=>
+   '<article class="planningOrder"><div class="planningOrderHeader"><strong>'+esc(r.asset)+' · '+esc(r.model)+'</strong>'
+   +'<span class="planningTag">'+r.repeatCount+' ocorrência(s)</span></div><p>Mesmo cenário didático: '+r.sameScenario+' · Última OS: '+esc(r.lastOrderId||'—')+'</p>'
+   +'<small>'+esc(r.distinction)+'</small></article>').join('')+'</div>';
+ if(report.coverage.limitedClosed||report.coverage.limitedPreventive)
+  out+='<p class="planningNoResource">Limite de retenção alcançado: históricos antigos podem não estar neste save. Indicadores descrevem somente o conjunto ainda preservado.</p>';
+ out+='<div class="weeklyAssumptions"><strong>CRITÉRIOS E LIMITES DE ENGENHARIA</strong><ul>'
+  +report.notes.map(note=>'<li>'+esc(note)+'</li>').join('')+'</ul></div>';
+ out+='<div class="actions"><button type="button" class="act secondary" data-planning-horizon="history">HISTÓRICO AUDITÁVEL</button>'
+  +'<button type="button" class="act secondary" data-planning-horizon="preventive">PLANEJAR PREVENTIVAS</button></div>';
  $('planning').innerHTML=out;
 }
 function drawWeekly(){
@@ -551,6 +615,7 @@ function drawPlanning(){
  if(planningHorizon==='week'){drawWeekly();return}
  if(planningHorizon==='schedule'){drawSchedule();return}
  if(planningHorizon==='preventive'){drawPreventive();return}
+ if(planningHorizon==='kpis'){drawReliability();return}
  if(planningHorizon==='history'){drawDecisionHistory();return}
  if(planningHorizon==='lessons'){drawLessons();return}
  const plan=window.PORCARIA_PLANNING.compute(state,data);
@@ -691,7 +756,7 @@ function drawManagement(k){
  ];
  $('management').innerHTML='<p class="muted">Controle da oficina no mesmo ambiente Phaser. Dados e decisões vêm da campanha ativa.</p>'
    +'<div class="managementGrid">'+metrics.map(([name,value])=>'<div class="managementMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong></div>').join('')+'</div>'
-   +'<div class="managementActions"><button class="act secondary" data-open-panel="inspection">🔎 INSPEÇÕES</button><button class="act secondary" data-open-panel="training">📚 TREINAMENTOS</button><button class="act" data-open-panel="planning">🗓️ PLANEJAR OS</button><button class="act secondary" data-open-panel="shift">📋 REVISAR PRÓXIMO TURNO</button><button class="act secondary" data-open-panel="queue">📻 ABRIR CARTEIRA</button><button class="act secondary" data-open-panel="team">👷 EQUIPE</button><button class="act secondary" data-open-panel="store">📦 ESTOQUE</button><button class="act secondary" data-open-panel="stats">📊 INDICADORES</button></div>'
+   +'<div class="managementActions"><button class="act secondary" data-open-panel="inspection">🔎 INSPEÇÕES</button><button class="act secondary" data-open-panel="training">📚 TREINAMENTOS</button><button class="act" data-open-panel="planning">🗓️ PLANEJAR OS</button><button class="act secondary" data-open-panel="shift">📋 REVISAR PRÓXIMO TURNO</button><button class="act secondary" data-open-panel="queue">📻 ABRIR CARTEIRA</button><button class="act secondary" data-open-panel="team">👷 EQUIPE</button><button class="act secondary" data-open-panel="store">📦 ESTOQUE</button><button class="act secondary" data-open-panel="stats">📊 INDICADORES</button><button class="act secondary" data-reliability-open>📈 KPIs PCM</button></div>'
    +'<section class="readinessBoard"><div class="readinessHeading"><h3>🛠️ PRONTIDÃO OPERACIONAL · TURNO '+ready.shift+'</h3><span>QUADRO CONSULTIVO</span></div>'
    +'<div class="readinessMetrics">'
      +'<div><small>HH DE EQUIPE DISPONÍVEIS</small><strong>'+ready.metrics.nominalCrewHH+' HH</strong><span>'+ready.metrics.availableCrew+' profissional(is) × 10,5 HH</span></div>'
@@ -957,6 +1022,8 @@ function events(){
   if(quickBack){openPanel('detail');return}
   const quickClose=ev.target.closest('[data-order-close]');
   if(quickClose){closeOrder();return}
+  const goReliability=ev.target.closest('[data-reliability-open]');
+  if(goReliability){planningHorizon='kpis';openPanel('planning');return}
   const submenu=ev.target.closest('[data-open-panel]');
   if(submenu){
    if(submenu.dataset.openPanel==='store'){stockReturnJobId=null;FILTER.stockQuery='';$('storeSearch').value='';drawStore()}
@@ -1054,7 +1121,7 @@ function events(){
   }
   const planHorizon=ev.target.closest('[data-planning-horizon]');
   if(planHorizon){
-   planningHorizon=['turn','week','schedule','preventive','history','lessons'].includes(planHorizon.dataset.planningHorizon)?planHorizon.dataset.planningHorizon:'turn';
+   planningHorizon=['turn','week','schedule','preventive','kpis','history','lessons'].includes(planHorizon.dataset.planningHorizon)?planHorizon.dataset.planningHorizon:'turn';
    drawPlanning();return;
   }
   const preventiveBook=ev.target.closest('[data-preventive-book]');
@@ -1069,6 +1136,12 @@ function events(){
    const error=E.cancelPreventive(state,preventiveCancel.dataset.preventiveCancel);
    if(error){notify(error);return}
    save();drawUI();drawPreventive();notify('Preventiva cancelada; valor restituído ao caixa.');return;
+  }
+  const reliabilityFilter=ev.target.closest('[data-reliability-days]');
+  if(reliabilityFilter){
+   const selectedDays=Number(reliabilityFilter.dataset.reliabilityDays);
+   if([7,14,30].includes(selectedDays)){reliabilityDays=selectedDays;drawReliability()}
+   return;
   }
   const scheduleBook=ev.target.closest('[data-schedule-book]');
   if(scheduleBook){
@@ -1668,6 +1741,7 @@ async function boot(){
   // O motor carrega antes da cena: ativa o módulo de agenda antes da primeira leitura.
   await import('./weekly-schedule.js?v=0.9.14');
   await import('./preventive.js?v=0.9.15');
+  await import('./reliability-kpis.js?v=0.9.16');
   if(!document.getElementById('weeklyScheduleStyle')){
    const css=document.createElement('style');css.id='weeklyScheduleStyle';
    css.textContent='.scheduleSlots{display:grid;grid-template-columns:repeat(7,minmax(100px,1fr));gap:7px;margin:12px 0}'
@@ -1680,6 +1754,13 @@ async function boot(){
     +'.scheduleHistory{display:grid;gap:9px}'
     +'@media(max-width:820px){.scheduleSlots{grid-template-columns:repeat(4,minmax(0,1fr))}}'
     +'@media(max-width:560px){.scheduleSlots{grid-template-columns:repeat(2,minmax(0,1fr))}.scheduleFields{grid-template-columns:1fr}}';
+   css.textContent+='.reliabilityFilters{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 13px}'
+    +'.reliabilityGraph{display:flex;align-items:flex-end;gap:4px;overflow-x:auto;min-height:154px;background:#102839;border:1px solid #3d6479;border-radius:9px;padding:12px 8px}'
+    +'.reliabilityColumn{flex:1;min-width:18px;display:flex;align-items:center;flex-direction:column;gap:4px}'
+    +'.reliabilityBars{display:flex;align-items:flex-end;justify-content:center;gap:2px;width:100%;height:115px;border-bottom:1px solid #4c697c}'
+    +'.reliabilityBar{display:block;width:38%;max-width:19px;border-radius:3px 3px 0 0;min-height:0}'
+    +'.reliabilityBar.pm{background:#75d7b2}.reliabilityBar.cm{background:#eeb36e}'
+    +'.reliabilityColumn small{font-size:9px;color:#a9c8db}';
    document.head.appendChild(css);
   }
   const res=await fetch('../game-data.json',{cache:'no-store'});if(!res.ok)throw Error('HTTP '+res.status);
@@ -1704,7 +1785,7 @@ async function boot(){
   M.receive(state,data,I,{initial:true});
   save();
   selected=state.jobs[0]?.id;events();drawUI();
-  if(!I||!IV||!S||!T||!M||!window.PORCARIA_PREVENTIVE||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_WEEKLY_SCHEDULE||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
+  if(!I||!IV||!S||!T||!M||!window.PORCARIA_PREVENTIVE||!window.PORCARIA_RELIABILITY||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_WEEKLY_SCHEDULE||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
   if(!window.PORCARIA_RENDER_QUALITY)throw Error('Configuração de nitidez indisponível.');
   renderProfile=window.PORCARIA_RENDER_QUALITY.profile({
    viewportWidth:window.innerWidth,devicePixelRatio:window.devicePixelRatio,
