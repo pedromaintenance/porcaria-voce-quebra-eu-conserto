@@ -3,7 +3,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs');
 const D=require('../game-data.json'),E=require('../engine.js');
 const F=require('../phaser-play/fleet-telemetry.js'),VIEW=require('../phaser-play/fleet-view.js');
-assert.equal(F.VERSION,'14.0.0');
+assert.equal(F.VERSION,'15.0.0');
 assert.equal(F.assetIDs(D).length,54);
 const s=E.create(D,()=>0.45);
 assert.equal(s.fleetTelemetry.startedTick,0);
@@ -18,6 +18,8 @@ assert.equal(F.failure(s,D,job0,'random'),null,'não duplicar evento de falha');
 assert.equal(F.failure(s,D,{id:'MANUAL',asset:job0.asset},'manual'),null,'conversão manual não se torna falha automaticamente');
 const free=F.assetIDs(D).find(id=>!s.jobs.some(j=>j.asset===id));
 assert.ok(free);
+// Compatibilidade V14: reconstitui a política antiga de operação contínua.
+for(const id of F.assetIDs(D))assert.equal(F.setDuty(s,D,id,12),null);
 const oldCash=s.cash;
 assert.equal(E.bookPreventive(s,D,free,s.team[0].id,0,'service'),null);
 const report=F.compute(s,D);
