@@ -2,10 +2,23 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 21/10/2026 · **v0.9.15 — Preventiva versus corretiva, com custo, HH e redução temporária de probabilidade fictícia; QA visual pendente.**
+**Estado de referência:** 21/10/2026 · **v0.9.16 — Indicadores PCM com HH, custos, reincidência e exposição; sem métricas não observadas; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.9.16 — Indicadores de confiabilidade e desempenho, ciclo 13 (21/10/2026)
+
+- [x] Painel **Planejamento → KPIs da Manutenção**, com seleção de 7/14/30 dias virtuais e atalho na Gestão.
+- [x] Comparar HH preventivas executadas e HH de OS corretivas encerradas, com proporção e barras temporais.
+- [x] Separar custo fictício debitado de preventiva, compromisso pendente, custo de mão de obra da OS, consumo valorizado de material e compras efetivamente pagas.
+- [x] Medir prazo corrido de OS, esforço médio, primeira execução correta, retrabalho e esperas não somáveis.
+- [x] Identificar recorrência observada por ativo após OS anterior encerrada sem alegar identidade de causa.
+- [x] Não apresentar MTBF, disponibilidade física ou falhas evitadas por falta de horas operadas e contrafactuais.
+- [x] Preservar saves legados, documentar retenção e incluir testes determinísticos no CI e deploy Pages.
+- [ ] Homologação visual desktop/mobile, amostra grande e campanhas de longa duração.
+
+**Documentação:** [Indicadores de Confiabilidade — Ciclo 13](../docs/INDICADORES_CONFIABILIDADE_CICLO13.md).
 
 ## Entrega 0.9.15 — Preventiva versus corretiva, ciclo 12 (21/10/2026)
 
