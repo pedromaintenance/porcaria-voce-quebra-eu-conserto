@@ -116,7 +116,7 @@
     unassignedCritical:state.jobs.filter(j=>j.priority===3&&!j.assigned).length
    },
    methodology:'Capacidade = 10,5 HH por mecânico disponível; teto simultâneo limitado a '+count+
-    ' boxes. HH são oportunidades nominais, não previsão de reparo. Os alertas usam energia <25 (crítico) e <45 (atenção), moral <25/<40: regras fictícias de balanceamento. Não são diagnóstico médico ou regra de segurança real.',
+    ' boxes. HH são oportunidades nominais, não previsão de reparo. Os alertas usam energia <25 (crítico) e <45 (atenção), moral <25/<40: limites internos de acompanhamento, sem constituir avaliação médica ou critério normativo de segurança.',
    doesNotMutate:true};
  }
  return {compute,HH_PER_MECHANIC,ENERGY_CRITICAL,ENERGY_ATTENTION,MORALE_CRITICAL,MORALE_ATTENTION};
