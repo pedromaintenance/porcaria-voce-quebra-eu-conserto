@@ -5,7 +5,7 @@
  if(root)root.PORCARIA_TRAINING_VIEW=api;
 })(typeof window!=='undefined'?window:globalThis,function(){
  'use strict';
- const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const esc=x=>String((typeof globalThis!=='undefined'&&globalThis.PORCARIA_IMMERSIVE_COPY?.clean(x))??x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const groups={disciplines:'Disciplinas',systems:'Sistemas',machines:'Máquinas'};
  const label=(catalog,g,k)=>catalog[g]?.find(x=>x.id===k)?.label||k;
  const money=n=>Number(n||0).toLocaleString('pt-BR',{maximumFractionDigits:0});

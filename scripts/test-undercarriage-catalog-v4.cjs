@@ -72,7 +72,7 @@ assert.equal(lateRead.sample.lateTurns,4);
 assert.equal(lateRead.sample.delayEscalation,true);
 assert.equal(lateRead.sample.trend,'agravamento','atraso de quatro turnos provoca agravamento virtual');
 assert.equal(late.n.monitoring.status,'requer_avaliacao');
-assert.ok(V.monitorWidget(late.n,late.s,M).includes('AGRAVAMENTO POR POSTERGAÇÃO SIMULADA'));
+assert.ok(V.monitorWidget(late.n,late.s,M).includes('AGRAVAMENTO POR POSTERGAÇÃO'));
 assert.ok(M.continueWatch(late.s,late.n.id,2).error,'não postergar uma condição já agravada');
 assert.equal(M.escalate(late.s,D,I,late.n.id).ok,true);
 const ontime=receive('UND015');
@@ -95,7 +95,7 @@ assert.ok(overall.includes('FLT024')&&overall.includes('UND024')&&overall.includ
 const html=fs.readFileSync('phaser-play/index.html','utf8');
 const sw=fs.readFileSync('sw.js','utf8');
 assert.ok(html.indexOf('undercarriage-catalog-expansion.js')<html.indexOf('condition-catalog.js'));
-assert.ok(html.includes('monitoring.js?v=0.9.8'));
+assert.ok(html.includes('monitoring.js?v=0.9.18-copy1'));
 assert.ok(sw.includes("'./phaser-play/undercarriage-catalog-expansion.js'")&&sw.includes('und097'));
 assert.equal(E.validate(JSON.parse(JSON.stringify(late.s))),true,'save do atraso serializável');
 console.log('OK: 120 sintomas, 24 rodante, CTS sem leitura falsa, pneu separado, postergação e PCM.');

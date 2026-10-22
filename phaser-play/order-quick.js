@@ -6,7 +6,7 @@
  if(root)root.PORCARIA_ORDER_QUICK=api;
 })(typeof window!=='undefined'?window:null,function(){
  'use strict';
- const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const esc=s=>String((typeof globalThis!=='undefined'&&globalThis.PORCARIA_IMMERSIVE_COPY?.clean(s))??s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const money=n=>Number(n||0).toLocaleString('pt-BR',{maximumFractionDigits:0});
  function render({job:j,state,data,model,scenario,diagnostic:r,preferredBay=null,feedback=null}){
   if(!j)return '<p class="orderEmpty">Nenhuma OS selecionada.</p>';

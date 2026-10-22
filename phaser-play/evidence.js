@@ -26,7 +26,7 @@
   if(n.status!=='aguarda_revisao_pcm')return {error:'Teste indisponível após decisão PCM.'};
   const sc=d.scenarios.find(x=>x.id===n.sourceScenario&&x.modelId===n.modelId);
   const t=sc?.diagnosticTests?.find(x=>x.id===testId);
-  if(!t||t.simulationOnly!==true)return {error:'Teste didático não cadastrado.'};
+  if(!t||t.simulationOnly!==true)return {error:'Teste de verificação não cadastrado.'};
   if(!d.tools[t.tool]||!s.tools?.[t.tool])return {error:'Ferramenta necessária: '+(d.tools[t.tool]?.name||t.tool)+'.'};
   if(!Array.isArray(n.evidenceTests))n.evidenceTests=[];
   if(n.evidenceTests.some(x=>x.testId===t.id))return {error:'Este teste já foi realizado.'};
@@ -38,7 +38,7 @@
    source:'resultado_ficticio_sem_medicao_OEM'};
   n.evidenceTests.push(evidence);
   if(!Array.isArray(n.reviewHistory))n.reviewHistory=[];
-  n.reviewHistory.push({tick:s.tick,action:'evidence_test',reason:'Teste didático '+t.label,origin:'simulador'});
+  n.reviewHistory.push({tick:s.tick,action:'evidence_test',reason:'Verificação '+t.label,origin:'simulador'});
   return {ok:true,evidence,notification:n};
  }
  function practice(s,d,I,family){
@@ -57,11 +57,11 @@
   for(const n of s.notifications)if(!['arquivada_pcm','convertida_os'].includes(n.status))used.add(n.asset);
   for(const x of s.inspections)if(x.tick===s.tick)used.add(x.asset);
   const asset=Array.from({length:6},(_,i)=>def.modelId+'·'+String(i+1).padStart(2,'0')).find(x=>!used.has(x));
-  if(!asset)return {error:'Não há ativo didático livre desta frota.'};
+  if(!asset)return {error:'Não há equipamento disponível para a investigação.'};
   const record={id:'IN'+String(s.nextInspection++).padStart(4,'0'),
    asset,modelId:def.modelId,tick:s.tick,day:s.day,shift:s.shift,
    status:'finding',scene:sc.id,ordinal:0,simulationOnly:true,
-   inspectedTick:s.tick,observed:'Indício observado no exercício: '+sc.operator,
+   inspectedTick:s.tick,observed:'Indício registrado: '+sc.operator,
    observationSource:'roteiro_diagnostico_simulado',kind:'diagnostic_practice'};
   s.inspections.push(record);
   const opened=I.notify(s,record.id,null,'media');

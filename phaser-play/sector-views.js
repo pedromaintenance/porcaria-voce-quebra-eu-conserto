@@ -6,7 +6,7 @@
  root.PORCARIA_SECTORS=S;
 })(typeof window!=='undefined'?window:globalThis,function(){
  'use strict';
- const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const esc=x=>String((typeof globalThis!=='undefined'&&globalThis.PORCARIA_IMMERSIVE_COPY?.clean(x))??x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const model=(d,id)=>d.models.find(m=>m.id===id)?.title||id;
  const CATEGORIES=Object.freeze({
   overview:{title:'Visão geral',icon:'▦',subtitle:'Situação da carteira e das fontes de condição'},

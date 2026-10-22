@@ -81,10 +81,10 @@
    fixedWageReference:ticks.reduce((sum,t)=>sum+t.payrollAtEnd,0),
    assumptions:[
     'HH úteis disponíveis = 10,5 h × min(boxes, mecânicos no quadro) por turno (12h menos DDS 0,5h e refeição 1h); descansos atuais são descontados apenas do primeiro turno.',
-    'Horas remanescentes de reparo são unidades de esforço do simulador, não HH confirmadas de execução. Diagnósticos são mostrados em etapas, separadamente.',
+    'Horas remanescentes de reparo são unidades de esforço previstas para o serviço, não HH confirmadas de execução. Diagnósticos são mostrados em etapas, separadamente.',
     'Não foram previstos novos chamados, saídas, contratações, decisões de compra, produtividade, conclusão de OS ou liberação futura dos boxes.',
     'Pedidos com ETA são recebidos AO FINAL do turno correspondente; recebimento não garante atendimento de todas as OS que disputam o mesmo item.',
-    'Materiais são relacionados somente para diagnósticos concluídos; mostrar peças antes do diagnóstico revelaria a falha do jogo.',
+    'Materiais são relacionados somente para diagnósticos concluídos; mostrar peças antes do diagnóstico anteciparia o resultado da investigação.',
     'Custos de folha são referências fixas, assumindo quadro atual sem alterações. Não são previsão de caixa.'
    ]
   };

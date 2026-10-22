@@ -68,8 +68,8 @@
     closedWithApprovedPlan:planned,visiblePlannedHH:round(plansEstimate),
     visibleWorkedHH:round(plansWorked)
    },
-   caveat:'Apenas eventos registrados a partir desta versão; compras e OS anteriores podem existir sem trilha de decisão. O histórico armazena até 400 eventos, 200 compras e 200 OS. Valores fictícios.',
-   interpretation:'Compras sem demanda diagnosticada podem ser estoque estratégico. Divergência PCM é comparação com gabarito didático, não prova de erro de campo. Retrabalho em OS com divergências não é integralmente causado por elas. HH previstas e HH registradas não são horas de indisponibilidade. Não há cálculo de retrabalho evitado ou produção recuperada sem contrafactual.'
+   caveat:'Apenas eventos registrados a partir desta versão; compras e OS anteriores podem existir sem trilha de decisão. O histórico armazena até 400 eventos, 200 compras e 200 OS. Valores de referência da oficina.',
+   interpretation:'Compras sem demanda diagnosticada podem ser estoque estratégico. Divergência PCM é comparação com diagnóstico de referência, sem comprovação automática de erro de campo. Retrabalho em OS com divergências não é integralmente causado por elas. HH previstas e HH registradas não são horas de indisponibilidade. Não há cálculo de retrabalho evitado ou produção recuperada sem contrafactual.'
   };
  }
  return {VERSION,typeLabels,typeGroup,compute};

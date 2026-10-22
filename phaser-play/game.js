@@ -50,7 +50,7 @@ const WORKER_DISPLAY={width:66,height:80}; // 22% maior, mantendo âncora inferi
 const WORKER_POSES={blocked:[0],diagnose:[0,2,1,2],repair:[0,3,2,3]};
 let MODEL_PRESENTATION={};
 let BACKGROUND_PROFILES=null;
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=s=>String((typeof globalThis!=='undefined'&&globalThis.PORCARIA_IMMERSIVE_COPY?.clean(s))??s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const brl=n=>Math.round(n).toLocaleString('pt-BR');
 let data,state,selected,scene;
 let trainingUI={tab:'internal',trainerId:null,learnerId:null,group:null,key:null,offerPeople:{}}; // Somente estado visual.
@@ -288,7 +288,7 @@ function drawShiftBrief(){
  }else out+='<p>Não há pedidos com ETA até o encerramento do próximo turno.</p>';
  if(report.payroll)out+='<p>Virada do dia: folha fixa estimada em <strong>R$ '+brl(report.payroll)+'</strong> (exclui custos variáveis).</p>';
  out+='<p>'+esc(report.deliveryNote)+'</p></section></div>';
- out+='<div class="shiftBriefFoot"><p>Os resultados de diagnóstico, reparo, falhas e custos variáveis continuam sujeitos ao motor da simulação. Este briefing não é uma previsão de OS concluídas.</p>'
+ out+='<div class="shiftBriefFoot"><p>O resultado depende da execução das ordens. Esta programação não garante a conclusão das OS.</p>'
    +'<div class="actions"><button class="act secondary" data-shift-action="cancel">VOLTAR À OFICINA</button>'
    +'<button class="act" data-shift-action="confirm" data-turn-tick="'+report.tick+'">▶ CONFIRMAR +12H</button></div></div>';
  $('shiftBrief').innerHTML=out;
@@ -354,14 +354,14 @@ function drawPreventive(){
  const candidates=p.assets.filter(a=>!a.blocked);
  const free=state.team.filter(m=>!m.assigned&&m.restAt!==state.tick&&!E.TRAINING.active(state,m));
  let out=planningTabs()
-  +'<p class="planningIntro">MANUTENÇÃO PREVENTIVA · Decisão de recurso com custo e HH de jogo. A redução de ocorrências futuras é probabilística e temporária, sem garantia sobre falhas reais ou corretivas já abertas.</p>'
+  +'<p class="planningIntro">MANUTENÇÃO PREVENTIVA · Planejamento de recursos, custos e HH. A redução de ocorrências futuras é probabilística e temporária, sem interferir nas OS corretivas já abertas.</p>'
   +'<div class="planningMetrics">'+metric('Preventivas executadas',p.completed)
   +metric('Desembolso de preventivas', 'R$ '+brl(p.spent))
   +metric('HH preventivas executadas',p.hours+' h')
   +metric('Reservas neste turno',p.planned)
   +metric('Sorteios aleatórios barrados*',p.screened)+'</div>';
  out+='<div class="planningExplanation"><b>Custos e efeito demonstrativos:</b> Inspeção: R$ 120, 2 HH, redução de 25% por 4 turnos. '
-  +'Serviço: R$ 360, 4 HH, redução de 45% por 8 turnos. Valores não correspondem a uma máquina real e não representam economia comprovada.</div>';
+  +'Serviço: R$ 360, 4 HH, redução de 45% por 8 turnos. Os custos são valores de referência da oficina.</div>';
  if(!candidates.length||!free.length)out+='<p class="planningIntro">Sem ativos ou profissionais disponíveis para autorizar uma preventiva agora.</p>';
  else out+='<section class="scheduleForm"><h3>AUTORIZAR PREVENTIVA DE UM ATIVO</h3>'
   +'<div class="scheduleFields"><label>Equipamento<select id="preventiveAsset">'
@@ -374,11 +374,11 @@ function drawPreventive(){
   +'<button class="act" type="button" data-preventive-book>AUTORIZAR · DESCONTAR VALOR DO CAIXA</button>'
   +'<p class="planningExplanation">Autorização é explícita; a equipe realiza o serviço no fechamento do turno. '
   +'Os recursos do box e do mecânico ficam reservados. Cancelar antes do avanço devolve o valor integral.</p></section>';
- out+='<h3 class="resourceSection">ATIVOS COM PROTEÇÃO DIDÁTICA ATIVA</h3>';
+ out+='<h3 class="resourceSection">ATIVOS COM MANUTENÇÃO PREVENTIVA RECENTE</h3>';
  const protectedAssets=p.assets.filter(a=>a.covered);
  out+=protectedAssets.length?'<div class="scheduleHistory">'+protectedAssets.map(a=>
   '<article class="planningOrder"><strong>'+esc(a.asset)+' · '+esc(a.model)+'</strong>'
-  +'<p>Redução simulada de '+Math.round(a.reduction*100)+'% nos sorteios de nova ocorrência até o início do turno '+a.expiresTick+'.</p></article>'
+  +'<p>Redução estimada de '+Math.round(a.reduction*100)+'% nos sorteios de nova ocorrência até o início do turno '+a.expiresTick+'.</p></article>'
  ).join('')+'</div>':'<p class="muted">Ainda não há ativos em janela de proteção preventiva.</p>';
  out+='<h3 class="resourceSection">REGISTROS DE PREVENTIVA</h3>';
  out+=p.rows.length?'<div class="scheduleHistory">'+p.rows.map(r=>{
@@ -400,7 +400,7 @@ function drawReliability(){
  const val=n=>n==null?'—':num(n);
  const metric=(name,value,note='')=>'<div class="planningMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong>'
   +(note?'<small>'+esc(note)+'</small>':'')+'</div>';
- let out=planningTabs()+'<p class="planningIntro">ENGENHARIA DE MANUTENÇÃO · Resultados observados na campanha. Custos fictícios, esforço (HH) e exposição em horas corridas são grandezas diferentes.</p>'
+ let out=planningTabs()+'<p class="planningIntro">ENGENHARIA DE MANUTENÇÃO · Resultados observados na campanha. Custos, esforço (HH) e exposição em horas corridas são grandezas diferentes.</p>'
   +'<div class="reliabilityFilters" role="group" aria-label="Janela de indicadores">';
  for(const days of [7,14,30])out+='<button type="button" class="act '+(reliabilityDays===days?'':'secondary')+'" data-reliability-days="'+days+'" aria-pressed="'+(reliabilityDays===days)+'">ÚLTIMOS '+days+' DIAS</button>';
  out+='</div><div class="planningMetrics">'
@@ -446,7 +446,7 @@ function drawReliability(){
  if(!report.repeated.length)out+='<p class="planningIntro">Sem nova OS no mesmo ativo depois de uma conclusão anterior dentro da janela e do histórico disponível.</p>';
  else out+='<div class="scheduleHistory">'+report.repeated.map(r=>
    '<article class="planningOrder"><div class="planningOrderHeader"><strong>'+esc(r.asset)+' · '+esc(r.model)+'</strong>'
-   +'<span class="planningTag">'+r.repeatCount+' ocorrência(s)</span></div><p>Mesmo cenário didático: '+r.sameScenario+' · Última OS: '+esc(r.lastOrderId||'—')+'</p>'
+   +'<span class="planningTag">'+r.repeatCount+' ocorrência(s)</span></div><p>Mesmo histórico de ocorrência: '+r.sameScenario+' · Última OS: '+esc(r.lastOrderId||'—')+'</p>'
    +'<small>'+esc(r.distinction)+'</small></article>').join('')+'</div>';
  if(report.coverage.limitedClosed||report.coverage.limitedPreventive)
   out+='<p class="planningNoResource">Limite de retenção alcançado: históricos antigos podem não estar neste save. Indicadores descrevem somente o conjunto ainda preservado.</p>';
@@ -532,7 +532,7 @@ function drawDecisionHistory(){
   '<article class="planningOrder"><strong>'+esc(p.orderId)+' · '+esc(p.modelId)+'</strong>'
   +'<p>Plano PCM: '+p.plannedHH+' HH · Esforço registrado: '+p.workedHH+' HH · Diferença: '+(p.effortDifferenceHH>0?'+':'')+p.effortDifferenceHH+' HH</p>'
   +'<p>Tempo de OS: '+p.downtimeHours+'h corridas · Retrabalho: '+p.reworkHours+' HH · Divergências PCM: '+p.plannerErrors+'</p>'
-  +'<small>HH de esforço não equivalem a horas de parada. '+(p.firstTime?'Conclusão sem retrabalho no critério do jogo.':'Conclusão com ocorrências adicionais registradas.')+'</small></article>'
+  +'<small>HH de esforço não equivalem a horas de parada. '+(p.firstTime?'Conclusão sem retrabalho registrado.':'Conclusão com ocorrências adicionais registradas.')+'</small></article>'
  ).join('')+'</div>';
  out+='<h3 class="resourceSection">LINHA DO TEMPO · DECISÕES</h3><div class="decisionHistoryFilters">';
  for(const [key,name] of [['all','TODOS'],['supply','COMPRAS'],['pcm','PCM'],['execution','EXECUÇÃO']]){
@@ -556,7 +556,7 @@ function drawDecisionHistory(){
 function drawLessons(){
  const report=window.PORCARIA_LESSONS_LEARNED.compute(state,data,{filter:lessonFilter,limit:60});
  const metric=(name,value)=>'<div class="planningMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong></div>';
- let out=planningTabs()+'<p class="planningIntro">Lições aprendidas da oficina: sintomas, investigação, decisão, resultado e reflexão. Experiências do jogo não substituem validação OEM ou evidência de campo.</p>';
+ let out=planningTabs()+'<p class="planningIntro">Lições aprendidas da oficina: sintomas, investigação, decisão, resultado e reflexão. As conclusões devem permanecer vinculadas às evidências e aos procedimentos aplicáveis.</p>';
  out+='<div class="planningMetrics">'
   +metric('OS concluídas no histórico',report.total)
   +metric('Lições registradas',report.withReflection)
@@ -593,10 +593,10 @@ function drawLessons(){
   +'<p><strong>Resultado observado:</strong> '+esc(selected.classification)+'</p>'
   +'<p><strong>Indicadores:</strong> '+selected.downtimeHours+'h de OS · '+selected.laborHH+' HH trabalhadas · '+selected.reworkHH+' HH de retrabalho'
     +' · espera material '+selected.materialWaitShifts+' turno(s) · ferramenta '+selected.toolWaitShifts+' turno(s)</p>'
-  +'<p><strong>Investigações registradas:</strong> '+selected.diagnosisCount.confirmed+' confirmações no gabarito do jogo · '
+  +'<p><strong>Investigações registradas:</strong> '+selected.diagnosisCount.confirmed+' confirmações no diagnóstico de referência · '
    +selected.diagnosisCount.rejected+' hipóteses rejeitadas · '+selected.diagnosisCount.inconclusive+' inconclusivas · '
    +selected.diagnosisCount.evidence+' inspeções complementares solicitadas</p>';
-  if(selected.route)out+='<p><strong>Hipótese didática de encerramento:</strong> '+esc(selected.route.component)+' · '+esc(selected.route.damage)
+  if(selected.route)out+='<p><strong>Hipótese de encerramento:</strong> '+esc(selected.route.component)+' · '+esc(selected.route.damage)
    +' · '+esc(selected.route.cause)+'</p>'
    +'<p><strong>Verificação prevista no roteiro:</strong> '+esc(selected.route.verification)+'</p>'
    +'<small>Esta hipótese é o gabarito da missão, não a causa raiz confirmada por análise real.</small>';
@@ -635,8 +635,8 @@ function drawPlanning(){
    +metric('Turnos sem peça',impact.metrics.materialWaitShifts)
    +metric('Turnos sem ferramenta',impact.metrics.toolWaitShifts)
    +metric('Retrabalho registrado',impact.metrics.reworkHours+'h')+'</div>';
- out+='<section class="planningDecisionLedger"><h3>📊 CUSTO DA DECISÃO · REGRAS DE JOGO</h3>'
-   +'<p><strong>Oportunidade virtual acumulada:</strong> R$ '+brl(impact.metrics.virtualOpportunityCost)
+ out+='<section class="planningDecisionLedger"><h3>📊 CUSTO DA DECISÃO · CRITÉRIOS DE PLANEJAMENTO</h3>'
+   +'<p><strong>Oportunidade estimada acumulada:</strong> R$ '+brl(impact.metrics.virtualOpportunityCost)
    +' · <strong>Compras registradas:</strong> R$ '+brl(impact.metrics.purchaseTotal)
    +' · <strong>Pedidos em trânsito:</strong> '+impact.metrics.openPurchases+'</p>'
    +'<small>'+esc(impact.warning)+'</small></section>';
@@ -771,13 +771,13 @@ function drawManagement(k){
    +'<div class="readinessAlertHeader"><h4>ALERTAS DE DECISÃO · '+ready.warnings.length+'</h4><small>Não executam ações automaticamente</small></div>'
    +(ready.warnings.length?'<div class="readinessAlerts">'+ready.warnings.slice(0,6).map(renderReadyAlert).join('')+'</div>'
     +(ready.warnings.length>6?'<div class="readinessAlerts" id="readinessMore" hidden>'+ready.warnings.slice(6).map(renderReadyAlert).join('')+'</div><button class="act secondary readinessExpand" data-readiness-expand aria-expanded="false" aria-controls="readinessMore">MOSTRAR MAIS '+(ready.warnings.length-6)+' ALERTA(S)</button>':'')
-    :'<p class="readinessClear">Nenhuma condição de atenção detectada com os limiares atuais do jogo.</p>')
+    :'<p class="readinessClear">Nenhuma condição de atenção detectada com os limites de acompanhamento atuais.</p>')
    +'<small class="readinessMethod">'+esc(ready.methodology)+'</small></section>'
    +'<section class="productivityControl"><h3>🎯 META DE PRODUTIVIDADE · '+pressure.target+'/100</h3>'
    +'<p>Estável em 60. Acima de 60, a energia mental e física é consumida exponencialmente por hora trabalhada; abaixo de 60, aumenta a perda de moral.</p>'
    +'<div class="metaRange"><span>20 · Moral ↓</span><input type="range" id="productivityTarget" min="20" max="100" step="5" value="'+pressure.target+'" aria-label="Meta de produtividade"><span>100 · Energia ↓</span></div>'
    +'<div id="productivityImpact" class="productivityImpact">Ritmo '+Math.round(pressure.speed*100)+'% · Fadiga '+pressure.fatigueMultiplier.toFixed(2)+'× · Moral −'+pressure.moraleLossPerHour.toFixed(2)+' pts/HH</div>'
-   +'<small>Turnos de 12h: DDS 0,5h + almoço 1h = 10,5 HH úteis por mecânico. Balanceamento fictício, não modelo fisiológico.</small></section>'
+   +'<small>Turnos de 12h: DDS 0,5h + almoço 1h = 10,5 HH úteis por mecânico. Meta de referência interna para planejamento de capacidade.</small></section>'
    +'<h3 class="resourceSection">Últimos acontecimentos</h3>'
    +(state.logs.slice(0,6).map(l=>'<div class="managementRecent">D'+l.day+': '+esc(l.text)+'</div>').join('')||'<p class="muted">Nenhum evento registrado.</p>');
 }
@@ -926,7 +926,7 @@ function drawTeam(){
   const training=E.TRAINING.active(state,m);
   const portraitUrl=m.sprite&&(TEAM_PORTRAITS[m.sprite]||WORKER_SHEETS[m.sprite]);
   const portrait=portraitUrl?'<span class="teamPortrait" style="background-image:url('+esc(portraitUrl)+')" aria-hidden="true"></span>':'<span class="teamPortrait placeholder" aria-label="Sem sprite">MEC.</span>';
-  return `<article class="resourceCard"><div class="teamIdentity">${portrait}<div><h3>${esc(m.avatar||'')} ${esc(m.name)} · ${esc(m.specialty||'Mecânico')} <small>${esc(m.id)}</small></h3><p class="muted">Especialidade simulada: ${esc(m.role)}</p></div></div><p class="muted">${current?'Em serviço: '+esc(current.id)+' · Box '+(current.bay+1):resting?'Descanso programado neste turno':training?(m.normativeUntil>state.tick?'Treinamento normativo · '+(m.normativeUntil-state.tick)+' turno(s)':'Em capacitação neste turno'):'Disponível'} · Índice geral histórico ${Math.round(m.skill)}</p>${energyMeter('Mental',m.mental)}${energyMeter('Física',m.physical)}${energyMeter('Moral',m.morale)}<details class="abilitiesCard"><summary>📊 VER HABILIDADES</summary>${renderSkills(E.skillsFor(m))}</details><div class="actions"><button class="act secondary" data-team-action="motivate" data-person="${esc(m.id)}">MOTIVAR</button><button class="act secondary" data-team-action="rest" data-person="${esc(m.id)}" ${current||resting||training?'disabled':''}>DESCANSAR</button></div></article>`;
+  return `<article class="resourceCard"><div class="teamIdentity">${portrait}<div><h3>${esc(m.avatar||'')} ${esc(m.name)} · ${esc(m.specialty||'Mecânico')} <small>${esc(m.id)}</small></h3><p class="muted">Disciplina: ${esc(m.role)}</p></div></div><p class="muted">${current?'Em serviço: '+esc(current.id)+' · Box '+(current.bay+1):resting?'Descanso programado neste turno':training?(m.normativeUntil>state.tick?'Treinamento normativo · '+(m.normativeUntil-state.tick)+' turno(s)':'Em capacitação neste turno'):'Disponível'} · Índice geral histórico ${Math.round(m.skill)}</p>${energyMeter('Mental',m.mental)}${energyMeter('Física',m.physical)}${energyMeter('Moral',m.morale)}<details class="abilitiesCard"><summary>📊 VER HABILIDADES</summary>${renderSkills(E.skillsFor(m))}</details><div class="actions"><button class="act secondary" data-team-action="motivate" data-person="${esc(m.id)}">MOTIVAR</button><button class="act secondary" data-team-action="rest" data-person="${esc(m.id)}" ${current||resting||training?'disabled':''}>DESCANSAR</button></div></article>`;
  }).join('')+'</div>';
 }
 function drawStore(){
@@ -1048,7 +1048,7 @@ function events(){
    const result=T.practice(state,data,I,evidencePractice.dataset.evidencePractice);
    if(result.error){notify(result.error);return}
    save();drawUI();
-   notify('Treino simulado criado: '+result.notification.id+'. Escolha um teste para investigar antes de planejar.');
+   notify('Treinamento registrado: '+result.notification.id+'. Escolha um teste para investigar antes de planejar.');
    return;
   }
   const evidenceTest=ev.target.closest('[data-evidence-test]');
@@ -1056,7 +1056,7 @@ function events(){
    const result=T.run(state,data,I,evidenceTest.dataset.notificationId,evidenceTest.dataset.evidenceTest);
    if(result.error){notify(result.error);return}
    save();drawUI();
-   notify('Resultado didático registrado na notificação: '+result.notification.id+'.');
+   notify('Resultado registrado na notificação: '+result.notification.id+'.');
    return;
   }
   const monitorCategoryButton=ev.target.closest('[data-monitor-category]');
@@ -1314,7 +1314,7 @@ function events(){
   try{
    if(file.size>5_000_000)throw Error('O arquivo ultrapassa 5 MB.');
    const candidate=JSON.parse(await file.text());
-   if(!E.validate(candidate))throw Error('Save incompatível com a simulação atual.');
+   if(!E.validate(candidate))throw Error('Arquivo de campanha incompatível com esta versão.');
    if(!confirm('Importar save e substituir o progresso desta oficina? Exporte o save atual antes de continuar.'))return;
    state=E.localizeDiagnosticOptions(E.normalizeRoster(candidate),data);I.normalized(state);state.productivityTarget=E.productivityProfile(state.productivityTarget).target;selected=state.jobs[0]?.id||null;
     completedOrderId=null;completedSearch='';$('closedOrderSearch').value='';
@@ -1751,6 +1751,7 @@ class Workshop extends Phaser.Scene{
 async function boot(){
  try{
   // O motor carrega antes da cena: ativa o módulo de agenda antes da primeira leitura.
+  await import('./immersive-copy.js?v=0.9.18-copy1');
   await import('./weekly-schedule.js?v=0.9.14');
   await import('./preventive.js?v=0.9.15');
   await import('./reliability-kpis.js?v=0.9.16');

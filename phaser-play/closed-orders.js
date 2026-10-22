@@ -5,7 +5,7 @@
  if(root)root.PORCARIA_CLOSED_ORDERS=api;
 })(typeof window!=='undefined'?window:null,function(){
  'use strict';
- const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const esc=s=>String((typeof globalThis!=='undefined'&&globalThis.PORCARIA_IMMERSIVE_COPY?.clean(s))??s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const fmt=n=>Number.isFinite(Number(n))?Math.round(Number(n)).toLocaleString('pt-BR'):'—';
  const safeNum=n=>Number.isFinite(Number(n))?Math.max(0,Number(n)):null;
  function compute(state,data,query='',selectedId=null,limit=24){
@@ -52,7 +52,7 @@
     +'<span>'+esc(j.caseTitle)+'</span>'
     +'<small>Tempo decorrido: '+(j.elapsedHours===null?'—':fmt(j.elapsedHours)+' h')+
     ' · Mão de obra: '+(j.laborHours===null?'—':fmt(j.laborHours)+' HH')+
-    ' · Receita simulada: '+(j.revenue===null?'—':'R$ '+fmt(j.revenue))+'</small>'
+    ' · Receita registrada: '+(j.revenue===null?'—':'R$ '+fmt(j.revenue))+'</small>'
     +'</button>').join('')+'</div>'
     :'<p class="muted">Nenhuma OS concluída corresponde à busca. Ajuste o filtro ou avance os turnos até concluir serviços.</p>');
  }
@@ -67,9 +67,9 @@
    +'<div class="closedMetrics">'
    +metric('Tempo decorrido',j.elapsedHours===null?'—':fmt(j.elapsedHours),'horas corridas')
    +metric('Esforço contabilizado',j.laborHours===null?'—':fmt(j.laborHours),'HH do serviço')
-   +metric('Custo de mão de obra',j.laborCost===null?'—':'R$ '+fmt(j.laborCost),'simulação')
+   +metric('Custo de mão de obra',j.laborCost===null?'—':'R$ '+fmt(j.laborCost),'valor registrado')
    +metric('Material consumido',j.materialCost===null?'—':'R$ '+fmt(j.materialCost),'valor unitário registrado')
-   +metric('Receita registrada',j.revenue===null?'—':'R$ '+fmt(j.revenue),'simulação')
+   +metric('Receita registrada',j.revenue===null?'—':'R$ '+fmt(j.revenue),'valor registrado')
    +metric('Retrabalho',j.reworkHours===null?'—':fmt(j.reworkHours),'horas contabilizadas')
    +metric('Bloqueios por material',j.blockedShifts===null?'—':fmt(j.blockedShifts),'turnos')
    +metric('Bloqueios por ferramenta',j.toolWait===null?'—':fmt(j.toolWait),'turnos')

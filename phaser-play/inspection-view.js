@@ -4,7 +4,7 @@
  root.PORCARIA_INSPECTION_VIEW=V;
 })(typeof window!=='undefined'?window:globalThis,function(){
  'use strict';
- const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const esc=v=>String((typeof globalThis!=='undefined'&&globalThis.PORCARIA_IMMERSIVE_COPY?.clean(v))??v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function renderEvidence(n,d,T,s){
   if(!T)return '';
   const tests=T.available(s,d,n.id);
@@ -12,13 +12,13 @@
   const outcomes={observado:'INDÍCIO OBSERVADO',nao_observado:'NÃO OBSERVADO',
    convergente:'LEITURAS COERENTES',divergente:'LEITURAS DIVERGENTES',inconclusivo:'INCONCLUSIVO'};
   const reports=(n.evidenceTests||[]).map(x=>'<li><strong>'+esc(x.label)+' · '+esc(outcomes[x.outcome]||'OBSERVAÇÃO')
-   +'</strong><p>'+esc(x.result)+'</p><small>'+esc(x.limits)+' · resultado SIMULADO · turno '+Number(x.tick)+'</small></li>').join('');
+   +'</strong><p>'+esc(x.result)+'</p><small>'+esc(x.limits)+' · resultado registrado · turno '+Number(x.tick)+'</small></li>').join('');
   const controls=n.status==='aguarda_revisao_pcm'?tests.map(x=>'<div class="pcmTestAction"><div><strong>'+esc(x.label)+'</strong>'
-   +'<small>'+esc(x.toolName)+' · custo fictício R$ '+Number(x.cost)+'</small></div>'
+   +'<small>'+esc(x.toolName)+' · custo previsto R$ '+Number(x.cost)+'</small></div>'
    +'<button class="act secondary" type="button" data-evidence-test="'+esc(x.id)+'" data-notification-id="'+esc(n.id)+'" '
    +(x.completed||!x.available?'disabled':'')+'>'+esc(x.completed?'REGISTRADO':x.available?'EXECUTAR TESTE':'FALTA FERRAMENTA')+'</button></div>').join(''):'';
-  return '<section class="pcmEvidence"><h4>🔬 BANCADA DE EVIDÊNCIAS · FICÇÃO DIDÁTICA</h4>'
-   +'<p>Os resultados são qualitativos e criados para o jogo. Execute os testes antes de escolher hipóteses. Não representam medições ou limites OEM.</p>'
+  return '<section class="pcmEvidence"><h4>🔬 BANCADA DE EVIDÊNCIAS</h4>'
+   +'<p>Execute as verificações disponíveis antes de concluir uma hipótese; confronte cada leitura com as evidências do equipamento.</p>'
    +(controls?'<div class="pcmTestList">'+controls+'</div>':'')
    +(reports?'<div class="pcmEvidenceReport"><strong>RESULTADOS REGISTRADOS</strong><ul>'+reports+'</ul></div>'
      :'<p class="muted">Nenhum resultado registrado. Comprar uma ferramenta não executa automaticamente o teste.</p>')
@@ -88,7 +88,7 @@
     +'<p><strong>Incerteza:</strong> '+esc(record.uncertainty)+'</p>'
     +'<p><strong>Verificação sugerida:</strong> '+esc(record.verification)+'</p>'
     +'<p><strong>Risco de postergação:</strong> '+esc(record.riskOnDelay)+'</p>'
-    +(record.delayThresholdTurns?'<p><strong>Regra do jogo:</strong> após '+Number(record.delayThresholdTurns)+' turnos de atraso da verificação programada, o resultado simulado vira agravamento. Não é um limite OEM.</p>':'')
+    +(record.delayThresholdTurns?'<p><strong>Critério de acompanhamento:</strong> após '+Number(record.delayThresholdTurns)+' turnos de atraso na verificação programada, a condição é classificada como agravada.</p>':'')
     +(record.oemSpecificPending?'<p><strong>Referência Sandvik:</strong> parâmetros de ajuste e desgaste pendentes de documentação OEM.</p>':'')
    +'</div>':'';
   const componentContext=record?.category==='components'&&record?.componentFamily?
@@ -102,7 +102,7 @@
     +'<p><strong>Incerteza:</strong> '+esc(record.uncertainty)+'</p>'
     +'<p><strong>Verificação sugerida:</strong> '+esc(record.verification)+'</p>'
     +'<p><strong>Risco de postergação:</strong> '+esc(record.riskOnDelay)+'</p>'
-    +(record.delayThresholdTurns?'<p><strong>Regra fictícia:</strong> verificação atrasada em '+Number(record.delayThresholdTurns)+' turnos após o vencimento agrava o resultado. Não é limite OEM.</p>':'')
+    +(record.delayThresholdTurns?'<p><strong>Critério de acompanhamento:</strong> verificação atrasada em '+Number(record.delayThresholdTurns)+' turnos após o vencimento exige reavaliação por agravamento.</p>':'')
     +(record.oemSpecificPending?'<p><strong>Documentação Sandvik:</strong> obter manual por modelo/arranjo antes de aplicar pressões, tempos ou critérios.</p>':'')
    +'</div>':'';
   const fpsContext=record?.category==='fps'&&(record?.componentFamily||record?.legacyOnly)?
@@ -116,11 +116,11 @@
     +'<p><strong>Incerteza:</strong> '+esc(record.uncertainty)+'</p>'
     +'<p><strong>Verificação recomendada:</strong> '+esc(record.verification)+'</p>'
     +'<p><strong>Risco de postergação:</strong> '+esc(record.riskOnDelay)+'</p>'
-    +'<p><strong>Roteiro investigativo:</strong> '+esc(record.escalationScenario||'PENDENTE')+' · missão didática disponível para revisão PCM; a hipótese de causa NÃO é diagnóstico confirmado nem reparo autorizado pelo OEM.</p>')
+    +'<p><strong>Roteiro investigativo:</strong> '+esc(record.escalationScenario||'PENDENTE')+' · encaminhar à revisão PCM; a hipótese de causa ainda não está confirmada.</p>')
    +'</div>':'';
   const history=(m.samples||[]).map(x=>'<li>Turno '+Number(x.tick)+' · <strong>'+esc(x.label)+'</strong>'
    +'<p>'+esc(x.reading)+'</p>'
-   +(x.delayEscalation?'<p><strong>AGRAVAMENTO POR POSTERGAÇÃO SIMULADA:</strong> '+Number(x.lateTurns)+' turnos após o vencimento. '+esc(x.delayExplanation||'')+'</p>':'')
+   +(x.delayEscalation?'<p><strong>AGRAVAMENTO POR POSTERGAÇÃO:</strong> '+Number(x.lateTurns)+' turnos após o vencimento. '+esc(x.delayExplanation||'')+'</p>':'')
    +'<small>Resultado registrado na carteira.</small></li>').join('');
   return '<section class="pcmMonitoringCard"><h4>📈 MONITORAMENTO DE CONDIÇÃO</h4>'
    +'<p><strong>Fonte:</strong> '+esc(n.monitorCategory&&M.CATALOG?.CATEGORIES[n.monitorCategory]||'Registro anterior')+' · '+esc(n.monitorProtocol||'')+'</p>'
@@ -206,7 +206,7 @@
      +'<option value="media">Média</option><option value="baixa">Baixa</option><option value="alta">Alta</option></select></label>'
      +'<button class="act" type="button" data-inspection-action="notify" data-inspection-id="'+esc(x.id)+'">📋 ABRIR NOTIFICAÇÃO</button></div>';
    }
-   return '<article class="inspectionCard">'+title+'<small class="muted">'+esc(x.id)+' · D'+x.day+' / '+(x.shift?'B':'A')+' · inspeção fictícia</small>'
+   return '<article class="inspectionCard">'+title+'<small class="muted">'+esc(x.id)+' · D'+x.day+' / '+(x.shift?'B':'A')+' · inspeção registrada</small>'
     +(x.observed?'<p class="inspectionObservation">'+esc(x.observed)+'</p>':'<p class="muted">Condição desconhecida até a inspeção sensitiva.</p>')
     +(x.notificationId?'<p class="inspectionLinked">📋 '+esc(x.notificationId)+' · revisão PCM pendente · não é OS</p>':'')
     +actions+'</article>';
@@ -216,16 +216,16 @@
    .slice(0,25).map(n=>renderPCM(n,modelName,d,I,E,s,T,M)).join('');
   const monitoring=''; // Recebimento automático; botões de teste removidos.
   const practice=T?'<section class="pcmEvidencePractice"><h3>🔬 TREINO DE DIAGNÓSTICO COM TESTES</h3>'
-   +'<p>Escolha o sintoma. A falha é uma de duas variantes didáticas ocultas e muda no próximo exercício. Até dois exercícios por turno, sem criar OS automaticamente.</p>'
+   +'<p>Escolha o sintoma. Conduza a investigação com base nos resultados disponíveis. Até dois exercícios por turno, sem criar OS automaticamente.</p>'
    +Object.entries(T.FAMILIES).map(([id,x])=>'<button type="button" class="act secondary" data-evidence-practice="'+esc(id)+'">'+esc(x.label)+'</button>').join(' ')
    +'</section>':'';
-  return '<p class="inspectionIntro"><strong>INSPEÇÃO → HIPÓTESES PCM → EXECUÇÃO MECÂNICA.</strong> Observações simuladas sem medições OEM e sem conclusão causal.</p>'
+  return '<p class="inspectionIntro"><strong>INSPEÇÃO → HIPÓTESES PCM → EXECUÇÃO MECÂNICA.</strong> Observações iniciais sem confirmação da causa raiz.</p>'
    +practice+monitoring
    +(monitorSummary?'<div class="inspectionMetrics"><div><small>MONITORAMENTOS ATIVOS</small><strong>'+monitorSummary.active+'</strong></div><div><small>RECOLETAS VENCIDAS</small><strong>'+monitorSummary.due+'</strong></div><div><small>AGRAVAMENTOS</small><strong>'+monitorSummary.attention+'</strong></div><div><small>ENCERRADOS SEM OS</small><strong>'+monitorSummary.closed+'</strong></div></div>':'')
    +'<div class="inspectionMetrics"><div><small>PROGRAMADAS</small><strong>'+current.length+'</strong></div><div><small>A REALIZAR</small><strong>'+summary.pending+'</strong></div>'
    +'<div><small>NOTAS EM REVISÃO</small><strong>'+summary.awaiting+'</strong></div><div><small>ESCOPO APROVADO</small><strong>'+summary.approved+'</strong></div></div>'
    +'<h3 class="resourceSection">RONDA DO TURNO · DIA '+s.day+' / '+(s.shift?'B':'A')+'</h3>'
-   +'<p class="muted">Até três máquinas sem OS ativa por turno. HH e custos ainda não são simulados. Nenhum gabarito é exposto.</p>'
+   +'<p class="muted">Até três máquinas sem OS ativa por turno. A notificação depende da inspeção e do registro da condição.</p>'
    +'<div class="inspectionList">'+[...current,...recent].map(card).join('')+'</div>'
    +'<h3 class="resourceSection">MESA PCM · NOTIFICAÇÕES · '+s.notifications.length+'</h3>'
    +(rows||'<p class="muted">Nenhuma notificação aberta.</p>')

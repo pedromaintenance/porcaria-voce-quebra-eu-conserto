@@ -94,7 +94,7 @@
   if(x.status!=='pending')return {error:'Esta inspeção já foi realizada ou venceu.'};
   if(x.tick!==s.tick)return {error:'A programação pertence a outro turno.'};
   const sc=d.scenarios.find(v=>v.id===x.scene);
-  if(!sc)return {error:'Roteiro didático não encontrado.'};
+  if(!sc)return {error:'Roteiro de inspeção não encontrado.'};
   // Amostragem reprodutível e não clínica: aproximadamente uma em três inspeções sem achado.
   const anomaly=(s.tick+x.ordinal+1)%3!==0;
   x.status=anomaly?'finding':'clear';
@@ -139,7 +139,7 @@
  const ARCHIVE_REASONS=Object.freeze({
   duplicada:'Demanda duplicada em outra ordem ou notificação.',
   nao_confirmada:'Condição não confirmada no exercício de inspeção.',
-  sem_intervencao:'Não foi identificada necessidade de intervenção nesta simulação.'
+  sem_intervencao:'Não foi identificada necessidade de intervenção nesta inspeção.'
  });
  const ACTIONS=Object.freeze({
   verificar:'Inspecionar e confirmar a condição reportada antes de intervir.',

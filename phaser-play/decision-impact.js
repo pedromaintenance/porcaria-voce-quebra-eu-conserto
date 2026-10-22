@@ -24,7 +24,7 @@
   const urgent={cost:Math.round(item.unit*1.65)*qty,turnsMin:urgentTurns,turnsMax:urgentTurns+1};
   const asEta=(o)=>({...o,etaEarliest:tick+o.turnsMin,etaLatest:tick+o.turnsMax});
   return {qty,normal:asEta(normal),urgent:asEta(urgent),premium:urgent.cost-normal.cost,
-   probabilityExtraTurn:0.18,deliveryRule:'Pedidos chegam ao final do turno. Prazos são regras fictícias, não promessa logística.'};
+   probabilityExtraTurn:0.18,deliveryRule:'Pedidos chegam ao final do turno. Prazos estimados sujeitos a atrasos logísticos.'};
  }
  function orderExposure(j,state){
   const start=Number.isFinite(Number(j.tickOpen))?Number(j.tickOpen):state.tick;
@@ -79,7 +79,7 @@
     purchaseCount:purchaseHistory.length,openPurchases:inTransit.length,
     indicativeInventoryValue:Math.round(heldFunds)},
    lossRates:{...VIRTUAL_LOSS_PER_HOUR},
-   warning:'Custo de oportunidade e valor de estoque são estimativas fictícias, NÃO descontos do caixa. Indicadores de espera se sobrepõem e não são somáveis. O tempo parado por OS não corresponde à disponibilidade física da frota.'};
+   warning:'Custo de oportunidade e valor de estoque são estimativas de referência, NÃO descontos do caixa. Indicadores de espera se sobrepõem e não são somáveis. O tempo parado por OS não corresponde à disponibilidade física da frota.'};
  }
  return {VERSION,SHIFT_HOURS,VIRTUAL_LOSS_PER_HOUR,quote,orderExposure,procurementFor,compute};
 });

@@ -88,7 +88,7 @@ const legacyNote={id:'NM0099',monitorOnly:true,monitorCategory:'fps',monitorProt
 assert.ok(V.monitorWidget(legacyNote,fresh(),M).includes('REGISTRO LEGADO'),'save antigo continua interpretável');
 const html=fs.readFileSync('phaser-play/index.html','utf8'),sw=fs.readFileSync('sw.js','utf8');
 assert.ok(html.indexOf('fps-catalog-expansion.js')<html.indexOf('condition-catalog.js'));
-assert.ok(html.includes('inspection-view.js?v=0.9.10'));
+assert.ok(html.includes('inspection-view.js?v=0.9.18-copy1'));
 assert.ok(sw.includes("'./phaser-play/fps-catalog-expansion.js'")&&sw.includes('fps099'));
 assert.equal(E.validate(JSON.parse(JSON.stringify(ordinary.s))),true,'save serializado com FPS real');
 console.log('OK FPS v6: 120 condições, 24 GET atuais, 4 legados, triagem, PCM e 124 missões, 100 anteriores preservadas.');

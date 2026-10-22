@@ -377,7 +377,7 @@
       idleShifts:idle,plannerErrors:errors,trigger:byPCM?'delay_and_pcm_rework':'delay'};
     s.jobs.push(sequel);
     FLEET.failure(s,d,sequel,'progression');
-    msg(s,`Evolução DIDÁTICA: ${prior.asset} retornou após ${prior.id} com ${next.id} (${next.title}). Atraso de ${idle} turno(s) sem equipe. Não é previsão real de falha.`,'bad');
+    msg(s,`Evolução da falha: ${prior.asset} retornou após ${prior.id} com ${next.id} (${next.title}). Atraso de ${idle} turno(s) sem equipe.`,'bad');
     return sequel;
   }
   function bookPreventive(s,d,asset,mechanicId,bay,packageId){
@@ -570,7 +570,7 @@
       classification:'os_concluida'});
     s.jobs=s.jobs.filter(x=>x.id!==j.id);
     m.assigned=null;
-    msg(s,`${j.id} concluída: ${c.title}. ${elapsed} h corridas, receita fictícia R${income}.`,'ok');
+    msg(s,`${j.id} concluída: ${c.title}. ${elapsed} h corridas, receita registrada R${income}.`,'ok');
     spawnDelayedConsequence(s,d,j);
   }
   function learnByDoing(s,mechanic,order,scenario,rng){
