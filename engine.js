@@ -14,6 +14,8 @@
   const PREVENTIVE=typeof require==='function'?require('./phaser-play/preventive.js')
     :new Proxy({}, {get(_obj,key){return (...args)=>globalThis.PORCARIA_PREVENTIVE[key](...args)}});
 
+  const FLEET=typeof require==='function'?require('./phaser-play/fleet-telemetry.js')
+    :new Proxy({}, {get(_obj,key){return (...args)=>globalThis.PORCARIA_FLEET_TELEMETRY[key](...args)}});
   // Elenco principal fixo. Saves antigos recebem o inspetor Nemuel uma vez, preservando IDs e OS.
   const INITIAL_TEAM=Object.freeze([
     {name:'Pedro',avatar:'🧯',role:'geral',specialty:'Brigadista',sprite:'pedro'},
@@ -315,6 +317,7 @@
     for(const [id,v] of Object.entries(data.tools))s.tools[id]=v.initial;
     TRAINING.normal(s);
     INITIAL_TEAM.forEach(profile=>s.team.push(newMechanic(s,rng,profile)));
+    FLEET.normalize(s,data); // Inicia em zero: não projeta dados operacionais anteriores.
     spawn(s,data,3,rng);
     msg(s,'Oficina aberta! Separe os boxes, inspecione a fila e não condene uma peça sem diagnóstico.','ok');
     return s;
@@ -349,7 +352,9 @@
       // Somente ocorrências aleatórias; consequências didáticas com progressão não são afetadas.
       if(PREVENTIVE.screenRandomCandidate(s,asset,rng))continue;
       existing.add(asset);
-      s.jobs.push(buildJob(s,d,c,asset,rng));made++;
+      const created=buildJob(s,d,c,asset,rng);
+      s.jobs.push(created);
+      FLEET.failure(s,d,created,'random');made++;
     }
     if(made)msg(s,`${made} ocorrência(s) chegaram com relatos dos operadores.`);
     return made;
@@ -371,6 +376,7 @@
     sequel.chainOrigin={orderId:prior.id,scene:prior.scene,asset:prior.asset,
       idleShifts:idle,plannerErrors:errors,trigger:byPCM?'delay_and_pcm_rework':'delay'};
     s.jobs.push(sequel);
+    FLEET.failure(s,d,sequel,'progression');
     msg(s,`Evolução DIDÁTICA: ${prior.asset} retornou após ${prior.id} com ${next.id} (${next.title}). Atraso de ${idle} turno(s) sem equipe. Não é previsão real de falha.`,'bad');
     return sequel;
   }
@@ -605,7 +611,10 @@
     }
     return {mechanic:m,errors,perfect};
   }
+  function initFleet(s,d){return FLEET.normalize(s,d)}
   function advance(s,d,rng=Math.random){
+    const reading=FLEET.advance(s,d); // Classifica o turno antes da conclusão das OS.
+    if(reading.error)throw Error(reading.error);
     let hours=0;let completed=0;let blocks=0;
     const inspected=(s.inspections||[]).filter(i=>i.tick===s.tick&&i.inspectorId&&['clear','finding','notified'].includes(i.status));
     hours+=inspected.reduce((sum,i)=>sum+Number(i.estimatedHH||0),0);
@@ -755,7 +764,7 @@
       pendingMaterials:s.jobs.filter(j=>j.status==='material').length, pendingTools:s.jobs.filter(j=>j.status==='ferramenta').length};
   }
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
-  return {create,recordDecision,writeLesson,scheduleJob,cancelSchedule,bookPreventive,cancelPreventive,normalizeRoster,localizeDiagnosticOptions,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
+  return {create,initFleet,recordDecision,writeLesson,scheduleJob,cancelSchedule,bookPreventive,cancelPreventive,normalizeRoster,localizeDiagnosticOptions,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
     SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
     model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
 });
