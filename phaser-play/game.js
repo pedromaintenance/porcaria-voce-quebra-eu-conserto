@@ -40,7 +40,8 @@ const WORKER_SHEETS=Object.freeze({
  geovane:'./assets/characters/geovane-4poses.webp',
  acassio:'./assets/characters/acassio-4poses.png',
  nemuel:'./assets/characters/nemuel-inspetor-4poses.webp',
- junior:'./assets/characters/junior/junior-work-4poses.webp'
+ junior:'./assets/characters/junior/junior-work-4poses.webp',
+ diva:'./assets/characters/diva-4poses.webp'
 });
 // Uniforme de treinamento não é carregado como sprite da oficina.
 const TEAM_PORTRAITS=Object.freeze({junior:'./assets/characters/junior/junior-training-4poses.webp'});
@@ -348,48 +349,46 @@ function drawSchedule(){
 }
 
 function drawPreventive(){
- const p=window.PORCARIA_PREVENTIVE.compute(state,data);
- const metric=(name,value)=>'<div class="planningMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong></div>';
- const opt=(value,label)=>'<option value="'+esc(value)+'">'+esc(label)+'</option>';
- const candidates=p.assets.filter(a=>!a.blocked);
+ const pm=window.PORCARIA_PREVENTIVE_ORDERS.compute(state,data);
+ const metrics=(key,v)=>'<div class="planningMetric"><small>'+esc(key)+'</small><strong>'+esc(v)+'</strong></div>';
+ const names=new Map(state.team.map(m=>[m.id,m.name]));
  const free=state.team.filter(m=>!m.assigned&&m.restAt!==state.tick&&!E.TRAINING.active(state,m));
+ const usedBays=new Set(state.jobs.filter(j=>j.bay!==null).map(j=>j.bay));
+ for(const r of pm.orders)if(r.bay!==null)usedBays.add(r.bay);
  let out=planningTabs()
-  +'<p class="planningIntro">MANUTENÇÃO PREVENTIVA · Decisão de recurso com custo e HH de jogo. A redução de ocorrências futuras é probabilística e temporária, sem garantia sobre falhas reais ou corretivas já abertas.</p>'
-  +'<div class="planningMetrics">'+metric('Preventivas executadas',p.completed)
-  +metric('Desembolso de preventivas', 'R$ '+brl(p.spent))
-  +metric('HH preventivas executadas',p.hours+' h')
-  +metric('Reservas neste turno',p.planned)
-  +metric('Sorteios aleatórios barrados*',p.screened)+'</div>';
- out+='<div class="planningExplanation"><b>Custos e efeito demonstrativos:</b> Inspeção: R$ 120, 2 HH, redução de 25% por 4 turnos. '
-  +'Serviço: R$ 360, 4 HH, redução de 45% por 8 turnos. Valores não correspondem a uma máquina real e não representam economia comprovada.</div>';
- if(!candidates.length||!free.length)out+='<p class="planningIntro">Sem ativos ou profissionais disponíveis para autorizar uma preventiva agora.</p>';
- else out+='<section class="scheduleForm"><h3>AUTORIZAR PREVENTIVA DE UM ATIVO</h3>'
-  +'<div class="scheduleFields"><label>Equipamento<select id="preventiveAsset">'
-  +candidates.map(a=>opt(a.asset,a.model+' · '+a.asset+(a.covered?' · proteção ativa':''))).join('')+'</select></label>'
-  +'<label>Profissional<select id="preventiveWorker">'
-  +free.map(m=>opt(m.id,m.name+' · '+(m.specialty||m.role))).join('')+'</select></label>'
-  +'<label>Box<select id="preventiveBay">'+Array.from({length:state.bays},(_,i)=>opt(i,'BOX '+(i+1))).join('')+'</select></label>'
-  +'<label>Pacote<select id="preventivePackage">'
-  +Object.entries(window.PORCARIA_PREVENTIVE.PACKAGES).map(([id,x])=>opt(id,x.label+' · R$ '+brl(x.cost)+' · '+x.hours+' HH')).join('')+'</select></label></div>'
-  +'<button class="act" type="button" data-preventive-book>AUTORIZAR · DESCONTAR VALOR DO CAIXA</button>'
-  +'<p class="planningExplanation">Autorização é explícita; a equipe realiza o serviço no fechamento do turno. '
-  +'Os recursos do box e do mecânico ficam reservados. Cancelar antes do avanço devolve o valor integral.</p></section>';
- out+='<h3 class="resourceSection">ATIVOS COM PROTEÇÃO DIDÁTICA ATIVA</h3>';
- const protectedAssets=p.assets.filter(a=>a.covered);
- out+=protectedAssets.length?'<div class="scheduleHistory">'+protectedAssets.map(a=>
-  '<article class="planningOrder"><strong>'+esc(a.asset)+' · '+esc(a.model)+'</strong>'
-  +'<p>Redução simulada de '+Math.round(a.reduction*100)+'% nos sorteios de nova ocorrência até o início do turno '+a.expiresTick+'.</p></article>'
- ).join('')+'</div>':'<p class="muted">Ainda não há ativos em janela de proteção preventiva.</p>';
- out+='<h3 class="resourceSection">REGISTROS DE PREVENTIVA</h3>';
- out+=p.rows.length?'<div class="scheduleHistory">'+p.rows.map(r=>{
-  const label={planned:'PROGRAMADA',completed:'EXECUTADA',cancelled:'CANCELADA'}[r.status]||'HISTÓRICO';
-  return '<article class="planningOrder"><div class="planningOrderHeader"><strong>'+esc(r.asset)+' · '+esc(r.label)+'</strong>'
-   +'<span class="planningTag">'+label+'</span></div><p>Turno '+r.tick+' · '+esc(r.mechanic)
-   +' · BOX '+(r.bay+1)+' · '+r.hours+' HH · R$ '+brl(r.cost)+'</p>'
-   +(r.status==='planned'?'<div class="actions"><button class="act secondary" type="button" data-preventive-cancel="'+esc(r.id)+'">CANCELAR E REEMBOLSAR</button></div>':'')
-   +'</article>';
- }).join('')+'</div>':'<p class="muted">Nenhum serviço preventivo autorizado nesta campanha.</p>';
- out+='<p class="planningExplanation">* '+esc(p.note)+'</p>';
+  +'<p class="planningIntro">PCM PREVENTIVO · OS geradas automaticamente pelo horímetro virtual. Nenhuma OS preventiva precisa ser aberta manualmente: o jogador atribui mecânico e BOX, e o supervisor Diva acompanha a execução na oficina.</p>'
+  +'<div class="planningMetrics">'+metrics('OS preventivas abertas',pm.open)
+  +metrics('Em execução',pm.allocated)+metrics('OS concluídas no histórico',pm.completed)
+  +metrics('Próximo ciclo por ativo','48 h virtuais')+'</div>'
+  +'<div class="planningExplanation">Pacotes didáticos: inspeção 2 HH/R$120; serviço 4 HH/R$360. A OS nasce automaticamente quando a marca de horímetro virtual é atingida, sem revelar gabarito FMEA, debitar dinheiro ou executar manutenção sozinha.</div>'
+  +'<h3 class="resourceSection">CARTEIRA DE OS PREVENTIVAS AUTOMÁTICAS</h3>';
+ const pending=pm.orders.filter(r=>r.status!=='completed');
+ if(!pending.length)out+='<p class="muted">Sem OS preventivas abertas neste turno. Novas OS são geradas automaticamente quando os horímetros atingirem o próximo vencimento.</p>';
+ for(const r of pending){
+  const mechanic=r.assigned?names.get(r.assigned)||r.assigned:'AGUARDANDO ALOCAÇÃO';
+  out+='<article class="planningOrder"><div class="planningOrderHeader"><strong>'+esc(r.id)+' · '+esc(r.asset)+' · '+esc(r.title)+'</strong>'
+   +'<span class="planningTag">'+(r.assigned?'EM EXECUÇÃO':'GERADA AUTOMATICAMENTE')+'</span></div>'
+   +'<p>'+esc(r.model)+' · Gatilho: '+Number(r.dueHourmeter).toLocaleString('pt-BR')+' h virtuais'
+   +' · Mecânico: '+esc(mechanic)+(r.assigned?' · BOX '+(r.bay+1)+' · Diva acompanha':'')+'</p>'
+   +'<p>Esforço remanescente: '+Number(r.repairRemaining).toLocaleString('pt-BR')+' HH · Custo do serviço: R$ '+brl(r.cost)+'</p>';
+  if(r.assigned)out+='<button type="button" class="act secondary" data-pm-os-release="'+esc(r.id)+'">LIBERAR EQUIPE E BOX</button>';
+  else if(free.length&&usedBays.size<state.bays){
+   out+='<div class="scheduleFields"><label>Mecânico<select id="pmWorker-'+esc(r.id)+'">'
+    +free.map(m=>'<option value="'+esc(m.id)+'">'+esc(m.name)+'</option>').join('')+'</select></label>'
+    +'<label>Box<select id="pmBay-'+esc(r.id)+'">'
+    +Array.from({length:state.bays},(_,i)=>!usedBays.has(i)?'<option value="'+i+'">BOX '+(i+1)+'</option>':'').join('')
+    +'</select></label></div><button type="button" class="act" data-pm-os-assign="'+esc(r.id)+'">ALOCAR MECÂNICO + DIVA</button>';
+  }else out+='<p class="planningExplanation">Sem mecânico ou box livre. Libere algum recurso e reprograme.</p>';
+  out+='</article>';
+ }
+ out+='<h3 class="resourceSection">OS PREVENTIVAS CONCLUÍDAS</h3>';
+ const finished=pm.orders.filter(r=>r.status==='completed');
+ out+=finished.length?'<div class="scheduleHistory">'+finished.slice(-12).reverse().map(r=>
+  '<article class="planningOrder"><strong>'+esc(r.id)+' · '+esc(r.asset)+'</strong>'
+  +'<p>'+esc(r.title)+' · '+Number(r.worked).toLocaleString('pt-BR')+' HH'
+  +' · R$ '+brl(r.cost)+' · Supervisor: Diva · Turno de conclusão: '+r.finishedTick+'</p></article>').join('')+'</div>'
+  :'<p class="muted">Nenhuma OS preventiva concluída.</p>';
+ out+='<p class="planningExplanation">'+esc(pm.note)+'</p>';
  $('planning').innerHTML=out;
 }
 
@@ -1136,6 +1135,21 @@ function events(){
    planningHorizon=['turn','week','schedule','preventive','kpis','history','lessons'].includes(planHorizon.dataset.planningHorizon)?planHorizon.dataset.planningHorizon:'turn';
    drawPlanning();return;
   }
+  const pmAssign=ev.target.closest('[data-pm-os-assign]');
+  if(pmAssign){
+   const id=pmAssign.dataset.pmOsAssign;
+   const error=E.assignPreventiveOrder(state,data,id,
+    $('pmWorker-'+id)?.value,Number($('pmBay-'+id)?.value));
+   if(error){notify(error);return}
+   save();drawUI();scene?.refresh();drawPreventive();
+   notify(id+' alocada: Diva acompanha o mecânico no box.');return;
+  }
+  const pmRelease=ev.target.closest('[data-pm-os-release]');
+  if(pmRelease){
+   const error=E.releasePreventiveOrder(state,pmRelease.dataset.pmOsRelease);
+   if(error){notify(error);return}
+   save();drawUI();scene?.refresh();drawPreventive();notify('Equipe liberada.');return;
+  }
   const preventiveBook=ev.target.closest('[data-preventive-book]');
   if(preventiveBook){
    const error=E.bookPreventive(state,data,$('preventiveAsset')?.value,$('preventiveWorker')?.value,
@@ -1674,7 +1688,8 @@ class Workshop extends Phaser.Scene{
    this.textObjects?.forEach(x=>x.destroy());this.textObjects=[];
    this.progressObjects?.forEach(x=>x.destroy());this.progressObjects=[];
    activeBays.forEach(({id:i,hitWorld,placementWorld,footerWorld,spriteWorld,workerWorld,labelWorld,progressWorld})=>{
-     const j=state.jobs.find(z=>z.bay===i),cx=spriteWorld.x;
+     const j=state.jobs.find(z=>z.bay===i)||state.preventiveOrders?.find(z=>z.status==='in_progress'&&z.bay===i),cx=spriteWorld.x;
+   const isPM=j?.kind==='preventive';
      if(j){
        const machineNode=this.machine(cx,spriteWorld.y,j.modelId,spriteWorld.scale||.72,activeBays[i]);
        // Track the actual (possibly edge-clamped) machine position, not its requested center.
@@ -1692,7 +1707,8 @@ class Workshop extends Phaser.Scene{
        this.machineObjs.push(shadow);
        if(machineNode?.type==='Image'){
         machineNode.setInteractive({useHandCursor:true});
-        machineNode.on('pointerdown',()=>{if(!modalOpen())pick(j.id)});
+        machineNode.on('pointerdown',()=>{if(modalOpen())return;
+          if(isPM){planningHorizon='preventive';openPanel('planning')}else pick(j.id)});
        }
        const mode=j.status==='material'||j.status==='ferramenta'?'blocked':j.stage>=6?'repair':'diagnose';
        // Uma OS possui UM profissional responsável; nunca duplicar rostos pelo slot.
@@ -1703,8 +1719,17 @@ class Workshop extends Phaser.Scene{
          visualCalibrationX:activeBays[i].visualCalibrationX||0,bay:activeBays[i]});
         if(actor?.type==='Sprite'){
          actor.setInteractive({useHandCursor:true});
-         actor.on('pointerdown',()=>{if(!modalOpen())pick(j.id)});
+         actor.on('pointerdown',()=>{if(modalOpen())return;
+          if(isPM){planningHorizon='preventive';openPanel('planning')}else pick(j.id)});
         }
+       }
+       if(isPM&&assigned){
+        // Supervisor acompanha visualmente todas as preventivas — não contabiliza HH.
+        const support=workerWorld[1]||{x:workerWorld[0].x+78,y:workerWorld[0].y};
+        const diva=this.worker(support.x,support.y,{sprite:'diva'},{
+         facing:support.facing||'left',mode:'diagnose',
+         visualCalibrationX:activeBays[i].visualCalibrationX||0,bay:activeBays[i]});
+        if(diva?.setDepth)diva.setDepth(25);
        }
        // O HUD inferior já mostra equipamento e OS: evitar um segundo rótulo sobre as rodas.
        // Progresso visual da OS; diagnóstico e reparo são fases distintas.
@@ -1714,7 +1739,7 @@ class Workshop extends Phaser.Scene{
         const blocked=j.status==='material'||j.status==='ferramenta';
         const pct=diagnosing?j.stage/6:Math.max(0,Math.min(1,1-j.repairRemaining/Math.max(0.1,j.repairTarget||1)));
         const color=blocked?0xeb7666:diagnosing?0x68c5e7:0xf6b544;
-        const title=blocked?(j.status==='material'?'AGUARDANDO PEÇA':'FALTA FERRAMENTA'):diagnosing?'DIAGNÓSTICO':'REPARO';
+        const title=isPM?'PREVENTIVA · DIVA':blocked?(j.status==='material'?'AGUARDANDO PEÇA':'FALTA FERRAMENTA'):diagnosing?'DIAGNÓSTICO':'REPARO';
         const bar=this.add.graphics();
         bar.fillStyle(0x091c2b,0.87);bar.fillRoundedRect(p.x-6,p.y-31,p.width+12,48,6);
         bar.lineStyle(1,color,0.9);bar.strokeRoundedRect(p.x-6,p.y-31,p.width+12,48,6);
@@ -1745,7 +1770,8 @@ class Workshop extends Phaser.Scene{
     });
     this.layoutGuides=guide;
    }
-   this.statusText.setText('TURNO '+(state.shift?'B':'A')+'  |  '+state.jobs.filter(j=>j.assigned).length+' BOXES EM USO  |  '+state.done.length+' OS CONCLUÍDAS');
+   this.statusText.setText('TURNO '+(state.shift?'B':'A')+'  |  '+(state.jobs.filter(j=>j.assigned).length+
+    (state.preventiveOrders||[]).filter(j=>j.status==='in_progress').length)+' BOXES EM USO  |  '+state.done.length+' OS CORRETIVAS CONCLUÍDAS');
  }
 }
 async function boot(){
@@ -1753,6 +1779,7 @@ async function boot(){
   // O motor carrega antes da cena: ativa o módulo de agenda antes da primeira leitura.
   await import('./weekly-schedule.js?v=0.9.14');
   await import('./preventive.js?v=0.9.15');
+  await import('./preventive-orders.js?v=0.9.19');
   await import('./reliability-kpis.js?v=0.9.16');
   await import('./fleet-telemetry.js?v=0.9.18');
   await import('./fleet-view.js?v=0.9.18');
@@ -1803,13 +1830,14 @@ async function boot(){
   if(!state)state=E.create(data);
   E.normalizeRoster(state); // inclui campanhas antigas sem apagar OS nem contratações.
   E.initFleet(state,data); // Históricos legados iniciam agora sem horas retroativas.
+  E.generatePreventiveOrders(state,data); // Carteira PM automática a partir do horímetro.
   E.localizeDiagnosticOptions(state,data); // traduz opções legadas sem alterar códigos.
    I.normalized(state); // saves antigos recebem uma carteira vazia.
   state.productivityTarget=E.productivityProfile(state.productivityTarget).target;
   M.receive(state,data,I,{initial:true});
   save();
   selected=state.jobs[0]?.id;events();drawUI();
-  if(!I||!IV||!S||!T||!M||!window.PORCARIA_PREVENTIVE||!window.PORCARIA_RELIABILITY||!window.PORCARIA_FLEET_TELEMETRY||!window.PORCARIA_FLEET_VIEW||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_WEEKLY_SCHEDULE||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
+  if(!I||!IV||!S||!T||!M||!window.PORCARIA_PREVENTIVE||!window.PORCARIA_PREVENTIVE_ORDERS||!window.PORCARIA_RELIABILITY||!window.PORCARIA_FLEET_TELEMETRY||!window.PORCARIA_FLEET_VIEW||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_WEEKLY_SCHEDULE||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
   if(!window.PORCARIA_RENDER_QUALITY)throw Error('Configuração de nitidez indisponível.');
   renderProfile=window.PORCARIA_RENDER_QUALITY.profile({
    viewportWidth:window.innerWidth,devicePixelRatio:window.devicePixelRatio,
