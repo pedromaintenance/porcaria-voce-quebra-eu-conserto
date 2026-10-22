@@ -5,21 +5,22 @@
  root.PORCARIA_MONITORING=api;
 })(typeof window!=='undefined'?window:globalThis,function(){
  'use strict';
+ const COPY=typeof require==='function'?require('./immersive-copy.js'):globalThis.PORCARIA_IMMERSIVE_COPY;
  const CATALOG=typeof require==='function'?require('./condition-catalog.js'):globalThis.PORCARIA_CONDITION_CATALOG;
  const PROTOCOLS=Object.freeze({
   baseline:{label:'777E · Formulação do lubrificante sob revisão',modelId:'EQ01',
    escalationScenario:'INC041',baseline:'Perfil químico diferente após reposição declarada; nenhuma falha mecânica confirmada.',
    results:['estavel','estavel','estavel']},
   sample:{label:'D9 · Partículas sob suspeita de amostragem',modelId:'EQ07',
-   escalationScenario:'INC042',baseline:'Partículas isoladas em coleta simulada; representatividade ainda não verificada.',
+   escalationScenario:'INC042',baseline:'Partículas identificadas em amostra isolada; representatividade ainda não verificada.',
    results:['inconclusivo','agravamento']},
   differential:{label:'966 · Tendência de contaminação no diferencial',modelId:'EQ08',
-   escalationScenario:'INC092',baseline:'Particulado em uma análise fictícia sem confirmação da via de entrada.',
+   escalationScenario:'INC092',baseline:'Particulado identificado na análise de óleo; via de entrada ainda não confirmada.',
    results:['agravamento']}
  });
  const REASONS=Object.freeze({
   baseline:'Mudança declarada de formulação ainda precisa de referência comparável.',
-  sample:'Amostra isolada sem confirmação de representatividade e sem outro sintoma no exercício.',
+  sample:'Amostra isolada sem confirmação de representatividade e sem outro sintoma associado.',
   trend:'Controlar tendência qualitativa e antecipar intervenção se houver agravamento.'
  });
  const INTERVALS=[2,4];
@@ -78,7 +79,7 @@
   for(const n of s.notifications)if(n.asset&&!['arquivada_pcm','encerrada_monitoramento','escalonada_monitoramento','convertida_os'].includes(n.status))used.add(n.asset);
   for(const x of s.inspections)if(x.tick===s.tick)used.add(x.asset);
   const asset=Array.from({length:6},(_,i)=>p.modelId+'·'+String(i+1).padStart(2,'0')).find(a=>!used.has(a));
-  if(!asset)return {error:'Nenhum equipamento didático livre nesta frota.'};
+  if(!asset)return {error:'Nenhum equipamento disponível na frota.'};
   const i={id:'IN'+String(s.nextInspection++).padStart(4,'0'),asset,modelId:p.modelId,
    tick:s.tick,day:s.day,shift:s.shift,status:'finding',scene:null,ordinal:0,
    simulationOnly:true,inspectedTick:s.tick,observed:'Condição recebida: '+p.baseline,
@@ -98,7 +99,7 @@
   if(!Object.hasOwn(REASONS,reason))return {error:'Justificativa de monitoramento inválida.'};
   if(protocol(n.monitorProtocol)?.triage==='avaliacao_prioritaria')return {error:'Condição prioritária: encaminhe para avaliação PCM antes de programar nova amostra.'};
   const days=Number(interval);
-  if(!INTERVALS.includes(days))return {error:'Selecione dois ou quatro turnos simulados.'};
+  if(!INTERVALS.includes(days))return {error:'Selecione um intervalo de dois ou quatro turnos.'};
   if((s.jobs||[]).some(j=>j.asset===n.asset))return {error:'Este ativo já possui OS aberta.'};
   n.status='monitorando';n.monitoring.status='programado';n.monitoring.reason=reason;
   n.monitoring.interval=days;n.monitoring.nextTick=s.tick+days;
@@ -119,7 +120,7 @@
   const requiredTool=p.followupTool===undefined?'COLETA':p.followupTool;
   if(requiredTool&&!s.tools?.[requiredTool])return {error:'Instrumento requerido para verificação: '+requiredTool+'.'};
   const cost=p.followupCost===undefined?40:p.followupCost; // Balanceamento do jogo.
-  if(!Number.isFinite(s.cash)||s.cash<cost)return {error:'Saldo fictício insuficiente para recoleta.'};
+  if(!Number.isFinite(s.cash)||s.cash<cost)return {error:'Saldo insuficiente para realizar a recoleta.'};
   const round=m.samples.length;
   const lateTurns=Math.max(0,s.tick-m.nextTick);
   const delayEscalation=['undercarriage','components'].includes(p.category)&&p.delayRisk==='alto'
@@ -129,7 +130,7 @@
   const desc=OUTCOMES[key];
   const entry={tick:s.tick,round:round+1,trend:key,label:desc.label,reading:desc.meaning,cost,
    source:p.category||'oil',oemValidated:false,catalogId:n.monitorProtocol,
-   lateTurns,delayEscalation,delayExplanation:delayEscalation?(p.riskOnDelay||'Postergação simulada de condição crítica.'):null};
+   lateTurns,delayEscalation,delayExplanation:delayEscalation?(p.riskOnDelay||'Condição crítica agravada após a postergação.'):null};
   s.cash-=cost;
   m.samples.push(entry);
   m.nextTick=null;
@@ -151,7 +152,7 @@
   if(m.samples.length<2||m.samples.slice(-2).some(x=>x.trend!=='estavel'))
    return {error:'Para encerrar o exercício são exigidas duas recoletas estáveis consecutivas.'};
   n.status='encerrada_monitoramento';m.status='encerrado';m.nextTick=null;
-  m.decisions.push({tick:s.tick,action:'encerrar',reason:'Duas recoletas fictícias estáveis; sem OS.'});
+  m.decisions.push({tick:s.tick,action:'encerrar',reason:'Duas recoletas consecutivas estáveis; encerramento sem necessidade de OS.'});
   return {ok:true,notification:n};
  }
  function escalate(s,d,I,id){
@@ -167,8 +168,8 @@
   if(!sc&&p.escalationScenario)return {error:'Cenário de investigação não encontrado; nenhuma notificação alterada.'};
   if((s.jobs||[]).some(j=>j.asset===n.asset))return {error:'Ativo já possui OS aberta.'};
   const last=m.samples[m.samples.length-1];
-  const result=last?'Última recoleta fictícia: '+last.label+'.':'Escalonado sem nova recoleta por decisão conservadora.';
-  const description=('Avaliar condição em '+n.asset+'. '+n.description+' '+result+' Confirmar causas conforme procedimento OEM.').slice(0,600);
+  const result=last?'Última recoleta: '+last.label+'.':'Escalonado sem nova recoleta por decisão conservadora.';
+  const description=('Avaliar condição em '+n.asset+'. '+COPY.clean(n.description)+' '+result+' Confirmar causas conforme procedimento OEM.').slice(0,600);
   const newId='NM'+String(s.nextNotification++).padStart(4,'0');
   const escalation={id:newId,inspectionId:n.inspectionId,asset:n.asset,modelId:n.modelId,openedTick:s.tick,
    origin:'monitoramento_de_condicao_simulado',description,reportedIndication:description,
