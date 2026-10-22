@@ -104,7 +104,7 @@
   const mtbf=totalIntervals?round(perAsset.reduce((n,r)=>n+(r.mtbfHours||0)*r.validIntervals,0)/totalIntervals):null;
   const tickRange=new Set(rows.map(x=>x.tick));
   const firstExpected=Math.max(start,Number(f.startedTick));
-  let complete=Number(f.throughTick)===now;
+  let complete=Number(f.throughTick)===now&&rows.length===span*2; // Janela cheia, não apenas todo o histórico disponível.
   for(let t=firstExpected;t<now;t++)if(!tickRange.has(t)){complete=false;break}
   if(f.startedTick>start)complete=false; // Não alegar janela completa em save migrado.
   const models=Array.from(d.models,m=>{
