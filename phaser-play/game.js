@@ -60,6 +60,7 @@ const FILTER={queue:'all',query:'',store:'all',stockQuery:''};
 let toastTimeout;
 let planningHorizon='turn';
 let reliabilityDays=14; // Janela de indicadores, estado só visual.
+let fleetModelFilter='EQ01'; // Filtro visual por modelo.
 let decisionHistoryFilter='all'; // Controle de visualização; não altera save.
 let lessonFilter='all',lessonSelectedOrderId=null; // Navegação temporária.
 let stockReturnJobId=null; // Contexto de navegação, não faz parte do save.
@@ -394,6 +395,7 @@ function drawPreventive(){
 
 function drawReliability(){
  const report=window.PORCARIA_RELIABILITY.compute(state,data,{days:reliabilityDays}),m=report.metrics;
+ const fleet=window.PORCARIA_FLEET_TELEMETRY.compute(state,data,{days:reliabilityDays});
  const num=n=>Number(n).toLocaleString('pt-BR',{maximumFractionDigits:1});
  const val=n=>n==null?'—':num(n);
  const metric=(name,value,note='')=>'<div class="planningMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong>'
@@ -439,6 +441,7 @@ function drawReliability(){
   +metric('Turnos aguardando ferramentas',val(m.toolShifts))
   +metric('Turnos em fila de diagnóstico',val(m.diagnosisQueueShifts))
   +'</div>';
+ out+=window.PORCARIA_FLEET_VIEW.render(fleet,fleetModelFilter);
  out+='<h3 class="resourceSection">REINCIDÊNCIA POR ATIVO · REGISTROS CONHECIDOS</h3>';
  if(!report.repeated.length)out+='<p class="planningIntro">Sem nova OS no mesmo ativo depois de uma conclusão anterior dentro da janela e do histórico disponível.</p>';
  else out+='<div class="scheduleHistory">'+report.repeated.map(r=>
@@ -955,6 +958,7 @@ function events(){
   if(impact)impact.textContent='Ritmo '+Math.round(p.speed*100)+'% · Fadiga '+p.fatigueMultiplier.toFixed(2)+'× · Moral −'+p.moraleLossPerHour.toFixed(2)+' pts/HH';
  });
  document.addEventListener('change',ev=>{
+  if(ev.target?.id==='fleetModelFilter'){fleetModelFilter=ev.target.value;drawReliability();return}
   if(['trainingTeacher','trainingLearner','trainingGroup','trainingSkill'].includes(ev.target?.id)||ev.target?.id?.startsWith('trainingPerson-')){
    rememberTrainingSelection(ev.target?.id==='trainingGroup');
    drawTraining(false);
@@ -1742,6 +1746,8 @@ async function boot(){
   await import('./weekly-schedule.js?v=0.9.14');
   await import('./preventive.js?v=0.9.15');
   await import('./reliability-kpis.js?v=0.9.16');
+  await import('./fleet-telemetry.js?v=0.9.17');
+  await import('./fleet-view.js?v=0.9.17');
   if(!document.getElementById('weeklyScheduleStyle')){
    const css=document.createElement('style');css.id='weeklyScheduleStyle';
    css.textContent='.scheduleSlots{display:grid;grid-template-columns:repeat(7,minmax(100px,1fr));gap:7px;margin:12px 0}'
@@ -1761,6 +1767,12 @@ async function boot(){
     +'.reliabilityBar{display:block;width:38%;max-width:19px;border-radius:3px 3px 0 0;min-height:0}'
     +'.reliabilityBar.pm{background:#75d7b2}.reliabilityBar.cm{background:#eeb36e}'
     +'.reliabilityColumn small{font-size:9px;color:#a9c8db}';
+   css.textContent+='.fleetAvailability{display:flex;width:100%;height:20px;overflow:hidden;border-radius:6px;border:1px solid #4a697c;margin:8px 0}'
+    +'.fleetAvailability span{height:100%;display:block}.fleetAvailability .operational{background:#77d3a1}.fleetAvailability .preventive{background:#dcb768}.fleetAvailability .corrective{background:#e98f8f}'
+    +'.fleetModelSelect{display:grid;grid-template-columns:auto minmax(130px,300px);gap:10px;align-items:center;margin:12px 0}'
+    +'.fleetModelSelect select{background:#142c40;color:#f5f8f8;border:1px solid #668398;border-radius:6px;padding:9px}'
+    +'.fleetAssetList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.fleetAssetMetrics{display:grid;gap:5px;font-size:11px;color:#cde0e9}'
+    +'@media(max-width:650px){.fleetAssetList{grid-template-columns:1fr}.fleetModelSelect{grid-template-columns:1fr}}';
    document.head.appendChild(css);
   }
   const res=await fetch('../game-data.json',{cache:'no-store'});if(!res.ok)throw Error('HTTP '+res.status);
@@ -1779,13 +1791,14 @@ async function boot(){
   try{const raw=localStorage.getItem(SAVE);if(raw){const s=JSON.parse(raw);if(E.validate(s))state=s}}catch(e){console.warn(e)}
   if(!state)state=E.create(data);
   E.normalizeRoster(state); // inclui campanhas antigas sem apagar OS nem contratações.
+  E.initFleet(state,data); // Históricos legados iniciam agora sem horas retroativas.
   E.localizeDiagnosticOptions(state,data); // traduz opções legadas sem alterar códigos.
    I.normalized(state); // saves antigos recebem uma carteira vazia.
   state.productivityTarget=E.productivityProfile(state.productivityTarget).target;
   M.receive(state,data,I,{initial:true});
   save();
   selected=state.jobs[0]?.id;events();drawUI();
-  if(!I||!IV||!S||!T||!M||!window.PORCARIA_PREVENTIVE||!window.PORCARIA_RELIABILITY||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_WEEKLY_SCHEDULE||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
+  if(!I||!IV||!S||!T||!M||!window.PORCARIA_PREVENTIVE||!window.PORCARIA_RELIABILITY||!window.PORCARIA_FLEET_TELEMETRY||!window.PORCARIA_FLEET_VIEW||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_WEEKLY_SCHEDULE||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
   if(!window.PORCARIA_RENDER_QUALITY)throw Error('Configuração de nitidez indisponível.');
   renderProfile=window.PORCARIA_RENDER_QUALITY.profile({
    viewportWidth:window.innerWidth,devicePixelRatio:window.devicePixelRatio,
