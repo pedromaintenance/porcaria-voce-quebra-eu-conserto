@@ -5,7 +5,7 @@
  if(root)root.PORCARIA_DIAGNOSTIC_VIEW=view;
 })(typeof window!=='undefined'?window:null,function(){
  'use strict';
- const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const esc=s=>String((typeof globalThis!=='undefined'&&globalThis.PORCARIA_IMMERSIVE_COPY?.clean(s))??s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function render(r,jobId){
   const items=arr=>arr.map(x=>'<li><small>'+esc(x.label)+'</small><strong>'+esc(x.result)+'</strong>'
    +(x.mechanicName?'<em>Com '+esc(x.mechanicName)+'</em>':'')+'</li>').join('');
@@ -34,7 +34,7 @@
    '<section class="diagnosticCaseStudy"><small>APRENDIZADO DO CASO · RELATÓRIO TÉCNICO</small>'
    +'<h4>Verificação técnica recomendada</h4><p>'+esc(r.caseStudy.verification)+'</p>'
    +'<h4>Interpretação e lição</h4><p>'+esc(r.caseStudy.lesson)+'</p>'
-   +'<small>'+esc(r.caseStudy.provenance)+'</small></section>':'';
+   +'</section>':'';
   return '<section class="diagnosticBoard" aria-labelledby="diagnosticTitle">'
    +'<div class="diagnosticHero"><div><small>INVESTIGAÇÃO · '+esc(jobId)+'</small><h3 id="diagnosticTitle">'
    +(r.complete?'✓ DIAGNÓSTICO CONCLUÍDO':'ETAPA '+(r.stage+1)+' DE 6 · '+esc(r.currentLabel).toUpperCase())+'</h3>'
