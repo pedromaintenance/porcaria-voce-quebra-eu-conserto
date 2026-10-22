@@ -5,7 +5,7 @@
  root.PORCARIA_MONITORING=api;
 })(typeof window!=='undefined'?window:globalThis,function(){
  'use strict';
- const COPY=typeof require==='function'?require('./immersive-copy.js'):globalThis.PORCARIA_IMMERSIVE_COPY;
+ const COPY=typeof require==='function'?require('./immersive-copy.js'):{clean:value=>globalThis.PORCARIA_IMMERSIVE_COPY?.clean(value)??String(value)};
  const CATALOG=typeof require==='function'?require('./condition-catalog.js'):globalThis.PORCARIA_CONDITION_CATALOG;
  const PROTOCOLS=Object.freeze({
   baseline:{label:'777E · Formulação do lubrificante sob revisão',modelId:'EQ01',
