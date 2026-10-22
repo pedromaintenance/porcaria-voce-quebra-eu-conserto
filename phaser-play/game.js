@@ -959,6 +959,14 @@ function events(){
  });
  document.addEventListener('change',ev=>{
   if(ev.target?.id==='fleetModelFilter'){fleetModelFilter=ev.target.value;drawReliability();return}
+  const dutyControl=ev.target?.closest?.('[data-fleet-duty]');
+  if(dutyControl){
+   const error=E.setFleetDuty(state,data,dutyControl.dataset.fleetDuty,Number(dutyControl.value));
+   if(error){notify(error);drawReliability();return}
+   save();drawReliability();
+   notify('Jornada virtual de '+dutyControl.dataset.fleetDuty+' atualizada para '+dutyControl.value+' h/turno.');
+   return;
+  }
   if(['trainingTeacher','trainingLearner','trainingGroup','trainingSkill'].includes(ev.target?.id)||ev.target?.id?.startsWith('trainingPerson-')){
    rememberTrainingSelection(ev.target?.id==='trainingGroup');
    drawTraining(false);
@@ -1746,8 +1754,8 @@ async function boot(){
   await import('./weekly-schedule.js?v=0.9.14');
   await import('./preventive.js?v=0.9.15');
   await import('./reliability-kpis.js?v=0.9.16');
-  await import('./fleet-telemetry.js?v=0.9.17');
-  await import('./fleet-view.js?v=0.9.17');
+  await import('./fleet-telemetry.js?v=0.9.18');
+  await import('./fleet-view.js?v=0.9.18');
   if(!document.getElementById('weeklyScheduleStyle')){
    const css=document.createElement('style');css.id='weeklyScheduleStyle';
    css.textContent='.scheduleSlots{display:grid;grid-template-columns:repeat(7,minmax(100px,1fr));gap:7px;margin:12px 0}'
@@ -1767,6 +1775,9 @@ async function boot(){
     +'.reliabilityBar{display:block;width:38%;max-width:19px;border-radius:3px 3px 0 0;min-height:0}'
     +'.reliabilityBar.pm{background:#75d7b2}.reliabilityBar.cm{background:#eeb36e}'
     +'.reliabilityColumn small{font-size:9px;color:#a9c8db}';
+   css.textContent+='.fleetDutyControl{display:grid;gap:5px;padding:8px 0;font-size:11px;color:#d0e6f1}'
+    +'.fleetDutyControl select{width:100%;background:#143147;color:#f2f7ff;border:1px solid #5c869e;border-radius:5px;padding:8px}'
+    +'.fleetAvailability .standby{background:#7cabd9}';
    css.textContent+='.fleetAvailability{display:flex;width:100%;height:20px;overflow:hidden;border-radius:6px;border:1px solid #4a697c;margin:8px 0}'
     +'.fleetAvailability span{height:100%;display:block}.fleetAvailability .operational{background:#77d3a1}.fleetAvailability .preventive{background:#dcb768}.fleetAvailability .corrective{background:#e98f8f}'
     +'.fleetModelSelect{display:grid;grid-template-columns:auto minmax(130px,300px);gap:10px;align-items:center;margin:12px 0}'
