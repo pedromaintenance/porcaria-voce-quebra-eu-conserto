@@ -2,10 +2,24 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 21/10/2026 · **v0.9.16 — Indicadores PCM com HH, custos, reincidência e exposição; sem métricas não observadas; QA visual pendente.**
+**Estado de referência:** 21/10/2026 · **v0.9.17 — Horímetros e estados operacionais virtuais, disponibilidade simulada e MTBF entre ocorrências; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.9.17 — Horímetros virtuais e estados operacionais, ciclo 14 (21/10/2026)
+
+- [x] Instrumentar 54 ativos (9 modelos × 6) com horímetros exclusivamente simulados, observados a partir do início da coleta.
+- [x] Classificar horas mutuamente exclusivas em operação presumida, parada corretiva e parada preventiva, preservando 12 horas/ativo/turno.
+- [x] Integrar preventivas autorizadas (2 ou 4 horas) e OS corretivas abertas ao balanço virtual por turno, sem inferir parada física real.
+- [x] Registrar horímetro em novas ocorrências geradas automaticamente ou por progressão didática.
+- [x] Exibir disponibilidade operacional **virtual** com janela 7/14/30 dias e MTBF virtual entre ocorrências somente com pares observados suficientes.
+- [x] Criar leitura por ativo/modelo, cobertura temporal e ressalvas de telemetria inexistente/legada.
+- [x] Migração idempotente de saves antigos, sem sintetizar horímetros ou falhas retroativas.
+- [x] Incluir suíte de conservação de horas, indicadores, imutabilidade e integração no CI/Pages.
+- [ ] Homologar responsividade e campanhas longas, assim como intervalos parciais de downtime e cenários de standby, antes de evoluir o modelo.
+
+**Documentação:** [Horímetros e disponibilidade virtuais — Ciclo 14](../docs/HORIMETROS_VIRTUAIS_CICLO14.md).
 
 ## Entrega 0.9.16 — Indicadores de confiabilidade e desempenho, ciclo 13 (21/10/2026)
 
