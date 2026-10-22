@@ -8,7 +8,7 @@
  if(root)root.PORCARIA_PREVENTIVE_ORDERS=api;
 })(typeof window!=='undefined'?window:globalThis,function(){
  'use strict';
- const VERSION='16.0.0',INTERVAL=48,MAX_OPEN=18,MAX_HISTORY=180;
+ const VERSION='16.0.0',INTERVAL=48,MAX_OPEN=18,MAX_HISTORY=180,HH_PER_SHIFT=10.5;
  const PACKAGES={inspection:{label:'Inspeção preventiva',hours:2,cost:120,reduction:.25,duration:4},
   service:{label:'Serviço preventivo',hours:4,cost:360,reduction:.45,duration:8}};
  const allIds=d=>(d.models||[]).flatMap(m=>Array.from({length:6},(_,n)=>m.id+'·'+String(n+1).padStart(2,'0')));
@@ -33,8 +33,9 @@
   let opened=0;const busy=new Set((s.jobs||[]).map(j=>j.asset));
   for(const r of active(s))busy.add(r.asset);
   for(const r of s.preventiveJobs||[])if(r.status==='planned')busy.add(r.asset);
+  let openCount=active(s).length;
   for(const id of allIds(d)){
-   if(active(s).length>=MAX_OPEN||busy.has(id))continue;
+   if(openCount>=MAX_OPEN||busy.has(id))continue;
    const hm=Number(s.fleetTelemetry?.assets?.[id]?.hourmeter)||0;
    if(hm<s.preventiveDue[id])continue;
    const ix=s.preventiveOrders.filter(x=>x.asset===id).length;
@@ -45,7 +46,7 @@
     tickOpen:s.tick,dayOpen:s.day,dueHourmeter:s.preventiveDue[id],generatedHourmeter:hm,
     status:'open',assigned:null,bay:null,stage:6,repairTarget:p.hours,repairRemaining:p.hours,
     hours:p.hours,cost:p.cost,worked:0,createdAutomatically:true,supervisor:'Diva'};
-   s.preventiveOrders.push(order);busy.add(id);opened++;
+   s.preventiveOrders.push(order);busy.add(id);opened++;openCount++;
    audit('preventive_os_generated',{orderId:order.id,asset:id,dueHourmeter:order.dueHourmeter,
     currentHourmeter:hm,packageId,classification:'automatica_horimetro_virtual'});
   }
@@ -96,15 +97,15 @@
   for(const r of active(s).filter(x=>x.assigned)){
    const m=s.team.find(x=>x.id===r.assigned);
    if(!m||m.restAt===s.tick)continue;
+   if(Number(s.cash)<r.cost)continue; // Sem fundos: não executar trabalho sem apropriação.
    const reserved=s.inspectionLabor?.tick===s.tick?Number(s.inspectionLabor.byEmployee?.[m.id]||0):0;
-   const possible=Math.max(0,10.5-reserved);
+   const possible=Math.max(0,HH_PER_SHIFT-reserved);
    const work=Math.min(possible,Number(r.repairRemaining)||0);
    if(work<=0)continue;
    r.repairRemaining=Math.max(0,Math.round((r.repairRemaining-work)*10)/10);
    r.worked+=work;r.lastWorkTick=s.tick;r.lastWorkHours=work;
    pressure(m,work);total+=work;
    if(r.repairRemaining>0)continue;
-   if(s.cash<r.cost){r.repairRemaining=.1;continue;}
    const p=PACKAGES[r.packageId];
    s.cash-=r.cost;r.status='completed';r.finishedTick=s.tick+1;r.closedTick=s.tick;
    r.supervisor='Diva';completed++;
@@ -127,6 +128,13 @@
   }
   return {hours:total,completed};
  }
+ // Chamado DEPOIS do registro do turno: próxima preventiva vence após 48 h de OPERAÇÃO.
+ function afterTelemetry(s){
+  for(const r of s.preventiveOrders||[])if(r.status==='completed'&&r.closedTick===s.tick){
+   const hm=Number(s.fleetTelemetry?.assets?.[r.asset]?.hourmeter)||0;
+   s.preventiveDue[r.asset]=hm+INTERVAL;
+  }
+ }
  function compute(s,d){
   const orders=Array.isArray(s.preventiveOrders)?s.preventiveOrders:[];
   const due=s.preventiveDue||{};
@@ -139,7 +147,7 @@
     model:assetName.get(r.modelId)||r.modelId,
     mechanic:s.team.find(x=>x.id===r.assigned)?.name||null})),
    nextDue:due,
-   note:'OS preventiva gerada automaticamente quando o horímetro VIRTUAL ultrapassa a meta. O jogador ainda deve atribuir mecânico e box; Diva acompanha a execução sem somar HH. Intervalo 48 h de operação virtual após conclusão; custos e efeitos são parâmetros fictícios.'};
+   note:'A carteira gera OS preventivas automaticamente pelo horímetro de cada ativo. Aloque um mecânico e um box para executar. Diva acompanha os serviços no box, sem consumir HH da equipe. Próxima intervenção: 48 h de operação após a conclusão.'};
  }
- return {VERSION,INTERVAL,PACKAGES,normalize,generate,assign,release,settle,compute};
+ return {VERSION,INTERVAL,PACKAGES,normalize,generate,assign,release,settle,afterTelemetry,compute};
 });
