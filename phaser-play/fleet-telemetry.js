@@ -53,6 +53,8 @@
  }
  function projected(s,asset){
   if((s.jobs||[]).some(j=>j.asset===asset))return 'corrective';
+  if((s.preventiveOrders||[]).some(j=>j.asset===asset&&j.status==='in_progress'))
+   return 'preventive';
   if((s.preventiveJobs||[]).some(j=>j.asset===asset&&j.tick===s.tick&&j.status==='planned'))
    return 'preventive';
   if((s.fleetTelemetry?.dutyHours?.[asset]??NEW_DUTY)===0)return 'standby';
@@ -70,14 +72,17 @@
    const pm=(s.preventiveJobs||[]).filter(x=>x.asset===id&&x.tick===tick&&
     (x.status==='completed'||x.status==='planned'));
    const isCorrective=correction.has(id)||s.jobs?.some(x=>x.asset===id);
+   const pmOrders=(s.preventiveOrders||[]).filter(r=>r.asset===id&&r.lastWorkTick===tick
+     &&(r.status==='completed'||r.status==='in_progress'));
    let cm=0,preventive=0;
    if(isCorrective){
     // A OS só libera parte do turno quando foi CONCLUÍDA e não há nova OS para o ativo.
     const done=Number(completedRepairHours[id]);
     cm=Number.isFinite(done)&&done>=0&&!s.jobs.some(x=>x.asset===id)
      ?Math.min(SHIFT_HOURS,Math.max(0.5,round(done))):SHIFT_HOURS;
-   }else if(pm.length){
-    preventive=Math.min(SHIFT_HOURS,pm.reduce((n,p)=>n+nonneg(p.hours),0));
+   }else if(pm.length||pmOrders.length){
+    preventive=Math.min(SHIFT_HOURS,pm.reduce((n,p)=>n+nonneg(p.hours),0)+
+      pmOrders.reduce((n,p)=>n+nonneg(p.lastWorkHours),0));
    }
    const available=round(Math.max(0,SHIFT_HOURS-cm-preventive));
    const op=round(Math.min(duty,available)),standby=round(available-op);
