@@ -104,7 +104,7 @@
    notes:[
     'HH são esforços de serviço; exposição e prazo de OS são horas corridas. Não somar horas corridas de várias OS como indisponibilidade de frota.',
     'Custo de mão de obra corretiva é contabilizado na OS (costLabor), NÃO debitado necessariamente do caixa. Valor de material consumido é indicativo; compras são fluxo de caixa separado. Não somar essas parcelas como custo total sem conciliação.',
-    'Custo preventivo executado é valor fictício debitado na autorização; compromisso pendente é apresentado separadamente. Cancelamentos reembolsados não contam como executados.',
+    'Custo preventivo executado é valor debitado na autorização; compromisso pendente é apresentado separadamente. Cancelamentos reembolsados não contam como executados.',
     'Reincidência é nova OS no mesmo ativo após conclusão anterior no histórico retido; mesma causa não está confirmada. Não é taxa de falha.',
     'MTBF e disponibilidade FÍSICOS, falhas evitadas e economia contrafactual não podem ser calculados sem horímetro OEM/horas operadas reais, estados comprovados de produção e contrafactual validado. Há apenas um painel separado de telemetria VIRTUAL a partir do ciclo 14.',
     'Janela móvel avalia eventos disponíveis no save (máximo de 200 OS concluídas e 150 registros de preventiva), não a frota real. Esperas por peça, ferramenta e diagnóstico podem coincidir e não são somáveis.'
