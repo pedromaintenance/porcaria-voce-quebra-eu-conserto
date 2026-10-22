@@ -91,7 +91,7 @@ const overall=S.monitoring(fresh(),D,M,V,I,E,'overview');
 assert.ok(overall.includes('FLT023')&&overall.includes('OIL023')&&overall.includes('CMP001'));
 const html=fs.readFileSync('phaser-play/index.html','utf8');
 assert.ok(html.indexOf('fault-catalog-expansion.js')<html.indexOf('condition-catalog.js'),'ordem do carregamento');
-assert.ok(html.includes('inspection-view.js?v=0.9.10')&&html.includes('sector-views.js?v=0.9.9'));
+assert.ok(html.includes('inspection-view.js?v=0.9.18-copy1')&&html.includes('sector-views.js?v=0.9.9'));
 const sw=fs.readFileSync('sw.js','utf8');
 assert.ok(sw.includes("'./phaser-play/fault-catalog-expansion.js'"));
 assert.ok(sw.includes('fault096'));
