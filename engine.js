@@ -612,7 +612,13 @@
     return {mechanic:m,errors,perfect};
   }
   function initFleet(s,d){return FLEET.normalize(s,d)}
-  function setFleetDuty(s,d,asset,hours){return FLEET.setDuty(s,d,asset,hours)}
+  function setFleetDuty(s,d,asset,hours){
+    const previous=s.fleetTelemetry?.dutyHours?.[asset];
+    const error=FLEET.setDuty(s,d,asset,hours);
+    if(!error&&Number(previous)!==Number(hours))recordDecision(s,'fleet_duty_changed',
+      {asset,fromHours:previous,toHours:Number(hours),classification:'jornada_operacional_virtual'});
+    return error;
+  }
   function advance(s,d,rng=Math.random){
     FLEET.normalize(s,d);
     if(s.fleetTelemetry.throughTick!==s.tick)throw Error('Avanço do turno fora da sequência da telemetria.');
