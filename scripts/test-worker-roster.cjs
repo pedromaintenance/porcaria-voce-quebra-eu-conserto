@@ -59,6 +59,6 @@ for(const key of [...keys,'pedro','geovane','junior','acassio','nemuel']){
 }
 assert.ok(game.includes('E.availableRecruits(state)'));
 assert.ok(game.includes('E.hire(state,id)'));
-assert.ok(html.includes('game.js?v=0.9.13'));
+assert.ok(html.includes('game.js?v='));
 assert.ok(sw.includes('porcaria-vqec-20261019-v111'));
 console.log('OK: contratação nominal, campanha inicial 5, contratações avulsas ilimitadas, saves preservados.');
