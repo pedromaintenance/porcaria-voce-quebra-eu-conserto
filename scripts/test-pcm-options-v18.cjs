@@ -1,0 +1,63 @@
+/* Ciclo 18: comparador PCM read-only, decisões reais via validadores do engine. */
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs');
+const D=require('../game-data.json'),E=require('../engine.js');
+const OPTIONS=require('../phaser-play/pcm-options.js');
+assert.equal(OPTIONS.VERSION,'18.0.0');
+const make=()=>E.create(D,()=>0.45);
+const s=make(),available=OPTIONS.orders(s),cm=s.jobs[0],pm=s.preventiveOrders[0],m=s.team[0];
+assert.ok(pm&&cm&&available.some(j=>j.id===pm.id&&j.type==='preventive'));
+assert.ok(available.some(j=>j.id===cm.id&&j.type==='corrective'));
+const baseline=JSON.stringify(s),pre=OPTIONS.calculate(s,D,E,{orderId:pm.id,mechanicId:m.id,bay:0});
+assert.equal(pre.available,true);
+assert.equal(pre.type,'preventive');
+assert.equal(pre.options.length,3);
+assert.equal(pre.options.find(x=>x.id==='now').action,'assign_pm');
+assert.equal(pre.options.find(x=>x.id==='next').available,false,'nenhuma reserva futura de PM inventada');
+assert.equal(pre.options.find(x=>x.id==='hold').action,null);
+assert.equal(pre.operatingDutyHours,8);
+assert.equal(pre.options.find(x=>x.id==='now').estimatedOperatingGap,0,'inspeção 2h cabe no standby de 4h');
+assert.equal(JSON.stringify(s),baseline,'simulação não apropria caixa, recursos ou histórico');
+assert.equal(OPTIONS.calculate(s,D,E,{orderId:'OS-INVALIDA'}).available,false);
+assert.equal(OPTIONS.calculate(s,D,E,{orderId:pm.id,mechanicId:'SEM_ID',bay:0})
+ .options.find(x=>x.id==='now').available,false);
+assert.equal(OPTIONS.calculate(s,D,E,{orderId:pm.id,mechanicId:m.id,bay:99})
+ .options.find(x=>x.id==='now').available,false);
+assert.equal(E.setFleetDuty(s,D,pm.asset,12),null);
+const high=OPTIONS.calculate(s,D,E,{orderId:pm.id,mechanicId:m.id,bay:0});
+assert.equal(high.options.find(x=>x.id==='now').estimatedOperatingGap,pm.hours);
+assert.equal(E.assignPreventiveOrder(s,D,pm.id,m.id,0),null);
+const conflicted=OPTIONS.calculate(s,D,E,{orderId:cm.id,mechanicId:m.id,bay:0});
+assert.equal(conflicted.options.find(x=>x.id==='now').available,false);
+const count=(s.decisionHistory||[]).length;
+OPTIONS.calculate(s,D,E,{orderId:cm.id,mechanicId:m.id,bay:0});
+assert.equal(s.decisionHistory.length,count,'comparação de conflito sem nova decisão');
+const s2=make(),j=s2.jobs[0],sc=E.scenario(D,j.scene);
+s2.tools[sc.tool]=true; // uma das condições conhecidas do agendamento
+const trial=OPTIONS.calculate(s2,D,E,{orderId:j.id,mechanicId:s2.team[0].id,bay:0});
+assert.equal(trial.available,true);
+assert.equal(trial.type,'corrective');
+assert.equal(trial.options.find(x=>x.id==='hold').exposureHours,12);
+assert.equal(trial.options.find(x=>x.id==='next').exposureHours,24);
+assert.equal(trial.options.find(x=>x.id==='now').action,'schedule_cm');
+assert.equal(trial.options.find(x=>x.id==='next').action,'schedule_cm');
+const snap=JSON.stringify(s2);
+assert.equal(trial.options.find(x=>x.id==='now').available,true,trial.options.find(x=>x.id==='now').reason);
+assert.equal(trial.options.find(x=>x.id==='next').available,true,trial.options.find(x=>x.id==='next').reason);
+assert.equal(JSON.stringify(s2),snap);
+assert.equal(E.scheduleJob(s2,D,j.id,s2.team[0].id,0,s2.tick+1),null);
+assert.ok(s2.scheduleEntries.some(r=>r.orderId===j.id&&r.status==='planned'));
+assert.ok(s2.decisionHistory.some(r=>r.type==='schedule_created'));
+const booked=OPTIONS.calculate(s2,D,E,{orderId:j.id,mechanicId:s2.team[0].id,bay:0});
+assert.equal(booked.options.find(x=>x.id==='next').available,false,'reservas existentes bloqueiam novo compromisso');
+assert.equal(booked.options.find(x=>x.id==='now').available,false);
+assert.equal(E.validate(JSON.parse(JSON.stringify(s2))),true);
+const ui=fs.readFileSync('phaser-play/game.js','utf8'),html=fs.readFileSync('phaser-play/index.html','utf8'),
+sw=fs.readFileSync('sw.js','utf8');
+assert.ok(ui.includes("await import('./pcm-options.js?v=0.9.21')"));
+assert.ok(ui.includes("function drawPCMAlternatives()"));
+assert.ok(ui.includes('data-planning-horizon="alternatives"'));
+assert.ok(ui.includes('data-pcm-confirm-option')&&ui.includes('E.scheduleJob(')&&ui.includes('E.assignPreventiveOrder('));
+assert.ok(html.includes('game.js?v=0.9.21-c18'));
+assert.ok(sw.includes("'./phaser-play/pcm-options.js'"));
+console.log('OK Ciclo 18: comparação pura, conflitos reais, ações confirmadas e integração da interface.');
