@@ -3,7 +3,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs');
 const D=require('../game-data.json'),E=require('../engine.js');
 const OPTIONS=require('../phaser-play/pcm-options.js');
-assert.equal(OPTIONS.VERSION,'18.0.0');
+assert.equal(OPTIONS.VERSION,'19.0.0');
 const make=()=>E.create(D,()=>0.45);
 const s=make(),available=OPTIONS.orders(s),cm=s.jobs[0],pm=s.preventiveOrders[0],m=s.team[0];
 assert.ok(pm&&cm&&available.some(j=>j.id===pm.id&&j.type==='preventive'));
