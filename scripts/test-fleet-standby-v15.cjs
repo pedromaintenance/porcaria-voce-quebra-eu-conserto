@@ -53,7 +53,8 @@ rep=F.compute(s,D);
 assert.ok(VIEW.render(rep,'EQ01').includes('data-fleet-duty'));
 assert.ok(VIEW.render(rep,'EQ01').includes('Standby virtual'));
 // Parada preventiva de 4 horas com jornada zero: 4 horas de parada + 8 standby, sem operação.
-const pm=newGame(),fpm=ids.find(id=>!pm.jobs.some(j=>j.asset===id));
+const pm=newGame(),fpm=ids.find(id=>!pm.jobs.some(j=>j.asset===id)&&
+ !pm.preventiveOrders.some(j=>j.asset===id&&j.status!=='completed'));
 assert.equal(E.setFleetDuty(pm,D,fpm,0),null);
 assert.equal(E.bookPreventive(pm,D,fpm,pm.team[0].id,0,'service'),null);
 E.advance(pm,D,()=>0.95);
