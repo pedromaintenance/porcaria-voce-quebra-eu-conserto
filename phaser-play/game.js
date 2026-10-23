@@ -344,6 +344,8 @@ function drawPCMAlternatives(){
    +'<div class="planningOrderHeader"><strong>'+esc(opt.title)+'</strong>'
    +'<span class="planningTag">'+(opt.available?'DISPONÍVEL':'IMPEDIMENTO')+'</span></div>'
    +'<p>'+esc(opt.note)+'</p>';
+  if(report.type==='corrective'&&opt.exposureHours)out+='<p>Exposição condicional se a OS permanecer aberta: <b>'
+   +n(opt.exposureHours)+' h corridas</b> até o fim da referência considerada; não representa previsão de conclusão.</p>';
   if(opt.estimatedOperatingGap!==null)out+='<p>Conflito estimado com a jornada: <b>'
    +n(opt.estimatedOperatingGap)+' hora(s)-ativo</b>, apenas se o serviço for concluído neste turno.</p>';
   if(!opt.action)out+='<p class="planningExplanation">Nenhuma alteração será aplicada.</p>';
