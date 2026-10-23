@@ -1291,7 +1291,9 @@ function events(){
    }
    const error=opt.action==='assign_pm'
     ?E.assignPreventiveOrder(state,data,report.orderId,pcmScenarioMechanic,pcmScenarioBay)
-    :E.scheduleJob(state,data,report.orderId,pcmScenarioMechanic,pcmScenarioBay,opt.tick);
+    :opt.action==='schedule_pm'
+     ?E.schedulePreventiveOrder(state,data,report.orderId,pcmScenarioMechanic,pcmScenarioBay,opt.tick)
+     :E.scheduleJob(state,data,report.orderId,pcmScenarioMechanic,pcmScenarioBay,opt.tick);
    if(error){drawPCMAlternatives();notify(error);return}
    save();drawUI();scene?.refresh();drawPCMAlternatives();
    notify(opt.action==='assign_pm'
