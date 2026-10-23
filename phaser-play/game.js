@@ -61,6 +61,7 @@ const FILTER={queue:'all',query:'',store:'all',stockQuery:''};
 let toastTimeout;
 let planningHorizon='turn';
 let reliabilityDays=14; // Janela de indicadores, estado só visual.
+let productionDays=14,productionModel='EQ01'; // Painel de entrega operacional.
 let fleetModelFilter='EQ01'; // Filtro visual por modelo.
 let decisionHistoryFilter='all'; // Controle de visualização; não altera save.
 let lessonFilter='all',lessonSelectedOrderId=null; // Navegação temporária.
@@ -300,6 +301,7 @@ function planningTabs(){
   +'<button type="button" data-planning-horizon="week" class="'+(planningHorizon==='week'?'selected':'')+'" aria-pressed="'+(planningHorizon==='week')+'">JANELA SEMANAL · 14 TURNOS</button>'
   +'<button type="button" data-planning-horizon="schedule" class="'+(planningHorizon==='schedule'?'selected':'')+'" aria-pressed="'+(planningHorizon==='schedule')+'">PROGRAMAR · 14 TURNOS</button>'
   +'<button type="button" data-planning-horizon="preventive" class="'+(planningHorizon==='preventive'?'selected':'')+'" aria-pressed="'+(planningHorizon==='preventive')+'">PREVENTIVA × CORRETIVA</button>'
+  +'<button type="button" data-planning-horizon="production" class="'+(planningHorizon==='production'?'selected':'')+'" aria-pressed="'+(planningHorizon==='production')+'">DESEMPENHO DA FROTA</button>'
   +'<button type="button" data-planning-horizon="kpis" class="'+(planningHorizon==='kpis'?'selected':'')+'" aria-pressed="'+(planningHorizon==='kpis')+'">KPIs DA MANUTENÇÃO</button>'
   +'<button type="button" data-planning-horizon="history" class="'+(planningHorizon==='history'?'selected':'')+'" aria-pressed="'+(planningHorizon==='history')+'">HISTÓRICO DE DECISÕES</button>'
   +'<button type="button" data-planning-horizon="lessons" class="'+(planningHorizon==='lessons'?'selected':'')+'" aria-pressed="'+(planningHorizon==='lessons')+'">LIÇÕES APRENDIDAS</button></div>';
@@ -392,6 +394,68 @@ function drawPreventive(){
  $('planning').innerHTML=out;
 }
 
+
+function drawProduction(){
+ const r=window.PORCARIA_PRODUCTION.compute(state,data,{days:productionDays}),m=r.metrics;
+ const fmt=x=>x==null?'—':Number(x).toLocaleString('pt-BR',{maximumFractionDigits:1});
+ const metric=(label,value,note='')=>'<div class="planningMetric"><small>'+esc(label)+'</small><strong>'+esc(value)+'</strong>'
+  +(note?'<small>'+esc(note)+'</small>':'')+'</div>';
+ let out=planningTabs()+'<p class="planningIntro">CONTROLE OPERACIONAL DA FROTA · Jornada planejada × horas efetivamente operadas. '
+  +'A manutenção pode reduzir o atendimento da jornada. Não confundir horas operadas com tonelagem produzida.</p>';
+ out+='<div class="reliabilityFilters" role="group" aria-label="Período de desempenho">';
+ for(const days of [7,14,30])out+='<button type="button" class="act '+(productionDays===days?'':'secondary')
+  +'" data-production-days="'+days+'" aria-pressed="'+(productionDays===days)+'">ÚLTIMOS '+days+' DIAS</button>';
+ out+='</div><div class="planningMetrics">'
+  +metric('Jornada programada',fmt(m.plannedHours)+' h','Horas-ativo com programação registrada')
+  +metric('Horas de operação cumpridas',fmt(m.operatingHours)+' h')
+  +metric('Cumprimento da jornada',m.attainmentPct===null?'—':fmt(m.attainmentPct)+'%')
+  +metric('Capacidade programada não cumprida',fmt(m.shortfallHours)+' h')
+  +metric('Perda de jornada · corretiva',fmt(m.correctiveLossHours)+' h')
+  +metric('Perda de jornada · preventiva',fmt(m.preventiveLossHours)+' h')
+  +metric('Modelos dentro da meta',m.modelGoalsMet+'/'+m.modelsEvaluated)
+  +'</div>';
+ if(!r.coverage.fullWindow||r.coverage.missingDutySnapshots){
+  out+='<p class="planningNoResource">Cobertura parcial: '+r.coverage.eligibleAssetTurns+' registros de equipamento/turno com jornada conhecida.'
+   +(r.coverage.missingDutySnapshots?' '+r.coverage.missingDutySnapshots+' registros anteriores sem jornada armazenada foram excluídos.':'')
+   +' Os percentuais representam somente o período efetivamente medido.</p>';
+ }
+ out+='<h3 class="resourceSection">CUMPRIMENTO DA JORNADA POR MODELO</h3>';
+ out+='<div class="productionModelList">';
+ for(const model of r.models){
+  const pct=model.attainmentPct,vis=pct===null?0:Math.min(100,pct);
+  out+='<article class="planningOrder productionModelRow">'
+    +'<div class="planningOrderHeader"><strong>'+esc(model.title)+'</strong>'
+    +'<span class="planningTag">'+(pct===null?'SEM BASE':pct>=model.targetPct?'META ATENDIDA':'ABAIXO DA META')+'</span></div>'
+    +'<p>'+fmt(model.operating)+' / '+fmt(model.planned)+' h · '+(pct===null?'—':fmt(pct)+'%')+' de cumprimento</p>'
+    +'<div class="productionTrack" role="img" aria-label="Jornada cumprida: '+fmt(pct)+' porcento">'
+    +'<span style="width:'+vis+'%"></span></div>'
+    +'<div class="productionModelFooter"><small>Corretiva: '+fmt(model.correctiveLoss)+' h · Preventiva: '+fmt(model.preventiveLoss)+' h</small>'
+    +'<label>Meta <select data-production-target="'+esc(model.modelId)+'" aria-label="Meta de '+esc(model.title)+'">'
+    +window.PORCARIA_PRODUCTION.TARGETS.map(x=>'<option value="'+x+'"'+(x===model.targetPct?' selected':'')+'>'+x+'%</option>').join('')
+    +'</select></label></div></article>';
+ }
+ out+='</div>';
+ if(!r.models.some(x=>x.modelId===productionModel))productionModel=r.models[0]?.modelId||'EQ01';
+ out+='<h3 class="resourceSection">COMPARATIVO POR EQUIPAMENTO</h3>'
+  +'<div class="fleetModelSelect"><label for="productionModelFilter">MODELO</label>'
+  +'<select id="productionModelFilter" aria-label="Modelo para comparação operacional">'
+  +r.models.map(x=>'<option value="'+esc(x.modelId)+'"'+(x.modelId===productionModel?' selected':'')+'>'
+   +esc(x.title)+'</option>').join('')+'</select></div>';
+ const selected=r.assets.filter(x=>x.modelId===productionModel)
+  .sort((a,b)=>(b.attainmentPct??-1)-(a.attainmentPct??-1)||a.asset.localeCompare(b.asset));
+ out+='<div class="fleetAssetList">';
+ if(!selected.length)out+='<p class="muted">Sem turno registrado com jornada conhecida para este modelo.</p>';
+ for(const a of selected){
+  out+='<article class="planningOrder"><div class="planningOrderHeader"><strong>'+esc(a.asset)+'</strong>'
+  +'<span class="planningTag">'+(a.attainmentPct===null?'SEM JORNADA':fmt(a.attainmentPct)+'%')+'</span></div>'
+  +'<p>'+fmt(a.operating)+' / '+fmt(a.planned)+' h operadas / planejadas · Desvio '+fmt(a.gap)+' h</p>'
+  +'<small>Perda por corretivas: '+fmt(a.correctiveLoss)+' h · Por preventivas: '+fmt(a.preventiveLoss)+' h</small></article>';
+ }
+ out+='</div>';
+ out+='<p class="planningExplanation">As metas representam o percentual de horas de operação planejadas que devem ser cumpridas. '
+  +'Horários sem jornada registrada não são reconstruídos. Mudanças de meta passam a valer na avaliação atual e ficam no histórico de decisões PCM.</p>';
+ $('planning').innerHTML=out;
+}
 function drawReliability(){
  const report=window.PORCARIA_RELIABILITY.compute(state,data,{days:reliabilityDays}),m=report.metrics;
  const fleet=window.PORCARIA_FLEET_TELEMETRY.compute(state,data,{days:reliabilityDays});
@@ -618,6 +682,7 @@ function drawPlanning(){
  if(planningHorizon==='schedule'){drawSchedule();return}
  if(planningHorizon==='preventive'){drawPreventive();return}
  if(planningHorizon==='kpis'){drawReliability();return}
+ if(planningHorizon==='production'){drawProduction();return}
  if(planningHorizon==='history'){drawDecisionHistory();return}
  if(planningHorizon==='lessons'){drawLessons();return}
  const plan=window.PORCARIA_PLANNING.compute(state,data);
@@ -957,6 +1022,17 @@ function events(){
   if(impact)impact.textContent='Ritmo '+Math.round(p.speed*100)+'% · Fadiga '+p.fatigueMultiplier.toFixed(2)+'× · Moral −'+p.moraleLossPerHour.toFixed(2)+' pts/HH';
  });
  document.addEventListener('change',ev=>{
+  if(ev.target?.id==='productionModelFilter'){
+   productionModel=ev.target.value;drawProduction();return;
+  }
+  const productionTarget=ev.target?.closest?.('[data-production-target]');
+  if(productionTarget){
+   const err=window.PORCARIA_PRODUCTION.setTarget(state,data,
+    productionTarget.dataset.productionTarget,Number(productionTarget.value),
+    (type,fields)=>E.recordDecision(state,type,fields));
+   if(err){notify(err);drawProduction();return}
+   save();drawProduction();notify('Meta de cumprimento da jornada atualizada.');return;
+  }
   if(ev.target?.id==='fleetModelFilter'){fleetModelFilter=ev.target.value;drawReliability();return}
   const dutyControl=ev.target?.closest?.('[data-fleet-duty]');
   if(dutyControl){
@@ -1132,7 +1208,7 @@ function events(){
   }
   const planHorizon=ev.target.closest('[data-planning-horizon]');
   if(planHorizon){
-   planningHorizon=['turn','week','schedule','preventive','kpis','history','lessons'].includes(planHorizon.dataset.planningHorizon)?planHorizon.dataset.planningHorizon:'turn';
+   planningHorizon=['turn','week','schedule','preventive','kpis','production','history','lessons'].includes(planHorizon.dataset.planningHorizon)?planHorizon.dataset.planningHorizon:'turn';
    drawPlanning();return;
   }
   const pmAssign=ev.target.closest('[data-pm-os-assign]');
@@ -1162,6 +1238,12 @@ function events(){
    const error=E.cancelPreventive(state,preventiveCancel.dataset.preventiveCancel);
    if(error){notify(error);return}
    save();drawUI();drawPreventive();notify('Preventiva cancelada; valor restituído ao caixa.');return;
+  }
+  const productionFilter=ev.target.closest('[data-production-days]');
+  if(productionFilter){
+   const d=Number(productionFilter.dataset.productionDays);
+   if([7,14,30].includes(d)){productionDays=d;drawProduction()}
+   return;
   }
   const reliabilityFilter=ev.target.closest('[data-reliability-days]');
   if(reliabilityFilter){
@@ -1783,6 +1865,7 @@ async function boot(){
   await import('./preventive.js?v=0.9.15');
   await import('./preventive-orders.js?v=0.9.19');
   await import('./reliability-kpis.js?v=0.9.16');
+  await import('./production-performance.js?v=0.9.20');
   await import('./fleet-telemetry.js?v=0.9.18');
   await import('./fleet-view.js?v=0.9.18');
   if(!document.getElementById('weeklyScheduleStyle')){
@@ -1813,6 +1896,13 @@ async function boot(){
     +'.fleetModelSelect select{background:#142c40;color:#f5f8f8;border:1px solid #668398;border-radius:6px;padding:9px}'
     +'.fleetAssetList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.fleetAssetMetrics{display:grid;gap:5px;font-size:11px;color:#cde0e9}'
     +'@media(max-width:650px){.fleetAssetList{grid-template-columns:1fr}.fleetModelSelect{grid-template-columns:1fr}}';
+   css.textContent+='.productionModelList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}'
+    +'.productionTrack{height:10px;border:1px solid #4b6a7e;border-radius:6px;background:#0c2131;overflow:hidden}'
+    +'.productionTrack span{display:block;height:100%;background:#87cdaa}'
+    +'.productionModelFooter{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center;margin-top:8px}'
+    +'.productionModelFooter label{display:flex;align-items:center;gap:8px;font-size:11px}'
+    +'.productionModelFooter select{padding:5px;background:#132d40;color:#f5f8fa;border:1px solid #668398;border-radius:5px}'
+    +'@media(max-width:650px){.productionModelList{grid-template-columns:1fr}}';
    document.head.appendChild(css);
   }
   const res=await fetch('../game-data.json',{cache:'no-store'});if(!res.ok)throw Error('HTTP '+res.status);
@@ -1839,7 +1929,7 @@ async function boot(){
   M.receive(state,data,I,{initial:true});
   save();
   selected=state.jobs[0]?.id;events();drawUI();
-  if(!I||!IV||!S||!T||!M||!window.PORCARIA_PREVENTIVE||!window.PORCARIA_PREVENTIVE_ORDERS||!window.PORCARIA_RELIABILITY||!window.PORCARIA_FLEET_TELEMETRY||!window.PORCARIA_FLEET_VIEW||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_WEEKLY_SCHEDULE||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
+  if(!I||!IV||!S||!T||!M||!window.PORCARIA_PREVENTIVE||!window.PORCARIA_PREVENTIVE_ORDERS||!window.PORCARIA_RELIABILITY||!window.PORCARIA_PRODUCTION||!window.PORCARIA_FLEET_TELEMETRY||!window.PORCARIA_FLEET_VIEW||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_WEEKLY_SCHEDULE||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
   if(!window.PORCARIA_RENDER_QUALITY)throw Error('Configuração de nitidez indisponível.');
   renderProfile=window.PORCARIA_RENDER_QUALITY.profile({
    viewportWidth:window.innerWidth,devicePixelRatio:window.devicePixelRatio,
