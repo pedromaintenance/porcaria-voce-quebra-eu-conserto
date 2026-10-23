@@ -97,7 +97,7 @@
     preventive?'preventive':op?'operating_assumed':'standby';
    summary.operating+=op;summary.standby+=standby;
    summary.corrective+=cm;summary.preventive+=preventive;
-   perAsset.push({asset:id,operating:op,standby,corrective:cm,preventive});
+   perAsset.push({asset:id,dutyHours:duty,operating:op,standby,corrective:cm,preventive});
   }
   for(const k of ['operating','standby','corrective','preventive'])summary[k]=round(summary[k]);
   f.samples.push({...summary,perAsset});f.samples=f.samples.slice(-MAX_SAMPLES);
