@@ -52,6 +52,19 @@ const booked=OPTIONS.calculate(s2,D,E,{orderId:j.id,mechanicId:s2.team[0].id,bay
 assert.equal(booked.options.find(x=>x.id==='next').available,false,'reservas existentes bloqueiam novo compromisso');
 assert.equal(booked.options.find(x=>x.id==='now').available,false);
 assert.equal(E.validate(JSON.parse(JSON.stringify(s2))),true);
+// A agenda corretiva não pode disputar recurso com preventiva automática alocada.
+const s3=make(),activePM=s3.preventiveOrders[0],targetCM=s3.jobs[0],cmScenario=E.scenario(D,targetCM.scene);
+s3.tools[cmScenario.tool]=true;
+assert.equal(E.assignPreventiveOrder(s3,D,activePM.id,s3.team[0].id,0),null);
+const choiceSameBox=OPTIONS.calculate(s3,D,E,
+ {orderId:targetCM.id,mechanicId:s3.team[1].id,bay:0});
+assert.equal(choiceSameBox.options.find(x=>x.id==='now').available,false);
+assert.ok(E.scheduleJob(s3,D,targetCM.id,s3.team[1].id,0,s3.tick)
+ .includes('ocupado'));
+const choiceSameWorker=OPTIONS.calculate(s3,D,E,
+ {orderId:targetCM.id,mechanicId:s3.team[0].id,bay:1});
+assert.equal(choiceSameWorker.options.find(x=>x.id==='now').available,false);
+assert.equal(s3.scheduleEntries.length,0,'a reserva bloqueada não foi gravada');
 const ui=fs.readFileSync('phaser-play/game.js','utf8'),html=fs.readFileSync('phaser-play/index.html','utf8'),
 sw=fs.readFileSync('sw.js','utf8');
 assert.ok(ui.includes("await import('./pcm-options.js?v=0.9.21')"));
