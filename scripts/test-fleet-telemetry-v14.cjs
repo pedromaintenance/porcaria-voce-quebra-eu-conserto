@@ -16,7 +16,8 @@ assert.equal(s.jobs.reduce((n,j)=>n+s.fleetTelemetry.assets[j.asset].failures.le
 const job0=s.jobs[0];
 assert.equal(F.failure(s,D,job0,'random'),null,'não duplicar evento de falha');
 assert.equal(F.failure(s,D,{id:'MANUAL',asset:job0.asset},'manual'),null,'conversão manual não se torna falha automaticamente');
-const free=F.assetIDs(D).find(id=>!s.jobs.some(j=>j.asset===id));
+const free=F.assetIDs(D).find(id=>!s.jobs.some(j=>j.asset===id)&&
+ !s.preventiveOrders.some(j=>j.asset===id&&j.status!=='completed'));
 assert.ok(free);
 // Compatibilidade V14: reconstitui a política antiga de operação contínua.
 for(const id of F.assetIDs(D))assert.equal(F.setDuty(s,D,id,12),null);
