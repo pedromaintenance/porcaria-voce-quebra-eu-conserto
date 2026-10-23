@@ -69,8 +69,11 @@
    return 'Mecânico já consumiu capacidade em inspeções.';
   if(s.jobs.some(j=>j.bay===b)||active(s).some(j=>j.bay===b))
    return 'Box ocupado por outra OS.';
-  if((s.scheduleEntries||[]).some(q=>q.status==='planned'&&q.tick===s.tick&&
-   (q.bay===b||q.mechanicId===m.id)))return 'Recurso reservado na programação PCM.';
+  const calendar=(s.scheduleEntries||[]).filter(q=>q.status==='planned'&&q.tick===s.tick);
+  if(calendar.some(q=>q.orderId===id&&(q.bay!==b||q.mechanicId!==m.id)))
+   return 'A OS possui outro mecânico/box reservado. Revise a programação PCM.';
+  if(calendar.some(q=>q.orderId!==id&&(q.bay===b||q.mechanicId===m.id)))
+   return 'Recurso reservado na programação PCM.';
   if((s.preventiveJobs||[]).some(q=>q.status==='planned'&&q.tick===s.tick&&
    (q.bay===b||q.mechanicId===m.id)))return 'Recurso reservado em uma preventiva legada.';
   if(Number(s.cash)<r.cost)return 'Caixa insuficiente para execução da OS preventiva.';

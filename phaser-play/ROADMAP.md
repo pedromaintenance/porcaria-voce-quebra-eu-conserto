@@ -2,10 +2,24 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 22/10/2026 · **v0.9.21 — Comparador de decisões PCM com validação read-only e confirmação manual; QA visual pendente.**
+**Estado de referência:** 22/10/2026 · **v0.9.22 — Reserva futura de OS preventiva no calendário PCM, com execução manual e Diva; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.9.22 — Programação futura de preventivas e Diva, ciclo 19 (22/10/2026)
+
+- [x] Reservar OS preventivas automáticas em turnos futuros no mesmo calendário PCM das corretivas.
+- [x] Bloquear conflito de box e mecânico, incluindo reservas cruzadas, descanso, treinamento e preventivas já alocadas.
+- [x] Conservar a OS aberta e o caixa intacto até a alocação e a execução do serviço.
+- [x] Permitir iniciar manualmente a OS preventiva no turno reservado, com Diva na oficina e cumprimento da reserva.
+- [x] Registrar reservas não realizadas após o turno, sem concluir nem cancelar a OS preventiva.
+- [x] Permitir cancelamento/reprogramação e preservar reservas antigas das corretivas sem migração destrutiva.
+- [x] Integrar reservas futuras de preventivas ao Comparador de Decisões PCM.
+- [x] Incluir regressão V19 no CI e na publicação do GitHub Pages.
+- [ ] Homologação visual desktop/mobile e teste de campanhas longas com múltiplas reservas.
+
+**Documento:** [Agenda de Preventivas — Ciclo 19](../docs/AGENDA_PREVENTIVAS_CICLO19.md).
 
 ## Entrega 0.9.21 — Comparador de decisões PCM, ciclo 18 (22/10/2026)
 

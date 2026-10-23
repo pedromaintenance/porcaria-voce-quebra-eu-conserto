@@ -9,7 +9,7 @@
  if(root)root.PORCARIA_PCM_OPTIONS=api;
 })(typeof window!=='undefined'?window:globalThis,function(){
  'use strict';
- const VERSION='18.0.0';
+ const VERSION='19.0.0';
  const clone=s=>JSON.parse(JSON.stringify(s));
  const n=v=>Math.max(0,Number(v)||0);
  const round=v=>Math.round(v*10)/10;
@@ -41,7 +41,7 @@
    const copy=clone(s); // Sem mudança no save real, caixa, turno ou histórico do jogador.
    if(isPM){
     if(action==='now')return E.assignPreventiveOrder(copy,d,orderId,mechanicId,b);
-    return null;
+    return E.schedulePreventiveOrder(copy,d,orderId,mechanicId,b,s.tick+1);
    }
    return E.scheduleJob(copy,d,orderId,mechanicId,b,s.tick+(action==='next'?1:0));
   }
@@ -55,12 +55,11 @@
     note:isPM?'Execução depende do avanço do turno; gasto previsto de R$ '+n(j.cost).toLocaleString('pt-BR')+
      ' ao concluir. Diva acompanha o mecânico.':'Reserva turno/box; alocação manual e investigação continuam obrigatórias. '
       +'OS aberta permanece indisponível até eventual conclusão.'},
-   {id:'next',title:'Programar no turno seguinte',available:isPM?false:!nextBlock,
-    reason:isPM?'OS preventiva só admite alocação no turno atual. Não há reserva futura automática.':nextBlock||null,
-    action:isPM?null:'schedule_cm',tick:s.tick+1,
+   {id:'next',title:'Programar no turno seguinte',available:!nextBlock,
+    reason:nextBlock||null,action:isPM?'schedule_pm':'schedule_cm',tick:s.tick+1,
     assignedHours:null,estimatedOperatingGap:null,
     exposureHours:isPM?0:24,
-    note:isPM?'A postergação não tem execução agendada. O vencimento continua na carteira.':
+    note:isPM?'Reserva futura sem execução automática; no turno programado, aloque o mecânico no box com Diva.':
      'A reserva futura não movimenta o equipamento e não garante a disponibilidade de recursos no próximo turno.'},
    {id:'hold',title:'Manter na carteira',available:true,reason:null,
     action:null,tick:null,assignedHours:null,estimatedOperatingGap:null,

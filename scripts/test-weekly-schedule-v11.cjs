@@ -2,7 +2,7 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs');
 const E=require('../engine.js'),D=require('../game-data.json'),S=require('../phaser-play/weekly-schedule.js');
-assert.equal(S.VERSION,'11.0.0');
+assert.equal(S.VERSION,'19.0.0');
 assert.equal(D.scenarios.length,124);
 const fresh=()=>E.create(D,()=>0.47);
 const s=fresh(),j=s.jobs[0],k=s.jobs[1],m=s.team[0],n=s.team[1];

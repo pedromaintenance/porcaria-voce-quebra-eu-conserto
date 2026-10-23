@@ -3,7 +3,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs');
 const D=require('../game-data.json'),E=require('../engine.js');
 const OPTIONS=require('../phaser-play/pcm-options.js');
-assert.equal(OPTIONS.VERSION,'18.0.0');
+assert.equal(OPTIONS.VERSION,'19.0.0');
 const make=()=>E.create(D,()=>0.45);
 const s=make(),available=OPTIONS.orders(s),cm=s.jobs[0],pm=s.preventiveOrders[0],m=s.team[0];
 assert.ok(pm&&cm&&available.some(j=>j.id===pm.id&&j.type==='preventive'));
@@ -13,7 +13,7 @@ assert.equal(pre.available,true);
 assert.equal(pre.type,'preventive');
 assert.equal(pre.options.length,3);
 assert.equal(pre.options.find(x=>x.id==='now').action,'assign_pm');
-assert.equal(pre.options.find(x=>x.id==='next').available,false,'nenhuma reserva futura de PM inventada');
+assert.equal(pre.options.find(x=>x.id==='next').available,true,'preventiva admite reserva futura após o Ciclo 19');
 assert.equal(pre.options.find(x=>x.id==='hold').action,null);
 assert.equal(pre.operatingDutyHours,8);
 assert.equal(pre.options.find(x=>x.id==='now').estimatedOperatingGap,0,'inspeção 2h cabe no standby de 4h');
