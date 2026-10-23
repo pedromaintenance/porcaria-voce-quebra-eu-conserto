@@ -2,10 +2,22 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 21/10/2026 · **v0.9.18 — Standby, utilização configurável por ativo, disponibilidade separada e paradas corretivas parciais; QA visual pendente.**
+**Estado de referência:** 22/10/2026 · **v0.9.19 — OS preventivas automáticas e acompanhamento de Diva; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.9.19 — OS preventivas automáticas e Diva, ciclo 16 (22/10/2026)
+
+- [x] Gerar OS preventivas automaticamente no vencimento do horímetro virtual, com numeração `OS...`, carteira e estado persistente.
+- [x] Exigir alocação de mecânico e box pelo PCM para executar a OS preventiva, sem automatizar a execução.
+- [x] Renderizar Diva junto ao mecânico em todo serviço preventivo que esteja ocupando um box.
+- [x] Integrar custos, HH, telemetria, redução temporária de risco e vencimento da próxima preventiva após conclusão.
+- [x] Preservar a numeração única das OS, recursos e histórico, com compatibilidade para saves anteriores e preventivas legadas.
+- [x] Verificar sprite 2×2 WebP, ausência de conflitos de box e idempotência dos gatilhos de OS.
+- [ ] Homologar manualmente animações e interface mobile; validar balanceamento em campanhas longas.
+
+**Documento:** [OS preventivas automáticas e Diva — Ciclo 16](../docs/CICLO16_OS_PREVENTIVAS_DIVA.md).
 
 ## Entrega 0.9.18 — Standby, utilização e parada parcial, ciclo 15 (21/10/2026)
 
