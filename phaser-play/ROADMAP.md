@@ -2,10 +2,23 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 22/10/2026 · **v0.9.20 — Desempenho operacional, jornadas registradas, metas de atendimento e ranking de equipamentos; QA visual pendente.**
+**Estado de referência:** 22/10/2026 · **v0.9.21 — Comparador de decisões PCM com validação read-only e confirmação manual; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.9.21 — Comparador de decisões PCM, ciclo 18 (22/10/2026)
+
+- [x] Comparar programar OS corretiva no turno atual, reservar no próximo ou manter na carteira sem aplicar a decisão.
+- [x] Comparar alocação imediata de OS preventiva automática com Diva versus manutenção na carteira, sem sugerir reserva futura inexistente.
+- [x] Aplicar os validadores reais do motor a uma cópia descartável do save, preservando dinheiro, recursos, OS e histórico.
+- [x] Exibir jornada do ativo, HH restantes e, na preventiva, conflito condicional de tempo entre serviço e jornada operacional.
+- [x] Bloquear alternativas inviáveis, recalcular antes da confirmação e encaminhar somente a ação aprovada ao engine.
+- [x] Manter compatibilidade com saves anteriores e proteger o comparador com testes no CI Phaser e Pages.
+- [ ] Homologar interface desktop/mobile e campanhas longas com múltiplos conflitos simultâneos.
+- [ ] Evoluir agenda de preventivas automáticas para reservas futuras sem sobrepor funções atuais do PCM.
+
+**Documentação:** [Comparador de decisões PCM — Ciclo 18](../docs/COMPARADOR_DECISOES_PCM_CICLO18.md).
 
 ## Entrega 0.9.20 — Desempenho operacional e metas da frota, ciclo 17 (22/10/2026)
 
