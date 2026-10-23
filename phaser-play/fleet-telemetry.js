@@ -70,6 +70,7 @@
   for(const id of ids(d)){
    const asset=f.assets[id],duty=f.dutyHours[id];
    const pm=(s.preventiveJobs||[]).filter(x=>x.asset===id&&x.tick===tick&&
+    x.source!=='automatic_preventive_os'&&
     (x.status==='completed'||x.status==='planned'));
    const isCorrective=correction.has(id)||s.jobs?.some(x=>x.asset===id);
    const pmOrders=(s.preventiveOrders||[]).filter(r=>r.asset===id&&r.lastWorkTick===tick
