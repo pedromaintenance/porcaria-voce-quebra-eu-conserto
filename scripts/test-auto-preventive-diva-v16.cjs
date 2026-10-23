@@ -24,7 +24,7 @@ assert.equal(E.assignPreventiveOrder(s,D,pending.id,mechanic.id,0),null);
 assert.equal(pending.status,'in_progress');
 assert.equal(pending.bay,0);
 assert.equal(mechanic.assigned,pending.id);
-assert.ok(s.decisionHistory.some(x=>x.type==='preventive_os_generated'));
+assert.equal(s.decisionHistory.some(x=>x.type==='preventive_os_generated'),false,'OS iniciais não são decisões do jogador');
 assert.ok(s.decisionHistory.some(x=>x.type==='preventive_os_assigned'));
 assert.ok(E.attach(s,s.jobs[0].id,mechanic.id,1,false)?.includes('alocado'));
 assert.ok(E.attach(s,s.jobs[0].id,s.team[1].id,0,false)?.includes('preventiva'));
