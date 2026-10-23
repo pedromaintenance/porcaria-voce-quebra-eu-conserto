@@ -13,7 +13,7 @@ assert.equal(pre.available,true);
 assert.equal(pre.type,'preventive');
 assert.equal(pre.options.length,3);
 assert.equal(pre.options.find(x=>x.id==='now').action,'assign_pm');
-assert.equal(pre.options.find(x=>x.id==='next').available,false,'nenhuma reserva futura de PM inventada');
+assert.equal(pre.options.find(x=>x.id==='next').available,true,'preventiva admite reserva futura após o Ciclo 19');
 assert.equal(pre.options.find(x=>x.id==='hold').action,null);
 assert.equal(pre.operatingDutyHours,8);
 assert.equal(pre.options.find(x=>x.id==='now').estimatedOperatingGap,0,'inspeção 2h cabe no standby de 4h');
