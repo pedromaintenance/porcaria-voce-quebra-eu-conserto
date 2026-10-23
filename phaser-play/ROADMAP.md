@@ -2,10 +2,23 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 22/10/2026 · **v0.9.19 — OS preventivas automáticas e acompanhamento de Diva; QA visual pendente.**
+**Estado de referência:** 22/10/2026 · **v0.9.20 — Desempenho operacional, jornadas registradas, metas de atendimento e ranking de equipamentos; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
+
+## Entrega 0.9.20 — Desempenho operacional e metas da frota, ciclo 17 (22/10/2026)
+
+- [x] Preservar em cada turno a jornada operativa efetivamente programada por equipamento, sem reconstrução retroativa.
+- [x] Comparar horas planejadas, cumpridas e não cumpridas, segmentando desvios associados a paradas corretivas e preventivas sem dupla contagem.
+- [x] Definir metas de atendimento da jornada (60/75/85/95%) por modelo, auditadas no histórico PCM.
+- [x] Exibir comparativo entre os nove modelos e ranking dos seis equipamentos por modelo, com filtros de 7/14/30 dias.
+- [x] Não calcular tonelagem, BCM, produção comercial ou receita sem ciclo produtivo e taxa de produção definidos.
+- [x] Preservar saves antigos e sinalizar períodos em que a jornada histórica não foi armazenada.
+- [x] Integrar regressão específica ao CI Phaser e deploy Pages, com cache PWA versionado.
+- [ ] Homologação visual desktop/mobile e balanceamento com campanhas de duração prolongada.
+
+**Documentação:** [Desempenho Operacional — Ciclo 17](../docs/DESEMPENHO_OPERACIONAL_CICLO17.md).
 
 ## Entrega 0.9.19 — OS preventivas automáticas e Diva, ciclo 16 (22/10/2026)
 
