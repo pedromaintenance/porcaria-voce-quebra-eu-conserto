@@ -32,7 +32,8 @@
   if(m.restAt===t||m.normativeUntil>t)return 'Profissional indisponível por descanso/integração.';
   if((s.training?.assignments||[]).some(a=>a.untilTick>t&&(a.learnerId===m.id||a.trainerId===m.id)))
    return 'Profissional reservado para treinamento.';
-  if(t===s.tick&&(m.assigned||s.jobs.some(x=>x.bay===b)))
+  if(t===s.tick&&(m.assigned||s.jobs.some(x=>x.bay===b)||
+   (s.preventiveOrders||[]).some(x=>x.status==='in_progress'&&(x.bay===b||x.assigned===m.id))))
    return 'Profissional ou box ocupado no turno atual.';
   if(t===s.tick&&s.inspectionLabor?.tick===t&&positive(s.inspectionLabor.byEmployee?.[m.id])>=10.5)
    return 'Profissional sem HH disponíveis para este turno.';
@@ -93,6 +94,7 @@
    const blocked=!!(r.tick===s.tick&&
     (m?.assigned&&m.assigned!==r.orderId||
      s.jobs.some(x=>x.id!==r.orderId&&x.bay===r.bay)||
+     (s.preventiveOrders||[]).some(x=>x.status==='in_progress'&&(x.bay===r.bay||x.assigned===r.mechanicId))||
      !s.tools[sc?.tool]));
    return {...r,mechanic:m?.name||r.mechanicId,asset:j?.asset||'OS não disponível',
     availability,blocked,remaining:j?.stage>=6?positive(j.repairRemaining):null,

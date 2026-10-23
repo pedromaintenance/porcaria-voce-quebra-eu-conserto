@@ -62,6 +62,7 @@ let toastTimeout;
 let planningHorizon='turn';
 let reliabilityDays=14; // Janela de indicadores, estado só visual.
 let productionDays=14,productionModel='EQ01'; // Painel de entrega operacional.
+let pcmScenarioOrder='',pcmScenarioMechanic='',pcmScenarioBay=0; // Comparador sem mutação de save.
 let fleetModelFilter='EQ01'; // Filtro visual por modelo.
 let decisionHistoryFilter='all'; // Controle de visualização; não altera save.
 let lessonFilter='all',lessonSelectedOrderId=null; // Navegação temporária.
@@ -299,12 +300,63 @@ function planningTabs(){
  return '<div class="planningTabs" role="group" aria-label="Horizonte de planejamento">'
   +'<button type="button" data-planning-horizon="turn" class="'+(planningHorizon==='turn'?'selected':'')+'" aria-pressed="'+(planningHorizon==='turn')+'">PRÓXIMO TURNO · 12H</button>'
   +'<button type="button" data-planning-horizon="week" class="'+(planningHorizon==='week'?'selected':'')+'" aria-pressed="'+(planningHorizon==='week')+'">JANELA SEMANAL · 14 TURNOS</button>'
+  +'<button type="button" data-planning-horizon="alternatives" class="'+(planningHorizon==='alternatives'?'selected':'')+'" aria-pressed="'+(planningHorizon==='alternatives')+'">COMPARAR DECISÕES</button>'
   +'<button type="button" data-planning-horizon="schedule" class="'+(planningHorizon==='schedule'?'selected':'')+'" aria-pressed="'+(planningHorizon==='schedule')+'">PROGRAMAR · 14 TURNOS</button>'
   +'<button type="button" data-planning-horizon="preventive" class="'+(planningHorizon==='preventive'?'selected':'')+'" aria-pressed="'+(planningHorizon==='preventive')+'">PREVENTIVA × CORRETIVA</button>'
   +'<button type="button" data-planning-horizon="production" class="'+(planningHorizon==='production'?'selected':'')+'" aria-pressed="'+(planningHorizon==='production')+'">DESEMPENHO DA FROTA</button>'
   +'<button type="button" data-planning-horizon="kpis" class="'+(planningHorizon==='kpis'?'selected':'')+'" aria-pressed="'+(planningHorizon==='kpis')+'">KPIs DA MANUTENÇÃO</button>'
   +'<button type="button" data-planning-horizon="history" class="'+(planningHorizon==='history'?'selected':'')+'" aria-pressed="'+(planningHorizon==='history')+'">HISTÓRICO DE DECISÕES</button>'
   +'<button type="button" data-planning-horizon="lessons" class="'+(planningHorizon==='lessons'?'selected':'')+'" aria-pressed="'+(planningHorizon==='lessons')+'">LIÇÕES APRENDIDAS</button></div>';
+}
+
+
+function drawPCMAlternatives(){
+ const PCM=window.PORCARIA_PCM_OPTIONS;
+ const open=PCM.orders(state),staff=state.team||[];
+ const opts=(rows,value,key,label)=>rows.map(r=>'<option value="'+esc(r[key])+'"'
+    +(String(r[key])===String(value)?' selected':'')+'>'+esc(label(r))+'</option>').join('');
+ if(!open.some(j=>j.id===pcmScenarioOrder))pcmScenarioOrder=open[0]?.id||'';
+ if(!staff.some(m=>m.id===pcmScenarioMechanic))pcmScenarioMechanic=staff[0]?.id||'';
+ if(!Number.isInteger(pcmScenarioBay)||pcmScenarioBay<0||pcmScenarioBay>=state.bays)pcmScenarioBay=0;
+ let out=planningTabs()+'<p class="planningIntro">ANÁLISE DE ALTERNATIVAS PCM · Compare a programação antes de assumir um compromisso. '
+  +'A consulta não altera dinheiro, horímetros, OS ou o histórico de decisões.</p>';
+ if(!open.length){$('planning').innerHTML=out+'<p class="muted">Sem OS disponíveis para análise. '
+   +'Abra uma notificação ou aguarde o vencimento das preventivas.</p>';return}
+ out+='<section class="scheduleForm"><h3>RECURSOS PARA COMPARAÇÃO</h3><div class="scheduleFields">'
+  +'<label>Ordem de serviço<select id="pcmScenarioOrder">'
+  +opts(open,pcmScenarioOrder,'id',x=>x.id+' · '+x.asset+' · '+x.title)+'</select></label>'
+  +'<label>Profissional<select id="pcmScenarioMechanic">'
+  +opts(staff,pcmScenarioMechanic,'id',x=>x.name+' · '+x.specialty)+'</select></label>'
+  +'<label>Box<select id="pcmScenarioBay">'
+  +Array.from({length:state.bays},(_,i)=>'<option value="'+i+'"'+(i===pcmScenarioBay?' selected':'')+'>BOX '+(i+1)+'</option>').join('')
+  +'</select></label></div></section>';
+ const report=PCM.calculate(state,data,E,{orderId:pcmScenarioOrder,mechanicId:pcmScenarioMechanic,bay:pcmScenarioBay});
+ if(!report.available){$('planning').innerHTML=out+'<p class="planningNoResource">'+esc(report.reason)+'</p>';return}
+ const n=x=>Number(x).toLocaleString('pt-BR',{maximumFractionDigits:1});
+ out+='<div class="planningMetrics">'
+  +'<div class="planningMetric"><small>OS analisada</small><strong>'+esc(report.orderId)+'</strong></div>'
+  +'<div class="planningMetric"><small>Equipamento</small><strong>'+esc(report.asset)+'</strong></div>'
+  +'<div class="planningMetric"><small>Jornada do ativo</small><strong>'+n(report.operatingDutyHours)+' h</strong></div>'
+  +'<div class="planningMetric"><small>Esforço restante</small><strong>'+n(report.remainingEffort)+' HH</strong></div></div>';
+ out+='<h3 class="resourceSection">ALTERNATIVAS DE PROGRAMAÇÃO</h3><div class="pcmScenarioCards">';
+ for(const opt of report.options){
+  out+='<article class="planningOrder pcmScenarioCard">'
+   +'<div class="planningOrderHeader"><strong>'+esc(opt.title)+'</strong>'
+   +'<span class="planningTag">'+(opt.available?'DISPONÍVEL':'IMPEDIMENTO')+'</span></div>'
+   +'<p>'+esc(opt.note)+'</p>';
+  if(report.type==='corrective'&&opt.exposureHours)out+='<p>Exposição condicional se a OS permanecer aberta: <b>'
+   +n(opt.exposureHours)+' h corridas</b> até o fim da referência considerada; não representa previsão de conclusão.</p>';
+  if(opt.estimatedOperatingGap!==null)out+='<p>Conflito estimado com a jornada: <b>'
+   +n(opt.estimatedOperatingGap)+' hora(s)-ativo</b>, apenas se o serviço for concluído neste turno.</p>';
+  if(!opt.action)out+='<p class="planningExplanation">Nenhuma alteração será aplicada.</p>';
+  if(!opt.available)out+='<p class="planningNoResource">Impedimento: '+esc(opt.reason)+'</p>';
+  if(opt.available&&opt.action)out+='<button type="button" class="act" data-pcm-confirm-option="'+opt.id
+   +'" data-pcm-confirm-order="'+esc(report.orderId)+'">'
+   +(opt.action==='assign_pm'?'ALOCAR PREVENTIVA COM DIVA':'CONFIRMAR RESERVA PCM')+'</button>';
+  out+='</article>';
+ }
+ out+='</div><p class="planningExplanation">'+esc(report.note)+'</p>';
+ $('planning').innerHTML=out;
 }
 
 function drawSchedule(){
@@ -680,6 +732,7 @@ function drawPlanning(){
  if($('planningNotifications'))$('planningNotifications').innerHTML=S.planning(state,data,I,E,IV);
  if(planningHorizon==='week'){drawWeekly();return}
  if(planningHorizon==='schedule'){drawSchedule();return}
+ if(planningHorizon==='alternatives'){drawPCMAlternatives();return}
  if(planningHorizon==='preventive'){drawPreventive();return}
  if(planningHorizon==='kpis'){drawReliability();return}
  if(planningHorizon==='production'){drawProduction();return}
@@ -1022,6 +1075,9 @@ function events(){
   if(impact)impact.textContent='Ritmo '+Math.round(p.speed*100)+'% · Fadiga '+p.fatigueMultiplier.toFixed(2)+'× · Moral −'+p.moraleLossPerHour.toFixed(2)+' pts/HH';
  });
  document.addEventListener('change',ev=>{
+  if(ev.target?.id==='pcmScenarioOrder'){pcmScenarioOrder=ev.target.value;drawPCMAlternatives();return}
+  if(ev.target?.id==='pcmScenarioMechanic'){pcmScenarioMechanic=ev.target.value;drawPCMAlternatives();return}
+  if(ev.target?.id==='pcmScenarioBay'){pcmScenarioBay=Number(ev.target.value);drawPCMAlternatives();return}
   if(ev.target?.id==='productionModelFilter'){
    productionModel=ev.target.value;drawProduction();return;
   }
@@ -1208,8 +1264,26 @@ function events(){
   }
   const planHorizon=ev.target.closest('[data-planning-horizon]');
   if(planHorizon){
-   planningHorizon=['turn','week','schedule','preventive','kpis','production','history','lessons'].includes(planHorizon.dataset.planningHorizon)?planHorizon.dataset.planningHorizon:'turn';
+   planningHorizon=['turn','week','schedule','alternatives','preventive','kpis','production','history','lessons'].includes(planHorizon.dataset.planningHorizon)?planHorizon.dataset.planningHorizon:'turn';
    drawPlanning();return;
+  }
+  const confirmed=ev.target.closest('[data-pcm-confirm-option]');
+  if(confirmed){
+   const report=window.PORCARIA_PCM_OPTIONS.calculate(state,data,E,
+    {orderId:pcmScenarioOrder,mechanicId:pcmScenarioMechanic,bay:pcmScenarioBay});
+   const opt=report.options.find(x=>x.id===confirmed.dataset.pcmConfirmOption&&x.available&&x.action);
+   if(!report.available||report.orderId!==confirmed.dataset.pcmConfirmOrder||!opt){
+    drawPCMAlternatives();notify('As condições de programação mudaram. Revise as alternativas.');return;
+   }
+   const error=opt.action==='assign_pm'
+    ?E.assignPreventiveOrder(state,data,report.orderId,pcmScenarioMechanic,pcmScenarioBay)
+    :E.scheduleJob(state,data,report.orderId,pcmScenarioMechanic,pcmScenarioBay,opt.tick);
+   if(error){drawPCMAlternatives();notify(error);return}
+   save();drawUI();scene?.refresh();drawPCMAlternatives();
+   notify(opt.action==='assign_pm'
+    ?'OS preventiva alocada com o supervisor Diva.'
+    :'Reserva PCM registrada. A alocação e o serviço continuam manuais.');
+   return;
   }
   const pmAssign=ev.target.closest('[data-pm-os-assign]');
   if(pmAssign){
@@ -1866,6 +1940,7 @@ async function boot(){
   await import('./preventive-orders.js?v=0.9.19');
   await import('./reliability-kpis.js?v=0.9.16');
   await import('./production-performance.js?v=0.9.20');
+  await import('./pcm-options.js?v=0.9.21');
   await import('./fleet-telemetry.js?v=0.9.18');
   await import('./fleet-view.js?v=0.9.18');
   if(!document.getElementById('weeklyScheduleStyle')){
@@ -1903,6 +1978,9 @@ async function boot(){
     +'.productionModelFooter label{display:flex;align-items:center;gap:8px;font-size:11px}'
     +'.productionModelFooter select{padding:5px;background:#132d40;color:#f5f8fa;border:1px solid #668398;border-radius:5px}'
     +'@media(max-width:650px){.productionModelList{grid-template-columns:1fr}}';
+   css.textContent+='.pcmScenarioCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}'
+    +'.pcmScenarioCard{display:flex;flex-direction:column;gap:8px;min-width:0}.pcmScenarioCard button{margin-top:auto}'
+    +'@media(max-width:850px){.pcmScenarioCards{grid-template-columns:1fr}}';
    document.head.appendChild(css);
   }
   const res=await fetch('../game-data.json',{cache:'no-store'});if(!res.ok)throw Error('HTTP '+res.status);
@@ -1929,7 +2007,7 @@ async function boot(){
   M.receive(state,data,I,{initial:true});
   save();
   selected=state.jobs[0]?.id;events();drawUI();
-  if(!I||!IV||!S||!T||!M||!window.PORCARIA_PREVENTIVE||!window.PORCARIA_PREVENTIVE_ORDERS||!window.PORCARIA_RELIABILITY||!window.PORCARIA_PRODUCTION||!window.PORCARIA_FLEET_TELEMETRY||!window.PORCARIA_FLEET_VIEW||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_WEEKLY_SCHEDULE||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
+  if(!I||!IV||!S||!T||!M||!window.PORCARIA_PREVENTIVE||!window.PORCARIA_PREVENTIVE_ORDERS||!window.PORCARIA_RELIABILITY||!window.PORCARIA_PRODUCTION||!window.PORCARIA_PCM_OPTIONS||!window.PORCARIA_FLEET_TELEMETRY||!window.PORCARIA_FLEET_VIEW||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_WEEKLY_SCHEDULE||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
   if(!window.PORCARIA_RENDER_QUALITY)throw Error('Configuração de nitidez indisponível.');
   renderProfile=window.PORCARIA_RENDER_QUALITY.profile({
    viewportWidth:window.innerWidth,devicePixelRatio:window.devicePixelRatio,
