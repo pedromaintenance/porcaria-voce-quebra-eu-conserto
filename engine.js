@@ -388,9 +388,18 @@
     return PM_OS.generate(s,d,(type,fields)=>recordDecision(s,type,fields));
   }
   function assignPreventiveOrder(s,d,id,mechanicId,bay){
+    const conflict=SCHEDULE.allocationBlock(s,id,mechanicId,Number(bay));
+    if(conflict)return conflict;
+    const future=(s.scheduleEntries||[]).some(r=>r.status==='planned'&&
+      r.orderId===id&&r.tick!==s.tick);
+    if(future)return 'OS com programação futura: cancele a reserva antes de antecipar.';
     const error=PM_OS.assign(s,d,id,mechanicId,bay,
       (type,fields)=>recordDecision(s,type,fields));
-    if(!error)msg(s,'OS preventiva '+id+' alocada. Diva acompanha o mecânico no box.','ok');
+    if(!error){
+      SCHEDULE.fulfill(s,id,mechanicId,Number(bay),
+       (type,fields)=>recordDecision(s,type,fields));
+      msg(s,'OS preventiva '+id+' alocada. Diva acompanha o mecânico no box.','ok');
+    }
     return error;
   }
   function releasePreventiveOrder(s,id){
@@ -407,6 +416,16 @@
   function cancelPreventive(s,id){
     const error=PREVENTIVE.cancel(s,id,(type,fields)=>recordDecision(s,type,fields));
     if(!error)msg(s,'Preventiva cancelada e valor reservado devolvido ao caixa.','info');
+    return error;
+  }
+  function schedulePreventiveOrder(s,d,orderId,mechanicId,bay,tick){
+    if(Number(tick)===s.tick){
+      const conflict=PREVENTIVE.allocationBlock(s,mechanicId,Number(bay));
+      if(conflict)return conflict;
+    }
+    const error=SCHEDULE.bookPreventive(s,d,orderId,mechanicId,bay,tick,
+      (type,fields)=>recordDecision(s,type,fields));
+    if(!error)msg(s,'OS preventiva '+orderId+' reservada no calendário PCM.','ok');
     return error;
   }
   function scheduleJob(s,d,orderId,mechanicId,bay,tick){
@@ -807,7 +826,7 @@
       pendingMaterials:s.jobs.filter(j=>j.status==='material').length, pendingTools:s.jobs.filter(j=>j.status==='ferramenta').length};
   }
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
-  return {create,initFleet,setFleetDuty,generatePreventiveOrders,assignPreventiveOrder,releasePreventiveOrder,recordDecision,writeLesson,scheduleJob,cancelSchedule,bookPreventive,cancelPreventive,normalizeRoster,localizeDiagnosticOptions,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
+  return {create,initFleet,setFleetDuty,generatePreventiveOrders,assignPreventiveOrder,releasePreventiveOrder,schedulePreventiveOrder,recordDecision,writeLesson,scheduleJob,cancelSchedule,bookPreventive,cancelPreventive,normalizeRoster,localizeDiagnosticOptions,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
     SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
     model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
 });
