@@ -47,7 +47,8 @@ assert.equal(m.assigned,p.id);
 assert.ok(s.decisionHistory.some(x=>x.type==='schedule_fulfilled'&&x.orderId===p.id));
 E.advance(s,D,()=>0.99);
 assert.equal(p.status,'completed');
-assert.equal(s.cash,cash-p.cost,'custo debitado apenas no turno de execução');
+assert.equal(s.preventiveMetrics.cost,p.cost,'custo específico da OS apropriado na execução');
+assert.ok(s.cash<=cash-p.cost,'caixa também registra outros custos operacionais do turno');
 assert.equal(s.preventiveJobs.filter(x=>x.orderId===p.id&&x.status==='completed').length,1);
 assert.equal(E.validate(JSON.parse(JSON.stringify(s))),true);
 // Reserva que vence sem alocação deve ficar não realizada, mantendo a OS na carteira.
