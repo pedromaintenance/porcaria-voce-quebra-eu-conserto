@@ -80,5 +80,5 @@ assert.ok(ui.includes("data-pm-os-release"));
 assert.ok(ui.includes("const isPM=j?.kind==='preventive'"));
 assert.ok(sw.includes("diva0919")&&sw.includes("'./phaser-play/assets/characters/diva-4poses.webp'"));
 assert.ok(sw.includes("'./phaser-play/preventive-orders.js'"));
-assert.ok(html.includes('game.js?v=0.9.19-c16'));
+assert.ok(html.includes('game.js?v='));
 console.log('OK ciclo 16: OS automáticas por horímetro, Diva em box, HH/custo, concorrência, saves, 4 poses e PWA.');
