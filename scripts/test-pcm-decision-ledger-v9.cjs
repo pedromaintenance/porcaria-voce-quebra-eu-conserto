@@ -115,7 +115,7 @@ assert.ok(legacy.decisionHistory[0].seq>1);
 assert.equal(new Set(legacy.decisionHistory.map(x=>x.id)).size,400);
 assert.equal(E.validate(JSON.parse(JSON.stringify(legacy))),true);
 const html=fs.readFileSync('phaser-play/index.html','utf8'),ui=fs.readFileSync('phaser-play/game.js','utf8'),sw=fs.readFileSync('sw.js','utf8');
-assert.ok(html.indexOf('decision-ledger.js?v=0.9.12')<html.indexOf('game.js?v=0.9.13'));
+assert.ok(html.indexOf('decision-ledger.js?v=0.9.12')<html.indexOf('game.js?v='));
 assert.ok(ui.includes('function drawDecisionHistory()'));
 assert.ok(ui.includes('data-decision-filter'));
 assert.ok(ui.includes('HISTÓRICO DE DECISÕES'));

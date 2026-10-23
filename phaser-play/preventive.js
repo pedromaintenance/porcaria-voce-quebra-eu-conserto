@@ -35,11 +35,13 @@
   if(!m)return 'Profissional não encontrado.';
   if(!Number.isInteger(b)||b<0||b>=(s.bays||3))return 'Box inválido.';
   if((s.jobs||[]).some(x=>x.asset===asset))return 'Ativo possui OS corretiva em aberto.';
+  if((s.preventiveOrders||[]).some(x=>x.asset===asset&&x.status!=='completed'))return 'Ativo com OS preventiva aberta.';
   if((s.notifications||[]).some(n=>n.asset===asset&&n.monitorOnly&&['aguarda_revisao_pcm','monitorando'].includes(n.status)))
    return 'Ativo sob monitoramento especial; conclua a avaliação antes da preventiva.';
   if(m.assigned||m.restAt===s.tick||m.normativeUntil>s.tick||inTraining(s,m.id))
    return 'Profissional indisponível neste turno.';
   if((s.jobs||[]).some(j=>j.bay===b))return 'Box ocupado por uma OS corretiva.';
+  if((s.preventiveOrders||[]).some(x=>x.status==='in_progress'&&x.bay===b))return 'Box ocupado por OS preventiva.';
   if((s.scheduleEntries||[]).some(x=>x.status==='planned'&&x.tick===s.tick&&(x.mechanicId===m.id||x.bay===b)))
    return 'Recurso reservado por programação PCM deste turno.';
   if(active(s).some(x=>x.mechanicId===m.id||x.bay===b||x.asset===asset))
@@ -113,7 +115,7 @@
   if(!s||!Array.isArray(s.team)||!Array.isArray(d?.models))throw Error('Dados inválidos para preventiva.');
   const all=Array.from(d.models,model=>Array.from({length:6},(_,i)=>{
    const asset=model.id+'·'+String(i+1).padStart(2,'0'),cover=risk(s,asset);
-   const blocked=(s.jobs||[]).some(x=>x.asset===asset);
+   const blocked=(s.jobs||[]).some(x=>x.asset===asset)||(s.preventiveOrders||[]).some(x=>x.asset===asset&&x.status!=='completed');
    return {asset,model:model.title||model.name||model.id,blocked,
     covered:cover.reduction>0,reduction:cover.reduction,expiresTick:cover.expiresTick};
   })).flat();

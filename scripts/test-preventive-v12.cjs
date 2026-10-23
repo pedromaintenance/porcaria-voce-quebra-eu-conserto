@@ -68,7 +68,7 @@ assert.ok(E.bookPreventive(low,D,P.compute(low,D).assets.find(a=>!a.blocked).ass
 assert.equal(low.preventiveJobs.length,0);
 const html=fs.readFileSync('phaser-play/index.html','utf8'),ui=fs.readFileSync('phaser-play/game.js','utf8'),sw=fs.readFileSync('sw.js','utf8');
 assert.ok(ui.includes("await import('./preventive.js?v=0.9.15')"),'Phaser carrega o módulo');
-assert.ok(ui.includes('function drawPreventive()')&&ui.includes('data-preventive-book')&&ui.includes('data-preventive-cancel'));
+assert.ok(ui.includes('function drawPreventive()')&&ui.includes('data-pm-os-assign')&&ui.includes('data-pm-os-release'));
 assert.ok(ui.includes('data-planning-horizon="preventive"'));
 assert.ok(sw.includes('preventive0915')&&sw.includes("'./phaser-play/preventive.js'"));
 assert.ok(html.includes('game.js?v=0.9.13'),'URLs de cache anteriores preservadas para os testes legados');

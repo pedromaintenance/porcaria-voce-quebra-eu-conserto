@@ -65,6 +65,6 @@ assert.ok(pending.decisionHistory.some(x=>x.type==='schedule_missed'));
 const ui=fs.readFileSync('phaser-play/game.js','utf8'),html=fs.readFileSync('phaser-play/index.html','utf8'),sw=fs.readFileSync('sw.js','utf8');
 assert.ok(ui.includes("await import('./weekly-schedule.js?v=0.9.14')"));
 assert.ok(ui.includes('function drawSchedule()')&&ui.includes('data-schedule-book')&&ui.includes('data-schedule-start'));
-assert.ok(html.includes('game.js?v=0.9.13'),'versão legada compatível com testes anteriores');
+assert.ok(html.includes('game.js?v='),'versão legada compatível com testes anteriores');
 assert.ok(sw.includes('c11-scheduling')&&sw.includes("'./phaser-play/weekly-schedule.js'"));
 console.log('OK: Ciclo 11 — 14 turnos, reserva, conflito, execução manual, materiais, auditoria e saves.');

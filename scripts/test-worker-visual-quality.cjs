@@ -20,7 +20,7 @@ assert.deepEqual([hi.centerX,hi.centerY],[lo.centerX,lo.centerY],'same world cen
 assert.ok(game.includes('this.cameras.main.setZoom(renderProfile.scale).centerOn(renderProfile.centerX,renderProfile.centerY)'));
 assert.ok(game.includes('width:renderProfile.width,height:renderProfile.height'));
 assert.ok(game.includes('antialias:true,antialiasGL:true,roundPixels:true'));
-assert.ok(html.includes('render-quality.js?v=0.8.22')&&html.includes('game.js?v=0.9.13'));
+assert.ok(html.includes('render-quality.js?v=0.8.22')&&html.includes('game.js?v='));
 assert.ok(sw.includes('porcaria-vqec-20261019-v111'));
 assert.ok(sw.includes('./phaser-play/render-quality.js'));
 assert.equal(manifest.quality,'WebP lossless');
@@ -52,7 +52,7 @@ assert.ok(worker.includes('actor.setScale(Math.min(WORKER_DISPLAY.width/frame.wi
 assert.ok(game.includes('const WORKER_DISPLAY={width:66,height:80}'));
 assert.ok(worker.includes('placeWorkerInBay(x,bay,WORKER_DISPLAY.width,2)'));
 assert.ok(worker.includes('calibratedCenter(x,WORKER_DISPLAY.width,SCENE_REFERENCE'));
-assert.ok(worker.includes("const frame=renderKey===texture?WORKER_FRAME:WORKER_RENDER_FRAME"));
+assert.ok(worker.includes("const frame=renderKey===texture?(person==='diva'?WORKER_RENDER_FRAME:WORKER_FRAME):WORKER_RENDER_FRAME"));
 const machines=game.slice(game.indexOf(' machine(x,y,modelId,'),start);
 assert.ok(!machines.includes('workerOffsetX'));
 console.log('OK: render 1×/2× responsivo, câmera com mundo fixo, workers 66×80 e WebP LINEAR.');

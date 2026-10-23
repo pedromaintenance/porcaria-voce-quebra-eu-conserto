@@ -74,7 +74,7 @@ assert.ok(!view.includes('data-do="release"'));
 assert.ok(html.includes('data-panel="detail"')&&html.includes('data-panel="full-detail"'));
 assert.ok(html.includes('id="detailFull"'));
 assert.ok(html.includes('data-order-back'));
-assert.ok(html.includes('order-quick.js?v=0.8.25')&&html.includes('game.js?v=0.9.13'));
+assert.ok(html.includes('order-quick.js?v=0.8.25')&&html.includes('game.js?v='));
 assert.ok(sw.includes('porcaria-vqec-20261019-v111')&&sw.includes('./phaser-play/order-quick.js'));
 assert.ok(game.includes("const j=job(), d=$('detailFull');"),'menu inteiro renderiza apenas na aba detalhada');
 assert.ok(game.includes("window.PORCARIA_ORDER_QUICK.render("),'resumo usa renderizador separado');

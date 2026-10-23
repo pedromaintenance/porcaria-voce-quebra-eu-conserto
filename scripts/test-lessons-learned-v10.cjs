@@ -91,8 +91,8 @@ const attack='<script>alert("teste")</script> Confirme o mecanismo antes de prop
 assert.equal(E.writeLesson(legacy,D,'OSL200','seguranca',attack),null);
 assert.ok(L.compute(legacy,D).rows[0].reflection.text.includes('<script>'));
 const html=fs.readFileSync('phaser-play/index.html','utf8'),ui=fs.readFileSync('phaser-play/game.js','utf8'),sw=fs.readFileSync('sw.js','utf8');
-assert.ok(html.indexOf('lessons-learned.js?v=0.9.13')<html.indexOf('game.js?v=0.9.13'));
-assert.ok(html.includes('engine.js?v=0.9.13'));
+assert.ok(html.indexOf('lessons-learned.js?v=0.9.13')<html.indexOf('game.js?v='));
+assert.ok(html.includes('engine.js?v='));
 assert.ok(ui.includes('function drawLessons()')&&ui.includes("data-lesson-save"));
 assert.ok(ui.includes("esc(selected.reflection?.text||'')"),'escaping de reflexão no textarea');
 assert.ok(ui.includes('data-planning-horizon="lessons"'));

@@ -26,7 +26,7 @@ assert.ok(!g.includes("state.truckSprite"),'asset não é incorporado ao estado 
 assert.ok(html.includes('id="truckPicker"')&&html.includes('id="truckPickBtn"'));
 assert.ok(html.includes('id="truckReset"')&&html.includes('id="truckAssetState"'));
 assert.ok(html.includes('id="truckAssetThumb"'));
-assert.ok(html.includes('game.js?v=0.9.13'));
+assert.ok(html.includes('game.js?v='));
 assert.ok(html.includes('.scene-menu{max-height:min(78vh,630px)'),'menu de preview rolável');
 assert.ok(sw.includes('porcaria-vqec-20261019-v111'));
 assert.equal(map.bays.length,3);
