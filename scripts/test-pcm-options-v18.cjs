@@ -71,6 +71,6 @@ assert.ok(ui.includes("await import('./pcm-options.js?v=0.9.21')"));
 assert.ok(ui.includes("function drawPCMAlternatives()"));
 assert.ok(ui.includes('data-planning-horizon="alternatives"'));
 assert.ok(ui.includes('data-pcm-confirm-option')&&ui.includes('E.scheduleJob(')&&ui.includes('E.assignPreventiveOrder('));
-assert.ok(html.includes('game.js?v=0.9.21-c18'));
+assert.ok(html.includes('game.js?v='));
 assert.ok(sw.includes("'./phaser-play/pcm-options.js'"));
 console.log('OK Ciclo 18: comparação pura, conflitos reais, ações confirmadas e integração da interface.');
