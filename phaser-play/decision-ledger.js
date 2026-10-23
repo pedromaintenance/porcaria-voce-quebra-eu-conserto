@@ -12,12 +12,12 @@
   allocation:'Alocação',purchase:'Compra',receipt:'Recebimento',
   pcm_review:'Revisão PCM',pcm_conversion:'OS criada',planner_evaluation:'Diagnóstico avaliado',completion:'OS concluída',
   schedule_created:'Programação confirmada',schedule_cancelled:'Programação cancelada',schedule_fulfilled:'Reserva cumprida',schedule_missed:'Programação não realizada',
-  preventive_authorized:'Preventiva autorizada',preventive_cancelled:'Preventiva cancelada',preventive_completed:'Preventiva executada',preventive_os_generated:'OS preventiva gerada',preventive_os_assigned:'Preventiva alocada',preventive_os_released:'Equipe preventiva liberada',preventive_os_completed:'OS preventiva concluída',fleet_duty_changed:'Jornada virtual ajustada'
+  preventive_authorized:'Preventiva autorizada',preventive_cancelled:'Preventiva cancelada',preventive_completed:'Preventiva executada',preventive_os_generated:'OS preventiva gerada',preventive_os_assigned:'Preventiva alocada',preventive_os_released:'Equipe preventiva liberada',preventive_os_completed:'OS preventiva concluída',fleet_duty_changed:'Jornada virtual ajustada',production_target_changed:'Meta operacional atualizada'
  });
  const safe=n=>Math.max(0,Number(n)||0),round=n=>Math.round(n*10)/10;
  function typeGroup(e){
   if(['purchase','receipt'].includes(e.type))return 'supply';
-  if(['pcm_review','pcm_conversion','planner_evaluation','schedule_created','schedule_cancelled','schedule_fulfilled','schedule_missed','preventive_authorized','preventive_cancelled','preventive_completed','preventive_os_generated','preventive_os_assigned','preventive_os_released','preventive_os_completed','fleet_duty_changed'].includes(e.type))return 'pcm';
+  if(['pcm_review','pcm_conversion','planner_evaluation','schedule_created','schedule_cancelled','schedule_fulfilled','schedule_missed','preventive_authorized','preventive_cancelled','preventive_completed','preventive_os_generated','preventive_os_assigned','preventive_os_released','preventive_os_completed','fleet_duty_changed','production_target_changed'].includes(e.type))return 'pcm';
   return 'execution';
  }
  function compute(state,data,{filter='all',limit=MAX_VISIBLE}={}){
