@@ -363,7 +363,10 @@ function drawSchedule(){
  const schedule=window.PORCARIA_WEEKLY_SCHEDULE.compute(state,data);
  const metric=(name,value)=>'<div class="planningMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong></div>';
  const booked=new Set(schedule.rows.filter(r=>r.status==='planned').map(r=>r.orderId));
- const freeOrders=state.jobs.filter(j=>!j.assigned&&!booked.has(j.id));
+ const freeOrders=[
+  ...state.jobs.filter(j=>!j.assigned&&!booked.has(j.id)),
+  ...(state.preventiveOrders||[]).filter(j=>j.status==='open'&&!booked.has(j.id))
+ ];
  const option=(value,label)=>'<option value="'+esc(value)+'">'+esc(label)+'</option>';
  let out=planningTabs()
   +'<p class="planningIntro">PROGRAMAÇÃO PCM · 14 turnos. Reserve manualmente profissional e box. A reserva protege o turno contra conflitos, sem executar a OS ou prever sua conclusão.</p>'
@@ -376,7 +379,8 @@ function drawSchedule(){
  if(!freeOrders.length)out+='<p class="planningIntro">Nenhuma OS livre para nova reserva. Cancele uma programação para remarcar.</p>';
  else out+='<section class="scheduleForm"><h3>RESERVAR PROGRAMAÇÃO</h3><div class="scheduleFields">'
   +'<label>Ordem de serviço<select id="scheduleOrder">'
-  +freeOrders.map(j=>option(j.id,j.id+' · '+j.asset+' · '+(j.stage>=6?'Diagnóstico completo':'Investigação '+j.stage+'/6'))).join('')+'</select></label>'
+  +freeOrders.map(j=>option(j.id,j.id+' · '+j.asset+' · '+(j.kind==='preventive'
+    ?'PREVENTIVA · '+j.title:j.stage>=6?'Diagnóstico completo':'Investigação '+j.stage+'/6'))).join('')+'</select></label>'
   +'<label>Profissional<select id="scheduleWorker">'
   +state.team.map(m=>option(m.id,m.name+' · '+m.specialty)).join('')+'</select></label>'
   +'<label>Box<select id="scheduleBay">'
@@ -390,12 +394,14 @@ function drawSchedule(){
  else out+='<div class="scheduleHistory">'+schedule.rows.map(r=>{
   const label={planned:'PROGRAMADA',fulfilled:'EXECUTADA',missed:'NÃO REALIZADA',cancelled:'CANCELADA'}[r.status]||'REGISTRADA';
   return '<article class="planningOrder"><div class="planningOrderHeader"><strong>'
-   +esc(r.orderId)+' · '+esc(r.asset)+'</strong><span class="planningTag">'+label+'</span></div>'
+   +esc(r.orderId)+' · '+esc(r.asset)+(r.kind==='preventive'?' · PREVENTIVA / DIVA':'')
+   +'</strong><span class="planningTag">'+label+'</span></div>'
    +'<p>Turno '+r.tick+' · '+esc(r.mechanic)+' · BOX '+(r.bay+1)+'</p>'
    +'<small>'+esc(r.availability)+(r.blocked?' · Há conflito operacional no turno atual':'')
    +(r.remaining!==null&&r.remaining>10.5?' · Reparo pode exigir mais de um turno':'')+'</small>'
    +(r.status==='planned'?'<div class="actions"><button type="button" class="act secondary" data-schedule-cancel="'+esc(r.id)+'">CANCELAR RESERVA</button>'
-    +(r.canStart?'<button type="button" class="act" data-schedule-start="'+esc(r.id)+'">ALOCAR NO TURNO ATUAL</button>':'')
+    +(r.canStart?'<button type="button" class="act" data-schedule-start="'+esc(r.id)+'">'
+      +(r.kind==='preventive'?'INICIAR PREVENTIVA COM DIVA':'ALOCAR NO TURNO ATUAL')+'</button>':'')
     +'</div>':'')+'</article>';
  }).join('')+'</div>';
  out+='<p class="planningExplanation">'+esc(schedule.note)+'</p>';
@@ -417,6 +423,8 @@ function drawPreventive(){
   +'<div class="planningExplanation">Pacotes: inspeção 2 HH/R$120; serviço 4 HH/R$360. A OS é gerada no vencimento; custos são apropriados somente na conclusão do serviço.</div>'
   +'<h3 class="resourceSection">CARTEIRA DE OS PREVENTIVAS AUTOMÁTICAS</h3>';
  const pending=pm.orders.filter(r=>r.status!=='completed');
+ const pmBookings=new Map((state.scheduleEntries||[]).filter(q=>q.status==='planned')
+  .map(q=>[q.orderId,q]));
  if(!pending.length)out+='<p class="muted">Sem OS preventivas abertas neste turno. Novas OS são geradas automaticamente quando os horímetros atingirem o próximo vencimento.</p>';
  for(const r of pending){
   const mechanic=r.assigned?names.get(r.assigned)||r.assigned:'AGUARDANDO ALOCAÇÃO';
@@ -425,7 +433,13 @@ function drawPreventive(){
    +'<p>'+esc(r.model)+' · Gatilho: '+Number(r.dueHourmeter).toLocaleString('pt-BR')+' h'
    +' · Mecânico: '+esc(mechanic)+(r.assigned?' · BOX '+(r.bay+1)+' · Diva acompanha':'')+'</p>'
    +'<p>Esforço remanescente: '+Number(r.repairRemaining).toLocaleString('pt-BR')+' HH · Custo do serviço: R$ '+brl(r.cost)+'</p>';
+  const booking=pmBookings.get(r.id);
+  if(booking)out+='<p class="planningExplanation">RESERVA PCM · Turno '+booking.tick
+   +' · '+esc(names.get(booking.mechanicId)||booking.mechanicId)
+   +' · BOX '+(booking.bay+1)
+   +(booking.tick===state.tick?' · Utilize o calendário para iniciar a OS.':' · Aguardando o turno programado.')+'</p>';
   if(r.assigned)out+='<button type="button" class="act secondary" data-pm-os-release="'+esc(r.id)+'">LIBERAR EQUIPE E BOX</button>';
+  else if(booking)out+='<p class="planningExplanation">Para alterar a programação, cancele a reserva no calendário PCM.</p>';
   else if(free.length&&usedBays.size<state.bays){
    out+='<div class="scheduleFields"><label>Mecânico<select id="pmWorker-'+esc(r.id)+'">'
     +free.map(m=>'<option value="'+esc(m.id)+'">'+esc(m.name)+'</option>').join('')+'</select></label>'
@@ -1327,8 +1341,13 @@ function events(){
   }
   const scheduleBook=ev.target.closest('[data-schedule-book]');
   if(scheduleBook){
-   const error=E.scheduleJob(state,data,$('scheduleOrder')?.value,$('scheduleWorker')?.value,
-    Number($('scheduleBay')?.value),Number($('scheduleTick')?.value));
+   const chosen=$('scheduleOrder')?.value;
+   const preventive=(state.preventiveOrders||[]).some(p=>p.id===chosen&&p.status==='open');
+   const error=preventive
+    ?E.schedulePreventiveOrder(state,data,chosen,$('scheduleWorker')?.value,
+      Number($('scheduleBay')?.value),Number($('scheduleTick')?.value))
+    :E.scheduleJob(state,data,chosen,$('scheduleWorker')?.value,
+      Number($('scheduleBay')?.value),Number($('scheduleTick')?.value));
    if(error){notify(error);return}
    save();drawSchedule();notify('Reserva confirmada. A OS não foi alocada automaticamente.');return;
   }
@@ -1342,10 +1361,13 @@ function events(){
   if(scheduleStart){
    const booking=(state.scheduleEntries||[]).find(r=>r.status==='planned'&&r.id===scheduleStart.dataset.scheduleStart);
    if(!booking||booking.tick!==state.tick){drawSchedule();notify('Reserva desatualizada. Revise o turno.');return}
-   const error=E.attach(state,booking.orderId,booking.mechanicId,booking.bay,true);
+   const error=booking.kind==='preventive'
+    ?E.assignPreventiveOrder(state,data,booking.orderId,booking.mechanicId,booking.bay)
+    :E.attach(state,booking.orderId,booking.mechanicId,booking.bay,true);
    if(error){drawSchedule();notify(error);return}
    save();drawUI();if(scene)scene.refresh();drawSchedule();
-   notify('OS '+booking.orderId+' alocada manualmente no BOX '+(booking.bay+1)+'.');return;
+   notify('OS '+booking.orderId+' alocada manualmente no BOX '+(booking.bay+1)
+     +(booking.kind==='preventive'?' com Diva.':'.'));return;
   }
   const decisionFilter=ev.target.closest('[data-decision-filter]');
   if(decisionFilter){
