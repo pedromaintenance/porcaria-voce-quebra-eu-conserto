@@ -321,7 +321,7 @@
     INITIAL_TEAM.forEach(profile=>s.team.push(newMechanic(s,rng,profile)));
     FLEET.normalize(s,data); // Inicia em zero: não projeta dados operacionais anteriores.
     spawn(s,data,3,rng);
-    PM_OS.generate(s,data,(type,fields)=>recordDecision(s,type,fields));
+    PM_OS.generate(s,data); // OS iniciais preexistem à primeira decisão do jogador.
     msg(s,'Oficina aberta! Separe os boxes, inspecione a fila e não condene uma peça sem diagnóstico.','ok');
     return s;
   }
