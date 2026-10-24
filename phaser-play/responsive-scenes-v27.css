@@ -1,0 +1,52 @@
+/* P.O.R.C.A.R.I.A. — Ciclo 27: composição responsiva das ilustrações.
+   Coordenadas normalizadas no quadro original (1672×941). Elton: zona segura x>=56%;
+   Pedro: menu contido em x<=34%, sem recobrir rosto/corpo.
+   A foto inteira permanece visível, sem object-fit:cover e sem scroll próprio. */
+.scene-tools{display:none!important}
+html.mobile-play .bayHUD{display:none!important}
+.radioDispatchScene{max-width:100%;min-width:0}
+.radioDispatchArt{position:relative;width:min(100%,108dvh,980px);aspect-ratio:1672/941;margin-inline:auto;overflow:hidden;border-radius:8px;background:#0d1b29;isolation:isolate}
+.radioDispatchArt>img{display:block;width:100%;height:100%;object-fit:contain;object-position:center;pointer-events:none}
+.radioQueueSpotlight{position:absolute;z-index:2;left:57%;right:1.5%;top:9%;bottom:10%;display:grid;grid-template-rows:repeat(3,minmax(0,1fr));gap:clamp(3px,.6vw,8px);min-width:0}
+.radioQueueSpotlight .radioQueueCard{display:flex;flex-direction:column;align-items:stretch;justify-content:center;min-height:0;min-width:0;max-width:100%;gap:clamp(1px,.2vw,4px);padding:clamp(3px,.7vw,10px);text-align:left;cursor:pointer;background:#0c2439f2;border:1px solid #6588a1;border-left:3px solid #ffc65b;border-radius:6px;color:#f4f8fc;overflow:hidden;box-shadow:0 2px 8px #000a}
+.radioQueueSpotlight .radioQueueCard.is-critical{border-left-color:#ff7664;background:#38202af2}
+.radioQueueSpotlight .radioQueueCard.is-active{outline:2px solid #f8c46b;outline-offset:-2px}
+.radioQueueSpotlight .radioQueueCard b{font-size:clamp(9px,1.15vw,15px);color:#ffe0a2;line-height:1.12;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.radioQueueSpotlight .radioQueueCard small{font-size:clamp(8px,.85vw,12px);line-height:1.16;color:#d0e2ed;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;overflow-wrap:anywhere}
+.radioQueueSpotlight .radioQueueCard em{font-size:clamp(8px,.7vw,11px);font-style:normal;font-weight:850;color:#ffbc77}
+.radioQueueSpotlight .radioQueueEmpty{display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;background:#102b3fe8;color:#e6d4a9;border:1px solid #688397;border-radius:6px;grid-row:1/-1}
+.radioDispatchBar{max-width:100%;min-width:0}
+.controlRoomStage{width:min(100%,108dvh,980px);height:auto;max-height:none;aspect-ratio:1672/941;margin-inline:auto}
+.controlRoomStage>img{width:100%;height:100%;object-fit:contain;object-position:center;pointer-events:none}
+.controlRoomSidebar{display:flex!important;left:1.35%;top:19%;width:min(31%,240px);height:75%;max-width:32%;padding:clamp(3px,.65vw,9px);gap:3px;overflow:hidden;z-index:2}
+.controlRoomSidebarItems{overflow-y:auto;min-height:0;scrollbar-width:thin;overscroll-behavior-y:contain;touch-action:pan-y;gap:3px;justify-content:flex-start}
+.controlRoomSidebarTitle{font-size:clamp(9px,.95vw,13px);padding-bottom:3px}
+.controlRoomSidebar .controlNavItem{flex:1 0 auto;min-height:25px;max-height:none;padding:3px 6px;font-size:clamp(9px,.9vw,13px);gap:3px}
+.controlRoomSidebar .controlNavIcon{width:15px}
+.controlRoomMobileMenu,html.mobile-play .controlRoomMobileMenu{display:none!important}
+html.mobile-play .controlRoomStage{width:min(100%,108dvh,980px);height:auto!important;max-height:none!important;aspect-ratio:1672/941}
+html.mobile-play .controlRoomStage>img{object-fit:contain!important}
+html.mobile-play .controlRoomSidebar{display:flex!important;left:1.35%;width:30%;max-width:32%;top:18%;height:76%}
+html.mobile-play .controlRoomSidebarTitle{font-size:9px;letter-spacing:0;line-height:1.2}
+html.mobile-play .controlRoomSidebar .controlNavItem{font-size:10px;min-height:25px;max-height:none;padding:2px 3px;gap:2px}
+html.mobile-play .controlRoomSidebar .controlNavIcon{width:12px}
+.planningRoomStage,html.mobile-play .planningRoomStage{display:block;width:min(100%,60dvh,560px);height:auto!important;max-height:none!important;aspect-ratio:1447/1087;margin:0 auto 12px;overflow:hidden}
+.planningRoomStage>img,html.mobile-play .planningRoomStage>img{display:block;width:100%;height:100%;object-fit:contain!important;object-position:center!important}
+.planningRoomStage figcaption{padding:6px 9px;font-size:clamp(9px,1vw,13px)}
+/* Regras curtas por altura: sem corte da arte e sem sobrepor os personagens.
+   As listas de rádio continuam abaixo da cena; só o preview é sobreposto. */
+@media(max-height:520px){
+ .radioDispatchArt,.controlRoomStage,html.mobile-play .controlRoomStage{width:min(100%,106dvh,980px)}
+ .planningRoomStage,html.mobile-play .planningRoomStage{width:min(100%,58dvh,560px)}
+ .radioQueueSpotlight .radioQueueCard{padding:2px 4px}
+ .radioQueueSpotlight .radioQueueCard b{font-size:9px}
+ .radioQueueSpotlight .radioQueueCard small{font-size:8px;-webkit-line-clamp:1;line-clamp:1}
+ .controlRoomSidebarTitle{display:none}
+ .controlRoomSidebar .controlNavItem,html.mobile-play .controlRoomSidebar .controlNavItem{min-height:22px;font-size:9px}
+}
+@media(max-width:570px) and (orientation:portrait){
+ .radioQueueSpotlight{left:55%;right:1.5%;top:8%;bottom:8%}
+ .radioQueueSpotlight .radioQueueCard small{display:none}
+ .controlRoomSidebar,html.mobile-play .controlRoomSidebar{width:33%;max-width:33%;left:1%;top:13%;height:82%}
+ .controlRoomSidebar .controlNavText{font-size:9px}
+}
