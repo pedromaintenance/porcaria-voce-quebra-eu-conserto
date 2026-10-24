@@ -862,11 +862,24 @@ function renderQueue(){
    '<span class="radioDispatchCount'+(c.critical?' is-critical':'')+'">'+c.label
    +'<b>'+c.n+'</b></span>').join('');
  }
- $('queue').innerHTML=[...state.jobs].filter(j=>{
+ // Um único conjunto filtrado alimenta a prévia ao lado do Elton e a fila completa.
+ // Nenhuma OS adicional é criada; data-pick mantém a navegação existente.
+ const visibleJobs=[...state.jobs].filter(j=>{
  const m=E.model(data,j.modelId),q=FILTER.query.toLowerCase();
  const matched=!q||[j.id,j.report,m?.title,j.asset].some(x=>String(x||'').toLowerCase().includes(q));
  return matched&&(FILTER.queue==='all'||FILTER.queue==='critical'&&j.priority===3||FILTER.queue==='waiting'&&!j.assigned||FILTER.queue==='assigned'&&!!j.assigned);
- }).sort((a,b)=>b.priority-a.priority||a.tickOpen-b.tickOpen).map(j=>{
+ }).sort((a,b)=>b.priority-a.priority||a.tickOpen-b.tickOpen);
+ const spotlight=$('radioQueueSpotlight');
+ if(spotlight)spotlight.innerHTML=visibleJobs.slice(0,3).map(j=>{
+  const m=E.model(data,j.modelId);
+  const severity=j.priority===3?'CRÍTICA':j.priority===2?'ALTA':'MODERADA';
+  return '<button type="button" class="radioQueueCard'+(j.priority===3?' is-critical':'')
+   +(j.id===selected?' is-active':'')+'" data-pick="'+esc(j.id)+'"'
+   +' aria-label="Abrir '+esc(j.id)+' · '+esc(m?.title)+' · '+severity+'">'
+   +'<em>'+severity+' · '+esc(j.id)+'</em>'
+   +'<b>'+esc(m?.title)+'</b><small>'+esc(j.report)+'</small></button>';
+ }).join('')||'<div class="radioQueueEmpty">Nenhuma OS neste filtro.</div>';
+ $('queue').innerHTML=visibleJobs.map(j=>{
  const m=E.model(data,j.modelId);
  const aged=(state.tick-j.tickOpen)*E.SHIFT_HOURS;
  const flags=jobBlockers(j);
