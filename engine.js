@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. v1.3 — turno de 12h, 10,5 HH úteis e meta de produtividade. */
+/* P.O.R.C.A.R.I.A. v0.9.23 — Ciclo 20: energia física por HH, descanso e interrupção de OS. */
 (function(root,factory){
   const E=factory(); if(typeof module!=='undefined'&&module.exports)module.exports=E; root.PORCARIA_ENGINE=E;
 })(typeof window!=='undefined'?window:globalThis,function(){
@@ -156,10 +156,93 @@
     const hh=Math.min(EFFECTIVE_HOURS,Math.max(0,Number(hours)||0));
     if(!hh)return;
     mentalCost(s,m,hh*0.35*profile.fatigueMultiplier);
-    physicalCost(s,m,hh*0.80*profile.fatigueMultiplier);
+    // Energia física: debitada pelo módulo de jornada, uma única taxa sorteada por turno.
     if(profile.moraleLossPerHour)m.morale=clamp(m.morale-hh*profile.moraleLossPerHour);
   }
+  // Ciclo 20: cada profissional recebe uma única taxa de desgaste de 40 a 70
+  // pontos por 10,5 HH, sorteada no primeiro trabalho do turno.
+  const MIN_WORK_ENERGY=40, MIN_TURN_LOSS=40, MAX_TURN_LOSS=70;
   const rnd=(rng=Math.random)=>rng();
+  function normalizePhysical(s){
+    for(const m of s?.team||[]){
+      m.physical=clamp(Number.isFinite(Number(m.physical))?Number(m.physical):80);
+      if(!Number.isInteger(m.exhaustedUntilTick))m.exhaustedUntilTick=0;
+      if(!Number.isInteger(m.fullWorkStreak))m.fullWorkStreak=0;
+      if(!Number.isInteger(m.lastFullWorkTick))m.lastFullWorkTick=-2;
+      if(m.physicalShift && (!Number.isFinite(m.physicalShift.baseLoss)||
+         !Number.isFinite(m.physicalShift.workedHH)))m.physicalShift=null;
+    }
+    return s;
+  }
+  function physicalBlock(s,m,tick=s.tick){
+    if(!m)return 'Profissional não encontrado.';
+    if((m.exhaustedUntilTick||0)>tick)return 'Afastamento por exaustão física: dois turnos de descanso obrigatórios.';
+    if(tick===s.tick){
+      if(Number(m.physical)<MIN_WORK_ENERGY)return 'Energia física abaixo de 40%: descanso obrigatório.';
+      if((m.fullWorkStreak||0)>=2 && m.lastFullWorkTick===tick-1)
+        return 'Dois turnos integrais consecutivos: descanso obrigatório.';
+    }
+    return null;
+  }
+  function physicalShift(s,m,rng=Math.random){
+    if(!m.physicalShift||m.physicalShift.tick!==s.tick)
+      m.physicalShift={tick:s.tick,baseLoss:MIN_TURN_LOSS+Math.floor(Math.min(.999999,Math.max(0,rnd(rng)))*31),workedHH:0};
+    return m.physicalShift;
+  }
+  function physicalCapacity(s,m,rng=Math.random){
+    if(!m||(m.exhaustedUntilTick||0)>s.tick)return 0;
+    const ongoing=m.physicalShift?.tick===s.tick&&m.physicalShift.workedHH>0;
+    if(!ongoing&&physicalBlock(s,m))return 0;
+    const shift=physicalShift(s,m,rng);
+    return Math.max(0,Math.min(EFFECTIVE_HOURS-shift.workedHH,
+      Number(m.physical)*EFFECTIVE_HOURS/shift.baseLoss));
+  }
+  function consumePhysical(s,m,hh,rng=Math.random){
+    const requested=Math.max(0,Number(hh)||0);
+    if(!requested)return 0;
+    const allowed=physicalCapacity(s,m,rng);
+    if(requested>allowed+0.001)
+      throw Error('HH acima da capacidade física autorizada para '+m.id);
+    const shift=physicalShift(s,m,rng);
+    shift.workedHH=Math.round((shift.workedHH+requested)*10000)/10000;
+    m.physical=clamp(m.physical-requested*shift.baseLoss/EFFECTIVE_HOURS);
+    if(m.physical<=0)m.exhaustedUntilTick=Math.max(m.exhaustedUntilTick||0,s.tick+3);
+    return requested;
+  }
+  function interruptExhaustion(s,m){
+    if(m.physical>0)return;
+    m.exhaustedUntilTick=Math.max(m.exhaustedUntilTick||0,s.tick+3);
+    for(const j of s.jobs||[])if(j.assigned===m.id){
+      j.assigned=null;j.bay=null;j.help=false;j.status='interrompida';
+      j.lastInterruption={tick:s.tick,reason:'exaustao_fisica'};
+      m.assigned=null;
+      msg(s,j.id+' interrompida: '+m.name+' esgotou a energia física.','bad');
+    }
+    for(const r of s.preventiveOrders||[])if(r.assigned===m.id&&r.status==='in_progress'){
+      r.assigned=null;r.bay=null;r.status='open';
+      r.lastInterruption={tick:s.tick,reason:'exaustao_fisica'};
+      m.assigned=null;
+      msg(s,r.id+' interrompida: '+m.name+' precisa de dois turnos de descanso.','bad');
+    }
+  }
+  function closePhysicalShift(s,rng=Math.random){
+    for(const m of s.team){
+      const shift=m.physicalShift?.tick===s.tick?m.physicalShift:null;
+      const worked=Number(shift?.workedHH||0);
+      if(worked>=EFFECTIVE_HOURS-0.001){
+        m.fullWorkStreak=m.lastFullWorkTick===s.tick-1?(m.fullWorkStreak||0)+1:1;
+        m.lastFullWorkTick=s.tick;
+      }else m.fullWorkStreak=0;
+      // Recuperação só após 12 horas sem serviço e sem treinamento.
+      if(worked===0&&!TRAINING.active(s,m)){
+        m.physical=clamp(m.physical+MIN_TURN_LOSS+Math.floor(Math.min(.999999,Math.max(0,rnd(rng)))*31));
+        m.mental=clamp(m.mental+17);m.morale=clamp(m.morale+5);
+      }
+      interruptExhaustion(s,m);
+      if(m.physical<24)m.morale=clamp(m.morale-6);
+      m.restAt=null;
+    }
+  }
   const one=(a,rng)=>a[Math.floor(rnd(rng)*a.length)];
   const mix=(a,rng)=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(rnd(rng)*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b};
   const msg=(s,t,kind='info')=>{s.logs.unshift({day:s.day,shift:s.shift,text:t,kind});s.logs=s.logs.slice(0,65)};
@@ -176,7 +259,8 @@
       specialty:profile.specialty,sprite:generic?null:profile.sprite,trainingSprite:profile.trainingSprite||null,
       skill:profile.sprite==='nemuel'?70:Math.round(54+rnd(rng)*35),competencies:baselineSkills(generic?name:profile.sprite),mental:Math.round(72+rnd(rng)*25),
       physical:Math.round(70+rnd(rng)*27),morale:Math.round(74+rnd(rng)*20),
-      assigned:null,restAt:null,normativeUntil:null,normativeReason:null,completed:0,tenure:0};return m;
+      assigned:null,restAt:null,normativeUntil:null,normativeReason:null,completed:0,tenure:0,
+      exhaustedUntilTick:0,fullWorkStreak:0,lastFullWorkTick:-2,physicalShift:null};return m;
   }
   function normalizeRoster(s){
     // Preserva membros, IDs, contratados e OS. Adiciona somente o novo inspetor aos saves legados.
@@ -199,6 +283,7 @@
       const identity=profile?.sprite||m.sprite||m.name||m.id;
       m.competencies=normalizeSkills(m.competencies,identity);
     }
+    normalizePhysical(s);
     s.nextPerson=Math.max(1,Number.isInteger(s.nextPerson)?s.nextPerson:1,maxId+1);
     // Migração idempotente: nenhuma OS antiga nem profissional existente muda de ID.
     if(!s.team.some(m=>m.sprite==='nemuel'||m.name==='Nemuel')){
@@ -448,6 +533,7 @@
     if(!j||!m)return 'Serviço ou mecânico não encontrado.';
     if(m.assigned && m.assigned!==id)return 'Esse mecânico já está alocado.';
     if(m.restAt===s.tick)return 'Esse mecânico está descansando neste turno.';
+    const energyBlock=physicalBlock(s,m);if(energyBlock)return energyBlock;
     const bookedInspectionHH=s.inspectionLabor?.tick===s.tick?(s.inspectionLabor.byEmployee?.[mid]||0):0;
     if(bookedInspectionHH>=EFFECTIVE_HOURS)return 'Profissional sem HH disponíveis: turno reservado para inspeções.';
     if(TRAINING.active(s,m))return 'Este profissional está em treinamento ou integração normativa.';
@@ -475,7 +561,6 @@
     msg(s,`Equipe e box liberados da ${id}. A investigação permanece registrada.`);return null;
   }
   function mentalCost(s,mech,cost){mech.mental=clamp(mech.mental-cost);if(mech.mental<25)mech.morale=clamp(mech.morale-4)}
-  function physicalCost(s,mech,cost){mech.physical=clamp(mech.physical-cost);if(mech.physical<25)mech.morale=clamp(mech.morale-4)}
   // Registro exclusivamente de fatos observados pelo jogador/mecânico.
   // A etapa ainda em análise NUNCA recebe a resposta correta antecipadamente.
   function diagnosticEvent(s,j,stage,outcome,source,m,value){
@@ -500,14 +585,14 @@
     if(ok){
       diagnosticEvent(s,j,currentStage,'confirmed','player',m,diagnosticLabel(j,currentStage,chosen));
       j.stage++; j.diagRemaining=clamp(j.diagRemaining-1,0,10000);
-      m.mental=clamp(m.mental+4);m.physical=clamp(m.physical+3);m.morale=clamp(m.morale+2);
+      m.mental=clamp(m.mental+4);m.morale=clamp(m.morale+2);
       s.player.mental=clamp(s.player.mental+3);s.player.physical=clamp(s.player.physical+2);
       msg(s,`Boa investigação na ${id}: etapa ${j.stage}/6 confirmada. Dupla recuperou energia.`,'ok');
       if(j.stage===6){j.status='apto';j.diagRemaining=0;msg(s,`${id}: diagnóstico confirmado. Providencie peças e ferramentas para a corretiva.`,'ok')}
     }else{
       diagnosticEvent(s,j,currentStage,'rejected','player',m,diagnosticLabel(j,currentStage,chosen));
       j.wrong++;j.diagRemaining+=0.5;j.reworkHours+=0.5;
-      m.mental=clamp(m.mental-8);m.physical=clamp(m.physical-3);m.morale=clamp(m.morale-5);
+      m.mental=clamp(m.mental-8);m.morale=clamp(m.morale-5);
       s.player.mental=clamp(s.player.mental-9);s.player.physical=clamp(s.player.physical-3);
       s.cash=Math.max(0,s.cash-25);
       msg(s,`${id}: hipótese incorreta; retrabalho, desgaste e R$25 de custo adicional.`,'bad');
@@ -661,20 +746,30 @@
   function advance(s,d,rng=Math.random){
     FLEET.normalize(s,d);
     if(s.fleetTelemetry.throughTick!==s.tick)throw Error('Avanço do turno fora da sequência da telemetria.');
+    normalizePhysical(s);
     const correctiveAtStart=s.jobs.map(j=>j.asset);
     const completedRepairHours={};
     let hours=0;let completed=0;let blocks=0;
     const inspected=(s.inspections||[]).filter(i=>i.tick===s.tick&&i.inspectorId&&['clear','finding','notified'].includes(i.status));
-    hours+=inspected.reduce((sum,i)=>sum+Number(i.estimatedHH||0),0);
-    const plannerSettlements=[];
     const pressure=productivityProfile(s.productivityTarget);
-    const pmOS=PM_OS.settle(s,(member,hh)=>applyWorkPressure(s,member,hh,pressure),
-      (type,fields)=>recordDecision(s,type,fields));
+    const work=(member,hh)=>{applyWorkPressure(s,member,hh,pressure);consumePhysical(s,member,hh,rng);};
+    const capacity=member=>physicalCapacity(s,member,rng);
+    // Inspeções realizadas consomem energia no mesmo turno das OS.
+    for(const i of inspected){
+      const member=employee(s,i.inspectorId),hh=Number(i.estimatedHH||0);
+      if(!member||hh<=0)continue;
+      const actual=Math.min(hh,capacity(member));
+      if(actual>0){work(member,actual);hours+=actual;}
+      if(actual+0.001<hh)msg(s,'Inspeção '+i.id+' limitada pela capacidade física de '+member.name+'.','bad');
+    }
+    const plannerSettlements=[];
+    const pmOS=PM_OS.settle(s,work,
+      (type,fields)=>recordDecision(s,type,fields),capacity);
     hours+=pmOS.hours;
     // HH de preventiva competem com a capacidade da equipe e da oficina.
-    hours+=PREVENTIVE.settle(s,(member,hh)=>applyWorkPressure(s,member,hh,pressure),
-      (type,fields)=>recordDecision(s,type,fields));
-    const availableCrew=s.team.filter(m=>m.restAt!==s.tick&&!TRAINING.active(s,m)).length;
+    hours+=PREVENTIVE.settle(s,work,
+      (type,fields)=>recordDecision(s,type,fields),capacity);
+    const availableCrew=s.team.filter(m=>m.restAt!==s.tick&&!TRAINING.active(s,m)&&!physicalBlock(s,m)).length;
     const operating=[...s.jobs];
     // Todo ativo com OS ativa acumula indisponibilidade virtual por turno, incluindo o turno de conclusão.
     // Esperas por material e ferramenta podem coincidir: são dimensões explicativas, NÃO somáveis.
@@ -692,8 +787,8 @@
       if(!j.assigned)continue;
       const m=employee(s,j.assigned), c=scenario(d,j.scene);
       const booked=s.inspectionLabor?.tick===s.tick?(s.inspectionLabor.byEmployee?.[m?.id]||0):0;
-      const availableHH=Math.max(0,EFFECTIVE_HOURS-booked);
       if(!m){j.assigned=null;j.bay=null;continue}
+      const availableHH=Math.max(0,Math.min(EFFECTIVE_HOURS-booked,capacity(m)));
       if(!haveTool(s,c)){j.status='ferramenta';j.toolWait++;blocks++;continue}
       const settlement=settlePlannerDiagnosis(s,d,j,m);
       if(settlement)plannerSettlements.push(settlement);
@@ -716,7 +811,7 @@
           }
           spent+=1;
         }
-        applyWorkPressure(s,m,spent,pressure);
+        if(spent>0)work(m,spent);
         if(j.help){s.player.mental=clamp(s.player.mental-3);s.player.physical=clamp(s.player.physical-1);}
         j.worked+=spent;j.costLabor+=spent*24;hours+=spent;
         if(spent>0)learnByDoing(s,m,j,c,rng);
@@ -734,7 +829,7 @@
       j.repairRemaining=Math.max(0,Math.round((remaining-used)*10)/10);
       j.worked+=workedHH;j.costLabor+=workedHH*42;hours+=workedHH;
       if(workedHH>0)learnByDoing(s,m,j,c,rng);
-      applyWorkPressure(s,m,workedHH,pressure);
+      if(workedHH>0)work(m,workedHH);
       if(j.help){s.player.physical=clamp(s.player.physical-4);s.player.mental=clamp(s.player.mental-1.5);}
       if(j.repairRemaining<=0.01){
         // HH reais do reparo neste turno são o proxy de momento de liberação.
@@ -742,11 +837,8 @@
         complete(s,j,d,m);completed++;
       }
     }
-    // Rest is taken during the shift just completed.
-    for(const m of s.team){
-      if(m.restAt===s.tick){m.mental=clamp(m.mental+17);m.physical=clamp(m.physical+20);m.morale=clamp(m.morale+5);m.restAt=null}
-      if(m.mental<24||m.physical<24)m.morale=clamp(m.morale-6);
-    }
+    // Recuperação física e bloqueios ocorrem por turno, nunca pela virada do dia.
+    closePhysicalShift(s,rng);
     for(const result of plannerSettlements){
       const mechanic=result.mechanic;
       if(result.perfect){
@@ -755,7 +847,6 @@
         msg(s,'Plano PCM aplicado com precisão: recuperação de energia e moral da equipe.','ok');
       }else if(result.errors){
         mechanic.mental=clamp(mechanic.mental-result.errors*8);
-        mechanic.physical=clamp(mechanic.physical-result.errors*3);
         mechanic.morale=clamp(mechanic.morale-result.errors*5);
         msg(s,'O serviço exigiu retrabalho por inconsistências do planejamento.','bad');
       }
@@ -786,7 +877,7 @@
       const wages=s.team.length*220+180; s.cash-=wages;s.metrics.wages+=wages;
       s.player.mental=clamp(s.player.mental+16);s.player.physical=clamp(s.player.physical+18);
       for(const m of [...s.team]){
-        m.tenure++;m.mental=clamp(m.mental+17);m.physical=clamp(m.physical+20);
+        m.tenure++;m.mental=clamp(m.mental+17);
         if(m.mental>58&&m.physical>58)m.morale=clamp(m.morale+3);
         if(m.morale<20&&rnd(rng)<0.38){s.team=s.team.filter(x=>x.id!==m.id);
           for(const j of s.jobs){if(j.assigned===m.id){j.assigned=null;j.bay=null;j.help=false;j.status=j.stage>=6?'apto':'fila';}}
@@ -826,7 +917,7 @@
       pendingMaterials:s.jobs.filter(j=>j.status==='material').length, pendingTools:s.jobs.filter(j=>j.status==='ferramenta').length};
   }
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
-  return {create,initFleet,setFleetDuty,generatePreventiveOrders,assignPreventiveOrder,releasePreventiveOrder,schedulePreventiveOrder,recordDecision,writeLesson,scheduleJob,cancelSchedule,bookPreventive,cancelPreventive,normalizeRoster,localizeDiagnosticOptions,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
+  return {create,initFleet,setFleetDuty,generatePreventiveOrders,assignPreventiveOrder,releasePreventiveOrder,schedulePreventiveOrder,recordDecision,writeLesson,scheduleJob,cancelSchedule,bookPreventive,cancelPreventive,normalizePhysical,physicalBlock,physicalCapacity,consumePhysical,normalizeRoster,localizeDiagnosticOptions,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
     SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
     model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
 });
