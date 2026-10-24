@@ -306,16 +306,20 @@
   // Casos antigos continuam armazenados para não destruir o histórico, porém sem
   // simular um nível de instalação que não existe na fonte.
   function sapEligible(d,sc){
-    return !Array.isArray(d?.sapPaths)||
+    const reference=Array.isArray(d?.sapInstalledPaths)?d.sapInstalledPaths:d?.sapPaths;
+    return !Array.isArray(reference)||
       (sc?.sapPathMapping?.status==='validado_na_planilha'&&
-       sc?.sapPartMapping?.status!=='provisorio');
+       sc?.sapPartMapping?.status!=='provisorio'&&
+       Array.isArray(sc?.path)&&sc.path.length===3&&
+       reference.some(p=>p.modelId===sc.modelId&&
+         p.system===sc.path[0]&&p.group===sc.path[1]&&p.subgroup===sc.path[2]));
   }
   function validateDiagnosticReference(d,sc){
     const fail=stage=>{throw Error('Cenário '+(sc?.id||'(sem ID)')+
       ': '+stage+' fora da referência de diagnóstico; mapear o caso ao catálogo antes de publicar.');};
     if(!d||!sc||!Array.isArray(d.paths)||!Array.isArray(d.catalog?.parts)||
         !Array.isArray(d.catalog?.damages)||!Array.isArray(d.catalog?.causes))fail('Catálogo SAP');
-    const reference=sapEligible(d,sc)&&Array.isArray(d.sapPaths)?d.sapPaths:d.paths;
+    const reference=sapEligible(d,sc)?(d.sapInstalledPaths||d.sapPaths||d.paths):d.paths;
     if(!Array.isArray(sc.path)||sc.path.length!==3||
         !reference.some(p=>p.modelId===sc.modelId&&
           p.system===sc.path[0]&&p.group===sc.path[1]&&p.subgroup===sc.path[2]))
@@ -328,8 +332,8 @@
   function options(d,sc,seed){
     validateDiagnosticReference(d,sc);
     const rng=mulberry32(seed);
-    const authoritative=sapEligible(d,sc)&&Array.isArray(d.sapPaths);
-    const path=(authoritative?d.sapPaths:d.paths).filter(p=>p.modelId===sc.modelId);
+    const authoritative=sapEligible(d,sc)&&Array.isArray(d.sapInstalledPaths||d.sapPaths);
+    const path=(authoritative?(d.sapInstalledPaths||d.sapPaths):d.paths).filter(p=>p.modelId===sc.modelId);
     const sameSys=path.filter(p=>p.system===sc.path[0]);
     const sameGroup=sameSys.filter(p=>p.group===sc.path[1]);
     const names={
@@ -359,7 +363,7 @@
       if(!Array.isArray(j.options))continue;
       const sc=d.scenarios?.find(x=>x.id===j.scene);
       if(!sc)continue;
-      const path=(sapEligible(d,sc)&&Array.isArray(d.sapPaths)?d.sapPaths:d.paths).filter(p=>p.modelId===sc.modelId);
+      const path=(sapEligible(d,sc)?(d.sapInstalledPaths||d.sapPaths||d.paths):d.paths).filter(p=>p.modelId===sc.modelId);
       const sameSys=path.filter(p=>p.system===sc.path[0]);
       const sameGroup=sameSys.filter(p=>p.group===sc.path[1]);
       const defs=[
@@ -375,8 +379,9 @@
         for(const option of j.options[i]){
           if(!option)continue;
           const previous=sc.sapPathMapping?.previousPath?.[i];
-          if(sapEligible(d,sc)&&previous!==sc.path[i]&&option.id===previous)
-            option.id=sc.path[i];
+          const canonical=sc.sapPathMapping?.canonicalPath?.[i];
+          if(sapEligible(d,sc)&&option.id!==sc.path[i]&&
+             (option.id===previous||option.id===canonical))option.id=sc.path[i];
           if(!names.has(option.id))continue;
           oldLabels.set(option.label,names.get(option.id));
           option.label=names.get(option.id);
@@ -385,6 +390,12 @@
         for(const event of j.diagnosticLog||[]){
           if(event?.stage===i&&event.outcome!=='evidence'&&oldLabels.has(event.value))
             event.value=oldLabels.get(event.value);
+        }
+        if(sapEligible(d,sc)&&Array.isArray(j.plannerDiagnosis?.codes)){
+          const oldCode=j.plannerDiagnosis.codes[i],canonical=sc.sapPathMapping?.canonicalPath?.[i];
+          if(oldCode!==sc.path[i]&&
+             (oldCode===canonical||oldCode===sc.sapPathMapping?.previousPath?.[i]))
+            j.plannerDiagnosis.codes[i]=sc.path[i];
         }
         const unique=new Map();
         for(const option of j.options[i])if(!unique.has(option.id))unique.set(option.id,option);
@@ -421,7 +432,7 @@
           j.options[3]=[...distinct.values()].slice(0,4);
         }
       }
-      if(!sapEligible(d,sc))j.sapClassificationBlocked=true;
+      j.sapClassificationBlocked=!sapEligible(d,sc);
     }
     return s;
   }
