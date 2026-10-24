@@ -184,3 +184,8 @@ O menu compacto SETORES libera a área útil em paisagem. O botão Voltar do And
 ## Ciclo 24 — Painéis Técnicos Mobile / v0.9.27 (24/10/2026)
 
 Leitura de PCM, diagnóstico, inspeção e monitoramento em Android retrato/paisagem, com controles adequados ao toque, abas e imagens compactas, modal rolável e atalhos para seções internas. Sem mudanças no motor ou saves. [Detalhes e roteiro de validação](PAINEIS_TECNICOS_MOBILE_CICLO24.md).
+
+
+## Política de catálogo SAP — 6 níveis (24/10/2026)
+
+O vocabulário de Sistema → Grupo → Subgrupo → Componente → Dano → Causa passa a ser **contrato de fonte imutável** para novos cenários. Vocabulário OEM é mapeado nos casos; nunca altera as opções SAP. Proteção no motor, teste de regressão e registro de 43 cenas referenciando 32 caminhos didáticos não validados em [Contrato do Diagnóstico SAP](CONTRATO_DIAGNOSTICO_SAP_SEIS_NIVEIS.md). A reconciliação das rotas é pendência de conteúdo: não realizar substituição semanticamente artificial.
