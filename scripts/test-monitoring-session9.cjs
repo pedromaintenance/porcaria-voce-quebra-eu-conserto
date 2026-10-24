@@ -5,7 +5,7 @@ const fs=require('node:fs'),path=require('node:path');
 const D=require('../game-data.json'),E=require('../engine.js'),I=require('../phaser-play/inspection.js');
 const M=require('../phaser-play/monitoring.js'),V=require('../phaser-play/inspection-view.js');
 assert.equal(D.scenarios.length,124,'missões anteriores preservadas');
-assert.equal(D.paths.length,403,'sem alterar locações funcionais');
+assert.equal(D.paths.length,493,'sem alterar locações funcionais');
 assert.equal(Object.keys(M.PROTOCOLS).length,3,'três estudos-piloto');
 for(const [id,p] of Object.entries(M.PROTOCOLS)){
  assert.ok(D.models.some(m=>m.id===p.modelId),id+' modelo cadastrado');
