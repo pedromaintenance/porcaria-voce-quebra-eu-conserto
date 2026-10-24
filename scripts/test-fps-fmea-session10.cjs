@@ -6,7 +6,7 @@ const M=require('../phaser-play/monitoring.js'),C=require('../phaser-play/condit
 const P=require('../phaser-play/planning.js'),V=require('../phaser-play/inspection-view.js');
 const FPS=require('../phaser-play/fps-catalog-expansion.js');
 assert.equal(D.scenarios.length,124);
-assert.equal(D.paths.length,403);
+assert.equal(D.paths.length,493);
 assert.equal(FPS.ENTRIES.length,24);
 assert.equal(C.byCategory('fps').length,24);
 assert.equal(FPS.VERSION,'7.0.0');
