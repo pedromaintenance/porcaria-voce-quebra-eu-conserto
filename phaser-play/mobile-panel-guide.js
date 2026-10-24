@@ -14,7 +14,7 @@
    {label:'Risco',selector:'#planningNotifications .inspectionNotification'}
   ],
   monitoring:[
-   {label:'Categorias',selector:'.controlRoomMobileMenu'},
+   {label:'Categorias',selector:'.controlRoomSidebar'},
    {label:'Indicadores',selector:'.controlRoomDashboard .inspectionMetrics'},
    {label:'Carteira',selector:'.controlRoomOperations[aria-label="Carteira de condições recebidas"]'},
    {label:'Catálogo',selector:'.controlRoomOperations[aria-label="Catálogo de sintomas de condição"]'}

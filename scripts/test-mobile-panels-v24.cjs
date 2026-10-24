@@ -8,7 +8,7 @@ const sw=fs.readFileSync('sw.js','utf8');
 const data=JSON.parse(fs.readFileSync('game-data.json','utf8'));
 assert.ok(GUIDE.MAP.planning.length>=2 && GUIDE.MAP.monitoring.length>=3);
 assert.ok(GUIDE.MAP['full-detail'].length>=3);
-assert.deepEqual(GUIDE.entries('monitoring',sel=>sel.includes('Catálogo')||sel.includes('controlRoomMobileMenu')).map(x=>x.label),['Início','Categorias','Catálogo']);
+assert.deepEqual(GUIDE.entries('monitoring',sel=>sel.includes('Catálogo')||sel.includes('controlRoomSidebar')).map(x=>x.label),['Início','Categorias','Catálogo']);
 assert.deepEqual(GUIDE.entries('none',()=>true).map(x=>x.label),['Início']);
 assert.equal(GUIDE.topFor({getBoundingClientRect:()=>({top:210})},{
  getBoundingClientRect:()=>({top:80}),scrollTop:100
@@ -25,7 +25,7 @@ for(const [description,css] of Object.entries({
  'apenas mobile':'html.mobile-play .mobile-panel-guide:not([hidden]){display:flex}',
  'campos PCM':'html.mobile-play .pcmHypothesisGrid{grid-template-columns:repeat(2,minmax(0,1fr))}',
  'fontes legíveis':'html.mobile-play .pcmHypothesis select,html.mobile-play .fieldSchedule select,',
- 'monitoramento mobile':'html.mobile-play .controlRoomSidebar{display:none!important}',
+ 'monitoramento responsivo':'html.mobile-play .controlRoomSidebar{display:none!important}',
  'diagnóstico':'html.mobile-play .diagnosticGroups{grid-template-columns:1fr}',
  'leitura horizontal':'html.mobile-play .planningTabs{flex-wrap:nowrap;overflow-x:auto;',
  'notch seguro':'html.mobile-play #menuOverlay .modalContent{min-height:0;flex:1 1 auto;'
@@ -38,7 +38,7 @@ const scroll={scrollTop:100,rect:{top:80},getBoundingClientRect(){return this.re
 const monitoring={
  querySelector(selector){
   const map={
-   '.controlRoomMobileMenu':{getBoundingClientRect:()=>({top:210})},
+   '.controlRoomSidebar':{getBoundingClientRect:()=>({top:210})},
    '.controlRoomDashboard .inspectionMetrics':{getBoundingClientRect:()=>({top:260})},
    '.controlRoomOperations[aria-label="Carteira de condições recebidas"]':{getBoundingClientRect:()=>({top:510})},
    '.controlRoomOperations[aria-label="Catálogo de sintomas de condição"]':{getBoundingClientRect:()=>({top:900})}
