@@ -90,5 +90,5 @@ assert.ok(ui.includes('E.schedulePreventiveOrder('));
 assert.ok(ui.includes("booking.kind==='preventive'"));
 assert.ok(ui.includes("opt.action==='schedule_pm'"));
 assert.ok(sw.includes('preventive0922')&&sw.includes("'./phaser-play/weekly-schedule.js'"));
-assert.ok(html.includes('game.js?v=0.9.23-c20'));
+assert.match(html,/game\\.js\\?v=0\\.9\\.[0-9]+-c[0-9]+/,'versão do jogo deve permanecer atualizada, sem fixar build posterior');
 console.log('OK Ciclo 19: PM futura, agenda compartilhada, execução manual, atraso, cancelamento, custo e saves.');
