@@ -16,7 +16,7 @@ assert.equal(GUIDE.topFor({getBoundingClientRect:()=>({top:210})},{
 assert.equal(GUIDE.topFor(null,{}),0);
 assert.ok(html.includes('id="mobilePanelGuide"'));
 assert.ok(html.includes('mobile-panel-guide.js?v=0.9.27-c24'));
-assert.ok(html.includes('game.js?v=0.9.27-c24'));
+assert.ok(/game\\.js\\?v=0\\.9\\.\\d+/.test(html),'versão de script independente dos ciclos anteriores');
 assert.ok(html.indexOf('mobile-panel-guide.js?v=')<html.indexOf('game.js?v='),'guia carregado antes do jogo');
 assert.ok(sw.includes('mobile-panel-guide.js')&&sw.includes('technical0927'));
 assert.ok(js.includes('PANEL_GUIDE?.render?.(name)'), 'cada abertura atualiza atalhos disponíveis');
