@@ -1,3 +1,7 @@
+> **Atualização — Ciclo 26:** os níveis Sistema, Grupo e Subgrupo passam a usar os **segmentos do ID físico da 1412** (ex.: FID1/FID2). Não confundir com tipo de objeto FIDR. Recuperados 16 casos e mantidas 45 pendências. [Auditoria](SAP_INSTANCIAS_FISICAS_CICLO26.md).
+
+---
+
 > **Atualização 24/10/2026 — referência substituída:** a planilha original do perfil SAP foi fornecida e auditada. Ela contém **683 partes objeto**, inclusive **3263 — Retainer / Retentor**. Não use as contagens de 43 componentes e a hipótese anterior de que “Retentor FPS” seria rótulo SAP oficial. O nome **Retentor FPS** era uma extensão do jogo; a denominação SAP correta é **Retentor**, código 3263. A fonte atual e a comparação por cenário estão documentadas em [Importação Integral SAP](IMPORTACAO_INTEGRAL_SAP_1412_CATALOG_PROFILE.md).
 
 ---
