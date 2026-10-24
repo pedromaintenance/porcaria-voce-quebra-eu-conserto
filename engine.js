@@ -373,7 +373,11 @@
         for(const r of [...def.pool,...path])if(r[def.key]&&!names.has(r[def.key]))names.set(r[def.key],r[def.name]);
         const oldLabels=new Map();
         for(const option of j.options[i]){
-          if(!option||!names.has(option.id))continue;
+          if(!option)continue;
+          const previous=sc.sapPathMapping?.previousPath?.[i];
+          if(sapEligible(d,sc)&&previous!==sc.path[i]&&option.id===previous)
+            option.id=sc.path[i];
+          if(!names.has(option.id))continue;
           oldLabels.set(option.label,names.get(option.id));
           option.label=names.get(option.id);
         }
@@ -381,6 +385,15 @@
         for(const event of j.diagnosticLog||[]){
           if(event?.stage===i&&event.outcome!=='evidence'&&oldLabels.has(event.value))
             event.value=oldLabels.get(event.value);
+        }
+        const unique=new Map();
+        for(const option of j.options[i])if(!unique.has(option.id))unique.set(option.id,option);
+        if(unique.size!==j.options[i].length&&sapEligible(d,sc)){
+          const pool=[...names].filter(([id])=>!unique.has(id));
+          while(unique.size<4&&pool.length){
+            const [id,label]=pool.shift();unique.set(id,{id,label});
+          }
+          j.options[i]=[...unique.values()].slice(0,4);
         }
       }
       // Salvar dados antigos não autoriza inventar nomenclaturas.
@@ -851,6 +864,10 @@
     // Todo ativo com OS ativa acumula indisponibilidade virtual por turno, incluindo o turno de conclusão.
     // Esperas por material e ferramenta podem coincidir: são dimensões explicativas, NÃO somáveis.
     for(const j of operating){
+      if(!sapEligible(d,scenario(d,j.scene))){
+        j.sapClassificationBlocked=true;
+        if(j.assigned)j.status='aguarda_mapeamento_sap';
+      }
       j.exposureShifts=(j.exposureShifts||0)+1;
       const sc=scenario(d,j.scene);
       if(j.stage>=6&&!j.materialUsed&&sc&&!(s.stock[sc.material]>0))
@@ -861,6 +878,7 @@
     // Contabiliza somente turnos sem alocação antes do diagnóstico (inclusive saves legados).
     for(const j of operating)if(!j.assigned&&j.stage===0)j.idleShifts=(j.idleShifts||0)+1;
     for(const j of operating){
+      if(!sapEligible(d,scenario(d,j.scene))){blocks++;continue;}
       if(!j.assigned)continue;
       const m=employee(s,j.assigned), c=scenario(d,j.scene);
       const booked=s.inspectionLabor?.tick===s.tick?(s.inspectionLabor.byEmployee?.[m?.id]||0):0;
