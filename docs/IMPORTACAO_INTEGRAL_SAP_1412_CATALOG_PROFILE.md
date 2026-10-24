@@ -5,7 +5,7 @@
 
 ## Fontes entregues em 24/10/2026
 - `1412 Mobile(3).xlsx`: 2.535 locais de instalação, com ID integral, ID do superior, tipo de objeto, descrições EN/PT, categoria, fabricante, modelo, tag, estado da importação e perfil de catálogo.
-- `Catalog Profile - Pats, Coding, Damage and Cause(2).xlsx`: 683 códigos de **Parte objeto** (New Code List), 987 tipos de objeto, 31.107 vinculações entre grupo e código (WORKING COPY), 66 danos, 81 causas, 32 códigos de origem e 5 grupos de origem.
+- `Catalog Profile - Pats, Coding, Damage and Cause(2).xlsx`: 683 códigos de **Parte objeto** (New Code List), 987 tipos de objeto, 31.106 vinculações (+ 1 linha de identificação do catálogo) entre grupo e código (WORKING COPY), 66 danos, 81 causas, 32 códigos de origem e 5 grupos de origem.
 - As planilhas contêm **Retainer → Retentor (código 3263)**. Esse é um valor real da lista, não deve ser traduzido novamente para “Trava do Fixador”. O P/N OEM pode ser descrito no texto técnico da missão.
 
 ## Arquivos versionados
@@ -30,7 +30,7 @@ Foram auditados 124 cenários existentes:
 - O Service Worker inclui os dois JSONs de referência em cache novo, preservando o acesso offline.
 
 ## Validação técnica
-- `scripts/test-sap-diagnostic-contract-v25.cjs` foi atualizado para conferir o conteúdo de referência (683 partes, 2.535 locais, 987 tipos, 31.107 vínculos, 66 danos e 81 causas) e que todos os **cenários liberados** usem códigos e descrições oficiais nos seis estágios, com quatro alternativas e sem nomes inventados.
+- `scripts/test-sap-diagnostic-contract-v25.cjs` foi atualizado para conferir o conteúdo de referência (683 partes, 2.535 locais, 987 tipos, 31.106 vínculos (+ 1 linha de identificação do catálogo), 66 danos e 81 causas) e que todos os **cenários liberados** usem códigos e descrições oficiais nos seis estágios, com quatro alternativas e sem nomes inventados.
 - Testes de regressão de funcionalidades, API de saves e PCM devem continuar passando no CI.
 - Pendente para um ciclo específico: revisão técnica caso a caso dos 59 cenários, com comprovação da melhor FL existente ou descontinuidade explícita do roteiro no jogo.
 
