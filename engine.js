@@ -299,7 +299,25 @@
     const occupied=new Set(s.team.flatMap(m=>[m.sprite,m.name]).filter(Boolean));
     return [...RECRUIT_POOL.filter(p=>!occupied.has(p.sprite)&&!occupied.has(p.name)),GENERIC_RECRUIT];
   }
+  // Contrato dos seis níveis: a fonte é data.paths + data.catalog, NUNCA a
+  // terminologia OEM dos roteiros. Cenários se adaptam ao catálogo; não o inverso.
+  // As extensões didáticas legadas estão sob auditoria até mapeamento SAP.
+  function validateDiagnosticReference(d,sc){
+    const fail=stage=>{throw Error('Cenário '+(sc?.id||'(sem ID)')+
+      ': '+stage+' fora da referência de diagnóstico; mapear o caso ao catálogo antes de publicar.');};
+    if(!d||!sc||!Array.isArray(d.paths)||!Array.isArray(d.catalog?.parts)||
+        !Array.isArray(d.catalog?.damages)||!Array.isArray(d.catalog?.causes))fail('Catálogo SAP');
+    if(!Array.isArray(sc.path)||sc.path.length!==3||
+        !d.paths.some(p=>p.modelId===sc.modelId&&
+          p.system===sc.path[0]&&p.group===sc.path[1]&&p.subgroup===sc.path[2]))
+      fail('Sistema / Grupo / Subgrupo');
+    if(!d.catalog.parts.includes(sc.component))fail('Componente');
+    if(!d.catalog.damages.some(p=>p.pt===sc.damage))fail('Dano');
+    if(!d.catalog.causes.some(p=>p.pt===sc.cause))fail('Causa');
+    return true;
+  }
   function options(d,sc,seed){
+    validateDiagnosticReference(d,sc);
     const rng=mulberry32(seed);
     const path=d.paths.filter(p=>p.modelId===sc.modelId);
     const sameSys=path.filter(p=>p.system===sc.path[0]);
@@ -961,7 +979,7 @@
       pendingMaterials:s.jobs.filter(j=>j.status==='material').length, pendingTools:s.jobs.filter(j=>j.status==='ferramenta').length};
   }
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
-  return {create,initFleet,setFleetDuty,ANOMALY,generatePreventiveOrders,assignPreventiveOrder,releasePreventiveOrder,schedulePreventiveOrder,recordDecision,writeLesson,scheduleJob,cancelSchedule,bookPreventive,cancelPreventive,normalizePhysical,physicalBlock,physicalCapacity,consumePhysical,normalizeRoster,localizeDiagnosticOptions,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
+  return {create,initFleet,setFleetDuty,ANOMALY,generatePreventiveOrders,assignPreventiveOrder,releasePreventiveOrder,schedulePreventiveOrder,recordDecision,writeLesson,scheduleJob,cancelSchedule,bookPreventive,cancelPreventive,normalizePhysical,physicalBlock,physicalCapacity,consumePhysical,normalizeRoster,localizeDiagnosticOptions,validateDiagnosticReference,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
     SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
     model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
 });
