@@ -169,3 +169,8 @@ Implementação na branch do Ciclo 20: débito físico por HH, taxa única sorte
 ## Etapa 5 — Ciclo 21 / v0.9.24 (24/10/2026)
 
 Progressão observada → agravada → crítica → falha funcional, baseada em idade, prioridade e família. Integra notificação PCM, custo virtual único, geração controlada de corretiva pela Fila de OS, histórico auditável e migração de saves. [Contrato e validação](PROGRESSAO_ANORMALIDADES_CICLO21.md).
+
+
+## Ciclo 22 — Modo Mobile / v0.9.25 (24/10/2026)
+
+Correção de rolagem vertical sobre o canvas Phaser, toque concluído com tolerância a arrastos, PWA fullscreen/landscape independente do PWA desktop, botões de instalação e tela cheia, layout responsivo em paisagem e testes automatizados. [Contrato de experiência mobile](EXPERIENCIA_MOBILE_CICLO22.md). Validação visual e gestual no Chrome Android ainda necessária.
