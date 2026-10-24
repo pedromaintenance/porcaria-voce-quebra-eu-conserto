@@ -44,7 +44,7 @@
   })).filter(x=>!s.jobs.some(j=>j.asset===x.asset)
    &&!s.notifications.some(n=>n.asset===x.asset&&n.monitorOnly&&['monitorando','aguarda_revisao_pcm'].includes(n.status))
    &&!today.some(i=>i.asset===x.asset));
-  const staff=s.team.filter(m=>!m.assigned&&m.restAt!==s.tick&&!(E.TRAINING?.active?.(s,m))
+  const staff=s.team.filter(m=>!m.assigned&&m.restAt!==s.tick&&!E.physicalBlock?.(s,m)&&!(E.TRAINING?.active?.(s,m))
    &&(schedule[m.id]||0)+1.5<=10.5);
   const control='<section class="fieldSchedule"><h3>PROGRAMAR INSPEÇÃO NO EQUIPAMENTO</h3><p>Selecione um equipamento e o profissional responsável. Cada inspeção reserva 1,5 HH na escala do turno. O limite é a capacidade disponível da equipe.</p>'
    +'<div class="fieldScheduleInputs"><label>Equipamento / TAG<select id="fieldAsset">'+available.map(x=>'<option value="'+esc(x.asset)+'">'+esc(x.label)+'</option>').join('')+'</select></label>'
