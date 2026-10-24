@@ -98,11 +98,13 @@ const snapshot=JSON.stringify(t);
 assert.equal(L.compute(t,D,{filter:'pcm'}).timeline.length,2);
 assert.equal(JSON.stringify(t),snapshot);
 // Registrar avaliação de plano no motor, não apenas sintetizar campo histórico.
-const e=newState();e.jobs=[];e.stock[p.material]=2;e.tools[p.tool]=true;
-const stageJob={id:'OS9001',scene:p.id,modelId:p.modelId,asset:p.modelId+'·99',priority:p.priority,
+const validScenario=D.scenarios.find(x=>E.sapEligible(D,x)&&x.modelId==='EQ01');
+assert.ok(validScenario,'fixture de avaliação exige caminho verificado na 1412');
+const e=newState();e.jobs=[];e.stock[validScenario.material]=2;e.tools[validScenario.tool]=true;
+const stageJob={id:'OS9001',scene:validScenario.id,modelId:validScenario.modelId,asset:validScenario.modelId+'·99',priority:validScenario.priority,
  status:'diagnostico',tickOpen:0,dayOpen:1,stage:0,assigned:null,bay:null,help:false,wrong:0,rework:false,
  diagRemaining:4,repairRemaining:4,worked:0,toolWait:0,blockedShifts:0,reworkHours:0,
- plannerDiagnosis:{codes:[...p.path,p.component,p.damage,''],evaluated:false},materialUsed:false};
+ plannerDiagnosis:{codes:[...validScenario.path,validScenario.component,validScenario.damage,''],evaluated:false},materialUsed:false};
 e.jobs.push(stageJob);for(const x of e.team)x.assigned=null;
 assert.equal(E.attach(e,stageJob.id,e.team[0].id,0,false),null);
 E.advance(e,D,()=>.5);
