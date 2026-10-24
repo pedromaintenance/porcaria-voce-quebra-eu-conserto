@@ -62,7 +62,7 @@
   if(!m)return 'Mecânico não encontrado.';
   if(!Number.isInteger(b)||b<0||b>=s.bays)return 'Box inválido.';
   if((s.jobs||[]).some(j=>j.asset===r.asset))return 'Equipamento com OS corretiva aberta: preventiva bloqueada.';
-  if(m.assigned||m.restAt===s.tick||m.normativeUntil>s.tick||
+  if(m.assigned||m.restAt===s.tick||globalThis.PORCARIA_ENGINE?.physicalBlock?.(s,m)||m.normativeUntil>s.tick||
    (s.training?.assignments||[]).some(a=>a.untilTick>s.tick&&(a.learnerId===m.id||a.trainerId===m.id)))
    return 'Mecânico indisponível neste turno.';
   if(s.inspectionLabor?.tick===s.tick&&Number(s.inspectionLabor.byEmployee?.[m.id]||0)>=10.5)
@@ -91,7 +91,7 @@
   audit('preventive_os_released',{orderId:r.id,asset:r.asset});
   return null;
  }
- function settle(s,pressure=()=>{},audit=()=>{}){
+ function settle(s,pressure=()=>{},audit=()=>{},capacity=()=>HH_PER_SHIFT){
   normalize(s,{models:[]}); // Never synthesizes assets here; only ensures arrays.
   let total=0,completed=0;
   if(!Array.isArray(s.preventiveEffects))s.preventiveEffects=[];
@@ -100,9 +100,10 @@
   for(const r of active(s).filter(x=>x.assigned)){
    const m=s.team.find(x=>x.id===r.assigned);
    if(!m||m.restAt===s.tick)continue;
+   if(globalThis.PORCARIA_ENGINE?.physicalBlock?.(s,m))continue;
    if(Number(s.cash)<r.cost)continue; // Sem fundos: não executar trabalho sem apropriação.
    const reserved=s.inspectionLabor?.tick===s.tick?Number(s.inspectionLabor.byEmployee?.[m.id]||0):0;
-   const possible=Math.max(0,HH_PER_SHIFT-reserved);
+   const possible=Math.max(0,Math.min(HH_PER_SHIFT-reserved,capacity(m)));
    const work=Math.min(possible,Number(r.repairRemaining)||0);
    if(work<=0)continue;
    r.repairRemaining=Math.max(0,Math.round((r.repairRemaining-work)*10)/10);
