@@ -747,6 +747,22 @@
     FLEET.normalize(s,d);
     if(s.fleetTelemetry.throughTick!==s.tick)throw Error('Avanço do turno fora da sequência da telemetria.');
     normalizePhysical(s);
+    // OS que permaneceu alocada do turno anterior não pode trabalhar sem aptidão.
+    for(const m of s.team){
+      const block=m.assigned?physicalBlock(s,m):null;
+      if(!block)continue;
+      for(const j of s.jobs)if(j.assigned===m.id){
+        j.assigned=null;j.bay=null;j.help=false;j.status='interrompida';
+        j.lastInterruption={tick:s.tick,reason:'descanso_compulsorio'};
+        msg(s,j.id+' interrompida: '+m.name+' — '+block,'bad');
+      }
+      for(const r of s.preventiveOrders||[])if(r.assigned===m.id&&r.status==='in_progress'){
+        r.assigned=null;r.bay=null;r.status='open';
+        r.lastInterruption={tick:s.tick,reason:'descanso_compulsorio'};
+        msg(s,r.id+' interrompida: '+m.name+' — '+block,'bad');
+      }
+      m.assigned=null;
+    }
     const correctiveAtStart=s.jobs.map(j=>j.asset);
     const completedRepairHours={};
     let hours=0;let completed=0;let blocks=0;
