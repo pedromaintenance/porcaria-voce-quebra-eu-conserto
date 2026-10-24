@@ -6,7 +6,7 @@ const M=require('../phaser-play/monitoring.js'),C=require('../phaser-play/condit
 const P=require('../phaser-play/planning.js'),V=require('../phaser-play/inspection-view.js');
 const FPS=require('../phaser-play/fps-catalog-expansion.js');
 assert.equal(D.scenarios.length,124);
-assert.equal(D.paths.length,403);
+assert.equal(D.paths.length,493);
 assert.equal(FPS.ENTRIES.length,24);
 assert.equal(C.byCategory('fps').length,24);
 assert.equal(FPS.VERSION,'7.0.0');
@@ -28,7 +28,7 @@ for(let i=0;i<24;i++){
  assert.equal(sc.modelId,p.modelId);
  assert.equal(sc.fpsMapping.protocol,p.id);
  assert.equal(sc.category,'fps');
- assert.deepEqual(sc.path.slice(0,1),['IMAT']);
+ assert.deepEqual(sc.sapPathMapping.previousPath.slice(0,1),['IMAT']);
  assert.ok(keys.has([sc.modelId,...sc.path].join('|')));
  assert.ok(D.catalog.parts.includes(sc.component));
  assert.ok(D.catalog.damages.some(x=>x.pt===sc.damage));
@@ -79,28 +79,17 @@ for(const id of ['FPS006','FPS019','FPS028']){
   scope:'Verificar condição GET com inspeção e documentação do conjunto instalado antes de definir reparos.',
   trade:'mecanica',estimatedHH:4
  },D,E).error,'FPS exige diagnóstico, não apenas texto livre');
+ // As missões FPS ainda não têm subgrupo de retenção equivalente na 1412.
+ // Garantir a contenção no jogo sem enfraquecer a regra dos seis níveis SAP.
  const hypotheses=I.hypotheses(s,D,E,note.id);
- assert.equal(hypotheses.length,6);
- const diagnosis=[...sc.path,sc.component,sc.damage,''];
- diagnosis.slice(0,5).forEach((code,j)=>assert.ok(hypotheses[j].some(x=>x.id===code)));
- const review=I.review(s,note.id,'approve',{diagnosis,action:'verificar',trade:'mecanica',estimatedHH:4,reason:'Avaliação didática registrada com causa ainda indefinida.'},D,E);
- assert.equal(review.ok,true,JSON.stringify(review));
- assert.equal(note.planningDiagnosis.optionalCause,true);
- assert.equal(s.jobs.length,original,'revisão não cria OS');
- const order=I.commitConversion(s,D,E,note.id);
- assert.equal(order.ok,true,JSON.stringify(order));
- assert.equal(s.jobs.length,original+1);
- assert.equal(order.order.scene,sc.id);
- assert.equal(order.order.notificationId,note.id);
- assert.equal(order.order.source,'notificacao_inspecao');
- assert.equal(order.order.plannerDiagnosis.optionalCause,true);
- assert.equal(order.order.stage,0);
- assert.equal(order.order.status,'fila');
- assert.equal(note.status,'convertida_os');
- assert.ok(P.compute(s,D).ranked.some(x=>x.id===order.order.id),'ordem chega ao planejamento');
- assert.ok(I.commitConversion(s,D,E,note.id).error,'sem duplicidade');
- assert.equal(E.validate(JSON.parse(JSON.stringify(s))),true);
- const copy=JSON.parse(JSON.stringify(s));I.normalized(copy);assert.ok(copy.jobs.some(x=>x.id===order.order.id),'save íntegro');
+ assert.equal(hypotheses,null,'classificação FPS sem FL não gera hipóteses artificiais');
+ assert.equal(E.sapEligible(D,sc),false);
+ assert.ok(I.review(s,note.id,'approve',{diagnosis:[...sc.path,sc.component,sc.damage,''],
+   action:'verificar',trade:'mecanica',estimatedHH:4,reason:'Sem subgrupo SAP equivalente ainda.'},D,E).error,
+   'PCM não pode validar caminho FPS didático');
+ assert.equal(s.jobs.length,original,'cenário pendente não gera OS');
+ continue;
+
 }
 const historic=create();
 const legacyNote={id:'NM0911',monitorOnly:true,monitorCategory:'fps',monitorProtocol:'FPS001',status:'aguarda_revisao_pcm',monitoring:{status:'proposta',samples:[]}};

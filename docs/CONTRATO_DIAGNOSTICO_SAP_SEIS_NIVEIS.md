@@ -1,3 +1,7 @@
+> **Atualização 24/10/2026 — referência substituída:** a planilha original do perfil SAP foi fornecida e auditada. Ela contém **683 partes objeto**, inclusive **3263 — Retainer / Retentor**. Não use as contagens de 43 componentes e a hipótese anterior de que “Retentor FPS” seria rótulo SAP oficial. O nome **Retentor FPS** era uma extensão do jogo; a denominação SAP correta é **Retentor**, código 3263. A fonte atual e a comparação por cenário estão documentadas em [Importação Integral SAP](IMPORTACAO_INTEGRAL_SAP_1412_CATALOG_PROFILE.md).
+
+---
+
 # P.O.R.C.A.R.I.A. — Contrato de referência SAP nos seis níveis de diagnóstico
 
 **Decisão de engenharia (24/10/2026):** a lista de locais de instalação e os catálogos de Componente, Dano e Causa são a **base**. Um cenário ou manual OEM deve ser enquadrado nesse vocabulário. **Nunca adicionar, renomear ou substituir uma opção SAP para fazer um caso didático funcionar.**

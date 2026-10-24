@@ -302,13 +302,22 @@
   // Contrato dos seis níveis: a fonte é data.paths + data.catalog, NUNCA a
   // terminologia OEM dos roteiros. Cenários se adaptam ao catálogo; não o inverso.
   // As extensões didáticas legadas estão sob auditoria até mapeamento SAP.
+  // Somente caminhos importados literalmente da 1412 são elegíveis para novas OS.
+  // Casos antigos continuam armazenados para não destruir o histórico, porém sem
+  // simular um nível de instalação que não existe na fonte.
+  function sapEligible(d,sc){
+    return !Array.isArray(d?.sapPaths)||
+      (sc?.sapPathMapping?.status==='validado_na_planilha'&&
+       sc?.sapPartMapping?.status!=='provisorio');
+  }
   function validateDiagnosticReference(d,sc){
     const fail=stage=>{throw Error('Cenário '+(sc?.id||'(sem ID)')+
       ': '+stage+' fora da referência de diagnóstico; mapear o caso ao catálogo antes de publicar.');};
     if(!d||!sc||!Array.isArray(d.paths)||!Array.isArray(d.catalog?.parts)||
         !Array.isArray(d.catalog?.damages)||!Array.isArray(d.catalog?.causes))fail('Catálogo SAP');
+    const reference=sapEligible(d,sc)&&Array.isArray(d.sapPaths)?d.sapPaths:d.paths;
     if(!Array.isArray(sc.path)||sc.path.length!==3||
-        !d.paths.some(p=>p.modelId===sc.modelId&&
+        !reference.some(p=>p.modelId===sc.modelId&&
           p.system===sc.path[0]&&p.group===sc.path[1]&&p.subgroup===sc.path[2]))
       fail('Sistema / Grupo / Subgrupo');
     if(!d.catalog.parts.includes(sc.component))fail('Componente');
@@ -319,7 +328,8 @@
   function options(d,sc,seed){
     validateDiagnosticReference(d,sc);
     const rng=mulberry32(seed);
-    const path=d.paths.filter(p=>p.modelId===sc.modelId);
+    const authoritative=sapEligible(d,sc)&&Array.isArray(d.sapPaths);
+    const path=(authoritative?d.sapPaths:d.paths).filter(p=>p.modelId===sc.modelId);
     const sameSys=path.filter(p=>p.system===sc.path[0]);
     const sameGroup=sameSys.filter(p=>p.group===sc.path[1]);
     const names={
@@ -349,7 +359,7 @@
       if(!Array.isArray(j.options))continue;
       const sc=d.scenarios?.find(x=>x.id===j.scene);
       if(!sc)continue;
-      const path=d.paths.filter(p=>p.modelId===sc.modelId);
+      const path=(sapEligible(d,sc)&&Array.isArray(d.sapPaths)?d.sapPaths:d.paths).filter(p=>p.modelId===sc.modelId);
       const sameSys=path.filter(p=>p.system===sc.path[0]);
       const sameGroup=sameSys.filter(p=>p.group===sc.path[1]);
       const defs=[
@@ -363,7 +373,11 @@
         for(const r of [...def.pool,...path])if(r[def.key]&&!names.has(r[def.key]))names.set(r[def.key],r[def.name]);
         const oldLabels=new Map();
         for(const option of j.options[i]){
-          if(!option||!names.has(option.id))continue;
+          if(!option)continue;
+          const previous=sc.sapPathMapping?.previousPath?.[i];
+          if(sapEligible(d,sc)&&previous!==sc.path[i]&&option.id===previous)
+            option.id=sc.path[i];
+          if(!names.has(option.id))continue;
           oldLabels.set(option.label,names.get(option.id));
           option.label=names.get(option.id);
         }
@@ -372,7 +386,42 @@
           if(event?.stage===i&&event.outcome!=='evidence'&&oldLabels.has(event.value))
             event.value=oldLabels.get(event.value);
         }
+        const unique=new Map();
+        for(const option of j.options[i])if(!unique.has(option.id))unique.set(option.id,option);
+        if(unique.size!==j.options[i].length&&sapEligible(d,sc)){
+          const pool=[...names].filter(([id])=>!unique.has(id));
+          while(unique.size<4&&pool.length){
+            const [id,label]=pool.shift();unique.set(id,{id,label});
+          }
+          j.options[i]=[...unique.values()].slice(0,4);
+        }
       }
+      // Salvar dados antigos não autoriza inventar nomenclaturas.
+      // Em casos equivalentes, atualizar o quarto nível (Parte objeto), o qual
+      // agora contém as 683 opções oficiais em vez das 43 opções parciais.
+      const aliases=d.catalog?.partAliases||{};
+      if(Array.isArray(j.options[3])){
+        const previous=new Map();
+        for(const option of j.options[3]){
+          const item=aliases[option.id]||aliases[option.label];
+          if(!item)continue;
+          previous.set(option.label,item.pt);
+          option.id=item.pt;option.label=item.pt;
+        }
+        for(const event of j.diagnosticLog||[])
+          if(event?.stage===3&&event.outcome!=='evidence'&&previous.has(event.value))
+            event.value=previous.get(event.value);
+        // Duplicatas surgem quando dois nomes didáticos apontam à mesma peça SAP.
+        const distinct=new Map(j.options[3].map(o=>[o.id,o]));
+        if(distinct.size!==j.options[3].length){
+          const spare=d.catalog.parts.filter(x=>!distinct.has(x));
+          while(distinct.size<4&&spare.length){
+            const label=spare.shift();distinct.set(label,{id:label,label});
+          }
+          j.options[3]=[...distinct.values()].slice(0,4);
+        }
+      }
+      if(!sapEligible(d,sc))j.sapClassificationBlocked=true;
     }
     return s;
   }
@@ -453,7 +502,7 @@
     for(let i=0;i<n;i++){
       const pool=d.scenarios.filter(c=>{
         // As consequências surgem somente após o atraso do precursor, nunca no sorteio livre.
-        if(c.progression)return false;
+        if(c.progression||!sapEligible(d,c))return false;
         const m=model(d,c.modelId);if(!m)return false;
         return [...Array(6)].some((_,x)=>!existing.has(`${c.modelId}·${String(x+1).padStart(2,'0')}`));
       });
@@ -475,7 +524,7 @@
   // O cenário novo não prevê falha OEM nem aparece no sorteio regular.
   function spawnDelayedConsequence(s,d,prior){
     const next=d.scenarios.find(c=>c.progression?.precedingScenario===prior.scene);
-    if(!next||next.modelId!==prior.modelId||s.jobs.length>=32)return null;
+    if(!next||!sapEligible(d,next)||next.modelId!==prior.modelId||s.jobs.length>=32)return null;
     if(s.jobs.some(j=>j.asset===prior.asset))return null;
     const idle=Math.max(0,prior.idleShifts||0);
     const errors=Math.max(0,prior.plannerDiagnosis?.errorCount||0);
@@ -599,6 +648,7 @@
   function answer(s,d,id,chosen,rng=Math.random){
     const j=job(s,id);if(!j||!j.assigned||!j.help)return {error:'O diagnóstico assistido exige mecânico e box alocados.'};
     if(j.stage>=6)return {error:'Diagnóstico já concluído.'};
+    if(!sapEligible(d,scenario(d,j.scene)))return {error:'Cenário sem equivalência validada na lista SAP 1412. Não é possível concluir esse diagnóstico até revisar o enquadramento.'};
     if(!haveTool(s,scenario(d,j.scene)))return {error:'É necessário comprar o ferramental para confirmar a etapa do diagnóstico.'};
     const m=employee(s,j.assigned), sc=scenario(d,j.scene);
     if(!m)return {error:'Mecânico indisponível.'};
@@ -626,6 +676,7 @@
   function hint(s,d,id){
     const j=job(s,id);if(!j||!j.assigned||!j.help)return 'Para solicitar uma evidência, acompanhe a OS com um mecânico.';
     if(j.stage>=6)return 'Diagnóstico já está concluído.';
+    if(!sapEligible(d,scenario(d,j.scene)))return 'Cenário sem equivalência SAP validada. Consulte a revisão do catálogo.';
     if(!haveTool(s,scenario(d,j.scene)))return 'A inspeção exige o ferramental indicado.';
     if(j.hints?.[j.stage])return 'A evidência desta etapa já foi solicitada.';
     if(s.player.mental<4)return 'O gestor não tem energia mental suficiente para coordenar o teste.';
@@ -813,6 +864,10 @@
     // Todo ativo com OS ativa acumula indisponibilidade virtual por turno, incluindo o turno de conclusão.
     // Esperas por material e ferramenta podem coincidir: são dimensões explicativas, NÃO somáveis.
     for(const j of operating){
+      if(!sapEligible(d,scenario(d,j.scene))){
+        j.sapClassificationBlocked=true;
+        if(j.assigned)j.status='aguarda_mapeamento_sap';
+      }
       j.exposureShifts=(j.exposureShifts||0)+1;
       const sc=scenario(d,j.scene);
       if(j.stage>=6&&!j.materialUsed&&sc&&!(s.stock[sc.material]>0))
@@ -823,6 +878,7 @@
     // Contabiliza somente turnos sem alocação antes do diagnóstico (inclusive saves legados).
     for(const j of operating)if(!j.assigned&&j.stage===0)j.idleShifts=(j.idleShifts||0)+1;
     for(const j of operating){
+      if(!sapEligible(d,scenario(d,j.scene))){blocks++;continue;}
       if(!j.assigned)continue;
       const m=employee(s,j.assigned), c=scenario(d,j.scene);
       const booked=s.inspectionLabor?.tick===s.tick?(s.inspectionLabor.byEmployee?.[m?.id]||0):0;
@@ -979,7 +1035,7 @@
       pendingMaterials:s.jobs.filter(j=>j.status==='material').length, pendingTools:s.jobs.filter(j=>j.status==='ferramenta').length};
   }
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
-  return {create,initFleet,setFleetDuty,ANOMALY,generatePreventiveOrders,assignPreventiveOrder,releasePreventiveOrder,schedulePreventiveOrder,recordDecision,writeLesson,scheduleJob,cancelSchedule,bookPreventive,cancelPreventive,normalizePhysical,physicalBlock,physicalCapacity,consumePhysical,normalizeRoster,localizeDiagnosticOptions,validateDiagnosticReference,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
+  return {create,initFleet,setFleetDuty,ANOMALY,sapEligible,generatePreventiveOrders,assignPreventiveOrder,releasePreventiveOrder,schedulePreventiveOrder,recordDecision,writeLesson,scheduleJob,cancelSchedule,bookPreventive,cancelPreventive,normalizePhysical,physicalBlock,physicalCapacity,consumePhysical,normalizeRoster,localizeDiagnosticOptions,validateDiagnosticReference,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
     SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
     model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
 });

@@ -11,7 +11,7 @@ assert.equal(FPS.ENTRIES.length,24);assert.equal(C.ENTRIES.length,120);
 assert.deepEqual(cats.map(k=>C.byCategory(k).length),[24,24,24,24,24]);
 assert.equal(new Set(C.ENTRIES.map(x=>x.id)).size,120,'IDs de catálogo únicos');
 assert.equal(D.scenarios.length,124,'nenhuma missão FMEA criada artificialmente');
-assert.equal(D.paths.length,403,'locais preservados');
+assert.equal(D.paths.length,493,'locais preservados');
 for(let i=1;i<=4;i++){
  const id='FPS'+String(i).padStart(3,'0');
  const old=C.get(id);

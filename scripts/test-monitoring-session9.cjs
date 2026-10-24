@@ -5,7 +5,7 @@ const fs=require('node:fs'),path=require('node:path');
 const D=require('../game-data.json'),E=require('../engine.js'),I=require('../phaser-play/inspection.js');
 const M=require('../phaser-play/monitoring.js'),V=require('../phaser-play/inspection-view.js');
 assert.equal(D.scenarios.length,124,'missões anteriores preservadas');
-assert.equal(D.paths.length,403,'sem alterar locações funcionais');
+assert.equal(D.paths.length,493,'sem alterar locações funcionais');
 assert.equal(Object.keys(M.PROTOCOLS).length,3,'três estudos-piloto');
 for(const [id,p] of Object.entries(M.PROTOCOLS)){
  assert.ok(D.models.some(m=>m.id===p.modelId),id+' modelo cadastrado');
@@ -105,12 +105,12 @@ assert.equal(M.escalate(uncertain,D,I,n2.id).error!==undefined,true,'não duplic
 const scenario=D.scenarios.find(x=>x.id===raised.escalation.sourceScenario);
 const diagnoses=[...scenario.path,scenario.component,scenario.damage,scenario.cause];
 const plan=I.review(uncertain,raised.escalation.id,'approve',{diagnosis:diagnoses,action:'diagnosticar',trade:'lubrificacao',estimatedHH:4},D,E);
-assert.equal(plan.ok,true,'nova nota segue ao PCM regular');
+assert.equal(E.sapEligible(D,scenario),false,'rota de monitoramento ainda não existe na 1412');
+assert.ok(plan.error,'nota sem classificação SAP não pode aprovar o diagnóstico');
 assert.equal(uncertain.jobs.length,beforeEscalate);
 const conversion=I.commitConversion(uncertain,D,E,raised.escalation.id);
-assert.equal(conversion.ok,true,'OS somente após aprovação e conversão explícitas');
-assert.equal(conversion.order.asset,n2.asset);
-assert.equal(uncertain.jobs.length,beforeEscalate+1);
+assert.ok(conversion.error,'sem aprovação não abre OS');
+assert.equal(uncertain.jobs.length,beforeEscalate);
 const severe=fresh(),n3=M.open(severe,D,I,'differential').notification;
 assert.equal(M.decide(severe,n3.id,'trend',4).ok,true);
 severe.tick+=4;

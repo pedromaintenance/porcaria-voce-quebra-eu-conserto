@@ -12,7 +12,7 @@ const mapping={
 };
 assert.equal(D.scenarios.length,124,'95 missões originais + 5 encadeadas');
 assert.equal(new Set(D.scenarios.map(c=>c.id)).size,124);
-assert.equal(D.paths.length,403,'nenhum caminho SAP novo');
+assert.equal(D.paths.length,493,'nenhum caminho SAP novo');
 assert.deepEqual(D.scenarios.slice(0,95).map(s=>s.id),
   Array.from({length:95},(_,i)=>'INC'+String(i+1).padStart(3,'0')),
   '95 missões anteriores preservadas');
@@ -22,7 +22,7 @@ for(const [id,[precursor,model,part]] of Object.entries(mapping)){
  assert.ok(sc&&older);
  assert.equal(sc.modelId,model);
  assert.equal(sc.modelId,older.modelId,'mesmo modelo no encadeamento');
- assert.equal(sc.component,part);
+ assert.equal(sc.sapPartMapping.previousLabel,part,'rótulo legado rastreado sem modificar SAP');
  assert.equal(sc.progression.precedingScenario,precursor);
  assert.equal(sc.progression.thresholdIdleShifts,3);
  assert.equal(sc.progression.thresholdIdleWithPlannerErrors,2);
@@ -66,6 +66,12 @@ function scenarioGame(id){
  return {s,j,m};
 }
 for(const [follow,[precursor]] of Object.entries(mapping)){
+ const original=D.scenarios.find(x=>x.id===precursor),secondary=D.scenarios.find(x=>x.id===follow);
+ if(!E.sapEligible(D,original)||!E.sapEligible(D,secondary)){
+  const blocked=E.create({...D,scenarios:[original]},()=>.5);
+  assert.equal(blocked.jobs.length,0,'cadeia com localização SAP pendente não pode criar OS');
+  continue;
+ }
  const noDelay=scenarioGame(precursor);
  E.advance(noDelay.s,D,()=>.5);
  assert.equal(noDelay.s.jobs.filter(j=>j.scene===follow).length,0,precursor+' sem atraso não encadeia');

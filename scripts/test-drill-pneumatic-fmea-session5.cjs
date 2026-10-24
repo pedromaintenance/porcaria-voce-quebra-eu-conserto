@@ -18,7 +18,7 @@ const expected={
 assert.equal(D.scenarios.length,124,'75 anteriores + 10 perfuratrizes + 10 rodante + 5 progressivas');
 assert.equal(new Set(D.scenarios.map(s=>s.id)).size,124,'IDs únicos');
 assert.deepEqual(D.scenarios.slice(0,75).map(x=>x.id),Array.from({length:75},(_,i)=>'INC'+String(i+1).padStart(3,'0')),'missões anteriores preservadas');
-assert.equal(D.paths.length,403,'382 caminhos anteriores + dois de perfuratrizes + três de rodante');
+assert.equal(D.paths.length,493,'382 caminhos anteriores + dois de perfuratrizes + três de rodante');
 const added=D.paths.filter(p=>p.origin==='trilha_didatica_simulada'&&p.modelId==='EQ06'&&p.system==='AISY'&&p.group==='COMR'&&['INFL','HSVV'].includes(p.subgroup));
 assert.equal(added.length,2,'filtração/admissão e linha do compressor DI650i');
 for(const p of added)assert.equal(p.sapValidated,false);
@@ -28,7 +28,7 @@ for(const [id,[model,source,part]] of Object.entries(expected)){
  assert.ok(sc,id+' presente');
  assert.equal(sc.modelId,model,id+' modelo');
  assert.equal(sc.category,'perfuracao');
- assert.equal(sc.component,part);
+ assert.equal(sc.sapPartMapping.previousLabel,part);
  assert.equal(sc.fmeaSource.recordId,source);
  assert.equal(sc.fmeaSource.repository,'pedromaintenance/fmea-database-mining');
  assert.equal(sc.fmeaSource.layer,source?'diagnostic/playbooks.v1.json':'elaboracao_autoral');
@@ -70,7 +70,11 @@ assert.equal(initial.tools.PNEU,false,'kit exige aquisição');
 const di=D.scenarios.find(s=>s.id==='INC076'),dr=D.scenarios.find(s=>s.id==='INC083');
 for(const c of [di,dr]){
  const sample=E.create({...D,scenarios:[c]},()=>0.5);
- assert.equal(sample.jobs.length,3);
- assert.ok(sample.jobs.every(j=>j.scene===c.id),'missão entra no sorteio '+c.id);
+ if(E.sapEligible(D,c)){
+  assert.equal(sample.jobs.length,3,'classificação SAP válida pode ser sorteada');
+  assert.ok(sample.jobs.every(j=>j.scene===c.id),'missão entra no sorteio '+c.id);
+ }else{
+  assert.equal(sample.jobs.length,0,'missão sem local SAP não deve entrar no sorteio '+c.id);
+ }
 }
 console.log('OK: sessão 5, 10 missões perfuratriz/pneumática; 100 cenários, 6x4 classificações, estoque, segurança e proveniência.');

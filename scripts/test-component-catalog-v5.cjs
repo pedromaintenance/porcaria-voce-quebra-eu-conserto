@@ -13,7 +13,7 @@ assert.equal(C.ENTRIES.length,120);
 assert.deepEqual(domains.map(x=>C.byCategory(x).length),[24,24,24,24,24]);
 assert.equal(new Set(C.ENTRIES.map(e=>e.id)).size,120);
 assert.equal(D.scenarios.length,124,'100 missões FMEA anteriores preservadas');
-assert.equal(D.paths.length,403,'estruturas funcionais existentes preservadas');
+assert.equal(D.paths.length,493,'estruturas funcionais existentes preservadas');
 for(let k=1;k<=24;k++){
  const id='CMP'+String(k).padStart(3,'0'),p=C.get(id);
  assert.ok(p&&p.category==='components',id+' existe');

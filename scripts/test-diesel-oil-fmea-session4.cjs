@@ -17,7 +17,7 @@ const expected={
 assert.equal(D.scenarios.length,124,'65 existentes + 10 diesel + 10 perfuratrizes + 10 rodante + 5 progressivas');
 assert.equal(new Set(D.scenarios.map(s=>s.id)).size,124,'identificadores únicos');
 assert.deepEqual(D.scenarios.slice(0,65).map(x=>x.id),Array.from({length:65},(_,i)=>'INC'+String(i+1).padStart(3,'0')),'65 cenários preexistentes preservados');
-assert.equal(D.paths.length,403);
+assert.equal(D.paths.length,493);
 const recent=D.paths.filter(p=>p.origin==='trilha_didatica_simulada'&&['FILF','SENF','CLFL','CCBR'].includes(p.subgroup));
 assert.equal(recent.length,4,'quatro trilhas novas de motor');
 for(const path of recent)assert.equal(path.sapValidated,false,'não afirmar caminho SAP homologado');
@@ -26,7 +26,7 @@ for(const [id,[model,source,part]] of Object.entries(expected)){
  const sc=D.scenarios.find(x=>x.id===id);assert.ok(sc,id+' existe');
  assert.equal(sc.category,'motor',id+' categoria');
  assert.equal(sc.modelId,model,id+' equipamento');
- assert.equal(sc.component,part,id+' componente');
+ assert.equal(sc.sapPartMapping.previousLabel,part,id+' componente');
  assert.equal(sc.fmeaSource.recordId,source,id+' fonte');
  assert.equal(sc.fmeaSource.repository,'pedromaintenance/fmea-database-mining');
  assert.equal(sc.fmeaSource.status,'roteiro_didatico_nao_homologado_OEM');

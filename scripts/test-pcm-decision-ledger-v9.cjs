@@ -55,16 +55,24 @@ const incoming=M.receive(t,D,I,{initial:true}).received[0];
 assert.equal(incoming.monitorProtocol,'FPS006');
 const raised=M.escalate(t,D,I,incoming.id);
 assert.equal(raised.ok,true);
-const note=raised.escalation,sc=D.scenarios.find(x=>x.id===note.sourceScenario);
-assert.ok(I.review(t,note.id,'approve',{scope:'Verificar em segurança e documentar evidências de retenção do FPS instalado.',trade:'mecanica',estimatedHH:4},D,E).error,'sem diagnóstico não aprova FPS');
+// Fixture isolada: a classificação FPS real ainda não tem subgrupo comprovado na 1412.
+ // O teste do ledger usa temporariamente uma localização SAP existente, SEM alterar D.
+const note=raised.escalation,tData=structuredClone(D);
+const sc=tData.scenarios.find(x=>x.id===note.sourceScenario);
+const valid=tData.sapPaths.find(x=>x.modelId===sc.modelId);
+assert.ok(valid,'fixture de PCM exige uma tripla de instalação real');
+sc.path=[valid.system,valid.group,valid.subgroup];
+sc.sapPathMapping={status:'validado_na_planilha',previousPath:sc.sapPathMapping.previousPath};
+sc.sapPartMapping.status='equivalencia';
+assert.ok(I.review(t,note.id,'approve',{scope:'Verificar em segurança e documentar evidências de retenção do FPS instalado.',trade:'mecanica',estimatedHH:4},tData,E).error,'sem diagnóstico não aprova FPS');
 assert.equal(t.decisionHistory.length,0,'reprovações não ficam como decisão validada');
 const diagnosis=[...sc.path,sc.component,sc.damage,''];
-const review=I.review(t,note.id,'approve',{diagnosis,action:'verificar',trade:'mecanica',estimatedHH:4,reason:'Roteiro didático para revisão técnica.'},D,E);
+const review=I.review(t,note.id,'approve',{diagnosis,action:'verificar',trade:'mecanica',estimatedHH:4,reason:'Roteiro didático para revisão técnica.'},tData,E);
 assert.equal(review.ok,true,JSON.stringify(review));
 assert.equal(t.decisionHistory[0].type,'pcm_review');
 assert.equal(t.decisionHistory[0].estimatedHH,4);
 assert.equal(t.jobs.length,0);
-const conversion=I.commitConversion(t,D,E,note.id);
+const conversion=I.commitConversion(t,tData,E,note.id);
 assert.equal(conversion.ok,true);
 assert.equal(t.decisionHistory[1].type,'pcm_conversion');
 assert.equal(t.decisionHistory[1].orderId,conversion.order.id);
@@ -90,11 +98,13 @@ const snapshot=JSON.stringify(t);
 assert.equal(L.compute(t,D,{filter:'pcm'}).timeline.length,2);
 assert.equal(JSON.stringify(t),snapshot);
 // Registrar avaliação de plano no motor, não apenas sintetizar campo histórico.
-const e=newState();e.jobs=[];e.stock[p.material]=2;e.tools[p.tool]=true;
-const stageJob={id:'OS9001',scene:p.id,modelId:p.modelId,asset:p.modelId+'·99',priority:p.priority,
+const validScenario=D.scenarios.find(x=>E.sapEligible(D,x)&&x.modelId==='EQ01');
+assert.ok(validScenario,'fixture de avaliação exige caminho verificado na 1412');
+const e=newState();e.jobs=[];e.stock[validScenario.material]=2;e.tools[validScenario.tool]=true;
+const stageJob={id:'OS9001',scene:validScenario.id,modelId:validScenario.modelId,asset:validScenario.modelId+'·99',priority:validScenario.priority,
  status:'diagnostico',tickOpen:0,dayOpen:1,stage:0,assigned:null,bay:null,help:false,wrong:0,rework:false,
  diagRemaining:4,repairRemaining:4,worked:0,toolWait:0,blockedShifts:0,reworkHours:0,
- plannerDiagnosis:{codes:[...p.path,p.component,p.damage,''],evaluated:false},materialUsed:false};
+ plannerDiagnosis:{codes:[...validScenario.path,validScenario.component,validScenario.damage,''],evaluated:false},materialUsed:false};
 e.jobs.push(stageJob);for(const x of e.team)x.assigned=null;
 assert.equal(E.attach(e,stageJob.id,e.team[0].id,0,false),null);
 E.advance(e,D,()=>.5);

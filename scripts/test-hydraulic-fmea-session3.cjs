@@ -18,7 +18,7 @@ assert.equal(D.scenarios.length,124,'55 anteriores + 10 hidráulicos + 10 diesel
 assert.equal(new Set(D.scenarios.map(x=>x.id)).size,124,'IDs únicos');
 assert.deepEqual(D.scenarios.slice(0,55).map(x=>x.id),Array.from({length:55},(_,i)=>'INC'+String(i+1).padStart(3,'0')),'55 missões anteriores preservadas');
 const catalogPaths=new Set(D.paths.map(p=>[p.modelId,p.system,p.group,p.subgroup].join('|')));
-assert.equal(D.paths.length,403);
+assert.equal(D.paths.length,493);
 const newHydraulicPaths=D.paths.filter(p=>p.origin==='trilha_didatica_simulada' && p.group==='FISY');
 assert.equal(newHydraulicPaths.length,2);
 for(const p of newHydraulicPaths)assert.equal(p.sapValidated,false);
@@ -27,7 +27,7 @@ for(const [id,[model,source,component]] of Object.entries(expected)){
  assert.ok(c,id+' presente');
  assert.equal(c.modelId,model,id+' máquina');
  assert.equal(c.category,'hidraulica');
- assert.equal(c.component,component);
+ assert.equal(c.sapPartMapping.previousLabel,component);
  assert.equal(c.fmeaSource.repository,'pedromaintenance/fmea-database-mining');
  assert.equal(c.fmeaSource.recordId,source);
  assert.equal(c.fmeaSource.layer,source?.startsWith('PB-')?'diagnostic/playbooks.v1.json':source?.startsWith('OIL-')?'oil/diagnostic-records.json':'elaboracao_autoral');

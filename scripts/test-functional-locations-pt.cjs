@@ -3,7 +3,8 @@
 const assert=require('node:assert/strict');
 const E=require('../engine.js');
 const d=require('../game-data.json');
-assert.equal(d.paths.length,403);
+assert.equal(d.sapPaths.length,245,'caminhos por código real nos modelos do jogo');
+assert.equal(d.paths.length,493,'histórico mantido e 90 novos caminhos importados');
 assert.equal(d.models.length,9);
 const sample=d.paths.find(p=>p.modelId==='EQ01'&&p.system==='DRTR'&&p.group==='AXAS'&&p.subgroup==='FID1');
 assert.ok(sample);
@@ -12,7 +13,7 @@ assert.equal(d.paths.find(p=>p.modelId==='EQ01'&&p.system==='ENSY').systemName,'
 assert.equal(d.models.find(m=>m.id==='EQ03').category,'Escavadeira');
 for(const sc of d.scenarios){
  const opts=E.options(d,sc,123);
- const paths=d.paths.filter(p=>p.modelId===sc.modelId);
+ const paths=(E.sapEligible(d,sc)?d.sapPaths:d.paths).filter(p=>p.modelId===sc.modelId);
  const sameSys=paths.filter(p=>p.system===sc.path[0]);
  const sameGroup=sameSys.filter(p=>p.group===sc.path[1]);
  const settings=[
@@ -32,7 +33,8 @@ const j=save.jobs[0];
 j.scene=sc.id;j.modelId=sc.modelId;j.stage=2;j.options=E.options(d,sc,1337);
 j.options[0].find(o=>o.id==='DRTR').label='Drive Train';
 j.options[1].find(o=>o.id==='AXAS').label='Axle Assy;Position 2';
-j.options[2].find(o=>o.id==='FID1').label='Final Drive;Position 1';
+const legacyFinal=j.options[2].find(o=>o.id==='FIDR');
+legacyFinal.id='FID1';legacyFinal.label='Final Drive;Position 1'; // save legado, código antigo
 j.diagnosticLog=[
  {stage:0,outcome:'confirmed',value:'Drive Train',source:'player',tick:0},
  {stage:1,outcome:'confirmed',value:'Axle Assy;Position 2',source:'player',tick:0},
@@ -42,8 +44,10 @@ j.diagnosticLog=[
 const ids=j.options.map(arr=>arr.map(o=>o.id)),before={stage:j.stage,scene:j.scene,wrong:j.wrong,tick:save.tick,
  cash:save.cash,history:save.done.length,team:save.team.map(m=>m.id)};
 assert.equal(E.localizeDiagnosticOptions(save,d),save);
-assert.deepEqual(j.options.map(arr=>arr.map(o=>o.id)),ids,'IDs e ordem das opções intactos');
-assert.deepEqual([j.options[0].find(o=>o.id==='DRTR').label,j.options[1].find(o=>o.id==='AXAS').label,j.options[2].find(o=>o.id==='FID1').label],
+assert.equal(j.options[2].some(o=>o.id==='FIDR'),true,'migração de código FID1 para FIDR oficial');
+assert.deepEqual(j.options[0].map(o=>o.id),ids[0]);
+assert.deepEqual(j.options[1].map(o=>o.id),ids[1]);
+assert.deepEqual([j.options[0].find(o=>o.id==='DRTR').label,j.options[1].find(o=>o.id==='AXAS').label,j.options[2].find(o=>o.id==='FIDR').label],
  ['Transmissão','Conj Eixo;Posição 2','Comando Final;Posição 1']);
 assert.deepEqual(j.diagnosticLog.map(x=>x.value),['Transmissão','Conj Eixo;Posição 2','Comando Final;Posição 1','Não reescrever evidências']);
 assert.deepEqual({stage:j.stage,scene:j.scene,wrong:j.wrong,tick:save.tick,cash:save.cash,history:save.done.length,team:save.team.map(m=>m.id)},before,'progressão intacta');
@@ -60,4 +64,4 @@ assert.equal((app.match(/E\.localizeDiagnosticOptions\(/g)||[]).length,2,'iníci
 assert.ok(html.includes('game.js?v='));
 assert.ok(html.includes('engine.js?v='));
 assert.ok(sw.includes('porcaria-vqec-20261019-v111-sap-v1-bia2-pt1412'));
-console.log('OK: 403 caminhos PT (32 didáticos), hipóteses de 124 cenários, saves antigos, cache e progresso.');
+console.log('OK: 245 caminhos SAP importados, histórico preservado, 124 cenários e saves anteriores.');

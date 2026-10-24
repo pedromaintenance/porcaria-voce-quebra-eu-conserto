@@ -24,12 +24,13 @@
   const busy=new Set((s.jobs||[]).map(j=>j.asset));
   for(const n of s.notifications)if(n.monitorOnly&&['aguarda_revisao_pcm','monitorando'].includes(n.status))busy.add(n.asset);
   const inspected=new Set(s.inspections.filter(i=>s.tick-i.tick<4).map(i=>i.asset).filter(Boolean));
-  const models=(d.models||[]).filter(m=>(d.scenarios||[]).some(c=>c.modelId===m.id));
+  const eligible=c=>globalThis.PORCARIA_ENGINE?.sapEligible?.(d,c)!==false;
+  const models=(d.models||[]).filter(m=>(d.scenarios||[]).some(c=>c.modelId===m.id&&eligible(c)));
   const rotation=models.length?s.tick%models.length:0;
   const rotated=[...models.slice(rotation),...models.slice(0,rotation)];
   const chosen=[];
   for(let k=0;k<rotated.length&&chosen.length<LIMIT_PER_SHIFT;k++){
-   const m=rotated[k],cases=d.scenarios.filter(c=>c.modelId===m.id);
+   const m=rotated[k],cases=d.scenarios.filter(c=>c.modelId===m.id&&eligible(c));
    // Priorizar patrimônios sem OS e nunca gerar inspeção sobre uma máquina fictícia com OS ativa.
    const fleet=Array.from({length:6},(_,v)=>m.id+'·'+String(v+1).padStart(2,'0'));
    const candidates=fleet.filter(id=>!busy.has(id)&&!inspected.has(id));
@@ -70,7 +71,7 @@
   if(s.notifications.some(n=>n.asset===chosen&&n.monitorOnly&&['monitorando','aguarda_revisao_pcm'].includes(n.status)))
    return {error:'O equipamento está sob monitoramento de condição.'};
   if(s.inspections.some(x=>x.asset===chosen&&x.tick===s.tick))return {error:'Já existe uma inspeção deste ativo neste turno.'};
-  const list=d.scenarios.filter(sc=>sc.modelId===match[1]&&!sc.progression);
+  const list=d.scenarios.filter(sc=>sc.modelId===match[1]&&!sc.progression&&E?.sapEligible?.(d,sc)!==false);
   if(!list.length)return {error:'Nenhum roteiro de inspeção disponível para o equipamento.'};
   const idx=(s.tick+s.nextInspection)%list.length,sc=list[idx];
   const rec={id:'IN'+String(s.nextInspection++).padStart(4,'0'),
@@ -157,7 +158,7 @@
   const n=s.notifications.find(x=>x.id===id);
   if(!n||!d||!E||typeof E.options!=='function')return null;
   const sc=d.scenarios.find(x=>x.id===n.sourceScenario&&x.modelId===n.modelId);
-  if(!sc)return null;
+  if(!sc||E.sapEligible?.(d,sc)===false)return null;
   // Seed reproduzível para não trocar opções enquanto o jogador seleciona hipóteses.
   let seed=2166136261;
   for(const ch of n.id+'|'+sc.id)seed=Math.imul(seed^ch.charCodeAt(0),16777619)>>>0;
