@@ -966,6 +966,7 @@ function drawUI(){
  <div class="actions"><button class="act secondary" data-do="stockTool">VER FERRAMENTAL</button>${j.stage>=6?'<button class="act secondary" data-do="stockPart">VER PEÇA CONFIRMADA</button>':''}</div></div>`;
  let out=`<div class="diagnosticOsTitle">${esc(m?.title)} · ${esc(j.id)}</div><p class="muted">Prioridade: ${j.priority===3?'Crítica':j.priority===2?'Alta':'Moderada'} · Tempo desde abertura: ${age}h · OS ${esc(j.id)}</p><p class="muted">${esc(j.report)}</p>`;
  const diagnosis=window.PORCARIA_DIAGNOSTIC.compute(state,data,j);
+ if(!E.sapEligible(data,c))out+='<div class="inspectionAttention" role="status"><strong>⛔ CLASSIFICAÇÃO SAP PENDENTE</strong><p>Esta OS legada possui caminho de instalação sem equivalência comprovada na 1412. As seis etapas permanecem bloqueadas até revisão de classificação. O histórico da campanha foi preservado; libere o box e continue com outros serviços.</p></div>';
  out+=window.PORCARIA_DIAGNOSTIC_VIEW.render(diagnosis,j.id);
  out+='<div id="notice" style="display:none"></div>';
  if(!j.assigned){
