@@ -1512,7 +1512,7 @@ function events(){
    const candidate=JSON.parse(await file.text());
    if(!E.validate(candidate))throw Error('Arquivo de campanha incompatível com esta versão.');
    if(!confirm('Importar save e substituir o progresso desta oficina? Exporte o save atual antes de continuar.'))return;
-   state=E.localizeDiagnosticOptions(E.normalizeRoster(candidate),data);I.normalized(state);state.productivityTarget=E.productivityProfile(state.productivityTarget).target;selected=state.jobs[0]?.id||null;
+   state=E.localizeDiagnosticOptions(E.normalizeRoster(candidate),data);E.ANOMALY.normalize(state,data);I.normalized(state);state.productivityTarget=E.productivityProfile(state.productivityTarget).target;selected=state.jobs[0]?.id||null;
     completedOrderId=null;completedSearch='';$('closedOrderSearch').value='';
    action(null);notify('Save importado com sucesso.');
   }catch(error){notify('Falha ao importar: '+error.message)}
@@ -2025,6 +2025,7 @@ async function boot(){
   try{const raw=localStorage.getItem(SAVE);if(raw){const s=JSON.parse(raw);if(E.validate(s))state=s}}catch(e){console.warn(e)}
   if(!state)state=E.create(data);
   E.normalizeRoster(state); // inclui campanhas antigas sem apagar OS nem contratações.
+  E.ANOMALY.normalize(state,data); // não retroage consequências em saves anteriores.
   E.initFleet(state,data); // Históricos legados iniciam agora sem horas retroativas.
   E.generatePreventiveOrders(state,data); // Abertura automática por horímetro.
   E.localizeDiagnosticOptions(state,data); // traduz opções legadas sem alterar códigos.
