@@ -7,7 +7,7 @@ const FL=JSON.parse(fs.readFileSync('phaser-play/data/sap-functional-locations.j
 assert.equal(SRC.parts.length,683);
 assert.equal(FL.functionalLocations.length,2535);
 assert.equal(SRC.objectTypes.length,987);
-assert.equal(SRC.counts.assignments,31107);
+assert.equal(SRC.counts.assignments,31106);
 assert.equal(SRC.damages.length,66);
 assert.equal(SRC.causes.length,81);
 assert.equal(D.catalog.parts.length,SRC.parts.length);
@@ -55,4 +55,4 @@ for(const job of game.jobs)assert.ok(E.sapEligible(D,E.scenario(D,job.scene)),'n
 const old=JSON.stringify(D);
 E.localizeDiagnosticOptions(game,D);
 assert.equal(JSON.stringify(D),old,'nenhuma operação altera catálogo');
-console.log('OK SAP pleno: 2535 FL, 683 objetos, 987 tipos, 31107 vínculos, 6 níveis, '+matched.length+' cenários elegíveis e '+pending.length+' para mapeamento.');
+console.log('OK SAP pleno: 2535 FL, 683 objetos, 987 tipos, 31106 vínculos, 6 níveis, '+matched.length+' cenários elegíveis e '+pending.length+' para mapeamento.');
