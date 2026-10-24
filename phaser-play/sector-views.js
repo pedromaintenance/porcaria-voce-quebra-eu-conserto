@@ -65,13 +65,17 @@
   const notes=s.notifications.filter(n=>!isMonitor(n));
   const awaiting=notes.filter(n=>n.status==='aguarda_revisao_pcm').length;
   const approved=notes.filter(n=>n.status==='aprovada_pcm').length;
+  const deteriorated=notes.filter(n=>['agravado','critico','falha_funcional'].includes(n.anomalyProgression?.phase)&&n.anomalyProgression?.resolvedTick===null).length;
   const modelName=id=>model(d,id);
-  const ordered=notes.slice().sort((a,b)=>(a.status==='aguarda_revisao_pcm'?0:a.status==='aprovada_pcm'?1:2)
+  const risk=n=>({falha_funcional:0,critico:1,agravado:2,observado:3})[n.anomalyProgression?.phase]??4;
+  const ordered=notes.slice().sort((a,b)=>risk(a)-risk(b)||
+    (a.status==='aguarda_revisao_pcm'?0:a.status==='aprovada_pcm'?1:2)
     -(b.status==='aguarda_revisao_pcm'?0:b.status==='aprovada_pcm'?1:2)||b.openedTick-a.openedTick);
   return '<section class="pcmInbox"><h3>📋 CARTEIRA DE NOTIFICAÇÕES · PRÉ-DIAGNÓSTICO</h3>'
    +'<p>Achados de campo e condições escalonadas chegam aqui. Revise a hipótese, delimite escopo, antecipe materiais e converta em OS apenas quando aprovar o planejamento.</p>'
    +'<div class="inspectionMetrics"><div><small>AGUARDANDO REVISÃO</small><strong>'+awaiting+'</strong></div>'
    +'<div><small>ESCOPO APROVADO</small><strong>'+approved+'</strong></div>'
+   +'<div><small>ANORMALIDADES EM EVOLUÇÃO</small><strong>'+deteriorated+'</strong></div>'
    +'<div><small>TOTAL DE NOTAS</small><strong>'+notes.length+'</strong></div></div>'
    +(ordered.length?ordered.slice(0,28).map(n=>IV.renderPCM(n,modelName,d,I,E,s,null,null)).join('')
      :'<p class="muted">Nenhuma notificação pendente. Achados de Inspeções e condições escalonadas aparecem aqui.</p>')
