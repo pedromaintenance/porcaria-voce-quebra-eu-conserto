@@ -55,16 +55,24 @@ const incoming=M.receive(t,D,I,{initial:true}).received[0];
 assert.equal(incoming.monitorProtocol,'FPS006');
 const raised=M.escalate(t,D,I,incoming.id);
 assert.equal(raised.ok,true);
-const note=raised.escalation,sc=D.scenarios.find(x=>x.id===note.sourceScenario);
-assert.ok(I.review(t,note.id,'approve',{scope:'Verificar em segurança e documentar evidências de retenção do FPS instalado.',trade:'mecanica',estimatedHH:4},D,E).error,'sem diagnóstico não aprova FPS');
+// Fixture isolada: a classificação FPS real ainda não tem subgrupo comprovado na 1412.
+ // O teste do ledger usa temporariamente uma localização SAP existente, SEM alterar D.
+const note=raised.escalation,tData=structuredClone(D);
+const sc=tData.scenarios.find(x=>x.id===note.sourceScenario);
+const valid=tData.sapPaths.find(x=>x.modelId===sc.modelId);
+assert.ok(valid,'fixture de PCM exige uma tripla de instalação real');
+sc.path=[valid.system,valid.group,valid.subgroup];
+sc.sapPathMapping={status:'validado_na_planilha',previousPath:sc.sapPathMapping.previousPath};
+sc.sapPartMapping.status='equivalencia';
+assert.ok(I.review(t,note.id,'approve',{scope:'Verificar em segurança e documentar evidências de retenção do FPS instalado.',trade:'mecanica',estimatedHH:4},tData,E).error,'sem diagnóstico não aprova FPS');
 assert.equal(t.decisionHistory.length,0,'reprovações não ficam como decisão validada');
 const diagnosis=[...sc.path,sc.component,sc.damage,''];
-const review=I.review(t,note.id,'approve',{diagnosis,action:'verificar',trade:'mecanica',estimatedHH:4,reason:'Roteiro didático para revisão técnica.'},D,E);
+const review=I.review(t,note.id,'approve',{diagnosis,action:'verificar',trade:'mecanica',estimatedHH:4,reason:'Roteiro didático para revisão técnica.'},tData,E);
 assert.equal(review.ok,true,JSON.stringify(review));
 assert.equal(t.decisionHistory[0].type,'pcm_review');
 assert.equal(t.decisionHistory[0].estimatedHH,4);
 assert.equal(t.jobs.length,0);
-const conversion=I.commitConversion(t,D,E,note.id);
+const conversion=I.commitConversion(t,tData,E,note.id);
 assert.equal(conversion.ok,true);
 assert.equal(t.decisionHistory[1].type,'pcm_conversion');
 assert.equal(t.decisionHistory[1].orderId,conversion.order.id);
