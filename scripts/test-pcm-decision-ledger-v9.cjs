@@ -59,7 +59,7 @@ assert.equal(raised.ok,true);
  // O teste do ledger usa temporariamente uma localização SAP existente, SEM alterar D.
 const note=raised.escalation,tData=structuredClone(D);
 const sc=tData.scenarios.find(x=>x.id===note.sourceScenario);
-const valid=tData.sapPaths.find(x=>x.modelId===sc.modelId);
+const valid=tData.sapInstalledPaths.find(x=>x.modelId===sc.modelId);
 assert.ok(valid,'fixture de PCM exige uma tripla de instalação real');
 sc.path=[valid.system,valid.group,valid.subgroup];
 sc.sapPathMapping={status:'validado_na_planilha',previousPath:sc.sapPathMapping.previousPath};

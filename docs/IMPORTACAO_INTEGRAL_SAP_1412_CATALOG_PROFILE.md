@@ -1,3 +1,7 @@
+> **Atualização — Ciclo 26:** a consolidação anterior de 245 caminhos representava **tipos de objeto**, não todos os locais posicionais. A 1412 contém FID1/FID2, ENS1/ENS2 etc. O diagnóstico agora usa **371 triplas físicas reais**, com **16 casos recuperados** e **45 pendentes**. Consulte [Instâncias Físicas SAP — Ciclo 26](SAP_INSTANCIAS_FISICAS_CICLO26.md). As contagens 65/59 abaixo são históricas e não representam a situação atual.
+
+---
+
 # Importação integral dos dados SAP (1412 Mobile + Catalog Profile) — v0.9.28
 
 ## Regra de engenharia
