@@ -820,12 +820,41 @@ html.mobile-play .modalContent .act,html.mobile-play .modalContent .answer{min-h
  html.mobile-play #game canvas{max-height:calc(100dvh - 102px)}
  html.mobile-play .shift{min-height:31px!important;padding:4px 7px}
 }
+/* Ciclo 23 — navegação de setores acessível em paisagem e viewport real. */
+.mobile-sector-toggle{display:none}
+.mobile-sector-toggle[hidden]{display:none!important}
+html.mobile-play .top-main{display:grid;grid-template-columns:minmax(0,1fr) max-content;
+ align-items:center;position:relative;gap:6px;padding:4px 8px 3px;min-height:39px}
+html.mobile-play .top-main .brand{display:block;min-width:0;overflow:hidden;
+ white-space:nowrap;text-overflow:ellipsis;font-size:clamp(12px,2.8vw,17px);letter-spacing:.02em;margin:0}
+html.mobile-play .mobile-sector-toggle{display:inline-flex;align-items:center;justify-content:center;
+ padding:7px 14px;min-height:38px;background:#203e53;border:1px solid #e3a73e;
+ border-radius:7px;color:#ffdd99;font-weight:900;letter-spacing:.04em;cursor:pointer}
+html.mobile-play .mobile-sector-toggle[aria-expanded="true"]{background:#ecaa3b;color:#092135}
+html.mobile-play .primary-nav{display:none;position:absolute;top:100%;left:6px;right:6px;
+ width:auto;max-height:min(68dvh,390px);overflow-y:auto;overflow-x:hidden;touch-action:pan-y;
+ padding:10px;z-index:70;background:#0b2236;border:1px solid #deaa55;border-radius:0 0 12px 12px;
+ box-shadow:0 18px 35px #000b;scroll-snap-type:none}
+html.mobile-play.mobile-sectors-open .primary-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+html.mobile-play .primary-nav .nav-item{min-width:0;min-height:44px;justify-content:flex-start;
+ white-space:normal;line-height:1.2;padding:9px!important;scroll-snap-align:none}
+html.mobile-play .primary-nav .nav-current{justify-content:flex-start}
+html.mobile-play #game canvas{max-height:var(--mobile-stage-height,calc(100dvh - 118px))!important}
+html.mobile-play #mobileNotice{pointer-events:auto}
+@media(orientation:landscape) and (max-height:620px){
+ html.mobile-play.mobile-sectors-open .primary-nav{grid-template-columns:repeat(3,minmax(0,1fr))}
+ html.mobile-play .top-main{min-height:35px}
+ html.mobile-play .top-main .brand{display:block;font-size:13px}
+ html.mobile-play .mobile-sector-toggle{min-height:32px;padding:5px 11px}
+}
+@media(max-width:350px){html.mobile-play .top-main .brand{font-size:11px}}
 </style></head><body>
 <div id="layout">
 <header class="top" role="banner">
   <div class="top-main">
     <span class="brand" aria-label="P.O.R.C.A.R.I.A.">⛏ P.O.R.C.A.R.I.A.</span>
-    <nav class="primary-nav" aria-label="Navegação principal da oficina">
+    <button type="button" class="mobile-sector-toggle" id="mobileSectors" aria-expanded="false" aria-controls="primaryNav" aria-label="Abrir menu de setores" hidden>☰ SETORES</button>
+    <nav id="primaryNav" class="primary-nav" aria-label="Navegação principal da oficina">
       <button type="button" class="tab nav-item" data-open-panel="management" aria-expanded="false" aria-controls="menuOverlay"><span class="nav-symbol" aria-hidden="true">📋</span><span>GESTÃO</span></button>
       <span class="tab nav-item nav-current" aria-current="page"><span class="nav-symbol" aria-hidden="true">⚒</span><span>OFICINA</span></span>
       <button type="button" class="tab nav-item" data-open-panel="inspection" aria-expanded="false" aria-controls="menuOverlay"><span class="nav-symbol" aria-hidden="true">🔎</span><span>INSPEÇÕES</span></button>
@@ -899,4 +928,4 @@ html.mobile-play .modalContent .act,html.mobile-play .modalContent .answer{min-h
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div><div id="mobileNotice" role="status" aria-live="polite" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.9.24-c21"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./decision-impact.js?v=0.9.11"></script><script src="./decision-ledger.js?v=0.9.12"></script><script src="./lessons-learned.js?v=0.9.13"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./anomaly-progression.js?v=0.9.24-c21"></script><script src="./inspection.js?v=0.9.10"></script><script src="./evidence.js?v=0.9.3"></script><script src="./oil-catalog-expansion.js?v=0.9.5"></script><script src="./fault-catalog-expansion.js?v=0.9.6"></script><script src="./undercarriage-catalog-expansion.js?v=0.9.7"></script><script src="./component-catalog-expansion.js?v=0.9.8"></script><script src="./fps-catalog-expansion.js?v=0.9.10"></script><script src="./condition-catalog.js?v=0.9.10"></script><script src="./monitoring.js?v=0.9.18-copy1"></script><script src="./inspection-view.js?v=0.9.18-copy1"></script><script src="./sector-views.js?v=0.9.9"></script><script src="./mobile-experience.js?v=0.9.25-c22"></script><script>window.PORCARIA_MOBILE?.init(window);</script><script src="./game.js?v=0.9.25-c22"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
+<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.9.24-c21"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./decision-impact.js?v=0.9.11"></script><script src="./decision-ledger.js?v=0.9.12"></script><script src="./lessons-learned.js?v=0.9.13"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./anomaly-progression.js?v=0.9.24-c21"></script><script src="./inspection.js?v=0.9.10"></script><script src="./evidence.js?v=0.9.3"></script><script src="./oil-catalog-expansion.js?v=0.9.5"></script><script src="./fault-catalog-expansion.js?v=0.9.6"></script><script src="./undercarriage-catalog-expansion.js?v=0.9.7"></script><script src="./component-catalog-expansion.js?v=0.9.8"></script><script src="./fps-catalog-expansion.js?v=0.9.10"></script><script src="./condition-catalog.js?v=0.9.10"></script><script src="./monitoring.js?v=0.9.18-copy1"></script><script src="./inspection-view.js?v=0.9.18-copy1"></script><script src="./sector-views.js?v=0.9.9"></script><script src="./mobile-experience.js?v=0.9.26-c23"></script><script>window.PORCARIA_MOBILE?.init(window);</script><script src="./game.js?v=0.9.26-c23"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
