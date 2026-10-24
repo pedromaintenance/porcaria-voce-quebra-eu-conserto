@@ -48,7 +48,7 @@
   }
   function holdHistory(){
    if(historyGuard||typeof win.history?.pushState!=='function')return;
-   try{win.history.pushState({porcariaMobileUI:true},'',win.location?.href);historyGuard=true;}
+   try{win.history.pushState({porcariaMobileUI:true},'',win.location?.href||'');historyGuard=true;}
    catch(err){/* Proteção opcional: continua sem histórico em navegadores restritos. */}
   }
   function releaseHistory(){
@@ -98,6 +98,7 @@
    notice.textContent=message;
   }
   function update(){
+   if(sectors)sectors.hidden=false;
    const installed=isInstalled(win);
    if(install)install.hidden=installed;
    if(fullscreen){
