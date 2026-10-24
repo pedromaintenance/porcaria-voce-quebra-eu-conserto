@@ -8,7 +8,7 @@ const sw=fs.readFileSync('sw.js','utf8');
 const data=JSON.parse(fs.readFileSync('game-data.json','utf8'));
 assert.ok(GUIDE.MAP.planning.length>=2 && GUIDE.MAP.monitoring.length>=3);
 assert.ok(GUIDE.MAP['full-detail'].length>=3);
-assert.deepEqual(GUIDE.entries('monitoring',sel=>sel.includes('Catálogo')||sel.includes('controlRoomMobileMenu')).map(x=>x.label),['Início','Categorias']);
+assert.deepEqual(GUIDE.entries('monitoring',sel=>sel.includes('Catálogo')||sel.includes('controlRoomMobileMenu')).map(x=>x.label),['Início','Categorias','Catálogo']);
 assert.deepEqual(GUIDE.entries('none',()=>true).map(x=>x.label),['Início']);
 assert.equal(GUIDE.topFor({getBoundingClientRect:()=>({top:210})},{
  getBoundingClientRect:()=>({top:80}),scrollTop:100
