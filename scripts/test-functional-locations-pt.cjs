@@ -3,7 +3,8 @@
 const assert=require('node:assert/strict');
 const E=require('../engine.js');
 const d=require('../game-data.json');
-assert.equal(d.paths.length,403);
+assert.equal(d.sapPaths.length,245,'caminhos por código real nos modelos do jogo');
+assert.equal(d.paths.length,493,'histórico mantido e 90 novos caminhos importados');
 assert.equal(d.models.length,9);
 const sample=d.paths.find(p=>p.modelId==='EQ01'&&p.system==='DRTR'&&p.group==='AXAS'&&p.subgroup==='FID1');
 assert.ok(sample);
@@ -12,7 +13,7 @@ assert.equal(d.paths.find(p=>p.modelId==='EQ01'&&p.system==='ENSY').systemName,'
 assert.equal(d.models.find(m=>m.id==='EQ03').category,'Escavadeira');
 for(const sc of d.scenarios){
  const opts=E.options(d,sc,123);
- const paths=d.paths.filter(p=>p.modelId===sc.modelId);
+ const paths=(E.sapEligible(d,sc)?d.sapPaths:d.paths).filter(p=>p.modelId===sc.modelId);
  const sameSys=paths.filter(p=>p.system===sc.path[0]);
  const sameGroup=sameSys.filter(p=>p.group===sc.path[1]);
  const settings=[
@@ -60,4 +61,4 @@ assert.equal((app.match(/E\.localizeDiagnosticOptions\(/g)||[]).length,2,'iníci
 assert.ok(html.includes('game.js?v='));
 assert.ok(html.includes('engine.js?v='));
 assert.ok(sw.includes('porcaria-vqec-20261019-v111-sap-v1-bia2-pt1412'));
-console.log('OK: 403 caminhos PT (32 didáticos), hipóteses de 124 cenários, saves antigos, cache e progresso.');
+console.log('OK: 245 caminhos SAP importados, histórico preservado, 124 cenários e saves anteriores.');
