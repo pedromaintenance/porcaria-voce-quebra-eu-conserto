@@ -38,7 +38,7 @@
   if((s.preventiveOrders||[]).some(x=>x.asset===asset&&x.status!=='completed'))return 'Ativo com OS preventiva aberta.';
   if((s.notifications||[]).some(n=>n.asset===asset&&n.monitorOnly&&['aguarda_revisao_pcm','monitorando'].includes(n.status)))
    return 'Ativo sob monitoramento especial; conclua a avaliação antes da preventiva.';
-  if(m.assigned||m.restAt===s.tick||m.normativeUntil>s.tick||inTraining(s,m.id))
+  if(m.assigned||m.restAt===s.tick||globalThis.PORCARIA_ENGINE?.physicalBlock?.(s,m)||m.normativeUntil>s.tick||inTraining(s,m.id))
    return 'Profissional indisponível neste turno.';
   if((s.jobs||[]).some(j=>j.bay===b))return 'Box ocupado por uma OS corretiva.';
   if((s.preventiveOrders||[]).some(x=>x.status==='in_progress'&&x.bay===b))return 'Box ocupado por OS preventiva.';
@@ -48,6 +48,7 @@
    return 'Conflito: profissional, box ou ativo já reservado para preventiva.';
   const inspected=s.inspectionLabor?.tick===s.tick?Number(s.inspectionLabor.byEmployee?.[m.id])||0:0;
   if(inspected+p.hours>10.5)return 'HH do turno comprometidas com inspeções programadas.';
+  if(globalThis.PORCARIA_ENGINE?.physicalCapacity?.(s,m)<p.hours)return 'Capacidade física insuficiente para a preventiva neste turno.';
   if(!(Number(s.cash)>=p.cost))return 'Caixa insuficiente para autorizar a preventiva.';
   if(!Array.isArray(s.preventiveJobs))s.preventiveJobs=[];
   const n=Math.max(1,Number(s.nextPreventive)||1);
@@ -74,13 +75,13 @@
    ?'Profissional ou box reservado para preventiva neste turno. Cancele a reserva primeiro.'
    :null;
  }
- function settle(s,consumeHours=()=>{},audit=()=>{}){
+ function settle(s,consumeHours=()=>{},audit=()=>{},capacity=()=>10.5){
   let hh=0;
   if(!Array.isArray(s.preventiveEffects))s.preventiveEffects=[];
   if(!s.preventiveMetrics)s.preventiveMetrics={executed:0,cost:0,hours:0,screenedRandomCandidates:0};
   for(const row of active(s)){
    const p=PACKAGES[row.packageId],m=s.team.find(x=>x.id===row.mechanicId);
-   if(!p||!m||m.assigned||m.restAt===s.tick){
+   if(!p||!m||m.assigned||m.restAt===s.tick||capacity(m)+0.001<p.hours){
     row.status='cancelled';row.closedTick=s.tick;s.cash+=row.cost;
     audit('preventive_cancelled',{preventiveId:row.id,asset:row.asset,refunded:row.cost,
      reason:'recurso_indisponivel_no_turno'});

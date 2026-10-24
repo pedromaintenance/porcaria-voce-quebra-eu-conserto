@@ -30,7 +30,7 @@
    else if(j.stage>=6&&!j.materialUsed&&sc&&!(Number(state.stock[sc.material])>0)){
     kind='material';neededMaterial=sc.material;
    }else if(j.stage>=6){kind='repair'}
-   const fatigued=!!mech&&(mech.mental<25||mech.physical<25);
+   const fatigued=!!mech&&(mech.mental<25||mech.physical<40);
    return {
     bay,kind,label:STATUSES[kind].label,id:j.id,model:models.get(j.modelId)?.title||j.modelId,
     priority:j.priority,stage:j.stage,assigned:mech?.name||'Não localizado',
@@ -46,7 +46,7 @@
      name:data.items[o.item]?.name||o.item,
      overdue:o.eta<state.tick+1}))
    .sort((a,b)=>String(a.id).localeCompare(String(b.id)));
-  const fatigue=state.team.filter(m=>m.assigned&&(m.mental<25||m.physical<25))
+  const fatigue=state.team.filter(m=>m.assigned&&(m.mental<25||m.physical<40))
    .map(m=>({name:m.name,id:m.id,mental:m.mental,physical:m.physical}));
   const unattendedCritical=state.jobs.filter(j=>j.priority===3&&!j.assigned)
    .map(j=>({id:j.id,model:models.get(j.modelId)?.title||j.modelId,

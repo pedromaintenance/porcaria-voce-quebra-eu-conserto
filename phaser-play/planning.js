@@ -36,7 +36,7 @@
   const usedBays=new Set(state.jobs.filter(j=>j.assigned&&Number.isInteger(j.bay)).map(j=>j.bay));
   const busy=new Set(state.jobs.map(j=>j.assigned).filter(Boolean));
   const freeBays=Array.from({length:count},(_,i)=>i).filter(i=>!usedBays.has(i));
-  const freeMechanics=state.team.filter(m=>!busy.has(m.id)&&m.assigned==null&&m.restAt!==state.tick&&!(m.normativeUntil>state.tick)&&!(state.training?.assignments||[]).some(a=>a.untilTick>state.tick&&(a.learnerId===m.id||a.trainerId===m.id)));
+  const freeMechanics=state.team.filter(m=>!busy.has(m.id)&&m.assigned==null&&m.restAt!==state.tick&&!globalThis.PORCARIA_ENGINE?.physicalBlock?.(state,m)&&!(m.normativeUntil>state.tick)&&!(state.training?.assignments||[]).some(a=>a.untilTick>state.tick&&(a.learnerId===m.id||a.trainerId===m.id)));
   const scenes=new Map(data.scenarios.map(s=>[s.id,s]));
   const models=new Map(data.models.map(m=>[m.id,m]));
   const orders=new Map();

@@ -31,6 +31,8 @@
   if(planned(s).some(r=>r.tick===t&&(r.bay===b||r.mechanicId===m.id)))
    return 'Conflito: box ou profissional reservado nesse turno.';
   if(m.restAt===t||m.normativeUntil>t)return 'Profissional indisponível por descanso/integração.';
+  const physical=globalThis.PORCARIA_ENGINE?.physicalBlock?.(s,m,t);
+  if(physical)return physical;
   if((s.training?.assignments||[]).some(a=>a.untilTick>t&&(a.learnerId===m.id||a.trainerId===m.id)))
    return 'Profissional reservado para treinamento.';
   if(t===s.tick&&(m.assigned||s.jobs.some(x=>x.bay===b)||
@@ -64,6 +66,8 @@
   if((s.jobs||[]).some(o=>o.asset===j.asset))
    return 'Ativo com OS corretiva aberta. Revise o conflito de manutenção.';
   if(m.restAt===t||m.normativeUntil>t)return 'Profissional indisponível por descanso/integração.';
+  const physical=globalThis.PORCARIA_ENGINE?.physicalBlock?.(s,m,t);
+  if(physical)return physical;
   if((s.training?.assignments||[]).some(a=>a.untilTick>t&&(a.learnerId===m.id||a.trainerId===m.id)))
    return 'Profissional reservado para treinamento.';
   if(t===s.tick&&(m.assigned||(s.jobs||[]).some(x=>x.bay===b)||

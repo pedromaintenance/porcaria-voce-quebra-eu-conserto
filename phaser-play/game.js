@@ -412,7 +412,7 @@ function drawPreventive(){
  const pm=window.PORCARIA_PREVENTIVE_ORDERS.compute(state,data);
  const metrics=(key,v)=>'<div class="planningMetric"><small>'+esc(key)+'</small><strong>'+esc(v)+'</strong></div>';
  const names=new Map(state.team.map(m=>[m.id,m.name]));
- const free=state.team.filter(m=>!m.assigned&&m.restAt!==state.tick&&!E.TRAINING.active(state,m));
+ const free=state.team.filter(m=>!m.assigned&&m.restAt!==state.tick&&!E.TRAINING.active(state,m)&&!E.physicalBlock(state,m));
  const usedBays=new Set(state.jobs.filter(j=>j.bay!==null).map(j=>j.bay));
  for(const r of pm.orders)if(r.bay!==null)usedBays.add(r.bay);
  let out=planningTabs()
@@ -962,7 +962,7 @@ function drawUI(){
  out+='<div id="notice" style="display:none"></div>';
  if(!j.assigned){
   const busy=new Set(state.jobs.map(x=>x.assigned).filter(Boolean));
-  const free=state.team.filter(x=>!busy.has(x.id)&&x.restAt!==state.tick&&!E.TRAINING.active(state,x));
+  const free=state.team.filter(x=>!busy.has(x.id)&&x.restAt!==state.tick&&!E.TRAINING.active(state,x)&&!E.physicalBlock(state,x));
   const bays=[0,1,2].filter(x=>!state.jobs.some(z=>z.bay===x));
   if(free.length&&bays.length){
    out+=`<p class="muted">Escolha um profissional e um box para iniciar.</p><div class="actions"><select id="mechanicFull">${free.map(x=>`<option value="${x.id}">${esc(x.name)} (${esc(x.id)}) · ${esc(x.specialty||x.role)}</option>`).join('')}</select><select id="bayFull">${bays.map(x=>`<option value="${x}">BOX ${x+1}</option>`).join('')}</select></div><div class="actions"><button class="act" data-do="assign">ALOCAR E INVESTIGAR</button></div>`;
@@ -1054,10 +1054,12 @@ function drawTeam(){
  <div class="resourceGrid">`+state.team.map(m=>{
   const current=state.jobs.find(j=>j.assigned===m.id);
   const resting=m.restAt===state.tick;
+  const energyHold=E.physicalBlock(state,m);
+  const forcedRecovery=(m.exhaustedUntilTick||0)>state.tick;
   const training=E.TRAINING.active(state,m);
   const portraitUrl=m.sprite&&(TEAM_PORTRAITS[m.sprite]||WORKER_SHEETS[m.sprite]);
   const portrait=portraitUrl?'<span class="teamPortrait" style="background-image:url('+esc(portraitUrl)+')" aria-hidden="true"></span>':'<span class="teamPortrait placeholder" aria-label="Sem sprite">MEC.</span>';
-  return `<article class="resourceCard"><div class="teamIdentity">${portrait}<div><h3>${esc(m.avatar||'')} ${esc(m.name)} · ${esc(m.specialty||'Mecânico')} <small>${esc(m.id)}</small></h3><p class="muted">Disciplina: ${esc(m.role)}</p></div></div><p class="muted">${current?'Em serviço: '+esc(current.id)+' · Box '+(current.bay+1):resting?'Descanso programado neste turno':training?(m.normativeUntil>state.tick?'Treinamento normativo · '+(m.normativeUntil-state.tick)+' turno(s)':'Em capacitação neste turno'):'Disponível'} · Índice geral histórico ${Math.round(m.skill)}</p>${energyMeter('Mental',m.mental)}${energyMeter('Física',m.physical)}${energyMeter('Moral',m.morale)}<details class="abilitiesCard"><summary>📊 VER HABILIDADES</summary>${renderSkills(E.skillsFor(m))}</details><div class="actions"><button class="act secondary" data-team-action="motivate" data-person="${esc(m.id)}">MOTIVAR</button><button class="act secondary" data-team-action="rest" data-person="${esc(m.id)}" ${current||resting||training?'disabled':''}>DESCANSAR</button></div></article>`;
+  return `<article class="resourceCard"><div class="teamIdentity">${portrait}<div><h3>${esc(m.avatar||'')} ${esc(m.name)} · ${esc(m.specialty||'Mecânico')} <small>${esc(m.id)}</small></h3><p class="muted">Disciplina: ${esc(m.role)}</p></div></div><p class="muted">${current?'Em serviço: '+esc(current.id)+' · Box '+(current.bay+1):forcedRecovery?'RECUPERAÇÃO COMPULSÓRIA · até o turno '+m.exhaustedUntilTick:resting?'Descanso programado neste turno':energyHold?esc(energyHold):training?(m.normativeUntil>state.tick?'Treinamento normativo · '+(m.normativeUntil-state.tick)+' turno(s)':'Em capacitação neste turno'):'Disponível'} · Índice geral histórico ${Math.round(m.skill)}</p>${energyMeter('Mental',m.mental)}${energyMeter('Física',m.physical)}<p class="muted">${m.physicalShift?.tick===state.tick?'Esforço: '+Number(m.physicalShift.workedHH).toFixed(1)+'/10,5 HH · taxa do turno '+m.physicalShift.baseLoss+' pts/10,5 HH':'Esforço do turno ainda não executado'} · ${m.fullWorkStreak||0} turno(s) integral(is) seguido(s)</p>${energyMeter('Moral',m.morale)}<details class="abilitiesCard"><summary>📊 VER HABILIDADES</summary>${renderSkills(E.skillsFor(m))}</details><div class="actions"><button class="act secondary" data-team-action="motivate" data-person="${esc(m.id)}">MOTIVAR</button><button class="act secondary" data-team-action="rest" data-person="${esc(m.id)}" ${current||resting||training||forcedRecovery?'disabled':''}>DESCANSAR</button></div></article>`;
  }).join('')+'</div>';
 }
 function drawStore(){
