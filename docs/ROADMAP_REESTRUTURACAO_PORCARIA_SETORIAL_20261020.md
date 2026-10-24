@@ -174,3 +174,8 @@ Progressão observada → agravada → crítica → falha funcional, baseada em 
 ## Ciclo 22 — Modo Mobile / v0.9.25 (24/10/2026)
 
 Correção de rolagem vertical sobre o canvas Phaser, toque concluído com tolerância a arrastos, PWA fullscreen/landscape independente do PWA desktop, botões de instalação e tela cheia, layout responsivo em paisagem e testes automatizados. [Contrato de experiência mobile](EXPERIENCIA_MOBILE_CICLO22.md). Validação visual e gestual no Chrome Android ainda necessária.
+
+
+## Ciclo 23 — Navegação Mobile / v0.9.26 (24/10/2026)
+
+O menu compacto SETORES libera a área útil em paisagem. O botão Voltar do Android passa a fechar menus/modais sem encerrar prematuramente a sessão; o fluxo de instalação utiliza `userChoice`, a altura do canvas respeita a viewport atual e os controles redundantes são ocultados no PWA instalado. Teste automatizado e roteiro para Android em [Navegação Mobile — Ciclo 23](NAVEGACAO_MOBILE_CICLO23.md).
