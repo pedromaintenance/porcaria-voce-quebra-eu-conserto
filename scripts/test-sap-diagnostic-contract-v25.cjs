@@ -31,7 +31,7 @@ for(const sc of D.scenarios){
  if(E.sapEligible(D,sc)){
   matched.push(sc.id);
   assert.equal(sc.sapPathMapping.status,'validado_na_planilha');
-  assert.ok(D.sapPaths.some(p=>p.modelId===sc.modelId&&
+  assert.ok(D.sapInstalledPaths.some(p=>p.modelId===sc.modelId&&
    [p.system,p.group,p.subgroup].join('|')===sc.path.join('|')));
   for(const seed of [1,33,4444]){
    const opts=E.options(D,sc,seed);
@@ -46,8 +46,8 @@ for(const sc of D.scenarios){
   }
  }else pending.push(sc.id);
 }
-assert.ok(matched.length>=60,'min 60 missões verificadas');
-assert.ok(pending.length>=50,'exceções sem equivalente explícitas');
+assert.equal(matched.length,79,'79 missões com caminho físico e parte objeto verificáveis');
+assert.equal(pending.length,45,'43 locais sem caminho literal + 2 equivalências provisórias de parte objeto');
 assert.ok(pending.includes('INC103')&&pending.includes('INC115'),'retenção sem subgrupo SAP');
 const game=E.create(D,()=>0.5);
 assert.equal(game.jobs.length,3);
