@@ -33,7 +33,8 @@ const j=save.jobs[0];
 j.scene=sc.id;j.modelId=sc.modelId;j.stage=2;j.options=E.options(d,sc,1337);
 j.options[0].find(o=>o.id==='DRTR').label='Drive Train';
 j.options[1].find(o=>o.id==='AXAS').label='Axle Assy;Position 2';
-j.options[2].find(o=>o.id==='FID1').label='Final Drive;Position 1';
+const legacyFinal=j.options[2].find(o=>o.id==='FIDR');
+legacyFinal.id='FID1';legacyFinal.label='Final Drive;Position 1'; // save legado, código antigo
 j.diagnosticLog=[
  {stage:0,outcome:'confirmed',value:'Drive Train',source:'player',tick:0},
  {stage:1,outcome:'confirmed',value:'Axle Assy;Position 2',source:'player',tick:0},
@@ -43,8 +44,10 @@ j.diagnosticLog=[
 const ids=j.options.map(arr=>arr.map(o=>o.id)),before={stage:j.stage,scene:j.scene,wrong:j.wrong,tick:save.tick,
  cash:save.cash,history:save.done.length,team:save.team.map(m=>m.id)};
 assert.equal(E.localizeDiagnosticOptions(save,d),save);
-assert.deepEqual(j.options.map(arr=>arr.map(o=>o.id)),ids,'IDs e ordem das opções intactos');
-assert.deepEqual([j.options[0].find(o=>o.id==='DRTR').label,j.options[1].find(o=>o.id==='AXAS').label,j.options[2].find(o=>o.id==='FID1').label],
+assert.equal(j.options[2].some(o=>o.id==='FIDR'),true,'migração de código FID1 para FIDR oficial');
+assert.deepEqual(j.options[0].map(o=>o.id),ids[0]);
+assert.deepEqual(j.options[1].map(o=>o.id),ids[1]);
+assert.deepEqual([j.options[0].find(o=>o.id==='DRTR').label,j.options[1].find(o=>o.id==='AXAS').label,j.options[2].find(o=>o.id==='FIDR').label],
  ['Transmissão','Conj Eixo;Posição 2','Comando Final;Posição 1']);
 assert.deepEqual(j.diagnosticLog.map(x=>x.value),['Transmissão','Conj Eixo;Posição 2','Comando Final;Posição 1','Não reescrever evidências']);
 assert.deepEqual({stage:j.stage,scene:j.scene,wrong:j.wrong,tick:save.tick,cash:save.cash,history:save.done.length,team:save.team.map(m=>m.id)},before,'progressão intacta');
