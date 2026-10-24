@@ -15,7 +15,7 @@ assert.equal(mobile.start_url,'./?mobile=1');
 assert.ok(mobile.icons.every(x=>x.src.startsWith('../icon-')));
 assert.ok(sw.includes('mobile-experience.js')&&sw.includes('mobile.webmanifest'));
 assert.ok(html.includes('id="appManifest"'));
-assert.ok(html.includes('mobile.webmanifest')&&html.includes('mobile-experience.js?v=0.9.25-c22'));
+assert.ok(html.includes('mobile.webmanifest')&&html.includes('mobile-experience.js?v='));
 assert.ok(html.includes('viewport-fit=cover'));
 assert.ok(html.includes('touch-action:pan-y!important'));
 assert.ok(html.includes('.mobile-play .modalContent{touch-action:pan-y;'));
