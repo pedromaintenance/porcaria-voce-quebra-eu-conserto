@@ -39,7 +39,7 @@
   const notice=byId('mobileNotice'),install=byId('mobileInstall'),
    fullscreen=byId('mobileFullscreen'),rotate=byId('mobileRotate'),
    sectors=byId('mobileSectors'),nav=doc.querySelector?.('.primary-nav');
-  let deferred=null,menuActive=false,panelActive=false,historyGuard=false,fromBack=false,closePanelOnBack=null;
+  let deferred=null,installedNow=false,menuActive=false,panelActive=false,historyGuard=false,fromBack=false,closePanelOnBack=null;
   function updateViewport(){
    const header=doc.querySelector?.('.top');
    const top=Number(header?.getBoundingClientRect?.().height)||100;
@@ -97,9 +97,10 @@
    notice.hidden=false;
    notice.textContent=message;
   }
+  notice?.addEventListener?.('click',()=>{notice.hidden=true;});
   function update(){
    if(sectors)sectors.hidden=false;
-   const installed=isInstalled(win);
+   const installed=isInstalled(win)||installedNow;
    if(install)install.hidden=installed;
    if(fullscreen){
     fullscreen.hidden=installed&&!!win.matchMedia?.('(display-mode: fullscreen)').matches&&!doc.fullscreenElement;
@@ -115,7 +116,7 @@
    update();
   };
   win.addEventListener('beforeinstallprompt',onInstallPrompt);
-  win.addEventListener('appinstalled',()=>{deferred=null;update();tell('Instalação concluída! Abra o ícone P.O.R.C.A.R.I.A. na tela inicial.');});
+  win.addEventListener('appinstalled',()=>{deferred=null;installedNow=true;update();tell('Instalação concluída! Abra o ícone P.O.R.C.A.R.I.A. na tela inicial.');});
   install?.addEventListener('click',async()=>{
    if(!deferred){
     tell('No Chrome: abra ⋮ → Adicionar à tela inicial → Instalar. Depois inicie pelo ícone para ocultar a barra do navegador.');
