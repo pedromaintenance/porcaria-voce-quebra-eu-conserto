@@ -164,3 +164,8 @@ As 100 missões e 387 caminhos cadastrados são um legado a preservar. As rotina
 ## Etapa 6 — Ciclo 20 / v0.9.23 (24/10/2026)
 
 Implementação na branch do Ciclo 20: débito físico por HH, taxa única sorteada de 40–70/10,5 HH por pessoa e turno, recuperação somente em turno sem trabalho, recusa abaixo de 40%, interrupção de OS em zero com dois turnos de recuperação, bloqueio da terceira jornada integral consecutiva e migração aditiva dos saves. Consultar [Energia Física — Ciclo 20](ENERGIA_FISICA_CICLO20.md). Testes automatizados e validação visual condicionam publicação na main.
+
+
+## Etapa 5 — Ciclo 21 / v0.9.24 (24/10/2026)
+
+Progressão observada → agravada → crítica → falha funcional, baseada em idade, prioridade e família. Integra notificação PCM, custo virtual único, geração controlada de corretiva pela Fila de OS, histórico auditável e migração de saves. [Contrato e validação](PROGRESSAO_ANORMALIDADES_CICLO21.md).
