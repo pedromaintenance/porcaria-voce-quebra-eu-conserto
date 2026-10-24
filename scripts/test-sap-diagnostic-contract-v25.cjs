@@ -7,7 +7,6 @@
 const assert=require('node:assert/strict');
 const D=require('../game-data.json');
 const E=require('../engine.js');
-const crypto=require('node:crypto');
 const canon=k=>k==='paths'?D.paths:D.catalog[k];
 const fnv32=s=>{
  let hash=2166136261;
@@ -41,10 +40,17 @@ for(const sc of D.scenarios){
  // Verificar os seis valores do caso e todos os distratores por cinco sementes.
  const choices=[...sc.path,sc.component,sc.damage,sc.cause];
  const local=D.paths.filter(p=>p.modelId===sc.modelId);
+ const sameSys=local.filter(p=>p.system===sc.path[0]);
+ const sameGroup=sameSys.filter(p=>p.group===sc.path[1]);
+ const lookup=(pool,key,name)=>{
+  const map=new Map();
+  for(const p of [...pool,...local])if(p[key]&&!map.has(p[key]))map.set(p[key],p[name]);
+  return map;
+ };
  const references=[
-  new Map(local.map(p=>[p.system,p.systemName])),
-  new Map(local.map(p=>[p.group,p.groupName])),
-  new Map(local.map(p=>[p.subgroup,p.subgroupName])),
+  lookup(local,'system','systemName'),
+  lookup(sameSys.length?sameSys:local,'group','groupName'),
+  lookup(sameGroup.length?sameGroup:local,'subgroup','subgroupName'),
   new Map(D.catalog.parts.map(x=>[x,x])),
   new Map(D.catalog.damages.map(x=>[x.pt,x.pt])),
   new Map(D.catalog.causes.map(x=>[x.pt,x.pt]))
