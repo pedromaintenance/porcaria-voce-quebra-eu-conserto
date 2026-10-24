@@ -193,4 +193,4 @@ O vocabulário de Sistema → Grupo → Subgrupo → Componente → Dano → Cau
 
 ## Importação completa da referência SAP (24/10/2026)
 
-Substituição da lista parcial por 683 Partes objeto do Catalog Profile; árvore com 2.535 locais de instalação da 1412, 987 tipos de objeto, 31.107 vínculos de código, 66 danos e 81 causas. Mapeamentos de parte objeto guardam o código e a nomenclatura PT/EN original. Novas missões usam apenas caminhos de instalação verificados; os casos legados sem enquadramento mantêm histórico, com pendência explícita. Ver [relatório de importação](IMPORTACAO_INTEGRAL_SAP_1412_CATALOG_PROFILE.md).
+Substituição da lista parcial por 683 Partes objeto do Catalog Profile; árvore com 2.535 locais de instalação da 1412, 987 tipos de objeto, 31.106 vínculos (+ 1 linha de identificação do catálogo) de código, 66 danos e 81 causas. Mapeamentos de parte objeto guardam o código e a nomenclatura PT/EN original. Novas missões usam apenas caminhos de instalação verificados; os casos legados sem enquadramento mantêm histórico, com pendência explícita. Ver [relatório de importação](IMPORTACAO_INTEGRAL_SAP_1412_CATALOG_PROFILE.md).
