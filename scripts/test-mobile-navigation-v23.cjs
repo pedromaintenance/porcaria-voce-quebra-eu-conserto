@@ -101,9 +101,11 @@ function fake(){
  f.listeners.resize();
  assert.equal(f.styles['--mobile-stage-height'],'694px');
  // PWA já fullscreen não apresenta botão supérfluo de fullscreen.
- f.win.matchMedia=q=>({matches:q.includes('display-mode: fullscreen')});
  f.listeners.appinstalled();
- assert.equal(f.ui.mobileInstall.hidden,true);
+ assert.equal(f.ui.mobileInstall.hidden,true,'instalação finalizada oculta o botão no navegador normal');
+ assert.equal(f.ui.mobileFullscreen.hidden,false,'navegador continua oferecendo fullscreen se ainda não instalado em execução');
+ f.win.matchMedia=q=>({matches:q.includes('display-mode: fullscreen')});
+ f.listeners.resize();
  assert.equal(f.ui.mobileFullscreen.hidden,true);
  // Em desktop não existe menu setorial nem histórico extra.
  const desktop={navigator:{userAgent:'Windows'},matchMedia:()=>({matches:false}),document:{}};
