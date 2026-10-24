@@ -15,7 +15,7 @@ assert.ok(html.includes('aria-controls="primaryNav"'));
 assert.ok(html.includes('mobile-sectors-open .primary-nav{display:grid'));
 assert.ok(html.includes('--mobile-stage-height'));
 assert.ok(html.includes('mobile-experience.js?v=0.9.26-c23'));
-assert.ok(html.includes('game.js?v=0.9.26-c23'));
+assert.ok(html.includes('game.js?v='),'o jogo deve manter cache versionado nos ciclos posteriores');
 assert.ok(game.includes('MOBILE?.panelOpened?.()'));
 assert.ok(game.includes('MOBILE?.panelClosed?.()'));
 assert.ok(game.includes('MOBILE?.registerClosePanel?.(closePanel)'));

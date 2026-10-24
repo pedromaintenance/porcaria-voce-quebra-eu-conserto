@@ -9,6 +9,7 @@ const S=window.PORCARIA_SECTORS;
 const T=window.PORCARIA_EVIDENCE;
 const M=window.PORCARIA_MONITORING;
 const MOBILE=window.PORCARIA_MOBILE;
+const PANEL_GUIDE=window.PORCARIA_PANEL_GUIDE?.init(document,window);
 const mobileTapEvent=MOBILE?.isMobile(window)?'pointerup':'pointerdown';
 const isValidMobileTap=pointer=>mobileTapEvent!=='pointerup'||MOBILE.isTap(pointer);
 const STAGES=['Sistema','Grupo','Subgrupo','Componente','Dano','Causa'];
@@ -176,10 +177,12 @@ function openPanel(name){
  document.querySelectorAll('[data-panel]').forEach(el=>el.classList.toggle('is-open',el.dataset.panel===name));
  document.querySelectorAll('.primary-nav [data-open-panel]').forEach(btn=>{const active=btn.dataset.openPanel===name;btn.classList.toggle('is-active',active);btn.setAttribute('aria-expanded',active?'true':'false')});
  document.body.style.overflow='hidden';
+ PANEL_GUIDE?.render?.(name);
  $('closePanel')?.focus();
 }
 function closePanel(){
  const overlay=$('menuOverlay');if(overlay)overlay.hidden=true;
+ PANEL_GUIDE?.clear?.();
  MOBILE?.panelClosed?.();
  document.querySelectorAll('.primary-nav [data-open-panel]').forEach(btn=>{btn.classList.remove('is-active');btn.setAttribute('aria-expanded','false')});
  document.body.style.overflow='';

@@ -179,3 +179,8 @@ Correção de rolagem vertical sobre o canvas Phaser, toque concluído com toler
 ## Ciclo 23 — Navegação Mobile / v0.9.26 (24/10/2026)
 
 O menu compacto SETORES libera a área útil em paisagem. O botão Voltar do Android passa a fechar menus/modais sem encerrar prematuramente a sessão; o fluxo de instalação utiliza `userChoice`, a altura do canvas respeita a viewport atual e os controles redundantes são ocultados no PWA instalado. Teste automatizado e roteiro para Android em [Navegação Mobile — Ciclo 23](NAVEGACAO_MOBILE_CICLO23.md).
+
+
+## Ciclo 24 — Painéis Técnicos Mobile / v0.9.27 (24/10/2026)
+
+Leitura de PCM, diagnóstico, inspeção e monitoramento em Android retrato/paisagem, com controles adequados ao toque, abas e imagens compactas, modal rolável e atalhos para seções internas. Sem mudanças no motor ou saves. [Detalhes e roteiro de validação](PAINEIS_TECNICOS_MOBILE_CICLO24.md).

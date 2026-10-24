@@ -848,6 +848,74 @@ html.mobile-play #mobileNotice{pointer-events:auto}
  html.mobile-play .mobile-sector-toggle{min-height:32px;padding:5px 11px}
 }
 @media(max-width:350px){html.mobile-play .top-main .brand{font-size:11px}}
+
+/* Ciclo 24 — leitura técnica no celular horizontal e vertical, sem esconder dados. */
+.mobile-panel-guide[hidden]{display:none!important}
+.mobile-panel-guide{display:none;flex:0 0 auto;gap:7px;align-items:center;
+ overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;
+ padding:7px 9px;background:#102a3d;border-bottom:1px solid #4f7691;touch-action:pan-x}
+.mobile-guide-label{flex:none;font-size:10px;font-weight:900;letter-spacing:.08em;color:#e9bd68}
+.mobile-guide-link{flex:0 0 auto;min-height:40px;border:1px solid #52748c;
+ background:#193c53;color:#eef6fc;border-radius:7px;padding:8px 13px;
+ font-size:12px;font-weight:850;cursor:pointer}
+.mobile-guide-link:focus-visible{outline:2px solid #ffdf98;outline-offset:2px}
+html.mobile-play .mobile-panel-guide:not([hidden]){display:flex}
+html.mobile-play #menuOverlay .modalShell{width:min(1180px,100%);min-width:0}
+html.mobile-play #menuOverlay .modalTop{flex:0 0 auto;min-height:43px;padding:6px 12px;gap:8px}
+html.mobile-play #menuOverlay .modalTop strong{font-size:clamp(12px,2vw,17px);line-height:1.25;min-width:0;overflow-wrap:anywhere}
+html.mobile-play #menuOverlay .closeModal{min-height:40px;flex-shrink:0}
+html.mobile-play #menuOverlay .modalContent{min-height:0;flex:1 1 auto;
+ padding:10px;overscroll-behavior-y:contain;overflow-x:hidden}
+html.mobile-play #menuOverlay .modalContent .panel.is-open{min-width:0;max-width:100%}
+html.mobile-play .planningRoomStage{height:min(27dvh,170px);max-height:170px;
+ aspect-ratio:auto;margin-bottom:9px}
+html.mobile-play .planningRoomStage img{object-fit:cover;object-position:center 44%}
+html.mobile-play .controlRoomStage{height:min(27dvh,180px);aspect-ratio:auto}
+html.mobile-play .controlRoomStage img{object-fit:cover;object-position:center 48%}
+html.mobile-play .controlRoomSidebar{display:none!important}
+html.mobile-play .controlRoomMobileMenu{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:8px}
+html.mobile-play .controlMobileNavItem{min-width:0;min-height:44px;white-space:normal}
+html.mobile-play .planningTabs{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;
+ touch-action:pan-x;padding:4px 2px 8px;scrollbar-width:thin}
+html.mobile-play .planningTabs button{flex:0 0 auto;min-height:44px;white-space:nowrap}
+html.mobile-play .pcmHypothesisGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+html.mobile-play .pcmScopeRow{grid-template-columns:repeat(2,minmax(0,1fr))}
+html.mobile-play .inspectionList{grid-template-columns:1fr}
+html.mobile-play .inspectionMetrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+html.mobile-play .inspectionNotification,html.mobile-play .pcmReviewArea,
+html.mobile-play .pcmMonitoringCard,html.mobile-play .planningOrder{overflow-wrap:anywhere;min-width:0}
+html.mobile-play .inspectionNotificationHead strong{min-width:0;overflow-wrap:anywhere}
+html.mobile-play .pcmScopeRow label,html.mobile-play .pcmHypothesis,
+html.mobile-play .pcmReviewArea>label{font-size:13px}
+html.mobile-play .pcmScopeRow select,html.mobile-play .pcmReviewArea select,
+html.mobile-play .pcmHypothesis select,html.mobile-play .fieldSchedule select,
+html.mobile-play .pcmMonitoringCard select{font-size:16px;min-height:44px}
+html.mobile-play .pcmActions .act,html.mobile-play .pcmTestAction button,
+html.mobile-play .inspectionNotifyActions button{min-height:44px;font-size:12px;white-space:normal}
+html.mobile-play .pcmTestAction{align-items:stretch;flex-wrap:wrap}
+html.mobile-play .pcmTestAction button{flex:0 1 auto;max-width:100%}
+html.mobile-play .diagnosticSteps{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+html.mobile-play .diagnosticGroups{grid-template-columns:1fr}
+html.mobile-play .diagnosticGroup.unknown{grid-column:1}
+html.mobile-play .diagnosticStep{min-height:80px}
+html.mobile-play .diagnosticHero{gap:10px;padding:11px;flex-wrap:wrap}
+html.mobile-play .diagnosticHero h3{font-size:clamp(17px,3.1vw,22px)}
+html.mobile-play .diagnosticPercent{min-width:62px}
+html.mobile-play .diagnosticCoach,html.mobile-play .diagnosticJournal,
+html.mobile-play .diagnosticLearning{overflow-wrap:anywhere}
+html.mobile-play .weeklyScroll{touch-action:pan-x;-webkit-overflow-scrolling:touch}
+html.mobile-play #planningNotifications,.mobile-play .controlRoomOperations{scroll-margin-top:14px}
+@media(orientation:portrait){
+ html.mobile-play .pcmHypothesisGrid,html.mobile-play .pcmScopeRow,
+ html.mobile-play .controlRoomMobileMenu{grid-template-columns:1fr}
+ html.mobile-play .controlRoomMobileMenu{grid-template-columns:repeat(2,minmax(0,1fr))}
+ html.mobile-play .modalContent{padding:8px!important}
+}
+@media(orientation:landscape) and (max-height:480px){
+ html.mobile-play .controlRoomStage,html.mobile-play .planningRoomStage{height:95px}
+ html.mobile-play #menuOverlay .modalTop{min-height:38px}
+ html.mobile-play .mobile-guide-link{min-height:35px}
+}
 </style></head><body>
 <div id="layout">
 <header class="top" role="banner">
@@ -905,7 +973,7 @@ html.mobile-play #mobileNotice{pointer-events:auto}
   </div>
 </header>
 <div class="stageWrap"><p id="mobileRotate" hidden>↻ Gire o celular para aproveitar a oficina na horizontal</p><div class="bayHUD" id="bayHUD" aria-live="polite"></div><div class="stageLabel">OFICINA CENTRAL · PROTÓTIPO PHASER</div><div id="game"></div></div>
-<div class="dashboard" id="menuOverlay" role="dialog" aria-modal="true" aria-label="Menu de manutenção" hidden><div class="modalShell"><div class="modalTop"><strong id="modalHeading">MENU DA OFICINA</strong><button type="button" class="closeModal" id="closePanel" aria-label="Fechar menu">✕ FECHAR</button></div><div class="modalContent"><section class="panel" data-panel="management"><h2>📋 Gestão da Oficina</h2><div id="management"></div></section><section class="panel" data-panel="queue"><h2>📻 Rádio da Operação · Fila de OS</h2>
+<div class="dashboard" id="menuOverlay" role="dialog" aria-modal="true" aria-label="Menu de manutenção" hidden><div class="modalShell"><div class="modalTop"><strong id="modalHeading">MENU DA OFICINA</strong><button type="button" class="closeModal" id="closePanel" aria-label="Fechar menu">✕ FECHAR</button></div><nav id="mobilePanelGuide" class="mobile-panel-guide" aria-label="Atalhos de leitura do painel" hidden></nav><div class="modalContent"><section class="panel" data-panel="management"><h2>📋 Gestão da Oficina</h2><div id="management"></div></section><section class="panel" data-panel="queue"><h2>📻 Rádio da Operação · Fila de OS</h2>
 <section class="radioDispatchScene" aria-label="Central de rádio da manutenção">
 <img src="./assets/elton-sala-radio.webp" alt="Elton recebendo chamadas pelo rádio, acompanhando ordens de serviço e a situação da frota na central de manutenção" decoding="async" loading="lazy">
 <div class="radioDispatchBar">
@@ -928,4 +996,4 @@ html.mobile-play #mobileNotice{pointer-events:auto}
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div><div id="mobileNotice" role="status" aria-live="polite" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.9.24-c21"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./decision-impact.js?v=0.9.11"></script><script src="./decision-ledger.js?v=0.9.12"></script><script src="./lessons-learned.js?v=0.9.13"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./anomaly-progression.js?v=0.9.24-c21"></script><script src="./inspection.js?v=0.9.10"></script><script src="./evidence.js?v=0.9.3"></script><script src="./oil-catalog-expansion.js?v=0.9.5"></script><script src="./fault-catalog-expansion.js?v=0.9.6"></script><script src="./undercarriage-catalog-expansion.js?v=0.9.7"></script><script src="./component-catalog-expansion.js?v=0.9.8"></script><script src="./fps-catalog-expansion.js?v=0.9.10"></script><script src="./condition-catalog.js?v=0.9.10"></script><script src="./monitoring.js?v=0.9.18-copy1"></script><script src="./inspection-view.js?v=0.9.18-copy1"></script><script src="./sector-views.js?v=0.9.9"></script><script src="./mobile-experience.js?v=0.9.26-c23"></script><script>window.PORCARIA_MOBILE?.init(window);</script><script src="./game.js?v=0.9.26-c23"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
+<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.9.24-c21"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./decision-impact.js?v=0.9.11"></script><script src="./decision-ledger.js?v=0.9.12"></script><script src="./lessons-learned.js?v=0.9.13"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./anomaly-progression.js?v=0.9.24-c21"></script><script src="./inspection.js?v=0.9.10"></script><script src="./evidence.js?v=0.9.3"></script><script src="./oil-catalog-expansion.js?v=0.9.5"></script><script src="./fault-catalog-expansion.js?v=0.9.6"></script><script src="./undercarriage-catalog-expansion.js?v=0.9.7"></script><script src="./component-catalog-expansion.js?v=0.9.8"></script><script src="./fps-catalog-expansion.js?v=0.9.10"></script><script src="./condition-catalog.js?v=0.9.10"></script><script src="./monitoring.js?v=0.9.18-copy1"></script><script src="./inspection-view.js?v=0.9.18-copy1"></script><script src="./sector-views.js?v=0.9.9"></script><script src="./mobile-experience.js?v=0.9.26-c23"></script><script>window.PORCARIA_MOBILE?.init(window);</script><script src="./mobile-panel-guide.js?v=0.9.27-c24"></script><script src="./game.js?v=0.9.27-c24"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
