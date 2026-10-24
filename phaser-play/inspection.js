@@ -5,6 +5,7 @@
  root.PORCARIA_INSPECTION=I;
 })(typeof window!=='undefined'?window:globalThis,function(){
  'use strict';
+ const PROGRESSION=typeof require==='function'?require('./anomaly-progression.js'):globalThis.PORCARIA_ANOMALY_PROGRESSION;
  const LIMIT_PER_SHIFT=3;
  function normalized(s){
   if(!Array.isArray(s.inspections))s.inspections=[];
@@ -122,6 +123,7 @@
    origin:'inspecao_sensitiva_simulada',description:text,reportedIndication:x.observed,
    priority,status:'aguarda_revisao_pcm',sourceScenario:x.scene,
    evidenceType:'observacao_simulada',workOrderId:null};
+  n.anomalyProgression=PROGRESSION?.create(n,s.tick);
   s.notifications.push(n);x.notificationId=idNew;x.status='notified';
   return {ok:true,notification:n};
  }

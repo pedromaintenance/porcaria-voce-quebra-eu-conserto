@@ -136,6 +136,20 @@
   const field=esc(n.reportedIndication||n.description||'Nenhum dado de condição disponível.');
   const details='<div class="inspectionObservation"><strong>CONDIÇÃO REGISTRADA</strong><p>'+field+'</p></div>'
    +'<small>Prioridade: '+esc(String(n.priority||'baixa').toUpperCase())+(n.inspectionId?' · Inspeção '+esc(n.inspectionId):' · Fonte: Monitoramento de Condição')+'</small>';
+  const progression=!n.monitorOnly&&n.anomalyProgression?E?.ANOMALY?.display(n,s,d):null;
+  const deterioration=progression?'<section class="pcmProgression" aria-label="Progressão da anormalidade">'
+   +'<div class="inspectionNotificationHead"><strong>EVOLUÇÃO DO ACHADO</strong><span class="inspectionBadge">'
+   +esc(progression.label)+'</span></div>'
+   +'<p>Idade acompanhada: '+progression.elapsed+' turno(s) · '+esc(n.asset)+'</p>'
+   +(progression.nextLabel?'<small>Próxima condição possível: '+esc(progression.nextLabel)
+     +' em '+progression.turnsUntilNext+' turno(s) sem tratamento.</small>':
+     '<small>Condição em falha funcional; disponibilidade sujeita à corretiva.</small>')
+   +(progression.pendingFailure?'<p class="inspectionAttention">FALHA FUNCIONAL: abertura da OS pendente por conflito ou limite da carteira.</p>':'')
+   +(progression.resolvedTick!==null?'<p>Tratativa encerrada no turno '+progression.resolvedTick+'.</p>':'')
+   +'<details><summary>Histórico de progressão ('+progression.history.length+')</summary><ol>'
+   +progression.history.slice(-8).map(e=>'<li>Turno '+Number(e.tick)+' · '+esc(E.ANOMALY.LABELS[e.phase]||e.phase)
+      +' · '+esc(e.cause||'registro')+'</li>').join('')+'</ol></details>'
+   +'<small>Prazos virtuais de gameplay; não representam limites de OEM ou prognóstico mecânico.</small></section>':'';
   const hist=Array.isArray(n.reviewHistory)&&n.reviewHistory.length
    ?'<details class="inspectionAudit"><summary>Histórico de decisões · '+n.reviewHistory.length+'</summary><ol>'
      +n.reviewHistory.slice(-8).map(h=>'<li>Turno '+Number(h.tick||0)+' · '+esc(h.action)+' · '+esc(h.reason)+'</li>').join('')+'</ol></details>':'';
@@ -181,11 +195,11 @@
     +'<button class="act secondary" data-notification-action="archive" data-notification-id="'+id+'">ARQUIVAR</button></div>'
     +reasonChoices(I.ARCHIVE_REASONS)+buy;
   }else if(n.status==='convertida_os'){
-   actions='<p class="inspectionLinked">✓ '+esc(n.workOrderId||'')+' criada. O plano será avaliado quando o mecânico iniciar o serviço.</p>';
+   actions='<p class="inspectionLinked">✓ '+esc(n.workOrderId||'')+' criada. '+(n.anomalyProgression?.phase==='falha_funcional'?'Corretiva emergencial gerada após falha funcional.':'O plano será avaliado quando o mecânico iniciar o serviço.')+'</p>';
   }else if(n.status==='arquivada_pcm'){
    actions='<p class="inspectionAttention">Motivo do arquivamento: '+esc(n.reviewReason||'')+'</p>';
   }
-  return '<article class="inspectionNotification">'+header+details+renderEvidence(n,d,T,s)+actions+hist+'</article>';
+  return '<article class="inspectionNotification">'+header+details+deterioration+renderEvidence(n,d,T,s)+actions+hist+'</article>';
  }
 
  function render(s,d,I,E,T,M){

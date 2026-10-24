@@ -18,6 +18,8 @@
     :new Proxy({}, {get(_obj,key){return (...args)=>globalThis.PORCARIA_FLEET_TELEMETRY[key](...args)}});
   const PM_OS=typeof require==='function'?require('./phaser-play/preventive-orders.js')
     :new Proxy({}, {get(_obj,key){return (...args)=>globalThis.PORCARIA_PREVENTIVE_ORDERS[key](...args)}});
+  const ANOMALY=typeof require==='function'?require('./phaser-play/anomaly-progression.js')
+    :new Proxy({}, {get(_obj,key){return (...args)=>globalThis.PORCARIA_ANOMALY_PROGRESSION[key](...args)}});
   // Elenco principal fixo. Saves antigos recebem o inspetor Nemuel uma vez, preservando IDs e OS.
   const INITIAL_TEAM=Object.freeze([
     {name:'Pedro',avatar:'🧯',role:'geral',specialty:'Brigadista',sprite:'pedro'},
@@ -426,7 +428,10 @@
     const existing=new Set(s.jobs.map(j=>j.asset));
     for(const pm of s.preventiveOrders||[])if(pm.status==='in_progress')existing.add(pm.asset);
     // O monitoramento ativo reserva o equipamento: sem OS automática sobre o mesmo ativo.
-    for(const n of s.notifications||[])if(n.monitorOnly&&['aguarda_revisao_pcm','monitorando'].includes(n.status))existing.add(n.asset);
+    for(const n of s.notifications||[]){
+      if(n.monitorOnly&&['aguarda_revisao_pcm','monitorando'].includes(n.status))existing.add(n.asset);
+      if(!n.monitorOnly&&['aguarda_revisao_pcm','devolvida','aprovada_pcm','convertida_os'].includes(n.status))existing.add(n.asset);
+    }
     for(let i=0;i<n;i++){
       const pool=d.scenarios.filter(c=>{
         // As consequências surgem somente após o atraso do precursor, nunca no sorteio livre.
@@ -913,6 +918,29 @@
       if(s.cash<0)msg(s,'Atenção financeira: caixa negativo. Planeje aquisições, produtividade e contratos antes de novos investimentos.','bad');
     }
     TRAINING.afterShift(s,SKILL_CATALOG,rng,t=>msg(s,t,'info'));
+    // Consequência de postergação: primeiro registra criticidade, depois, apenas
+    // em falha funcional e sem duplicidade, abre corretiva via Rádio/Fila de OS.
+    ANOMALY.advance(s,d,{
+      audit:(type,fields)=>recordDecision(s,type,fields),
+      log:(message,kind)=>msg(s,message,kind),
+      openFailure:n=>{
+        if(s.jobs.length>=32||s.jobs.some(j=>j.asset===n.asset)||
+          (s.preventiveOrders||[]).some(p=>p.asset===n.asset&&p.status==='in_progress'))
+          return {error:'recurso_ou_carteira_ocupada'};
+        const sc=scenario(d,n.sourceScenario);
+        if(!sc||sc.modelId!==n.modelId||!d.models.some(x=>x.id===n.modelId))
+          return {error:'cenario_nao_validado'};
+        const order=buildJob(s,d,sc,n.asset,rng);
+        order.priority=3;order.report='Falha funcional após postergação da nota '+n.id+': '+n.description;
+        order.source='falha_funcional_inspecao';order.notificationId=n.id;
+        order.inspectionId=n.inspectionId||null;
+        order.progressionOrigin={notificationId:n.id,openedTick:n.openedTick,
+          failureTick:s.tick,sourceScenario:sc.id};
+        if(n.planningScope)order.approvedScope={...n.planningScope};
+        s.jobs.push(order);FLEET.failure(s,d,order,'progression');
+        return {order};
+      }
+    });
     const rec={tick:s.tick,day:s.day,shift:s.shift,cash:Math.round(s.cash),backlog:s.jobs.length,
       overdue:s.jobs.filter(j=>s.tick-j.tickOpen>4).length,completed:completed,utilization:s.lastUtilization,
       morale:Math.round(s.team.reduce((a,m)=>a+m.morale,0)/Math.max(s.team.length,1)),reputation:s.reputation};
@@ -933,7 +961,7 @@
       pendingMaterials:s.jobs.filter(j=>j.status==='material').length, pendingTools:s.jobs.filter(j=>j.status==='ferramenta').length};
   }
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
-  return {create,initFleet,setFleetDuty,generatePreventiveOrders,assignPreventiveOrder,releasePreventiveOrder,schedulePreventiveOrder,recordDecision,writeLesson,scheduleJob,cancelSchedule,bookPreventive,cancelPreventive,normalizePhysical,physicalBlock,physicalCapacity,consumePhysical,normalizeRoster,localizeDiagnosticOptions,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
+  return {create,initFleet,setFleetDuty,ANOMALY,generatePreventiveOrders,assignPreventiveOrder,releasePreventiveOrder,schedulePreventiveOrder,recordDecision,writeLesson,scheduleJob,cancelSchedule,bookPreventive,cancelPreventive,normalizePhysical,physicalBlock,physicalCapacity,consumePhysical,normalizeRoster,localizeDiagnosticOptions,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
     SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
     model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
 });
