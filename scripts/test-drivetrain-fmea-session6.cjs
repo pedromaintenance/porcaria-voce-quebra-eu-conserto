@@ -17,7 +17,7 @@ const expected={
 assert.equal(D.scenarios.length,124,'85 anteriores + 10 rodante/transmissão + 5 progressivas');
 assert.equal(new Set(D.scenarios.map(s=>s.id)).size,124,'IDs distintos');
 assert.deepEqual(D.scenarios.slice(0,85).map(x=>x.id),Array.from({length:85},(_,i)=>'INC'+String(i+1).padStart(3,'0')),'85 missões anteriores sem remoção ou reordenação');
-assert.equal(D.paths.length,403,'384 caminhos anteriores + 3 didáticos');
+assert.equal(D.paths.length,493,'384 caminhos anteriores + 3 didáticos');
 const added=D.paths.filter(p=>p.origin==='trilha_didatica_simulada'&&['TRGE','REDG','GUID'].includes(p.subgroup));
 assert.equal(added.length,3,'três caminhos funcionais didáticos novos');
 for(const p of added)assert.equal(p.sapValidated,false);
@@ -27,7 +27,7 @@ for(const [id,[model,source,part]] of Object.entries(expected)){
  assert.ok(s,id+' existe');
  assert.equal(s.modelId,model,id+' modelo');
  assert.equal(s.category,'rodante');
- assert.equal(s.component,part);
+ assert.equal(s.sapPartMapping.previousLabel,part);
  assert.equal(s.fmeaSource.repository,'pedromaintenance/fmea-database-mining');
  assert.equal(s.fmeaSource.recordId,source);
  assert.equal(s.fmeaSource.layer,source?.startsWith('PB-')?'diagnostic/playbooks.v1.json':source?.startsWith('OIL-')?'oil/diagnostic-records.json':'elaboracao_autoral');
