@@ -16,7 +16,7 @@ for(const [id,expect] of Object.entries(expected)){
  const sc=D.scenarios.find(x=>x.id===id);assert.ok(sc,'caso existente '+id);
  assert.equal(sc.modelId,expect.model);
  assert.deepEqual(sc.sapPathMapping.previousPath,expect.path,'trilha original preservada para auditoria');
- if(E.sapEligible(D,sc))assert.ok(D.sapPaths.some(x=>x.modelId===sc.modelId&&[x.system,x.group,x.subgroup].join('|')===sc.path.join('|')),'códigos SAP do caso');
+ if(E.sapEligible(D,sc))assert.ok(D.sapInstalledPaths.some(x=>x.modelId===sc.modelId&&[x.system,x.group,x.subgroup].join('|')===sc.path.join('|')),'códigos SAP do caso');
  assert.equal(sc.component,expect.component);
  assert.equal(sc.damage,expect.damage);
  assert.equal(sc.cause,expect.cause);
