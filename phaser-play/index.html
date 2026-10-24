@@ -1,6 +1,6 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0b1928"><link rel="manifest" href="../manifest.webmanifest"><title>P.O.R.C.A.R.I.A. | Oficina Phaser</title>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1928"><link id="appManifest" rel="manifest" href="../manifest.webmanifest"><script>if(/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)||matchMedia("(pointer: coarse) and (max-width: 1100px)").matches)document.getElementById("appManifest").href="./mobile.webmanifest";</script><title>P.O.R.C.A.R.I.A. | Oficina Phaser</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#07111d;color:#e7f0fa;font-family:system-ui,'Segoe UI',sans-serif}button,select{font:inherit}
 .top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 13px;background:#0c1a2b;border-bottom:3px solid #f5a91e}.brand{font-size:25px;color:#ffb32b;font-weight:1000;text-shadow:2px 2px #603914;letter-spacing:2px;margin-right:10px}.tab{padding:11px 15px;background:#152a3d;border:1px solid #496077;border-radius:7px;color:#d9e6ef;text-decoration:none;font-weight:800;font-size:12px}.tab.on{background:#f4aa23;color:#081726}.pill{padding:8px 12px;background:#14283b;border:1px solid #37516a;border-radius:9px;font-size:12px}.pill b{color:#ffd274}
@@ -791,6 +791,35 @@ body{min-height:100vh}
 .planningRoomStage img{display:block;width:100%;height:100%;object-fit:contain}
 .planningRoomStage figcaption{position:absolute;bottom:0;left:0;right:0;padding:12px 18px;font-weight:900;font-size:clamp(10px,1.25vw,15px);letter-spacing:.08em;color:#ffe1a4;background:linear-gradient(transparent,rgba(3,16,27,.92));text-shadow:0 1px 3px #000}
 @media(max-width:690px){.planningRoomStage{max-height:none;border-radius:6px;margin-bottom:12px}.planningRoomStage figcaption{padding:8px 10px}}
+/* Ciclo 22: ajustes de toque, área útil, instalação e painéis mobile. */
+html.mobile-play{min-height:100%;overscroll-behavior-y:contain}
+html.mobile-play body{min-height:100dvh;padding-bottom:env(safe-area-inset-bottom)}
+html.mobile-play #game{min-height:0!important;display:flex;justify-content:center;align-items:flex-start}
+html.mobile-play #game canvas{touch-action:pan-y!important;user-select:none;max-width:100%!important;
+  max-height:calc(100dvh - 118px);width:auto!important;height:auto!important;margin:0 auto}
+html.mobile-play .primary-nav{touch-action:pan-x;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+html.mobile-play .primary-nav .nav-item{scroll-snap-align:start;min-height:42px}
+html.mobile-play .modalContent{touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
+html.mobile-play #menuOverlay{padding:env(safe-area-inset-top) 5px env(safe-area-inset-bottom)!important}
+html.mobile-play .modalShell{max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 8px)!important}
+html.mobile-play .modalContent .act,html.mobile-play .modalContent .answer{min-height:42px}
+.mobile-action[hidden],#mobileNotice[hidden],#mobileRotate[hidden]{display:none!important}
+.mobile-action{font-weight:850;min-height:36px!important;white-space:nowrap}
+#mobileNotice{position:fixed;z-index:110;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));
+ max-width:560px;margin:auto;padding:12px;border:1px solid #f3bf62;border-radius:9px;background:#0b293feF;
+ box-shadow:0 10px 35px #0009;color:#fff6e7;font-size:12px;line-height:1.55}
+#mobileRotate{position:absolute;z-index:4;top:10px;left:50%;transform:translateX(-50%);
+ background:#092236e6;border:1px solid #ffbf66;color:#fff3cf;border-radius:7px;
+ padding:7px 12px;font-weight:750;font-size:11px;pointer-events:none;white-space:nowrap}
+@media(orientation:landscape) and (max-height:620px){
+ html.mobile-play .brand{display:none}
+ html.mobile-play .top-main{padding:3px 6px 0!important;gap:0!important}
+ html.mobile-play .top-status{padding:2px 6px!important;min-height:38px}
+ html.mobile-play .status-metrics .pill{min-height:26px!important;padding:3px 6px}
+ html.mobile-play .nav-item{min-height:34px!important;padding:5px 9px!important}
+ html.mobile-play #game canvas{max-height:calc(100dvh - 102px)}
+ html.mobile-play .shift{min-height:31px!important;padding:4px 7px}
+}
 </style></head><body>
 <div id="layout">
 <header class="top" role="banner">
@@ -839,12 +868,14 @@ body{min-height:100vh}
           <p class="scene-menu-help">O sprite é substituído só neste navegador. Alocar uma OS do CAT 777E permite comparar no BOX. Não altera o save nem publica a imagem.</p>
         </div>
       </div>
+      <button type="button" class="tab toolbar-btn mobile-action" id="mobileInstall" hidden aria-label="Instalar P.O.R.C.A.R.I.A. no celular">⬇ INSTALAR</button>
+      <button type="button" class="tab toolbar-btn mobile-action" id="mobileFullscreen" hidden aria-pressed="false" aria-label="Alternar tela cheia">⛶ TELA CHEIA</button>
       <button type="button" class="tab toolbar-btn" id="helpBtn" aria-controls="menuOverlay" title="Controles e atalhos">❔ <span>AJUDA</span></button>
       <button type="button" class="act shift" id="advance"><span class="shift-icon" aria-hidden="true">▶</span><span class="shift-title">AVANÇAR TURNO</span><span class="shift-hours">+12H</span></button>
     </div>
   </div>
 </header>
-<div class="stageWrap"><div class="bayHUD" id="bayHUD" aria-live="polite"></div><div class="stageLabel">OFICINA CENTRAL · PROTÓTIPO PHASER</div><div id="game"></div></div>
+<div class="stageWrap"><p id="mobileRotate" hidden>↻ Gire o celular para aproveitar a oficina na horizontal</p><div class="bayHUD" id="bayHUD" aria-live="polite"></div><div class="stageLabel">OFICINA CENTRAL · PROTÓTIPO PHASER</div><div id="game"></div></div>
 <div class="dashboard" id="menuOverlay" role="dialog" aria-modal="true" aria-label="Menu de manutenção" hidden><div class="modalShell"><div class="modalTop"><strong id="modalHeading">MENU DA OFICINA</strong><button type="button" class="closeModal" id="closePanel" aria-label="Fechar menu">✕ FECHAR</button></div><div class="modalContent"><section class="panel" data-panel="management"><h2>📋 Gestão da Oficina</h2><div id="management"></div></section><section class="panel" data-panel="queue"><h2>📻 Rádio da Operação · Fila de OS</h2>
 <section class="radioDispatchScene" aria-label="Central de rádio da manutenção">
 <img src="./assets/elton-sala-radio.webp" alt="Elton recebendo chamadas pelo rádio, acompanhando ordens de serviço e a situação da frota na central de manutenção" decoding="async" loading="lazy">
@@ -865,7 +896,7 @@ body{min-height:100vh}
 <input type="search" id="closedOrderSearch" placeholder="Buscar OS, equipamento, sintoma ou caso..." aria-label="Buscar histórico de OS concluídas">
 <div id="closedOrders" aria-live="polite"></div></section><h2>📋 Diário do turno</h2><div id="logs"></div><div class="actions"><button class="act secondary" id="save">Exportar save</button><label class="act secondary uploadSave" for="importSave">Importar save<input id="importSave" type="file" accept=".json,application/json"></label><button class="act secondary" id="reset">Reiniciar</button></div><p class="hint">Build Phaser 0.8.30 · histórico diagnóstico por OS, autoria das confirmações e etapas visuais; quadro de prontidão da equipe, HH nominais e alertas de bloqueio em Gestão · câmera nos boxes + menus pop-up · arte provisória · simulação fictícia. Save independente do jogo de gestão.</p></section></div></div></div>
 </div>
-<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div><div id="mobileNotice" role="status" aria-live="polite" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.9.24-c21"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./decision-impact.js?v=0.9.11"></script><script src="./decision-ledger.js?v=0.9.12"></script><script src="./lessons-learned.js?v=0.9.13"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./anomaly-progression.js?v=0.9.24-c21"></script><script src="./inspection.js?v=0.9.10"></script><script src="./evidence.js?v=0.9.3"></script><script src="./oil-catalog-expansion.js?v=0.9.5"></script><script src="./fault-catalog-expansion.js?v=0.9.6"></script><script src="./undercarriage-catalog-expansion.js?v=0.9.7"></script><script src="./component-catalog-expansion.js?v=0.9.8"></script><script src="./fps-catalog-expansion.js?v=0.9.10"></script><script src="./condition-catalog.js?v=0.9.10"></script><script src="./monitoring.js?v=0.9.18-copy1"></script><script src="./inspection-view.js?v=0.9.18-copy1"></script><script src="./sector-views.js?v=0.9.9"></script><script src="./game.js?v=0.9.24-c21"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
+<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.9.24-c21"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./decision-impact.js?v=0.9.11"></script><script src="./decision-ledger.js?v=0.9.12"></script><script src="./lessons-learned.js?v=0.9.13"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./anomaly-progression.js?v=0.9.24-c21"></script><script src="./inspection.js?v=0.9.10"></script><script src="./evidence.js?v=0.9.3"></script><script src="./oil-catalog-expansion.js?v=0.9.5"></script><script src="./fault-catalog-expansion.js?v=0.9.6"></script><script src="./undercarriage-catalog-expansion.js?v=0.9.7"></script><script src="./component-catalog-expansion.js?v=0.9.8"></script><script src="./fps-catalog-expansion.js?v=0.9.10"></script><script src="./condition-catalog.js?v=0.9.10"></script><script src="./monitoring.js?v=0.9.18-copy1"></script><script src="./inspection-view.js?v=0.9.18-copy1"></script><script src="./sector-views.js?v=0.9.9"></script><script src="./mobile-experience.js?v=0.9.25-c22"></script><script>window.PORCARIA_MOBILE?.init(window);</script><script src="./game.js?v=0.9.25-c22"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
