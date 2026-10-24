@@ -1,0 +1,2791 @@
+{
+  "version": "26.0.0",
+  "source": "1412 Mobile(3).xlsx + Catalog Profile - Pats, Coding, Damage and Cause(2).xlsx",
+  "counts": {
+    "scenarios": 124,
+    "physicalPaths": 371,
+    "locationMatches": 81,
+    "active": 79,
+    "pending": 45
+  },
+  "cases": [
+    {
+      "id": "INC001",
+      "modelId": "EQ01",
+      "category": "rodante",
+      "locationCodes": [
+        "DRTR",
+        "AXAS",
+        "FID1"
+      ],
+      "previousPath": [
+        "DRTR",
+        "AXAS",
+        "FID1"
+      ],
+      "sapPartCode": "0210",
+      "sapPart": "Rolamento",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-40-12-HTK0001-DRTR-AXAS-FID1"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC002",
+      "modelId": "EQ01",
+      "category": "rodante",
+      "locationCodes": [
+        "DRTR",
+        "AXAS",
+        "FID2"
+      ],
+      "previousPath": [
+        "DRTR",
+        "AXAS",
+        "FID2"
+      ],
+      "sapPartCode": "0210",
+      "sapPart": "Rolamento",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-40-12-HTK0001-DRTR-AXAS-FID2"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC003",
+      "modelId": "EQ01",
+      "category": "rodante",
+      "locationCodes": [
+        "DRTR",
+        "AXAS",
+        "DIFF"
+      ],
+      "previousPath": [
+        "DRTR",
+        "AXAS",
+        "DIFF"
+      ],
+      "sapPartCode": "1540",
+      "sapPart": "Engrenagem",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-40-12-HTK0001-DRTR-AXAS-DIFF"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC004",
+      "modelId": "EQ01",
+      "category": "motor",
+      "locationCodes": [
+        "ENSY",
+        "COSY",
+        "RADI"
+      ],
+      "previousPath": [
+        "ENSY",
+        "COSY",
+        "RADI"
+      ],
+      "sapPartCode": "0540",
+      "sapPart": "Tampa, Pressão",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-40-12-HTK0001-ENSY-COSY-RADI"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC005",
+      "modelId": "EQ01",
+      "category": "motor",
+      "locationCodes": [
+        "ENSY",
+        "ENGN",
+        "IKSY"
+      ],
+      "previousPath": [
+        "ENSY",
+        "ENGN",
+        "IKSY"
+      ],
+      "sapPartCode": "1280",
+      "sapPart": "Filtro, Ar",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-40-12-HTK0001-ENSY-ENGN-IKSY"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC006",
+      "modelId": "EQ01",
+      "category": "motor",
+      "locationCodes": [
+        "ENSY",
+        "COSY",
+        "FANN"
+      ],
+      "previousPath": [
+        "ENSY",
+        "COSY",
+        "FANN"
+      ],
+      "sapPartCode": "0230",
+      "sapPart": "Correia",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-40-12-HTK0001-ENSY-COSY-FANN"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC007",
+      "modelId": "EQ01",
+      "category": "motor",
+      "locationCodes": [
+        "ENSY",
+        "FUSY",
+        "HSVV"
+      ],
+      "previousPath": [
+        "ENSY",
+        "FUSY",
+        "HSVV"
+      ],
+      "sapPartCode": "3521",
+      "sapPart": "Vedação Junta O-ring",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-40-12-HTK0001-ENSY-FUSY-HSVV"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC008",
+      "modelId": "EQ02",
+      "category": "motor",
+      "locationCodes": [
+        "ENS1",
+        "COSY",
+        "FANN"
+      ],
+      "previousPath": [
+        "ENS1",
+        "COSY",
+        "FANN"
+      ],
+      "sapPartCode": "0210",
+      "sapPart": "Rolamento",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-00-SHO0001-ENS1-COSY-FANN",
+        "1412-20-30-00-SHO0002-ENS1-COSY-FANN"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC009",
+      "modelId": "EQ02",
+      "category": "motor",
+      "locationCodes": [
+        "ENS2",
+        "COSY",
+        "RADI"
+      ],
+      "previousPath": [
+        "ENS2",
+        "COSY",
+        "RADI"
+      ],
+      "sapPartCode": "1750",
+      "sapPart": "Mangueira",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-00-SHO0001-ENS2-COSY-RADI",
+        "1412-20-30-00-SHO0002-ENS2-COSY-RADI"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC010",
+      "modelId": "EQ02",
+      "category": "hidraulica",
+      "locationCodes": [
+        "SWAS",
+        "SWT1",
+        "HYPU"
+      ],
+      "previousPath": [
+        "SWAS",
+        "SWT1",
+        "HYPU"
+      ],
+      "sapPartCode": "3500",
+      "sapPart": "Vedação",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-00-SHO0001-SWAS-SWT1-HYPU",
+        "1412-20-30-00-SHO0002-SWAS-SWT1-HYPU"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC011",
+      "modelId": "EQ02",
+      "category": "rodante",
+      "locationCodes": [
+        "UNCR",
+        "TRF1",
+        "ROLL"
+      ],
+      "previousPath": [
+        "UNCR",
+        "TRF1",
+        "ROLL"
+      ],
+      "sapPartCode": "0210",
+      "sapPart": "Rolamento",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-00-SHO0001-UNCR-TRF1-ROLL",
+        "1412-20-30-00-SHO0002-UNCR-TRF1-ROLL"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC012",
+      "modelId": "EQ03",
+      "category": "hidraulica",
+      "locationCodes": [
+        "HYSY",
+        "DRPU",
+        "HYPU"
+      ],
+      "previousPath": [
+        "HYSY",
+        "DRPU",
+        "HYPU"
+      ],
+      "sapPartCode": "1320",
+      "sapPart": "Filtro, Hidráulico",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-12-EXC0004-HYSY-DRPU-HYPU"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC013",
+      "modelId": "EQ03",
+      "category": "hidraulica",
+      "locationCodes": [
+        "IMAT",
+        "BOOM",
+        "CYL1"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BOOM",
+        "CYL1"
+      ],
+      "sapPartCode": "0990",
+      "sapPart": "Cilindro",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-12-EXC0004-IMAT-BOOM-CYL1"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC014",
+      "modelId": "EQ03",
+      "category": "hidraulica",
+      "locationCodes": [
+        "PRSY",
+        "PRT1",
+        "MOPR"
+      ],
+      "previousPath": [
+        "PRSY",
+        "PRT1",
+        "MOPR"
+      ],
+      "sapPartCode": "1750",
+      "sapPart": "Mangueira",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-12-EXC0004-PRSY-PRT1-MOPR"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC015",
+      "modelId": "EQ04",
+      "category": "motor",
+      "locationCodes": [
+        "ENSY",
+        "COSY",
+        "RADI"
+      ],
+      "previousPath": [
+        "ENSY",
+        "COSY",
+        "RADI"
+      ],
+      "sapPartCode": "1750",
+      "sapPart": "Mangueira",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-54-35-EXC0009-ENSY-COSY-RADI"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC016",
+      "modelId": "EQ04",
+      "category": "hidraulica",
+      "locationCodes": [
+        "HYSY",
+        "DRPU",
+        "HYPU"
+      ],
+      "previousPath": [
+        "HYSY",
+        "DRPU",
+        "HYPU"
+      ],
+      "sapPartCode": "3500",
+      "sapPart": "Vedação",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-54-35-EXC0009-HYSY-DRPU-HYPU"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC017",
+      "modelId": "EQ04",
+      "category": "rodante",
+      "locationCodes": [
+        "UNCR",
+        "TRF1",
+        "ROLL"
+      ],
+      "previousPath": [
+        "UNCR",
+        "TRF1",
+        "ROLL"
+      ],
+      "sapPartCode": "0210",
+      "sapPart": "Rolamento",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-54-35-EXC0009-UNCR-TRF1-ROLL"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC018",
+      "modelId": "EQ05",
+      "category": "perfuracao",
+      "locationCodes": [
+        "AISY",
+        "COMR",
+        "FANN"
+      ],
+      "previousPath": [
+        "AISY",
+        "COMR",
+        "FANN"
+      ],
+      "sapPartCode": "0230",
+      "sapPart": "Correia",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-33-DRT0002-AISY-COMR-FANN"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC019",
+      "modelId": "EQ05",
+      "category": "perfuracao",
+      "locationCodes": [
+        "AISY",
+        "COMR",
+        "HEEX"
+      ],
+      "previousPath": [
+        "AISY",
+        "COMR",
+        "HEEX"
+      ],
+      "sapPartCode": "3070",
+      "sapPart": "Radiador",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-33-DRT0002-AISY-COMR-HEEX"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC020",
+      "modelId": "EQ05",
+      "category": "eletrica",
+      "locationCodes": [
+        "AISY",
+        "COMR",
+        "ECSY"
+      ],
+      "previousPath": [
+        "AISY",
+        "COMR",
+        "ECSY"
+      ],
+      "sapPartCode": "0780",
+      "sapPart": "Conector, Elétrica",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-33-DRT0002-AISY-COMR-ECSY"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC021",
+      "modelId": "EQ06",
+      "category": "perfuracao",
+      "locationCodes": [
+        "MAST",
+        "DFAS",
+        "FECH"
+      ],
+      "previousPath": [
+        "MAST",
+        "DFAS",
+        "FECH"
+      ],
+      "sapPartCode": "0650",
+      "sapPart": "Corrente",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-30-DRT0001-MAST-DFAS-FECH"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC022",
+      "modelId": "EQ06",
+      "category": "perfuracao",
+      "locationCodes": [
+        "MAST",
+        "ROHE",
+        "MTHY"
+      ],
+      "previousPath": [
+        "MAST",
+        "ROHE",
+        "MTHY"
+      ],
+      "sapPartCode": "3521",
+      "sapPart": "Vedação Junta O-ring",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-30-DRT0001-MAST-ROHE-MTHY"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC023",
+      "modelId": "EQ07",
+      "category": "rodante",
+      "locationCodes": [
+        "UNCR",
+        "TRF1",
+        "TRAK"
+      ],
+      "previousPath": [
+        "UNCR",
+        "TRF1",
+        "TRAK"
+      ],
+      "sapPartCode": "2720",
+      "sapPart": "Pino",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-51-15-DZT0001-UNCR-TRF1-TRAK"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC024",
+      "modelId": "EQ07",
+      "category": "motor",
+      "locationCodes": [
+        "ENSY",
+        "COSY",
+        "RADI"
+      ],
+      "previousPath": [
+        "ENSY",
+        "COSY",
+        "RADI"
+      ],
+      "sapPartCode": "0540",
+      "sapPart": "Tampa, Pressão",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-51-15-DZT0001-ENSY-COSY-RADI"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC025",
+      "modelId": "EQ08",
+      "category": "rodante",
+      "locationCodes": [
+        "DRTR",
+        "AXA1",
+        "DIFF"
+      ],
+      "previousPath": [
+        "DRTR",
+        "AXA1",
+        "DIFF"
+      ],
+      "sapPartCode": "0210",
+      "sapPart": "Rolamento",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-54-31-LDW0001-DRTR-AXA1-DIFF"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC026",
+      "modelId": "EQ08",
+      "category": "motor",
+      "locationCodes": [
+        "ENSY",
+        "ENGN",
+        "IKSY"
+      ],
+      "previousPath": [
+        "ENSY",
+        "ENGN",
+        "IKSY"
+      ],
+      "sapPartCode": "1280",
+      "sapPart": "Filtro, Ar",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-54-31-LDW0001-ENSY-ENGN-IKSY"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC027",
+      "modelId": "EQ09",
+      "category": "hidraulica",
+      "locationCodes": [
+        "HYSY",
+        "STSY",
+        "HYPU"
+      ],
+      "previousPath": [
+        "HYSY",
+        "STSY",
+        "HYPU"
+      ],
+      "sapPartCode": "1370",
+      "sapPart": "Conexão, Mangueira",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-52-13-GRM0002-HYSY-STSY-HYPU"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC028",
+      "modelId": "EQ07",
+      "category": "solda",
+      "locationCodes": [
+        "IMAT",
+        "PUAM",
+        "PUA1"
+      ],
+      "previousPath": [
+        "IMAT",
+        "PUAM",
+        "PUA1"
+      ],
+      "sapPartCode": "1440",
+      "sapPart": "Quadro/Armação/Chassi",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-51-15-DZT0001-IMAT-PUAM-PUA1"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC029",
+      "modelId": "EQ02",
+      "category": "solda",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "CLAM"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "CLAM"
+      ],
+      "sapPartCode": "3860",
+      "sapPart": "Estrutura",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-00-SHO0001-IMAT-BUCK-CLAM",
+        "1412-20-30-00-SHO0002-IMAT-BUCK-CLAM"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC030",
+      "modelId": "EQ03",
+      "category": "hidraulica",
+      "locationCodes": [
+        "HYSY",
+        "DRPU",
+        "HYPU"
+      ],
+      "previousPath": [
+        "HYSY",
+        "DRPU",
+        "HYPU"
+      ],
+      "sapPartCode": "3500",
+      "sapPart": "Vedação",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-12-EXC0004-HYSY-DRPU-HYPU"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC031",
+      "modelId": "EQ02",
+      "category": "motor",
+      "locationCodes": [
+        "ENS1",
+        "COSY",
+        "RADI"
+      ],
+      "previousPath": [
+        "ENS1",
+        "COSY",
+        "RADI"
+      ],
+      "sapPartCode": "3070",
+      "sapPart": "Radiador",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-00-SHO0001-ENS1-COSY-RADI",
+        "1412-20-30-00-SHO0002-ENS1-COSY-RADI"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC032",
+      "modelId": "EQ07",
+      "category": "rodante",
+      "locationCodes": [
+        "UNCR",
+        "TRF1",
+        "IDL1"
+      ],
+      "previousPath": [
+        "UNCR",
+        "TRF1",
+        "IDL1"
+      ],
+      "sapPartCode": "0210",
+      "sapPart": "Rolamento",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-51-15-DZT0001-UNCR-TRF1-IDL1"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC033",
+      "modelId": "EQ01",
+      "category": "rodante",
+      "locationCodes": [
+        "DRTR",
+        "AXAS",
+        "FID2"
+      ],
+      "previousPath": [
+        "DRTR",
+        "AXAS",
+        "FID2"
+      ],
+      "sapPartCode": "1540",
+      "sapPart": "Engrenagem",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-40-12-HTK0001-DRTR-AXAS-FID2"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC034",
+      "modelId": "EQ03",
+      "category": "hidraulica",
+      "locationCodes": [
+        "HYSY",
+        "DRPU",
+        "HYPU"
+      ],
+      "previousPath": [
+        "HYSY",
+        "DRPU",
+        "HYPU"
+      ],
+      "sapPartCode": "1750",
+      "sapPart": "Mangueira",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-12-EXC0004-HYSY-DRPU-HYPU"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC035",
+      "modelId": "EQ02",
+      "category": "motor",
+      "locationCodes": [
+        "ENS2",
+        "ENGN",
+        "LUSY"
+      ],
+      "previousPath": [
+        "ENS2",
+        "ENGN",
+        "LUSY"
+      ],
+      "sapPartCode": "1330",
+      "sapPart": "Filtro, Óleo",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-00-SHO0001-ENS2-ENGN-LUSY",
+        "1412-20-30-00-SHO0002-ENS2-ENGN-LUSY"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC036",
+      "modelId": "EQ05",
+      "category": "perfuracao",
+      "locationCodes": [
+        "MAST",
+        "ROHE",
+        "CYP2"
+      ],
+      "previousPath": [
+        "MAST",
+        "ROHE",
+        "CYP2"
+      ],
+      "sapPartCode": "0990",
+      "sapPart": "Cilindro",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-33-DRT0002-MAST-ROHE-CYP2"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC037",
+      "modelId": "EQ06",
+      "category": "eletrica",
+      "locationCodes": [
+        "AISY",
+        "COMR",
+        "ECSY"
+      ],
+      "previousPath": [
+        "AISY",
+        "COMR",
+        "ECSY"
+      ],
+      "sapPartCode": "0780",
+      "sapPart": "Conector, Elétrica",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-30-DRT0001-AISY-COMR-ECSY"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC038",
+      "modelId": "EQ01",
+      "category": "motor",
+      "locationCodes": [
+        "ENSY",
+        "FUSY",
+        "TVRE"
+      ],
+      "previousPath": [
+        "ENSY",
+        "FUSY",
+        "TVRE"
+      ],
+      "sapPartCode": "3521",
+      "sapPart": "Vedação Junta O-ring",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-40-12-HTK0001-ENSY-FUSY-TVRE"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC039",
+      "modelId": "EQ09",
+      "category": "rodante",
+      "locationCodes": [
+        "DRTR",
+        "TAN1",
+        "TIR3"
+      ],
+      "previousPath": [
+        "DRTR",
+        "TAN1",
+        "TIR3"
+      ],
+      "sapPartCode": "4200",
+      "sapPart": "Pneu",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-52-13-GRM0002-DRTR-TAN1-TIR3"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC040",
+      "modelId": "EQ07",
+      "category": "rodante",
+      "locationCodes": [
+        "UNCR",
+        "TRF2",
+        "TRAK"
+      ],
+      "previousPath": [
+        "UNCR",
+        "TRF2",
+        "TRAK"
+      ],
+      "sapPartCode": "2720",
+      "sapPart": "Pino",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-51-15-DZT0001-UNCR-TRF2-TRAK"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC041",
+      "modelId": "EQ01",
+      "category": "rodante",
+      "locationCodes": [
+        "DRTR",
+        "AXAS",
+        "FID1"
+      ],
+      "previousPath": [
+        "DRTR",
+        "AXAS",
+        "FID1"
+      ],
+      "sapPartCode": "3500",
+      "sapPart": "Vedação",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-40-12-HTK0001-DRTR-AXAS-FID1"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC042",
+      "modelId": "EQ07",
+      "category": "rodante",
+      "locationCodes": [
+        "DRTR",
+        "FDSP",
+        "FDS2"
+      ],
+      "previousPath": [
+        "DRTR",
+        "FDSP",
+        "FDS2"
+      ],
+      "sapPartCode": "3500",
+      "sapPart": "Vedação",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-51-15-DZT0001-DRTR-FDSP-FDS2"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC043",
+      "modelId": "EQ01",
+      "category": "rodante",
+      "locationCodes": [
+        "DRTR",
+        "AXAS",
+        "DIFF"
+      ],
+      "previousPath": [
+        "DRTR",
+        "AXAS",
+        "DIFF"
+      ],
+      "sapPartCode": "0210",
+      "sapPart": "Rolamento",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-40-12-HTK0001-DRTR-AXAS-DIFF"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC044",
+      "modelId": "EQ08",
+      "category": "hidraulica",
+      "locationCodes": [
+        "IMAT",
+        "LIAM",
+        "CYL2"
+      ],
+      "previousPath": [
+        "IMAT",
+        "LIAM",
+        "CYL2"
+      ],
+      "sapPartCode": "3500",
+      "sapPart": "Vedação",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-54-31-LDW0001-IMAT-LIAM-CYL2"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC045",
+      "modelId": "EQ02",
+      "category": "motor",
+      "locationCodes": [
+        "ENS2",
+        "COSY",
+        "RADI"
+      ],
+      "previousPath": [
+        "ENS2",
+        "COSY",
+        "RADI"
+      ],
+      "sapPartCode": "1750",
+      "sapPart": "Mangueira",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-00-SHO0001-ENS2-COSY-RADI",
+        "1412-20-30-00-SHO0002-ENS2-COSY-RADI"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC046",
+      "modelId": "EQ01",
+      "category": "eletrica",
+      "locationCodes": [
+        "OPCB",
+        "ECSY",
+        "AUXC"
+      ],
+      "previousPath": [
+        "OPCB",
+        "ECSY",
+        "AUXC"
+      ],
+      "sapPartCode": "0780",
+      "sapPart": "Conector, Elétrica",
+      "partMappingStatus": "literal",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC047",
+      "modelId": "EQ01",
+      "category": "eletrica",
+      "locationCodes": [
+        "OPCB",
+        "ECSY",
+        "AUXC"
+      ],
+      "previousPath": [
+        "OPCB",
+        "ECSY",
+        "AUXC"
+      ],
+      "sapPartCode": "1660",
+      "sapPart": "Chicote",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC048",
+      "modelId": "EQ01",
+      "category": "eletrica",
+      "locationCodes": [
+        "OPCB",
+        "ECSY",
+        "AUXC"
+      ],
+      "previousPath": [
+        "OPCB",
+        "ECSY",
+        "AUXC"
+      ],
+      "sapPartCode": "3540",
+      "sapPart": "Sensor",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC049",
+      "modelId": "EQ08",
+      "category": "eletrica",
+      "locationCodes": [
+        "ENSY",
+        "ENGN",
+        "ELCT"
+      ],
+      "previousPath": [
+        "ENSY",
+        "ENGN",
+        "ELCT"
+      ],
+      "sapPartCode": "1660",
+      "sapPart": "Chicote",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC050",
+      "modelId": "EQ03",
+      "category": "eletrica",
+      "locationCodes": [
+        "IMAT",
+        "BOOM",
+        "ELCM"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BOOM",
+        "ELCM"
+      ],
+      "sapPartCode": "3700",
+      "sapPart": "Solenóide",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC051",
+      "modelId": "EQ03",
+      "category": "eletrica",
+      "locationCodes": [
+        "IMAT",
+        "BOOM",
+        "ELCM"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BOOM",
+        "ELCM"
+      ],
+      "sapPartCode": "1660",
+      "sapPart": "Chicote",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC052",
+      "modelId": "EQ09",
+      "category": "eletrica",
+      "locationCodes": [
+        "HYSY",
+        "STSY",
+        "SENP"
+      ],
+      "previousPath": [
+        "HYSY",
+        "STSY",
+        "SENP"
+      ],
+      "sapPartCode": "3550",
+      "sapPart": "Sensor, Pressão",
+      "partMappingStatus": "literal",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC053",
+      "modelId": "EQ05",
+      "category": "eletrica",
+      "locationCodes": [
+        "AISY",
+        "COMR",
+        "ECSY"
+      ],
+      "previousPath": [
+        "AISY",
+        "COMR",
+        "ECSY"
+      ],
+      "sapPartCode": "3260",
+      "sapPart": "Resistores",
+      "partMappingStatus": "equivalencia",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-33-DRT0002-AISY-COMR-ECSY"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC054",
+      "modelId": "EQ06",
+      "category": "eletrica",
+      "locationCodes": [
+        "AISY",
+        "COMR",
+        "ECSY"
+      ],
+      "previousPath": [
+        "AISY",
+        "COMR",
+        "ECSY"
+      ],
+      "sapPartCode": "0780",
+      "sapPart": "Conector, Elétrica",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-30-DRT0001-AISY-COMR-ECSY"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC055",
+      "modelId": "EQ02",
+      "category": "eletrica",
+      "locationCodes": [
+        "OPCB",
+        "ECSY",
+        "JOYS"
+      ],
+      "previousPath": [
+        "OPCB",
+        "ECSY",
+        "JOYS"
+      ],
+      "sapPartCode": "1660",
+      "sapPart": "Chicote",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC056",
+      "modelId": "EQ03",
+      "category": "hidraulica",
+      "locationCodes": [
+        "HYSY",
+        "DRPU",
+        "HYPU"
+      ],
+      "previousPath": [
+        "HYSY",
+        "DRPU",
+        "HYPU"
+      ],
+      "sapPartCode": "1750",
+      "sapPart": "Mangueira",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-12-EXC0004-HYSY-DRPU-HYPU"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC057",
+      "modelId": "EQ03",
+      "category": "hidraulica",
+      "locationCodes": [
+        "HYSY",
+        "DRPU",
+        "HYPU"
+      ],
+      "previousPath": [
+        "HYSY",
+        "DRPU",
+        "HYPU"
+      ],
+      "sapPartCode": "1370",
+      "sapPart": "Conexão, Mangueira",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-12-EXC0004-HYSY-DRPU-HYPU"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC058",
+      "modelId": "EQ03",
+      "category": "hidraulica",
+      "locationCodes": [
+        "HYSY",
+        "FISY",
+        "FILH"
+      ],
+      "previousPath": [
+        "HYSY",
+        "FISY",
+        "FILH"
+      ],
+      "sapPartCode": "1320",
+      "sapPart": "Filtro, Hidráulico",
+      "partMappingStatus": "literal",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC059",
+      "modelId": "EQ08",
+      "category": "hidraulica",
+      "locationCodes": [
+        "IMAT",
+        "LIAM",
+        "CYL1"
+      ],
+      "previousPath": [
+        "IMAT",
+        "LIAM",
+        "CYL1"
+      ],
+      "sapPartCode": "3500",
+      "sapPart": "Vedação",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-54-31-LDW0001-IMAT-LIAM-CYL1"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC060",
+      "modelId": "EQ08",
+      "category": "hidraulica",
+      "locationCodes": [
+        "HYSY",
+        "STSY",
+        "HYPU"
+      ],
+      "previousPath": [
+        "HYSY",
+        "STSY",
+        "HYPU"
+      ],
+      "sapPartCode": "3000",
+      "sapPart": "Bomba Hidráulica",
+      "partMappingStatus": "equivalencia",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-54-31-LDW0001-HYSY-STSY-HYPU"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC061",
+      "modelId": "EQ02",
+      "category": "hidraulica",
+      "locationCodes": [
+        "HYSY",
+        "HSVV",
+        "VAL1"
+      ],
+      "previousPath": [
+        "HYSY",
+        "HSVV",
+        "VAL1"
+      ],
+      "sapPartCode": "4450",
+      "sapPart": "Válvula, Controle",
+      "partMappingStatus": "provisorio",
+      "classification": "parte_objeto_provisoria",
+      "sourceFL": [
+        "1412-20-30-00-SHO0001-HYSY-HSVV-VAL1",
+        "1412-20-30-00-SHO0002-HYSY-HSVV-VAL1"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC062",
+      "modelId": "EQ02",
+      "category": "hidraulica",
+      "locationCodes": [
+        "HYSY",
+        "COSY",
+        "HOC2"
+      ],
+      "previousPath": [
+        "HYSY",
+        "COSY",
+        "HOC2"
+      ],
+      "sapPartCode": "1690",
+      "sapPart": "Trocador de Calor",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-00-SHO0001-HYSY-COSY-HOC2",
+        "1412-20-30-00-SHO0002-HYSY-COSY-HOC2"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC063",
+      "modelId": "EQ05",
+      "category": "hidraulica",
+      "locationCodes": [
+        "HYSY",
+        "FISY",
+        "FILH"
+      ],
+      "previousPath": [
+        "HYSY",
+        "FISY",
+        "FILH"
+      ],
+      "sapPartCode": "1320",
+      "sapPart": "Filtro, Hidráulico",
+      "partMappingStatus": "literal",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC064",
+      "modelId": "EQ06",
+      "category": "hidraulica",
+      "locationCodes": [
+        "MAST",
+        "ROHE",
+        "MTHY"
+      ],
+      "previousPath": [
+        "MAST",
+        "ROHE",
+        "MTHY"
+      ],
+      "sapPartCode": "2530",
+      "sapPart": "Motor, Hidráulico",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-30-DRT0001-MAST-ROHE-MTHY"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC065",
+      "modelId": "EQ01",
+      "category": "hidraulica",
+      "locationCodes": [
+        "HYSY",
+        "BRSY",
+        "HYPU"
+      ],
+      "previousPath": [
+        "HYSY",
+        "BRSY",
+        "HYPU"
+      ],
+      "sapPartCode": "3000",
+      "sapPart": "Bomba Hidráulica",
+      "partMappingStatus": "equivalencia",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-40-12-HTK0001-HYSY-BRSY-HYPU"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC066",
+      "modelId": "EQ01",
+      "category": "motor",
+      "locationCodes": [
+        "ENSY",
+        "FUSY",
+        "FILF"
+      ],
+      "previousPath": [
+        "ENSY",
+        "FUSY",
+        "FILF"
+      ],
+      "sapPartCode": "1310",
+      "sapPart": "Filtro, Combustível",
+      "partMappingStatus": "literal",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC067",
+      "modelId": "EQ01",
+      "category": "motor",
+      "locationCodes": [
+        "ENSY",
+        "FUSY",
+        "SENF"
+      ],
+      "previousPath": [
+        "ENSY",
+        "FUSY",
+        "SENF"
+      ],
+      "sapPartCode": "3550",
+      "sapPart": "Sensor, Pressão",
+      "partMappingStatus": "literal",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC068",
+      "modelId": "EQ02",
+      "category": "motor",
+      "locationCodes": [
+        "ENS1",
+        "ENGN",
+        "LUSY"
+      ],
+      "previousPath": [
+        "ENS1",
+        "ENGN",
+        "LUSY"
+      ],
+      "sapPartCode": "1330",
+      "sapPart": "Filtro, Óleo",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-00-SHO0001-ENS1-ENGN-LUSY",
+        "1412-20-30-00-SHO0002-ENS1-ENGN-LUSY"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC069",
+      "modelId": "EQ03",
+      "category": "motor",
+      "locationCodes": [
+        "ENSY",
+        "ENGN",
+        "LUSY"
+      ],
+      "previousPath": [
+        "ENSY",
+        "ENGN",
+        "LUSY"
+      ],
+      "sapPartCode": "1330",
+      "sapPart": "Filtro, Óleo",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-12-EXC0004-ENSY-ENGN-LUSY"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC070",
+      "modelId": "EQ04",
+      "category": "motor",
+      "locationCodes": [
+        "ENSY",
+        "ENGN",
+        "IKSY"
+      ],
+      "previousPath": [
+        "ENSY",
+        "ENGN",
+        "IKSY"
+      ],
+      "sapPartCode": "1280",
+      "sapPart": "Filtro, Ar",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-54-35-EXC0009-ENSY-ENGN-IKSY"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC071",
+      "modelId": "EQ02",
+      "category": "motor",
+      "locationCodes": [
+        "ENS2",
+        "COSY",
+        "RADI"
+      ],
+      "previousPath": [
+        "ENS2",
+        "COSY",
+        "RADI"
+      ],
+      "sapPartCode": "3070",
+      "sapPart": "Radiador",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-00-SHO0001-ENS2-COSY-RADI",
+        "1412-20-30-00-SHO0002-ENS2-COSY-RADI"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC072",
+      "modelId": "EQ01",
+      "category": "motor",
+      "locationCodes": [
+        "ENSY",
+        "COSY",
+        "CLFL"
+      ],
+      "previousPath": [
+        "ENSY",
+        "COSY",
+        "CLFL"
+      ],
+      "sapPartCode": "0001",
+      "sapPart": "Sem código, adicionar como texto",
+      "partMappingStatus": "provisorio",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC073",
+      "modelId": "EQ07",
+      "category": "motor",
+      "locationCodes": [
+        "ENSY",
+        "COSY",
+        "MTHY"
+      ],
+      "previousPath": [
+        "ENSY",
+        "COSY",
+        "MTHY"
+      ],
+      "sapPartCode": "2530",
+      "sapPart": "Motor, Hidráulico",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-51-15-DZT0001-ENSY-COSY-MTHY"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC074",
+      "modelId": "EQ08",
+      "category": "motor",
+      "locationCodes": [
+        "ENSY",
+        "ENGN",
+        "IKSY"
+      ],
+      "previousPath": [
+        "ENSY",
+        "ENGN",
+        "IKSY"
+      ],
+      "sapPartCode": "1750",
+      "sapPart": "Mangueira",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-54-31-LDW0001-ENSY-ENGN-IKSY"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC075",
+      "modelId": "EQ09",
+      "category": "motor",
+      "locationCodes": [
+        "ENSY",
+        "ENGN",
+        "CCBR"
+      ],
+      "previousPath": [
+        "ENSY",
+        "ENGN",
+        "CCBR"
+      ],
+      "sapPartCode": "0370",
+      "sapPart": "Respiro",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC076",
+      "modelId": "EQ06",
+      "category": "perfuracao",
+      "locationCodes": [
+        "AISY",
+        "COMR",
+        "INFL"
+      ],
+      "previousPath": [
+        "AISY",
+        "COMR",
+        "INFL"
+      ],
+      "sapPartCode": "1280",
+      "sapPart": "Filtro, Ar",
+      "partMappingStatus": "literal",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC077",
+      "modelId": "EQ06",
+      "category": "perfuracao",
+      "locationCodes": [
+        "AISY",
+        "COMR",
+        "HSVV"
+      ],
+      "previousPath": [
+        "AISY",
+        "COMR",
+        "HSVV"
+      ],
+      "sapPartCode": "1750",
+      "sapPart": "Mangueira",
+      "partMappingStatus": "literal",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC078",
+      "modelId": "EQ06",
+      "category": "perfuracao",
+      "locationCodes": [
+        "AISY",
+        "COMR",
+        "HEE1"
+      ],
+      "previousPath": [
+        "AISY",
+        "COMR",
+        "HEE1"
+      ],
+      "sapPartCode": "1690",
+      "sapPart": "Trocador de Calor",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-30-DRT0001-AISY-COMR-HEE1"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC079",
+      "modelId": "EQ06",
+      "category": "perfuracao",
+      "locationCodes": [
+        "AISY",
+        "COMR",
+        "VPAR"
+      ],
+      "previousPath": [
+        "AISY",
+        "COMR",
+        "VPAR"
+      ],
+      "sapPartCode": "3521",
+      "sapPart": "Vedação Junta O-ring",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-30-DRT0001-AISY-COMR-VPAR"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC080",
+      "modelId": "EQ06",
+      "category": "perfuracao",
+      "locationCodes": [
+        "MAST",
+        "DFAS",
+        "FECH"
+      ],
+      "previousPath": [
+        "MAST",
+        "DFAS",
+        "FECH"
+      ],
+      "sapPartCode": "0650",
+      "sapPart": "Corrente",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-30-DRT0001-MAST-DFAS-FECH"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC081",
+      "modelId": "EQ05",
+      "category": "perfuracao",
+      "locationCodes": [
+        "AISY",
+        "COMR",
+        "HSVV"
+      ],
+      "previousPath": [
+        "AISY",
+        "COMR",
+        "HSVV"
+      ],
+      "sapPartCode": "4450",
+      "sapPart": "Válvula, Controle",
+      "partMappingStatus": "provisorio",
+      "classification": "parte_objeto_provisoria",
+      "sourceFL": [
+        "1412-20-10-33-DRT0002-AISY-COMR-HSVV"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC082",
+      "modelId": "EQ05",
+      "category": "perfuracao",
+      "locationCodes": [
+        "AISY",
+        "COMR",
+        "HSVV"
+      ],
+      "previousPath": [
+        "AISY",
+        "COMR",
+        "HSVV"
+      ],
+      "sapPartCode": "1750",
+      "sapPart": "Mangueira",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-33-DRT0002-AISY-COMR-HSVV"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC083",
+      "modelId": "EQ05",
+      "category": "perfuracao",
+      "locationCodes": [
+        "MAST",
+        "ROHE",
+        "CYP1"
+      ],
+      "previousPath": [
+        "MAST",
+        "ROHE",
+        "CYP1"
+      ],
+      "sapPartCode": "3500",
+      "sapPart": "Vedação",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-33-DRT0002-MAST-ROHE-CYP1"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC084",
+      "modelId": "EQ05",
+      "category": "perfuracao",
+      "locationCodes": [
+        "MAST",
+        "ROHE",
+        "MOR1"
+      ],
+      "previousPath": [
+        "MAST",
+        "ROHE",
+        "MOR1"
+      ],
+      "sapPartCode": "2530",
+      "sapPart": "Motor, Hidráulico",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-33-DRT0002-MAST-ROHE-MOR1"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC085",
+      "modelId": "EQ05",
+      "category": "perfuracao",
+      "locationCodes": [
+        "AISY",
+        "COMR",
+        "FANN"
+      ],
+      "previousPath": [
+        "AISY",
+        "COMR",
+        "FANN"
+      ],
+      "sapPartCode": "0210",
+      "sapPart": "Rolamento",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-33-DRT0002-AISY-COMR-FANN"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC086",
+      "modelId": "EQ01",
+      "category": "rodante",
+      "locationCodes": [
+        "DRTR",
+        "AXAS",
+        "FID1"
+      ],
+      "previousPath": [
+        "DRTR",
+        "AXAS",
+        "FID1"
+      ],
+      "sapPartCode": "0210",
+      "sapPart": "Rolamento",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-40-12-HTK0001-DRTR-AXAS-FID1"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC087",
+      "modelId": "EQ01",
+      "category": "rodante",
+      "locationCodes": [
+        "DRTR",
+        "AXAS",
+        "FID2"
+      ],
+      "previousPath": [
+        "DRTR",
+        "AXAS",
+        "FID2"
+      ],
+      "sapPartCode": "1540",
+      "sapPart": "Engrenagem",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-40-12-HTK0001-DRTR-AXAS-FID2"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC088",
+      "modelId": "EQ01",
+      "category": "rodante",
+      "locationCodes": [
+        "DRTR",
+        "TRAN",
+        "TRGE"
+      ],
+      "previousPath": [
+        "DRTR",
+        "TRAN",
+        "TRGE"
+      ],
+      "sapPartCode": "1540",
+      "sapPart": "Engrenagem",
+      "partMappingStatus": "literal",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC089",
+      "modelId": "EQ02",
+      "category": "rodante",
+      "locationCodes": [
+        "SWAS",
+        "SWT1",
+        "REDG"
+      ],
+      "previousPath": [
+        "SWAS",
+        "SWT1",
+        "REDG"
+      ],
+      "sapPartCode": "1540",
+      "sapPart": "Engrenagem",
+      "partMappingStatus": "literal",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC090",
+      "modelId": "EQ07",
+      "category": "rodante",
+      "locationCodes": [
+        "UNCR",
+        "TRF1",
+        "IDL3"
+      ],
+      "previousPath": [
+        "UNCR",
+        "TRF1",
+        "IDL3"
+      ],
+      "sapPartCode": "0210",
+      "sapPart": "Rolamento",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-51-15-DZT0001-UNCR-TRF1-IDL3"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC091",
+      "modelId": "EQ07",
+      "category": "rodante",
+      "locationCodes": [
+        "UNCR",
+        "TRF2",
+        "GUID"
+      ],
+      "previousPath": [
+        "UNCR",
+        "TRF2",
+        "GUID"
+      ],
+      "sapPartCode": "0001",
+      "sapPart": "Sem código, adicionar como texto",
+      "partMappingStatus": "provisorio",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC092",
+      "modelId": "EQ08",
+      "category": "rodante",
+      "locationCodes": [
+        "DRTR",
+        "AXA1",
+        "DIFF"
+      ],
+      "previousPath": [
+        "DRTR",
+        "AXA1",
+        "DIFF"
+      ],
+      "sapPartCode": "3500",
+      "sapPart": "Vedação",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-54-31-LDW0001-DRTR-AXA1-DIFF"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC093",
+      "modelId": "EQ09",
+      "category": "rodante",
+      "locationCodes": [
+        "DRTR",
+        "TAN1",
+        "FDS1"
+      ],
+      "previousPath": [
+        "DRTR",
+        "TAN1",
+        "FDS1"
+      ],
+      "sapPartCode": "1540",
+      "sapPart": "Engrenagem",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-52-13-GRM0002-DRTR-TAN1-FDS1"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC094",
+      "modelId": "EQ09",
+      "category": "rodante",
+      "locationCodes": [
+        "DRTR",
+        "TAN2",
+        "TIR4"
+      ],
+      "previousPath": [
+        "DRTR",
+        "TAN2",
+        "TIR4"
+      ],
+      "sapPartCode": "4200",
+      "sapPart": "Pneu",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-52-13-GRM0002-DRTR-TAN2-TIR4"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC095",
+      "modelId": "EQ05",
+      "category": "rodante",
+      "locationCodes": [
+        "UNCR",
+        "TRF1",
+        "TENS"
+      ],
+      "previousPath": [
+        "UNCR",
+        "TRF1",
+        "TENS"
+      ],
+      "sapPartCode": "3500",
+      "sapPart": "Vedação",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-33-DRT0002-UNCR-TRF1-TENS"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC096",
+      "modelId": "EQ01",
+      "category": "rodante",
+      "locationCodes": [
+        "DRTR",
+        "AXAS",
+        "FID1"
+      ],
+      "previousPath": [
+        "DRTR",
+        "AXAS",
+        "FID1"
+      ],
+      "sapPartCode": "0210",
+      "sapPart": "Rolamento",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-40-12-HTK0001-DRTR-AXAS-FID1"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC097",
+      "modelId": "EQ07",
+      "category": "rodante",
+      "locationCodes": [
+        "DRTR",
+        "FDSP",
+        "FDS2"
+      ],
+      "previousPath": [
+        "DRTR",
+        "FDSP",
+        "FDS2"
+      ],
+      "sapPartCode": "1540",
+      "sapPart": "Engrenagem",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-51-15-DZT0001-DRTR-FDSP-FDS2"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC098",
+      "modelId": "EQ03",
+      "category": "hidraulica",
+      "locationCodes": [
+        "HYSY",
+        "DRPU",
+        "HYPU"
+      ],
+      "previousPath": [
+        "HYSY",
+        "DRPU",
+        "HYPU"
+      ],
+      "sapPartCode": "3000",
+      "sapPart": "Bomba Hidráulica",
+      "partMappingStatus": "equivalencia",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-30-12-EXC0004-HYSY-DRPU-HYPU"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC099",
+      "modelId": "EQ06",
+      "category": "perfuracao",
+      "locationCodes": [
+        "AISY",
+        "COMR",
+        "COSY"
+      ],
+      "previousPath": [
+        "AISY",
+        "COMR",
+        "COSY"
+      ],
+      "sapPartCode": "0720",
+      "sapPart": "Compressor, Ar",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-10-30-DRT0001-AISY-COMR-COSY"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC100",
+      "modelId": "EQ09",
+      "category": "rodante",
+      "locationCodes": [
+        "DRTR",
+        "TAN2",
+        "TIR4"
+      ],
+      "previousPath": [
+        "DRTR",
+        "TAN2",
+        "TIR4"
+      ],
+      "sapPartCode": "4200",
+      "sapPart": "Pneu",
+      "partMappingStatus": "literal",
+      "classification": "liberado",
+      "sourceFL": [
+        "1412-20-52-13-GRM0002-DRTR-TAN2-TIR4"
+      ],
+      "originalStatus": "Completed"
+    },
+    {
+      "id": "INC101",
+      "modelId": "EQ02",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "TIPS"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "TIPS"
+      ],
+      "sapPartCode": "4195",
+      "sapPart": "Ponta de Desgaste, FPS",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC102",
+      "modelId": "EQ02",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "TIPS"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "TIPS"
+      ],
+      "sapPartCode": "4195",
+      "sapPart": "Ponta de Desgaste, FPS",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC103",
+      "modelId": "EQ02",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "RETN"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "RETN"
+      ],
+      "sapPartCode": "3263",
+      "sapPart": "Retentor",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC104",
+      "modelId": "EQ02",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "ADPT"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "ADPT"
+      ],
+      "sapPartCode": "4215",
+      "sapPart": "Adaptador",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC105",
+      "modelId": "EQ02",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "ADPT"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "ADPT"
+      ],
+      "sapPartCode": "4215",
+      "sapPart": "Adaptador",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC106",
+      "modelId": "EQ02",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "PROT"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "PROT"
+      ],
+      "sapPartCode": "1610",
+      "sapPart": "Proteção",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC107",
+      "modelId": "EQ02",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "PROT"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "PROT"
+      ],
+      "sapPartCode": "1610",
+      "sapPart": "Proteção",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC108",
+      "modelId": "EQ02",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "EDGE"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "EDGE"
+      ],
+      "sapPartCode": "1200",
+      "sapPart": "Aresta, Corte",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC109",
+      "modelId": "EQ02",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "WELD"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "WELD"
+      ],
+      "sapPartCode": "4215",
+      "sapPart": "Adaptador",
+      "partMappingStatus": "provisorio",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC110",
+      "modelId": "EQ02",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "TIPS"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "TIPS"
+      ],
+      "sapPartCode": "4195",
+      "sapPart": "Ponta de Desgaste, FPS",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC111",
+      "modelId": "EQ02",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "RETN"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "RETN"
+      ],
+      "sapPartCode": "3263",
+      "sapPart": "Retentor",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC112",
+      "modelId": "EQ02",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "PLAT"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "PLAT"
+      ],
+      "sapPartCode": "2310",
+      "sapPart": "Placa, Revestimento/Desgaste",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC113",
+      "modelId": "EQ03",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "TIPS"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "TIPS"
+      ],
+      "sapPartCode": "4195",
+      "sapPart": "Ponta de Desgaste, FPS",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC114",
+      "modelId": "EQ03",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "ADPT"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "ADPT"
+      ],
+      "sapPartCode": "4215",
+      "sapPart": "Adaptador",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC115",
+      "modelId": "EQ03",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "RETN"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "RETN"
+      ],
+      "sapPartCode": "3263",
+      "sapPart": "Retentor",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC116",
+      "modelId": "EQ03",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "ADPT"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "ADPT"
+      ],
+      "sapPartCode": "4215",
+      "sapPart": "Adaptador",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC117",
+      "modelId": "EQ03",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "PROT"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "PROT"
+      ],
+      "sapPartCode": "1610",
+      "sapPart": "Proteção",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC118",
+      "modelId": "EQ03",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "PLAT"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "PLAT"
+      ],
+      "sapPartCode": "2310",
+      "sapPart": "Placa, Revestimento/Desgaste",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC119",
+      "modelId": "EQ03",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "WELD"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "WELD"
+      ],
+      "sapPartCode": "4215",
+      "sapPart": "Adaptador",
+      "partMappingStatus": "provisorio",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC120",
+      "modelId": "EQ03",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "TIPS"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "TIPS"
+      ],
+      "sapPartCode": "4195",
+      "sapPart": "Ponta de Desgaste, FPS",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC121",
+      "modelId": "EQ08",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "EDGE"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "EDGE"
+      ],
+      "sapPartCode": "1200",
+      "sapPart": "Aresta, Corte",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC122",
+      "modelId": "EQ08",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BUCK",
+        "RETN"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BUCK",
+        "RETN"
+      ],
+      "sapPartCode": "3263",
+      "sapPart": "Retentor",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC123",
+      "modelId": "EQ07",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BLAS",
+        "EDGE"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BLAS",
+        "EDGE"
+      ],
+      "sapPartCode": "1200",
+      "sapPart": "Aresta, Corte",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    },
+    {
+      "id": "INC124",
+      "modelId": "EQ07",
+      "category": "fps",
+      "locationCodes": [
+        "IMAT",
+        "BLAS",
+        "EDGE"
+      ],
+      "previousPath": [
+        "IMAT",
+        "BLAS",
+        "EDGE"
+      ],
+      "sapPartCode": "1240",
+      "sapPart": "Fixador, Montagem",
+      "partMappingStatus": "equivalencia",
+      "classification": "fl_nao_encontrado",
+      "sourceFL": [],
+      "originalStatus": null
+    }
+  ]
+}
