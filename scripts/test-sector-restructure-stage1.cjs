@@ -4,7 +4,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const D=require('../game-data.json'),E=require('../engine.js'),I=require('../phaser-play/inspection.js');
 const V=require('../phaser-play/inspection-view.js'),M=require('../phaser-play/monitoring.js'),S=require('../phaser-play/sector-views.js');
 assert.equal(D.scenarios.length,124,'100 missões preservadas');
-assert.equal(D.paths.length,403,'387 locais preservados');
+assert.equal(D.paths.length,493,'387 locais preservados');
 assert.deepEqual(Object.keys(S.CATEGORIES),['overview','oil','faults','undercarriage','fps','components']);
 const file=path.join(__dirname,'../phaser-play/assets/pedro-sala-controle.webp');
 const image=fs.readFileSync(file);
