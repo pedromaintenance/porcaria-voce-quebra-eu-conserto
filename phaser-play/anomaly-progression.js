@@ -42,7 +42,8 @@
    resolvedTick:null,closingReason:null};
  }
  function normalize(s,d){
-  if(!Array.isArray(s?.notifications))return s;
+  if(!s||typeof s!=='object')return s;
+  if(!Array.isArray(s.notifications))s.notifications=[];
   for(const n of s.notifications){
    if(!eligible(n,d))continue;
    // Em saves legados não inferir deterioração retroativa; iniciar a partir da importação.
