@@ -38,7 +38,7 @@
   if((s.preventiveOrders||[]).some(x=>x.asset===asset&&x.status!=='completed'))return 'Ativo com OS preventiva aberta.';
   if((s.notifications||[]).some(n=>n.asset===asset&&n.monitorOnly&&['aguarda_revisao_pcm','monitorando'].includes(n.status)))
    return 'Ativo sob monitoramento especial; conclua a avaliação antes da preventiva.';
-  if(m.assigned||m.restAt===s.tick||m.normativeUntil>s.tick||inTraining(s,m.id))
+  if(m.assigned||m.restAt===s.tick||globalThis.PORCARIA_ENGINE?.physicalBlock?.(s,m)||m.normativeUntil>s.tick||inTraining(s,m.id))
    return 'Profissional indisponível neste turno.';
   if((s.jobs||[]).some(j=>j.bay===b))return 'Box ocupado por uma OS corretiva.';
   if((s.preventiveOrders||[]).some(x=>x.status==='in_progress'&&x.bay===b))return 'Box ocupado por OS preventiva.';
@@ -48,6 +48,7 @@
    return 'Conflito: profissional, box ou ativo já reservado para preventiva.';
   const inspected=s.inspectionLabor?.tick===s.tick?Number(s.inspectionLabor.byEmployee?.[m.id])||0:0;
   if(inspected+p.hours>10.5)return 'HH do turno comprometidas com inspeções programadas.';
+  if(globalThis.PORCARIA_ENGINE?.physicalCapacity?.(s,m)<p.hours)return 'Capacidade física insuficiente para a preventiva neste turno.';
   if(!(Number(s.cash)>=p.cost))return 'Caixa insuficiente para autorizar a preventiva.';
   if(!Array.isArray(s.preventiveJobs))s.preventiveJobs=[];
   const n=Math.max(1,Number(s.nextPreventive)||1);
