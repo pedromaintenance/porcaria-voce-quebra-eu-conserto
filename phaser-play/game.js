@@ -158,7 +158,7 @@ function closeSceneMenu(){
  if(trigger)trigger.setAttribute('aria-expanded','false');
 }
 // Modal tem exclusividade de entrada; nunca permitir selecao de box atraves do overlay.
-function modalOpen(){return !!$('menuOverlay')&&!$('menuOverlay').hidden}
+function modalOpen(){return (!!$('menuOverlay')&&!$('menuOverlay').hidden)||!!MOBILE?.isSectorMenuOpen?.()}
 function openPanel(name){
  const overlay=$('menuOverlay');if(!overlay)return;
  if(name==='shift')drawShiftBrief();
@@ -169,6 +169,7 @@ function openPanel(name){
  if(scene?.input)scene.input.enabled=false;
  closeSceneMenu();
  overlay.hidden=false;
+ MOBILE?.panelOpened?.();
  overlay.classList.toggle('quick-order',name==='detail');
  overlay.classList.toggle('full-order',name==='full-detail');
  $('modalHeading').textContent=PANEL_TITLES[name]||'MENU DA OFICINA';
@@ -179,6 +180,7 @@ function openPanel(name){
 }
 function closePanel(){
  const overlay=$('menuOverlay');if(overlay)overlay.hidden=true;
+ MOBILE?.panelClosed?.();
  document.querySelectorAll('.primary-nav [data-open-panel]').forEach(btn=>{btn.classList.remove('is-active');btn.setAttribute('aria-expanded','false')});
  document.body.style.overflow='';
  if(scene?.input)scene.input.enabled=true;
@@ -1086,6 +1088,7 @@ function drawStore(){
 }
 
 function events(){
+ MOBILE?.registerClosePanel?.(closePanel);
  $('helpBtn').addEventListener('click',()=>openPanel('help'));
  document.addEventListener('input',ev=>{
   if(ev.target?.id!=='productivityTarget')return;
