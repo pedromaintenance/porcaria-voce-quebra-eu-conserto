@@ -74,13 +74,13 @@
    ?'Profissional ou box reservado para preventiva neste turno. Cancele a reserva primeiro.'
    :null;
  }
- function settle(s,consumeHours=()=>{},audit=()=>{}){
+ function settle(s,consumeHours=()=>{},audit=()=>{},capacity=()=>10.5){
   let hh=0;
   if(!Array.isArray(s.preventiveEffects))s.preventiveEffects=[];
   if(!s.preventiveMetrics)s.preventiveMetrics={executed:0,cost:0,hours:0,screenedRandomCandidates:0};
   for(const row of active(s)){
    const p=PACKAGES[row.packageId],m=s.team.find(x=>x.id===row.mechanicId);
-   if(!p||!m||m.assigned||m.restAt===s.tick){
+   if(!p||!m||m.assigned||m.restAt===s.tick||capacity(m)+0.001<p.hours){
     row.status='cancelled';row.closedTick=s.tick;s.cash+=row.cost;
     audit('preventive_cancelled',{preventiveId:row.id,asset:row.asset,refunded:row.cost,
      reason:'recurso_indisponivel_no_turno'});
