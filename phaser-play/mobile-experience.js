@@ -42,6 +42,7 @@
    const installed=isInstalled(win);
    if(install)install.hidden=installed;
    if(fullscreen){
+    fullscreen.hidden=false;
     fullscreen.textContent=doc.fullscreenElement?'↙ SAIR DA TELA CHEIA':'⛶ TELA CHEIA';
     fullscreen.setAttribute('aria-pressed',String(!!doc.fullscreenElement));
    }
