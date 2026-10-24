@@ -189,3 +189,8 @@ Leitura de PCM, diagnóstico, inspeção e monitoramento em Android retrato/pais
 ## Política de catálogo SAP — 6 níveis (24/10/2026)
 
 O vocabulário de Sistema → Grupo → Subgrupo → Componente → Dano → Causa passa a ser **contrato de fonte imutável** para novos cenários. Vocabulário OEM é mapeado nos casos; nunca altera as opções SAP. Proteção no motor, teste de regressão e registro de 43 cenas referenciando 32 caminhos didáticos não validados em [Contrato do Diagnóstico SAP](CONTRATO_DIAGNOSTICO_SAP_SEIS_NIVEIS.md). A reconciliação das rotas é pendência de conteúdo: não realizar substituição semanticamente artificial.
+
+
+## Importação completa da referência SAP (24/10/2026)
+
+Substituição da lista parcial por 683 Partes objeto do Catalog Profile; árvore com 2.535 locais de instalação da 1412, 987 tipos de objeto, 31.107 vínculos de código, 66 danos e 81 causas. Mapeamentos de parte objeto guardam o código e a nomenclatura PT/EN original. Novas missões usam apenas caminhos de instalação verificados; os casos legados sem enquadramento mantêm histórico, com pendência explícita. Ver [relatório de importação](IMPORTACAO_INTEGRAL_SAP_1412_CATALOG_PROFILE.md).
