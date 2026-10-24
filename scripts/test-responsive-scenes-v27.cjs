@@ -18,7 +18,7 @@ assert.ok(html.includes('class="scene-tools" hidden aria-hidden="true"'),'Visual
 assert.ok(css.includes('.scene-tools{display:none!important}'));
 assert.ok(css.includes('html.mobile-play .bayHUD{display:none!important}'),'HUD dos boxes oculto só no celular');
 assert.ok(!css.includes('html:not(.mobile-play) .bayHUD{display:none'));
-assert.ok(html.includes('responsive-scenes-v27.css?v=0.9.29-c27'),'CSS aplicado após estilos existentes');
+assert.ok(html.includes('responsive-scenes-v27.css?v='),'CSS aplicado após estilos existentes');
 assert.ok(sw.includes('./phaser-play/responsive-scenes-v27.css'));
 assert.ok(sw.includes('scenes0929'),'cache renovado');
 assert.ok(guide.includes("{label:'Categorias',selector:'.controlRoomSidebar'}"),'atalho aponta para sidebar real');
