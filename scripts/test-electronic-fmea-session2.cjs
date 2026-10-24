@@ -34,7 +34,7 @@ for(const [id,[model,source,part]] of Object.entries(expected)){
  assert.ok(sc.electronicTraining.exampleCode);
  assert.equal(sc.electronicTraining.codeApplicableToModel,false,'não afirmar MID/CID/FMI de modelo específico');
  assert.equal(sc.electronicTraining.releasePolicy,'restrito_ao_instrutor_ate_conclusao');
- assert.equal(sc.component,part);
+ assert.equal(sc.sapPartMapping.previousLabel,part);
  assert.ok(paths.has([sc.modelId,...sc.path].join('|')),id+' tem árvore');
  assert.ok(D.catalog.parts.includes(sc.component));
  assert.ok(D.catalog.damages.some(x=>x.pt===sc.damage));
