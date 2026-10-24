@@ -70,7 +70,11 @@ assert.equal(initial.tools.PNEU,false,'kit exige aquisição');
 const di=D.scenarios.find(s=>s.id==='INC076'),dr=D.scenarios.find(s=>s.id==='INC083');
 for(const c of [di,dr]){
  const sample=E.create({...D,scenarios:[c]},()=>0.5);
- assert.equal(sample.jobs.length,3);
- assert.ok(sample.jobs.every(j=>j.scene===c.id),'missão entra no sorteio '+c.id);
+ if(E.sapEligible(D,c)){
+  assert.equal(sample.jobs.length,3,'classificação SAP válida pode ser sorteada');
+  assert.ok(sample.jobs.every(j=>j.scene===c.id),'missão entra no sorteio '+c.id);
+ }else{
+  assert.equal(sample.jobs.length,0,'missão sem local SAP não deve entrar no sorteio '+c.id);
+ }
 }
 console.log('OK: sessão 5, 10 missões perfuratriz/pneumática; 100 cenários, 6x4 classificações, estoque, segurança e proveniência.');
