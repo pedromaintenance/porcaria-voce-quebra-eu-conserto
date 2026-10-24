@@ -141,8 +141,9 @@ assert.equal(layoutMath.calibratedCenter(719,54,map.viewport,-6,8),719,'mecânic
 assert.equal(layoutMath.calibratedCenter(1218,230,map.viewport,-5,8),1218,'BOX 3 -5px para a esquerda no cenário diurno');
 assert.equal(layoutMath.calibratedCenter(427,272,map.viewport,20,8),483,'equipamento largo do BOX 1 mantém novo deslocamento e enquadramento');
 assert.equal(layoutMath.calibratedCenter(1340,54,map.viewport,-5,8),1340,'mecânico do BOX 3 também -5px');
-assert.ok(phaserScript.includes("machineNode.on('pointerdown'"),'clique na máquina seleciona a própria OS');
-assert.ok(phaserScript.includes("actor.on('pointerdown'"),'clique no mecânico seleciona a própria OS mesmo sobre região vizinha');
+assert.ok(phaserScript.includes("machineNode.on(mobileTapEvent"),'clique/tap na máquina seleciona a própria OS sem capturar swipe');
+assert.ok(phaserScript.includes("actor.on(mobileTapEvent"),'clique/tap no mecânico seleciona a própria OS mesmo sobre região vizinha');
+assert.ok(phaserScript.includes("mobileTapEvent=MOBILE?.isMobile(window)?'pointerup':'pointerdown'"),'desktop conserva pointerdown e mobile conclui o toque');
 assert.ok(phaserScript.includes('fillEllipse(machineX,shadowMainY,')&&phaserScript.includes('fillEllipse(machineX,shadowSoftY,'),'as duas sombras seguem o centro efetivamente renderizado da máquina');
 assert.ok(phaserScript.includes('calibratedCenter(x,WORKER_DISPLAY.width,SCENE_REFERENCE,visualCalibrationX'),'mecânicos usam deslocamento posterior ao clamp');
 assert.ok(phaserScript.includes('calibratedCenter(x,plan.width,SCENE_REFERENCE,bay?.visualCalibrationX'),'equipamentos usam deslocamento posterior ao clamp');

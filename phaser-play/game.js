@@ -8,6 +8,9 @@ const IV=window.PORCARIA_INSPECTION_VIEW;
 const S=window.PORCARIA_SECTORS;
 const T=window.PORCARIA_EVIDENCE;
 const M=window.PORCARIA_MONITORING;
+const MOBILE=window.PORCARIA_MOBILE;
+const mobileTapEvent=MOBILE?.isMobile(window)?'pointerup':'pointerdown';
+const isValidMobileTap=pointer=>mobileTapEvent!=='pointerup'||MOBILE.isTap(pointer);
 const STAGES=['Sistema','Grupo','Subgrupo','Componente','Dano','Causa'];
 const SAVE='porcaria.phaser.prototype.v01';
 const ASSETS={
@@ -1671,7 +1674,7 @@ class Workshop extends Phaser.Scene{
   return this.activeBayLayout.map(({id,hitWorld})=>{
    const hit=this.add.zone(hitWorld.x,hitWorld.y,hitWorld.width,hitWorld.height)
     .setOrigin(0).setInteractive({useHandCursor:true});
-   hit.on('pointerdown',()=>{if(modalOpen())return;const j=state.jobs.find(z=>z.bay===id);if(j)pick(j.id,'workshop');else openQueueForBay(id)});
+   hit.on(mobileTapEvent,(pointer)=>{if(modalOpen()||!isValidMobileTap(pointer))return;const j=state.jobs.find(z=>z.bay===id);if(j)pick(j.id,'workshop');else openQueueForBay(id)});
    return hit;
   });
  }
@@ -1890,7 +1893,7 @@ class Workshop extends Phaser.Scene{
        this.machineObjs.push(shadow);
        if(machineNode?.type==='Image'){
         machineNode.setInteractive({useHandCursor:true});
-        machineNode.on('pointerdown',()=>{if(modalOpen())return;
+        machineNode.on(mobileTapEvent,(pointer)=>{if(modalOpen()||!isValidMobileTap(pointer))return;
           if(isPM){planningHorizon='preventive';openPanel('planning')}else pick(j.id)});
        }
        const mode=j.status==='material'||j.status==='ferramenta'?'blocked':j.stage>=6?'repair':'diagnose';
@@ -1902,7 +1905,7 @@ class Workshop extends Phaser.Scene{
          visualCalibrationX:activeBays[i].visualCalibrationX||0,bay:activeBays[i]});
         if(actor?.type==='Sprite'){
          actor.setInteractive({useHandCursor:true});
-         actor.on('pointerdown',()=>{if(modalOpen())return;
+         actor.on(mobileTapEvent,(pointer)=>{if(modalOpen()||!isValidMobileTap(pointer))return;
           if(isPM){planningHorizon='preventive';openPanel('planning')}else pick(j.id)});
         }
        }
@@ -2041,6 +2044,7 @@ async function boot(){
    override:new URLSearchParams(window.location.search).get('quality'),sceneRef:SCENE_REFERENCE
   });
   new Phaser.Game({type:Phaser.AUTO,parent:'game',width:renderProfile.width,height:renderProfile.height,
+   input:{touch:{capture:!MOBILE?.isMobile(window)}}, // permitir pan-y e swipe do navegador no mobile
    backgroundColor:'#182838',render:{pixelArt:false,antialias:true,antialiasGL:true,roundPixels:true},
    scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_HORIZONTALLY},scene:[Workshop]});
  }catch(e){console.error(e);$('game').innerHTML='<div style="padding:60px;color:#ffc86a">Não foi possível iniciar a cena Phaser: '+esc(e.message)+'</div>'}

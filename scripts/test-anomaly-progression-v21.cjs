@@ -103,7 +103,7 @@ const ui=fs.readFileSync('phaser-play/inspection-view.js','utf8');
 const sector=fs.readFileSync('phaser-play/sector-views.js','utf8');
 const sw=fs.readFileSync('sw.js','utf8');
 assert.ok(html.includes('anomaly-progression.js?v=0.9.24-c21'));
-assert.ok(html.includes('game.js?v=0.9.24-c21'));
+assert.ok(html.includes('game.js?v='),'PWA mantém cache versionado independentemente dos ciclos posteriores');
 assert.ok(ui.includes('EVOLUÇÃO DO ACHADO')&&ui.includes('pcmProgression'));
 assert.ok(sector.includes('ANORMALIDADES EM EVOLUÇÃO'));
 assert.ok(sw.includes('anomalies0924'));
