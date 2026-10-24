@@ -199,3 +199,8 @@ Substituição da lista parcial por 683 Partes objeto do Catalog Profile; árvor
 ## Ciclo 26 — Localização SAP física sem perda de posição (24/10/2026)
 
 Consolidação por tipo de objeto da importação anterior escondia as posições físicas da 1412. Reconstituição de 371 caminhos físicos (442 instâncias), retorno de 16 cenários comprovados ao sorteio/PCM, seis níveis com descrições e códigos reais, migração de saves e auditoria dos 124 casos. Permanecem 45 pendências sem equivalência segura. [Detalhes](SAP_INSTANCIAS_FISICAS_CICLO26.md).
+
+
+## Ciclo 27 — Composição responsiva no celular e desktop (24/10/2026)
+
+A ilustração de Elton passa a exibir uma prévia das três primeiras OS na zona direita segura; o menu de Monitoramento retorna à margem esquerda dentro da arte, preservando Pedro; imagens de Rádio, Monitoramento e Planejamento são limitadas pela altura da janela e mantidas integralmente visíveis. Removido VISUAL de ambas as interfaces; oculto somente no celular o HUD inferior cortado. Testes e critérios em [Composição responsiva — Ciclo 27](COMPOSICAO_RESPONSIVA_CICLO27.md).
