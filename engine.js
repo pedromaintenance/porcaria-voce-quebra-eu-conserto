@@ -751,6 +751,7 @@
     const completedRepairHours={};
     let hours=0;let completed=0;let blocks=0;
     const inspected=(s.inspections||[]).filter(i=>i.tick===s.tick&&i.inspectorId&&['clear','finding','notified'].includes(i.status));
+    const availableCrew=s.team.filter(m=>m.restAt!==s.tick&&!TRAINING.active(s,m)&&!physicalBlock(s,m)).length;
     const pressure=productivityProfile(s.productivityTarget);
     const work=(member,hh)=>{applyWorkPressure(s,member,hh,pressure);consumePhysical(s,member,hh,rng);};
     const capacity=member=>physicalCapacity(s,member,rng);
@@ -769,7 +770,6 @@
     // HH de preventiva competem com a capacidade da equipe e da oficina.
     hours+=PREVENTIVE.settle(s,work,
       (type,fields)=>recordDecision(s,type,fields),capacity);
-    const availableCrew=s.team.filter(m=>m.restAt!==s.tick&&!TRAINING.active(s,m)&&!physicalBlock(s,m)).length;
     const operating=[...s.jobs];
     // Todo ativo com OS ativa acumula indisponibilidade virtual por turno, incluindo o turno de conclusão.
     // Esperas por material e ferramenta podem coincidir: são dimensões explicativas, NÃO somáveis.
