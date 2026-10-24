@@ -45,7 +45,7 @@ for(const t of [z20,z60,z100]){
 }
 assert.ok(z20.m.morale<z60.m.morale,'low target reduces morale');
 assert.ok(z100.m.mental<z60.m.mental,'high target increases mental exhaustion');
-assert.ok(z100.m.physical<z60.m.physical,'high target increases physical exhaustion');
+assert.equal(z100.m.physical,z60.m.physical,'physical energy comes from HH and one draw per shift, independent of productivity target');
 assert.ok(z100.j.repairRemaining<z60.j.repairRemaining,'high target works faster in simulation');
 assert.ok(z20.j.repairRemaining>z60.j.repairRemaining,'low target works slower in simulation');
 const u=E.create(data,()=>0.42);
