@@ -847,7 +847,13 @@ function drawBays(){
  }).join('');
 }
 function drawInspection(){if($('inspectionPanel'))$('inspectionPanel').innerHTML=S.inspections(state,data,I,E)}
-function drawMonitoring(){if($('monitoringPanel'))$('monitoringPanel').innerHTML=S.monitoring(state,data,M,IV,I,E,monitorCategory)}
+function drawMonitoring(){
+ const host=$('monitoringPanel');if(!host)return;
+ const nav=window.PORCARIA_MONITOR_NAV;
+ const snapshot=nav?.capture(host,document.activeElement);
+ host.innerHTML=S.monitoring(state,data,M,IV,I,E,monitorCategory);
+ nav?.restore(host,snapshot);
+}
 function renderQueue(){
  const calls=state.jobs||[];
  const radioSummary=$('radioQueueSummary');

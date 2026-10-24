@@ -19,16 +19,16 @@ html.mobile-play .bayHUD{display:none!important}
 .controlRoomStage{width:min(100%,108dvh,980px);height:auto;max-height:none;aspect-ratio:1672/941;margin-inline:auto}
 .controlRoomStage>img{width:100%;height:100%;object-fit:contain;object-position:center;pointer-events:none}
 .controlRoomSidebar{display:flex!important;left:1.35%;top:19%;width:min(31%,240px);height:75%;max-width:32%;padding:clamp(3px,.65vw,9px);gap:3px;overflow:hidden;z-index:2}
-.controlRoomSidebarItems{overflow-y:auto;min-height:0;scrollbar-width:thin;overscroll-behavior-y:contain;touch-action:pan-y;gap:3px;justify-content:flex-start}
+.controlRoomSidebarItems{overflow-y:auto;min-height:0;scrollbar-width:auto;scrollbar-color:#e6ad50 #183248;overscroll-behavior-y:contain;touch-action:pan-y;gap:4px;justify-content:flex-start}
 .controlRoomSidebarTitle{font-size:clamp(9px,.95vw,13px);padding-bottom:3px}
-.controlRoomSidebar .controlNavItem{flex:1 0 auto;min-height:25px;max-height:none;padding:3px 6px;font-size:clamp(9px,.9vw,13px);gap:3px}
+.controlRoomSidebar .controlNavItem{flex:0 0 auto;min-height:36px;max-height:none;padding:6px 7px;font-size:clamp(11px,1.05vw,13px);gap:5px}
 .controlRoomSidebar .controlNavIcon{width:15px}
 .controlRoomMobileMenu,html.mobile-play .controlRoomMobileMenu{display:none!important}
 html.mobile-play .controlRoomStage{width:min(100%,108dvh,980px);height:auto!important;max-height:none!important;aspect-ratio:1672/941}
 html.mobile-play .controlRoomStage>img{object-fit:contain!important}
 html.mobile-play .controlRoomSidebar{display:flex!important;left:1.35%;width:30%;max-width:32%;top:18%;height:76%}
 html.mobile-play .controlRoomSidebarTitle{font-size:9px;letter-spacing:0;line-height:1.2}
-html.mobile-play .controlRoomSidebar .controlNavItem{font-size:10px;min-height:25px;max-height:none;padding:2px 3px;gap:2px}
+html.mobile-play .controlRoomSidebar .controlNavItem{font-size:clamp(11px,1.25vw,13px);min-height:42px;max-height:none;padding:6px 5px;gap:3px;line-height:1.25}
 html.mobile-play .controlRoomSidebar .controlNavIcon{width:12px}
 .planningRoomStage,html.mobile-play .planningRoomStage{display:block;width:min(100%,60dvh,560px);height:auto!important;max-height:none!important;aspect-ratio:1447/1087;margin:0 auto 12px;overflow:hidden}
 .planningRoomStage>img,html.mobile-play .planningRoomStage>img{display:block;width:100%;height:100%;object-fit:contain!important;object-position:center!important}
@@ -42,11 +42,16 @@ html.mobile-play .controlRoomSidebar .controlNavIcon{width:12px}
  .radioQueueSpotlight .radioQueueCard b{font-size:9px}
  .radioQueueSpotlight .radioQueueCard small{font-size:8px;-webkit-line-clamp:1;line-clamp:1}
  .controlRoomSidebarTitle{display:none}
- .controlRoomSidebar .controlNavItem,html.mobile-play .controlRoomSidebar .controlNavItem{min-height:22px;font-size:9px}
+ .controlRoomSidebar .controlNavItem{min-height:34px;font-size:11px}
+ html.mobile-play .controlRoomSidebar .controlNavItem{min-height:42px;font-size:11px}
 }
 @media(max-width:570px) and (orientation:portrait){
  .radioQueueSpotlight{left:55%;right:1.5%;top:8%;bottom:8%}
  .radioQueueSpotlight .radioQueueCard small{display:none}
  .controlRoomSidebar,html.mobile-play .controlRoomSidebar{width:33%;max-width:33%;left:1%;top:13%;height:82%}
- .controlRoomSidebar .controlNavText{font-size:9px}
+ .controlRoomSidebar .controlNavText{font-size:11px}
 }
+
+/* Ciclo 28: indicação explícita do botão ativo ao voltar ao painel. */
+.controlRoomSidebar .controlNavItem:focus-visible{outline:2px solid #ffdf8c;outline-offset:-2px;scroll-margin-block:7px}
+.radioQueueSpotlight .radioQueueCard:focus-visible{outline:2px solid #ffdf8c;outline-offset:-2px}

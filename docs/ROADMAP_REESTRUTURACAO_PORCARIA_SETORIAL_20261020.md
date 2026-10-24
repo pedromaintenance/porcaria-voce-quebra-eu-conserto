@@ -204,3 +204,8 @@ Consolidação por tipo de objeto da importação anterior escondia as posiçõe
 ## Ciclo 27 — Composição responsiva no celular e desktop (24/10/2026)
 
 A ilustração de Elton passa a exibir uma prévia das três primeiras OS na zona direita segura; o menu de Monitoramento retorna à margem esquerda dentro da arte, preservando Pedro; imagens de Rádio, Monitoramento e Planejamento são limitadas pela altura da janela e mantidas integralmente visíveis. Removido VISUAL de ambas as interfaces; oculto somente no celular o HUD inferior cortado. Testes e critérios em [Composição responsiva — Ciclo 27](COMPOSICAO_RESPONSIVA_CICLO27.md).
+
+
+## Ciclo 28 — Ergonomia do monitoramento mobile (24/10/2026)
+
+Após limitar as ilustrações à altura da tela, a barra de categorias ficava com botões muito baixos e perdia a posição ao trocar de seção. Os controles agora mantêm 42 px no celular, com rolagem dentro do menu de Pedro, foco e posição restaurados após renderização e realce para teclado. Não mexe na arte nem no motor. [Detalhes](ERGONOMIA_MONITORAMENTO_CICLO28.md).
