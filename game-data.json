@@ -18886,10 +18886,11 @@
       "functionalLocations": 2535,
       "parts": 683,
       "objectTypes": 987,
-      "assignments": 31107,
+      "assignments": 31106,
       "damages": 66,
       "causes": 81,
-      "playablePaths": 245
+      "playablePaths": 245,
+      "assignmentSummaryRows": 1
     },
     "stageSource": "Planilhas SAP anexadas: 1412 Mobile e Catalog Profile"
   },
