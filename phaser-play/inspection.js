@@ -56,9 +56,13 @@
   const mech=(s.team||[]).find(m=>m.id===who);
   if(!mech)return {error:'Selecione um profissional da equipe.'};
   if(mech.assigned||mech.restAt===s.tick)return {error:'Este profissional está alocado ou em descanso.'};
+  const energyBlock=globalThis.PORCARIA_ENGINE?.physicalBlock?.(s,mech);
+  if(energyBlock)return {error:energyBlock};
   if(s.inspectionLabor?.tick!==s.tick)s.inspectionLabor={tick:s.tick,byEmployee:{}};
   const booked=s.inspectionLabor.byEmployee[who]||0;
-  if(booked+INSPECTION_HH>10.5)return {error:'Capacidade de inspeção excedida: limite de 10,5 HH por profissional e turno.'};
+  // Reserva conservadora: mesmo com a maior taxa possível (70 pontos/10,5 HH).
+  const safeHH=Math.min(10.5,Number(mech.physical)*10.5/70);
+  if(booked+INSPECTION_HH>safeHH+0.0001)return {error:'Capacidade física de inspeção excedida neste turno.'};
   const E=globalThis.PORCARIA_ENGINE;
   if(E?.TRAINING?.active?.(s,mech))return {error:'O profissional está em treinamento durante este turno.'};
   if((s.jobs||[]).some(j=>j.asset===chosen))return {error:'Equipamento indisponível: já possui OS aberta.'};
