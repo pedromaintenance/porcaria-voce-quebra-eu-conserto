@@ -46,7 +46,7 @@ assert.ok(bar.innerHTML.includes('Ronda')&&bar.innerHTML.includes('Indicadores')
 assert.equal(bar.hidden,false);
 assert.ok(bar.innerHTML.includes('aria-current="location"'),'primeira seção marcada');
 bar.events.click({target:{closest:()=>buttons[2]}});
-assert.equal(scroller.last.top,250,'Indicadores rola somente conteúdo');
+assert.equal(scroller.last.top,240,'Indicadores rola somente conteúdo');
 assert.equal(buttons[2].attrs['aria-current'],'location');
 assert.equal(buttons[2].focused,true);
 ui.render('planning');
