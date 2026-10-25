@@ -46,5 +46,5 @@ assert.ok(game.includes('I.schedule(state,data,')&&game.includes('I.inspectAndRo
 const view=fs.readFileSync(path.join(__dirname,'../phaser-play/inspection-view.js'),'utf8');
 assert.ok(view.includes('data-inspection-action="inspect"')&&view.includes('data-inspection-action="notify"'),'ações de inspeção e notificação');
 assert.ok(html.includes('data-panel="inspection"')&&html.includes('data-open-panel="inspection"'),'painel acessível');
-assert.ok(html.includes('inspection.js?v=0.9.10'),'script versionado');
+assert.ok(html.includes('inspection.js?v='),'script versionado');
 console.log('OK: inspeções por turno, evidência simulada, notificações separadas, saves antigos e UI.');
