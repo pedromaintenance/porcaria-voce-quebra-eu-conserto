@@ -204,8 +204,10 @@
 
  function render(s,d,I,E,T,M){
   I.normalized(s);
-  const summary=I.summary(s),monitorSummary=M?M.summary(s):null,current=s.inspections.filter(x=>x.tick===s.tick);
-  const recent=s.inspections.filter(x=>x.tick!==s.tick&&['finding','notified'].includes(x.status)).slice(-8).reverse();
+  const summary=I.summary(s),valid=x=>I.inspectionEligible(d.scenarios.find(sc=>sc.id===x.scene))
+   &&!['monitoring_practice','diagnostic_practice'].includes(x.kind);
+  const current=s.inspections.filter(x=>x.tick===s.tick&&valid(x));
+  const recent=s.inspections.filter(x=>x.tick!==s.tick&&valid(x)&&['finding','notified'].includes(x.status)).slice(-8).reverse();
   const modelName=id=>d.models.find(m=>m.id===id)?.title||id;
   const card=x=>{
    const labels={pending:'A INSPECIONAR',expired:'VENCIDA',finding:'INDÍCIO OBSERVADO',notified:'NOTIFICAÇÃO GERADA',clear:'SEM ANORMALIDADE'};
@@ -226,7 +228,8 @@
     +actions+'</article>';
   };
   const statusWeight={monitorando:0,aguarda_revisao_pcm:1,devolvida:2,aprovada_pcm:3,escalonada_monitoramento:4,convertida_os:5,encerrada_monitoramento:6,arquivada_pcm:7};
-  const rows=s.notifications.slice().sort((a,b)=>(statusWeight[a.status]??5)-(statusWeight[b.status]??5)||b.openedTick-a.openedTick)
+  const rows=s.notifications.filter(n=>!n.monitorOnly&&!(n.origin==='inspecao_sensitiva_simulada'
+    &&I.isOilScenario(d.scenarios.find(sc=>sc.id===n.sourceScenario)))).sort((a,b)=>(statusWeight[a.status]??5)-(statusWeight[b.status]??5)||b.openedTick-a.openedTick)
    .slice(0,25).map(n=>renderPCM(n,modelName,d,I,E,s,T,M)).join('');
   const monitoring=''; // Recebimento automático; botões de teste removidos.
   const practice=T?'<section class="pcmEvidencePractice"><h3>🔬 TREINO DE DIAGNÓSTICO COM TESTES</h3>'
@@ -235,13 +238,13 @@
    +'</section>':'';
   return '<p class="inspectionIntro"><strong>INSPEÇÃO → HIPÓTESES PCM → EXECUÇÃO MECÂNICA.</strong> Observações iniciais sem confirmação da causa raiz.</p>'
    +practice+monitoring
-   +(monitorSummary?'<div class="inspectionMetrics"><div><small>MONITORAMENTOS ATIVOS</small><strong>'+monitorSummary.active+'</strong></div><div><small>RECOLETAS VENCIDAS</small><strong>'+monitorSummary.due+'</strong></div><div><small>AGRAVAMENTOS</small><strong>'+monitorSummary.attention+'</strong></div><div><small>ENCERRADOS SEM OS</small><strong>'+monitorSummary.closed+'</strong></div></div>':'')
+   // Métricas de laudos e recoletas são exclusivas do Monitoramento.
    +'<div class="inspectionMetrics"><div><small>PROGRAMADAS</small><strong>'+current.length+'</strong></div><div><small>A REALIZAR</small><strong>'+summary.pending+'</strong></div>'
    +'<div><small>NOTAS EM REVISÃO</small><strong>'+summary.awaiting+'</strong></div><div><small>ESCOPO APROVADO</small><strong>'+summary.approved+'</strong></div></div>'
    +'<h3 class="resourceSection">RONDA DO TURNO · DIA '+s.day+' / '+(s.shift?'B':'A')+'</h3>'
    +'<p class="muted">Até três máquinas sem OS ativa por turno. A notificação depende da inspeção e do registro da condição.</p>'
    +'<div class="inspectionList">'+[...current,...recent].map(card).join('')+'</div>'
-   +'<h3 class="resourceSection">MESA PCM · NOTIFICAÇÕES · '+s.notifications.length+'</h3>'
+   +'<h3 class="resourceSection">MESA PCM · NOTIFICAÇÕES · '+s.notifications.filter(n=>!n.monitorOnly&&!(n.origin==='inspecao_sensitiva_simulada'&&I.isOilScenario(d.scenarios.find(sc=>sc.id===n.sourceScenario)))).length+'</h3>'
    +(rows||'<p class="muted">Nenhuma notificação aberta.</p>')
    +'<p class="inspectionFuture">Revisão e conversão de OS disponíveis. Programação detalhada, reserva de materiais e dimensionamento de equipe permanecem no menu Planejamento PCM.</p>';
  }
