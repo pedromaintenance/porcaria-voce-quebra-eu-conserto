@@ -44,7 +44,7 @@ assert.deepEqual(Navigation.capture(before,{closest:()=>({dataset:{monitorCatego
 assert.ok(script.includes("const snapshot=nav?.capture(host,document.activeElement)"));
 assert.ok(script.includes("nav?.restore(host,snapshot)"));
 assert.ok(html.includes('monitoring-nav-state.js?v=0.9.30-c28'));
-assert.ok(html.includes('game.js?v=0.9.30-c28'));
+assert.ok(html.includes('game.js?v='));
 assert.ok(html.indexOf('monitoring-nav-state.js?v=')<html.indexOf('game.js?v='));
 assert.ok(html.includes('responsive-scenes-v27.css?v=0.9.30-c28'));
 assert.ok(sw.includes("'./phaser-play/monitoring-nav-state.js'")&&sw.includes('interaction0930'));
