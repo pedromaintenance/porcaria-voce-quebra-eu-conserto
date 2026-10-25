@@ -1,4 +1,4 @@
-/* P.O.R.C.A.R.I.A. v0.9.27 — navegação de leitura de painéis técnicos.
+/* P.O.R.C.A.R.I.A. v0.9.31 — navegação lateral compacta de Inspeção e PCM.
  * Apresentação apenas. Não acessa nem modifica o save, decisões ou gabaritos.
  */
 (function(root,factory){
@@ -54,15 +54,19 @@
   if(!bar||!win.PORCARIA_MOBILE?.isMobile?.(win))return {enabled:false};
   let current=null;
   const scroller=doc.querySelector('#menuOverlay .modalContent');
+  const shell=doc.querySelector('#menuOverlay .modalShell');
+  const splitPanels=new Set(['inspection','planning']);
+  const setSplit=on=>shell?.classList?.toggle('mobile-split-guide',!!on);
   const active=()=>doc.querySelector('[data-panel].is-open');
   function render(panel){
    current=Object.hasOwn(MAP,panel)?panel:null;
    const container=active();
-   if(!current||!container){bar.hidden=true;bar.innerHTML='';return;}
+   if(!current||!container){setSplit(false);bar.hidden=true;bar.innerHTML='';return;}
    const items=entries(current,selector=>!!container.querySelector(selector));
-   if(items.length<2){bar.hidden=true;bar.innerHTML='';return;}
+   if(items.length<2){setSplit(false);bar.hidden=true;bar.innerHTML='';return;}
+   setSplit(splitPanels.has(current));
    bar.innerHTML='<span class="mobile-guide-label">IR PARA</span>'
-    +items.map((x,i)=>'<button type="button" class="mobile-guide-link" data-guide-index="'+i+'">'
+    +items.map((x,i)=>'<button type="button" class="mobile-guide-link" data-guide-index="'+i+'"'+(i===0?' aria-current="location"':'')+'>'
      +escapeHTML(x.label)+'</button>').join('');
    bar.hidden=false;
   }
@@ -78,9 +82,13 @@
    const behavior=win.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'instant':'smooth';
    if(typeof scroller.scrollTo==='function')scroller.scrollTo({top,behavior});
    else scroller.scrollTop=top;
+   bar.querySelectorAll?.('[data-guide-index]')?.forEach(link=>{
+    if(link===btn)link.setAttribute?.('aria-current','location');
+    else link.removeAttribute?.('aria-current');
+   });
    btn.focus?.({preventScroll:true});
   });
-  function clear(){current=null;bar.hidden=true;bar.innerHTML='';}
+  function clear(){current=null;setSplit(false);bar.hidden=true;bar.innerHTML='';}
   return {enabled:true,render,clear};
  }
  return {MAP,entries,topFor,init};

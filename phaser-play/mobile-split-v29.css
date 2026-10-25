@@ -1,0 +1,181 @@
+/* Ciclo 29 · Inspeção e PCM: 30% navegação / 70% conteúdo.
+ * O guia pertence ao modal, sem duplicar DOM, dados do SAP ou lógica do jogo.
+ * O controle de seções é habilitado somente na experiência mobile.
+ */
+html.mobile-play #menuOverlay .modalShell.mobile-split-guide{
+  display:grid;
+  grid-template-columns:clamp(96px,29%,204px) minmax(0,1fr);
+  grid-template-rows:auto minmax(0,1fr);
+  width:min(1180px,calc(100vw - 10px));
+  height:calc(100dvh - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+  max-height:calc(100dvh - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+  min-height:0;
+}
+html.mobile-play #menuOverlay .mobile-split-guide .modalTop{
+  grid-column:1 / -1;
+  grid-row:1;
+  min-width:0;
+  padding:5px 9px;
+  min-height:38px;
+}
+html.mobile-play #menuOverlay .mobile-split-guide .modalTop strong{
+  font-size:clamp(11px,1.75vw,14px);
+  letter-spacing:0;
+}
+html.mobile-play #menuOverlay .mobile-split-guide .closeModal{
+  font-size:11px;
+  padding:5px 8px;
+  min-height:36px;
+}
+html.mobile-play #menuOverlay .mobile-split-guide .mobile-panel-guide:not([hidden]){
+  grid-column:1;
+  grid-row:2;
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  gap:5px;
+  min-width:0;
+  min-height:0;
+  padding:8px 5px;
+  background:#0b2234;
+  border:0;
+  border-right:1px solid #4f7691;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  touch-action:pan-y;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+}
+html.mobile-play #menuOverlay .mobile-split-guide .mobile-guide-label{
+  font-size:9px;
+  line-height:1.2;
+  padding:0 2px 3px;
+  white-space:normal;
+}
+html.mobile-play #menuOverlay .mobile-split-guide .mobile-guide-link{
+  flex:0 0 auto;
+  display:block;
+  width:100%;
+  min-width:0;
+  min-height:40px;
+  padding:7px 5px;
+  font-size:clamp(10px,1.15vw,12px);
+  font-weight:750;
+  line-height:1.2;
+  text-align:left;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  border-radius:5px;
+}
+html.mobile-play #menuOverlay .mobile-split-guide .mobile-guide-link[aria-current="location"]{
+  background:#c99435;
+  border-color:#ffd37a;
+  color:#102334;
+  box-shadow:inset 3px 0 #fff0bd;
+}
+html.mobile-play #menuOverlay .mobile-split-guide .mobileContent,
+html.mobile-play #menuOverlay .mobile-split-guide .modalContent{
+  grid-column:2;
+  grid-row:2;
+  display:block;
+  min-width:0;
+  min-height:0;
+  width:100%;
+  height:100%;
+  max-height:none;
+  flex:none;
+  padding:7px!important;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior-y:contain;
+  -webkit-overflow-scrolling:touch;
+}
+html.mobile-play #menuOverlay .mobile-split-guide .modalContent > .panel.is-open{
+  min-width:0;
+  max-width:100%;
+  padding:8px;
+  border-width:1px;
+}
+html.mobile-play #menuOverlay .mobile-split-guide .panel h2{
+  font-size:12px;
+  letter-spacing:.02em;
+  line-height:1.2;
+  margin-bottom:7px;
+}
+html.mobile-play #menuOverlay .mobile-split-guide .panel h3,
+html.mobile-play #menuOverlay .mobile-split-guide .panel h4{
+  font-size:12px;
+  line-height:1.25;
+}
+html.mobile-play #menuOverlay .mobile-split-guide .panel :is(p,li,small,label){
+  font-size:11px;
+  line-height:1.4;
+}
+html.mobile-play #menuOverlay .mobile-split-guide :is(.fieldSchedule,.pcmInbox,.inspectionNotification,.pcmReviewArea,.planningOrder){
+  padding:8px;
+  min-width:0;
+  max-width:100%;
+  overflow-wrap:anywhere;
+}
+html.mobile-play #menuOverlay .mobile-split-guide :is(.planningRoomStage,.fieldSchedule,.pcmInbox){
+  margin-top:6px;
+  margin-bottom:7px;
+}
+html.mobile-play #menuOverlay .mobile-split-guide :is(.inspectionMetrics,.planningMetrics){
+  gap:5px;
+}
+html.mobile-play #menuOverlay .mobile-split-guide :is(.planningTabs,.pcmActions,.inspectionNotifyActions){
+  gap:5px;
+}
+html.mobile-play #menuOverlay .mobile-split-guide :is(.act,.planningTabs button,.inspectionNotifyActions button){
+  font-size:11px;
+  line-height:1.25;
+  padding:7px 8px;
+  white-space:normal;
+}
+html.mobile-play #menuOverlay .mobile-split-guide .planningTabs button{
+  min-height:40px;
+}
+html.mobile-play #menuOverlay .mobile-split-guide :is(.planningRoomStage,.fieldScheduleInputs,.pcmScopeRow,.pcmHypothesisGrid,.inspectionList,#planning,#planningNotifications,#inspectionPanel){
+  min-width:0;
+}
+html.mobile-play #menuOverlay .mobile-split-guide :is(.weeklyScroll,.planningTabs){
+  max-width:100%;
+  overflow-x:auto;
+}
+@media(max-width:600px){
+  html.mobile-play #menuOverlay .modalShell.mobile-split-guide{
+    grid-template-columns:clamp(92px,29%,170px) minmax(0,1fr);
+  }
+  html.mobile-play #menuOverlay .mobile-split-guide .modalContent{
+    padding:5px!important;
+  }
+  html.mobile-play #menuOverlay .mobile-split-guide .modalContent > .panel.is-open{
+    padding:5px;
+  }
+  html.mobile-play #menuOverlay .mobile-split-guide :is(.inspectionMetrics,.planningMetrics){
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  html.mobile-play #menuOverlay .mobile-split-guide :is(.fieldScheduleInputs,.pcmScopeRow,.pcmHypothesisGrid){
+    grid-template-columns:minmax(0,1fr);
+  }
+}
+@media(orientation:landscape) and (max-height:480px){
+  html.mobile-play #menuOverlay .mobile-split-guide .mobile-panel-guide:not([hidden]){
+    padding-top:5px;
+    padding-bottom:5px;
+  }
+  html.mobile-play #menuOverlay .mobile-split-guide .mobile-guide-link{
+    min-height:36px;
+    padding:6px 5px;
+  }
+  html.mobile-play #menuOverlay .mobile-split-guide .planningRoomStage{
+    height:80px;
+  }
+}
+/* Não reduzir selects abaixo de 16px em iOS (zoom involuntário ao focar). */
+html.mobile-play #menuOverlay .mobile-split-guide :is(select,input,textarea){
+  max-width:100%;
+  min-width:0;
+}
