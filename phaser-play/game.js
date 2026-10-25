@@ -879,17 +879,20 @@ function renderQueue(){
  if(spotlight)spotlight.innerHTML=visibleJobs.slice(0,3).map(j=>{
   const m=E.model(data,j.modelId);
   const severity=j.priority===3?'CRÍTICA':j.priority===2?'ALTA':'MODERADA';
+  const fault=I.activeFault(data.scenarios.find(sc=>sc.id===j.scene));
   return '<button type="button" class="radioQueueCard'+(j.priority===3?' is-critical':'')
    +(j.id===selected?' is-active':'')+'" data-pick="'+esc(j.id)+'"'
    +' aria-label="Abrir '+esc(j.id)+' · '+esc(m?.title)+' · '+severity+'">'
    +'<em>'+severity+' · '+esc(j.id)+'</em>'
-   +'<b>'+esc(m?.title)+'</b><small>'+esc(j.report)+'</small></button>';
+   +'<b>'+esc(m?.title)+'</b><small>'+esc(j.report)+'</small>'
+   +(fault?'<small>⌁ ALERTA ATIVO · CÓDIGO OEM '+esc(fault.codeVerified&&fault.codeValue?fault.codeValue:'NÃO INFORMADO')+'</small>':'')+'</button>';
  }).join('')||'<div class="radioQueueEmpty">Nenhuma OS neste filtro.</div>';
  $('queue').innerHTML=visibleJobs.map(j=>{
  const m=E.model(data,j.modelId);
  const aged=(state.tick-j.tickOpen)*E.SHIFT_HOURS;
  const flags=jobBlockers(j);
- return `<button class="job ${j.id===selected?'active':''}" data-pick="${j.id}"><span class="severity">${j.priority===3?'CRÍTICA':j.priority===2?'ALTA':'MODERADA'}</span><strong>${esc(m?.title)} · ${esc(j.id)}</strong><small>${esc(j.report)}</small><small>${esc(j.status)} · ${j.stage}/6 etapas · ${Math.ceil(j.repairRemaining)}h reparo · ${aged}h na carteira</small>${flags.length?'<small class="queueWarning">⚠ '+esc(flags.join(' · '))+'</small>':''}</button>`;
+ const fault=I.activeFault(data.scenarios.find(sc=>sc.id===j.scene));
+ return `<button class="job ${j.id===selected?'active':''}" data-pick="${j.id}"><span class="severity">${j.priority===3?'CRÍTICA':j.priority===2?'ALTA':'MODERADA'}</span><strong>${esc(m?.title)} · ${esc(j.id)}</strong><small>${esc(j.report)}</small><small>${esc(j.status)} · ${j.stage}/6 etapas · ${Math.ceil(j.repairRemaining)}h reparo · ${aged}h na carteira</small>${fault?'<small>⌁ CÓDIGO DE FALHA ATIVO · OEM '+esc(fault.codeVerified&&fault.codeValue?fault.codeValue:'NÃO INFORMADO')+'</small>':''}${flags.length?'<small class="queueWarning">⚠ '+esc(flags.join(' · '))+'</small>':''}</button>`;
  }).join('')||'<p class="muted">Nenhuma OS corresponde ao filtro.</p>';
 }
 function drawManagement(k){
