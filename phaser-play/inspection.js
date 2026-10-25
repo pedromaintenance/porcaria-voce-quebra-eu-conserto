@@ -7,6 +7,22 @@
  'use strict';
  const PROGRESSION=typeof require==='function'?require('./anomaly-progression.js'):globalThis.PORCARIA_ANOMALY_PROGRESSION;
  const LIMIT_PER_SHIFT=3;
+ // Fontes: laudos pertencem ao monitoramento. Inspeção lê somente falhas ativas.
+ // Lookup tardio: no browser inspection.js é carregado antes de condition-catalog.js.
+ function catalog(){return typeof require==='function'?require('./condition-catalog.js'):globalThis.PORCARIA_CONDITION_CATALOG;}
+ function isOilScenario(sc){
+  return sc?.fmeaSource?.layer==='oil/diagnostic-records.json'
+   || /(?:análise de óleo|laudo (?:simulado|didático|sintético)?(?: de óleo)?|histórico de amostras)/i.test(String(sc?.operator||'').slice(0,210));
+ }
+ function activeFault(sc){
+  if(!sc||sc.fmeaSource?.layer!=='electronic/diagnostic-records.json')return null;
+  return catalog()?.byCategory('faults').find(p=>p.escalationScenario===sc.id&&p.modelId===sc.modelId&&p.codeState==='ativo')||null;
+ }
+ function inspectionEligible(sc){
+  if(!sc||isOilScenario(sc))return false;
+  if(sc.fmeaSource?.layer==='electronic/diagnostic-records.json')return !!activeFault(sc);
+  return true;
+ }
  function normalized(s){
   if(!Array.isArray(s.inspections))s.inspections=[];
   if(!Array.isArray(s.notifications))s.notifications=[];
@@ -18,13 +34,13 @@
  }
  function plan(s,d){
   normalized(s);
-  if(s.inspectionRoundTick===s.tick)return s.inspections.filter(x=>x.tick===s.tick);
+  if(s.inspectionRoundTick===s.tick)return s.inspections.filter(x=>x.tick===s.tick&&inspectionEligible(d.scenarios.find(c=>c.id===x.scene)));
   // Um plano por turno. Registros não realizados de turnos anteriores são preservados como vencidos.
   for(const i of s.inspections)if(i.status==='pending'&&i.tick<s.tick)i.status='expired';
   const busy=new Set((s.jobs||[]).map(j=>j.asset));
   for(const n of s.notifications)if(n.monitorOnly&&['aguarda_revisao_pcm','monitorando'].includes(n.status))busy.add(n.asset);
   const inspected=new Set(s.inspections.filter(i=>s.tick-i.tick<4).map(i=>i.asset).filter(Boolean));
-  const eligible=c=>globalThis.PORCARIA_ENGINE?.sapEligible?.(d,c)!==false;
+  const eligible=c=>inspectionEligible(c)&&globalThis.PORCARIA_ENGINE?.sapEligible?.(d,c)!==false;
   const models=(d.models||[]).filter(m=>(d.scenarios||[]).some(c=>c.modelId===m.id&&eligible(c)));
   const rotation=models.length?s.tick%models.length:0;
   const rotated=[...models.slice(rotation),...models.slice(0,rotation)];
@@ -71,7 +87,7 @@
   if(s.notifications.some(n=>n.asset===chosen&&n.monitorOnly&&['monitorando','aguarda_revisao_pcm'].includes(n.status)))
    return {error:'O equipamento está sob monitoramento de condição.'};
   if(s.inspections.some(x=>x.asset===chosen&&x.tick===s.tick))return {error:'Já existe uma inspeção deste ativo neste turno.'};
-  const list=d.scenarios.filter(sc=>sc.modelId===match[1]&&!sc.progression&&E?.sapEligible?.(d,sc)!==false);
+  const list=d.scenarios.filter(sc=>sc.modelId===match[1]&&!sc.progression&&inspectionEligible(sc)&&E?.sapEligible?.(d,sc)!==false);
   if(!list.length)return {error:'Nenhum roteiro de inspeção disponível para o equipamento.'};
   const idx=(s.tick+s.nextInspection)%list.length,sc=list[idx];
   const rec={id:'IN'+String(s.nextInspection++).padStart(4,'0'),
@@ -101,6 +117,7 @@
   if(x.tick!==s.tick)return {error:'A programação pertence a outro turno.'};
   const sc=d.scenarios.find(v=>v.id===x.scene);
   if(!sc)return {error:'Roteiro de inspeção não encontrado.'};
+  if(!inspectionEligible(sc))return {error:'Fonte incompatível: laudos de óleo e códigos não ativos pertencem ao Monitoramento.'};
   // Amostragem reprodutível e não clínica: aproximadamente uma em três inspeções sem achado.
   const anomaly=(s.tick+x.ordinal+1)%3!==0;
   x.status=anomaly?'finding':'clear';
@@ -183,10 +200,14 @@
   if(!n)return {error:'Notificação não encontrada.'};
   if(n.monitorOnly)return {error:'Este registro de condição só pode ser tratado pelo fluxo de monitoramento.'};
   if(n.status==='convertida_os')return {error:'Notificação convertida em OS: histórico imutável.'};
-  const note=trim(payload.reason,500);
+  const selectedReason=String(payload.reason||'').trim();
+  // Seleção do motivo basta: persiste a descrição, não a chave interna do dropdown.
+  // Textos previamente aceitos pela API continuam válidos por compatibilidade.
+  const catalogReason=RETURN_REASONS[selectedReason]||ARCHIVE_REASONS[selectedReason];
+  const note=catalogReason||trim(selectedReason,500);
   if(decision==='return'||decision==='archive'){
    if(!['aguarda_revisao_pcm','devolvida','aprovada_pcm'].includes(n.status))return {error:'Status não permite revisão.'};
-   if(note.length<15||note.length>500)return {error:'Informe justificativa técnica de 15 a 500 caracteres.'};
+   if(!catalogReason&&(note.length<15||note.length>500))return {error:'Selecione um motivo de devolução ou arquivamento.'};
    n.status=decision==='return'?'devolvida':'arquivada_pcm';
    n.reviewReason=note;
    if(decision==='return')n.planningScope=null;
@@ -300,5 +321,5 @@
    converted:s.notifications.filter(x=>x.status==='convertida_os').length,
    total:s.inspections.length,notifications:s.notifications.length};
  }
- return {normalized,plan,schedule,inspect,inspectAndRoute,notify,review,convert,commitConversion,hypotheses,summary,TRADES,RETURN_REASONS,ARCHIVE_REASONS,ACTIONS,STAGES,LIMIT_PER_SHIFT,INSPECTION_HH};
+ return {normalized,plan,schedule,inspect,inspectAndRoute,notify,review,convert,commitConversion,hypotheses,summary,TRADES,RETURN_REASONS,ARCHIVE_REASONS,ACTIONS,STAGES,LIMIT_PER_SHIFT,INSPECTION_HH,isOilScenario,activeFault,inspectionEligible};
 });
