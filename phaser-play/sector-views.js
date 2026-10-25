@@ -35,8 +35,10 @@
  }
  function inspections(s,d,I,E){
   I.normalized(s);
-  const today=s.inspections.filter(x=>x.tick===s.tick&&!['diagnostic_practice','monitoring_practice'].includes(x.kind));
-  const past=s.inspections.filter(x=>x.tick!==s.tick&&['finding','notified'].includes(x.status)).slice(-7).reverse();
+  const fieldRecord=x=>!['diagnostic_practice','monitoring_practice'].includes(x.kind)
+   &&I.inspectionEligible(d.scenarios.find(sc=>sc.id===x.scene));
+  const today=s.inspections.filter(x=>x.tick===s.tick&&fieldRecord(x));
+  const past=s.inspections.filter(x=>x.tick!==s.tick&&fieldRecord(x)&&['finding','notified'].includes(x.status)).slice(-7).reverse();
   const schedule=s.inspectionLabor?.tick===s.tick?s.inspectionLabor.byEmployee||{}:{};
   const available=(d.models||[]).flatMap(m=>Array.from({length:6},(_,i)=>{
    const asset=m.id+'·'+String(i+1).padStart(2,'0');
@@ -62,7 +64,7 @@
  }
  function planning(s,d,I,E,IV){
   I.normalized(s);
-  const notes=s.notifications.filter(n=>!isMonitor(n));
+  const notes=s.notifications.filter(n=>!isMonitor(n)&&!(n.origin==='inspecao_sensitiva_simulada'&&I.isOilScenario(d.scenarios.find(sc=>sc.id===n.sourceScenario))));
   const awaiting=notes.filter(n=>n.status==='aguarda_revisao_pcm').length;
   const approved=notes.filter(n=>n.status==='aprovada_pcm').length;
   const deteriorated=notes.filter(n=>['agravado','critico','falha_funcional'].includes(n.anomalyProgression?.phase)&&n.anomalyProgression?.resolvedTick===null).length;
@@ -71,7 +73,9 @@
   const ordered=notes.slice().sort((a,b)=>risk(a)-risk(b)||
     (a.status==='aguarda_revisao_pcm'?0:a.status==='aprovada_pcm'?1:2)
     -(b.status==='aguarda_revisao_pcm'?0:b.status==='aprovada_pcm'?1:2)||b.openedTick-a.openedTick);
-  return '<section class="pcmInbox"><h3>📋 CARTEIRA DE NOTIFICAÇÕES · PRÉ-DIAGNÓSTICO</h3>'
+  return faultHistoryPanel(s,d,I,globalThis.PORCARIA_MONITORING?.CATALOG||
+     (typeof require==='function'?require('./condition-catalog.js'):null),'PCM')
+    +'<section class="pcmInbox"><h3>📋 CARTEIRA DE NOTIFICAÇÕES · PRÉ-DIAGNÓSTICO</h3>'
    +'<p>Achados de campo e condições escalonadas chegam aqui. Revise a hipótese, delimite escopo, antecipe materiais e converta em OS apenas quando aprovar o planejamento.</p>'
    +'<div class="inspectionMetrics"><div><small>AGUARDANDO REVISÃO</small><strong>'+awaiting+'</strong></div>'
    +'<div><small>ESCOPO APROVADO</small><strong>'+approved+'</strong></div>'
@@ -92,10 +96,51 @@
    :sc=>sc.fmeaSource?.layer==='oil/diagnostic-records.json';
   return d.scenarios.filter(sc=>!sc.progression&&match(sc)).slice(-5).reverse();
  }
+ function faultHistory(s,d,I,catalog){
+  if(!catalog)return [];
+  const records=[],findScene=id=>d.scenarios.find(sc=>sc.id===id);
+  const add=(p,asset,tick,source,reference)=>{
+   if(!p)return;
+   records.push({id:p.id,asset,tick:Number(tick)||0,source,reference,state:p.codeState||'nao_confirmado',
+    label:p.title,code:p.codeVerified&&p.codeValue?p.codeValue:null,module:p.moduleContext||null});
+  };
+  for(const n of s.notifications||[])
+   if(n.monitorOnly&&n.monitorCategory==='faults')add(catalog.get(n.monitorProtocol),n.asset,n.openedTick,'Monitoramento',n.id);
+  for(const x of s.inspections||[]){
+   if(!['finding','notified'].includes(x.status))continue;
+   const p=I.activeFault(findScene(x.scene));
+   if(p)add(p,x.asset,x.inspectedTick??x.tick,'Inspeção',x.id);
+  }
+  for(const j of [...(s.jobs||[]),...(s.done||[])]){
+   if(j.source==='notificacao_inspecao')continue;
+   const p=I.activeFault(findScene(j.scene));
+   if(p)add(p,j.asset,j.tickOpen,'Rádio / OS',j.id);
+  }
+  return records.sort((a,b)=>b.tick-a.tick||String(b.reference).localeCompare(String(a.reference)));
+ }
+ function faultHistoryPanel(s,d,I,catalog,context){
+  const rows=faultHistory(s,d,I,catalog);
+  const states={ativo:'ATIVO',registrado:'REGISTRADO / HISTÓRICO',nao_confirmado:'ESTADO NÃO CONFIRMADO'};
+  return '<section class="pcmInbox faultHistoryPanel" aria-label="Histórico de códigos de falha">'
+   +'<h3>⌁ HISTÓRICO DE CÓDIGOS DE FALHA · '+rows.length+' REGISTROS</h3>'
+   +'<p>Eventos eletrônicos já recebidos pela campanha, consultáveis no '+context+'. '
+   +'Ativos podem chegar via inspeção, rádio ou monitoramento; registrados e não confirmados não são achados ativos de inspeção. '
+   +'IDs FLT identificam cenários fictícios, não códigos OEM.</p>'
+   +(rows.length?rows.slice(0,20).map(x=>'<article class="monitorCatalogEntry">'
+    +'<strong>'+esc(x.label)+'</strong><small>Turno '+x.tick+' · '+esc(x.asset)+' · '+esc(x.source)+' · '+esc(x.reference)+'</small>'
+    +'<p><strong>Estado:</strong> '+esc(states[x.state]||x.state)+' · <strong>Código OEM:</strong> '+esc(x.code||'NÃO INFORMADO')+'</p>'
+    +(x.module?'<small>'+esc(x.module)+'</small>':'')+'</article>').join('')
+    :'<p class="muted">Nenhum evento eletrônico recebido nesta campanha.</p>')
+   +'</section>';
+ }
  function monitoring(s,d,M,IV,I,E,category='overview'){
   I.normalized(s);
   const current=Object.hasOwn(CATEGORIES,category)?category:'overview',active=CATEGORIES[current],summary=M.summary(s);
   const monitorNotes=s.notifications.filter(n=>isMonitor(n));
+  // Antigos laudos indevidamente registrados como inspeção ficam consultáveis
+  // aqui (leitura apenas); não migrar status e não inventar recoletas.
+  const legacyOil=s.notifications.filter(n=>n.origin==='inspecao_sensitiva_simulada'
+   &&I.isOilScenario(d.scenarios.find(sc=>sc.id===n.sourceScenario)));
   // O painel sólido cobre a coluna de botões pintada no cenário; há navegação acessível no celular.
   const controls=(mobile=false)=>Object.entries(CATEGORIES).map(([key,entry])=>
    '<button type="button" class="'+(mobile?'controlMobileNavItem':'controlNavItem')+(current===key?' is-current':'')+'"'
@@ -148,8 +193,16 @@
       +(p.triage==='revisar_baseline'?'<small>REVISAR LINHA DE BASE</small>':'')
       +'</article>').join('')+'</div></section>').join('')
    +'</section>';
-  const content=feed+catalog;
+  const legacy=(current==='overview'||current==='oil')&&legacyOil.length
+   ?'<section class="controlRoomOperations" aria-label="Laudos antigos de óleo">'
+    +'<h3>LAUDOS LEGADOS · '+legacyOil.length+'</h3>'
+    +'<p>Registros de óleo de saves antigos, originalmente classificados como inspeção. Exibição informativa, sem simular recoletas.</p>'
+    +legacyOil.map(n=>'<article class="monitorCatalogEntry"><strong>'+esc(n.id)+' · '+esc(model(d,n.modelId))+'</strong>'
+     +'<small>'+esc(n.asset)+' · Turno '+Number(n.openedTick||0)+'</small><p>'+esc(n.description||n.reportedIndication||'Laudo anterior')+'</p></article>').join('')
+    +'</section>':'';
+  const history=current==='overview'||current==='faults'?faultHistoryPanel(s,d,I,M.CATALOG,'Monitoramento'):'';
+  const content=history+feed+legacy+catalog;
   return top+'<section class="controlRoomDashboard"><div class="controlRoomHeading"><h3>'+esc(active.title)+'</h3><p>'+esc(active.subtitle)+'</p></div>'+metrics+content+'</section>';
  }
- return {CATEGORIES,inspections,planning,monitoring};
+ return {CATEGORIES,inspections,planning,monitoring,faultHistory,faultHistoryPanel};
 });
