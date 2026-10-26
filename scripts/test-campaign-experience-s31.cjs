@@ -5,6 +5,7 @@ const E=require('../engine.js');
 const D=require('../game-data.json');
 const C=require('../phaser-play/campaign-experience-s31.js');
 const s=E.create(D,()=>.42);
+require('../phaser-play/inspection.js').normalized(s);
 assert.equal(C.goals(s).length,3);
 assert.ok(C.goals(s).every(x=>!x.done));
 assert.equal(C.summary(s).complete,false);
