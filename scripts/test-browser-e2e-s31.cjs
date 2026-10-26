@@ -4,7 +4,7 @@
 'use strict';
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
-const {chromium}=require('playwright');
+const {chromium}=require('playwright-core');
 const host=process.env.PORCARIA_TEST_URL||'http://127.0.0.1:8765/phaser-play/';
 const dir=process.env.PORCARIA_QA_ARTIFACTS||'test-results/sprint31';
 fs.mkdirSync(dir,{recursive:true});
@@ -69,7 +69,7 @@ async function run(browser,test){
  }finally{await context.close();}
 }
 (async()=>{
- const browser=await chromium.launch({headless:true,args:['--disable-dev-shm-usage','--use-gl=angle','--use-angle=swiftshader']});
+ const browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',headless:true,args:['--disable-dev-shm-usage','--use-gl=angle','--use-angle=swiftshader']});
  try{for(const test of cases)await run(browser,test);}
  finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;});
