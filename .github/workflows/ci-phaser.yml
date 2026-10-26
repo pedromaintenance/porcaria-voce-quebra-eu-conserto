@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Sprint 31 - verify optional goals and character reactions
+        run: node --check phaser-play/campaign-experience-s31.js && node --check scripts/test-campaign-experience-s31.cjs && node scripts/test-campaign-experience-s31.cjs
       - name: Sprint 31 - validate campaign integrity and save roundtrips
         run: node --check scripts/test-campaign-integrity-v31.cjs && node scripts/test-campaign-integrity-v31.cjs
       - name: Sprint 31 - verify event provenance and 42-turn campaigns
