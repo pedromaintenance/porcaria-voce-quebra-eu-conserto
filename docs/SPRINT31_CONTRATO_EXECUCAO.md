@@ -66,6 +66,15 @@ Os marcos podem ser completados em qualquer ordem ou ignorados. O relatório do 
 - Economia rebalanceada de maneira ampla, novo modelo físico/falha probabilística, sistema de vitórias por pontuação, campanha roteirizada obrigatória, infraestrutura de backend ou contas de jogador.
 - Troca de framework, refatoração total dos 149 KB de `game.js`, migração disruptiva de schema e remoção de histórico anterior.
 
+## Issues de execução registradas
+- [S31-01 · Origem das demandas](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/120)
+- [S31-02 · Integridade da campanha e saves](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/121)
+- [S31-03 · Browser E2E desktop/mobile](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/122)
+- [S31-04 · UX operacional](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/123)
+- [S31-05 · Campanha híbrida e personagens](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/124)
+- [S31-06 · Documentação vigente](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/125)
+- [S31-07 · Homologação beta](https://github.com/pedromaintenance/porcaria-voce-quebra-eu-conserto/issues/126)
+
 ## Workflow de execução para ChatGPT
 
 1. Criar **branch específica por issue**, partindo de `main` atual e explicitando seu SHA; nunca trabalhar sobre o PR de arte em rascunho.
