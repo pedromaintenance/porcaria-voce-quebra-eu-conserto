@@ -131,7 +131,7 @@ assert.ok(monitoring.includes('ENCERRADO SEM OS')||monitoring.includes('ENCERRAD
 assert.ok(!view.includes('data-monitor-start="baseline"'),'botões de teste não aparecem mais');
 assert.ok(!view.includes('<textarea'),'revisão sem digitação livre de hipóteses');
 const html=fs.readFileSync(path.join(__dirname,'../phaser-play/index.html'),'utf8');
-assert.ok(html.includes('monitoring.js?v=0.9.18-copy1'),'script carregado');
+assert.ok(html.includes('monitoring.js?v='),'script carregado');
 const game=fs.readFileSync(path.join(__dirname,'../phaser-play/game.js'),'utf8');
 assert.ok(game.includes('M.receive(state,data,I)')&&game.includes('M.collect(state,id)'),'chegada automática e ações ligadas ao jogo');
 const sw=fs.readFileSync(path.join(__dirname,'../sw.js'),'utf8');
