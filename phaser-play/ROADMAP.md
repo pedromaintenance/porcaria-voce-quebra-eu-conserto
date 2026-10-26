@@ -2,7 +2,9 @@
 
 **Projeto:** *Você Quebra, Eu Conserto* · jogo de gestão de manutenção de equipamentos de mineração.
 **Interface-alvo:** oficina 2D em Phaser 3, com três boxes visíveis e menus pop-up.
-**Estado de referência:** 22/10/2026 · **v0.9.22 — Reserva futura de OS preventiva no calendário PCM, com execução manual e Diva; QA visual pendente.**
+> **NOTA DE VIGÊNCIA (26/10/2026):** este arquivo acumula histórico detalhado e seu registro 0.9.22 é histórico, não a versão corrente. O trabalho de Sprint 31 está acompanhado por [CURRENT_STATUS](../docs/CURRENT_STATUS.md), [CONTRATO S31](../docs/SPRINT31_CONTRATO_EXECUCAO.md) e [BACKLOG](../docs/BACKLOG.md). Não interpretar caixas antigas como homologação atual.
+
+**Estado de referência histórico:** 22/10/2026 · **v0.9.22 — Reserva futura de OS preventiva no calendário PCM, com execução manual e Diva; QA visual pendente.**
 **Jogo de teste:** https://pedromaintenance.github.io/porcaria-voce-quebra-eu-conserto/phaser-play/
 
 > Status abaixo significa implementação no código, **não homologação funcional nem aprovação artística**. O deploy do Pages é executado automaticamente, mas deve ser conferido no GitHub Actions; o teste interativo permanece necessário.
