@@ -14,10 +14,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Install Playwright (pinned) and Chromium
-        run: |
-          npm install --no-save --no-package-lock playwright@1.56.1
-          npx playwright install --with-deps chromium
+      - uses: browser-actions/setup-chrome@v1
+        id: chrome
+        with:
+          chrome-version: stable
+      - name: Install lightweight browser driver
+        run: npm install --no-save --no-package-lock playwright-core@1.56.1
       - name: Start isolated static server
         run: |
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/porcaria-http.log 2>&1 &
@@ -27,6 +29,8 @@ jobs:
             sleep 1
           done
       - name: Browser journeys
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
         run: node scripts/test-browser-e2e-s31.cjs
       - name: Upload screenshots and failures
         if: always()
