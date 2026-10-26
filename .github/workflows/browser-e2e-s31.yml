@@ -1,0 +1,42 @@
+name: PORCARIA — Sprint 31 Browser E2E
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  chromium-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: browser-actions/setup-chrome@v1
+        id: chrome
+        with:
+          chrome-version: stable
+      - name: Install lightweight browser driver
+        run: npm install --no-save --no-package-lock playwright-core@1.56.1 phaser@3.90.0
+      - name: Start isolated static server
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/porcaria-http.log 2>&1 &
+          echo $! > /tmp/porcaria-http.pid
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8765/phaser-play/ >/dev/null; then break; fi
+            sleep 1
+          done
+      - name: Browser journeys
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+        run: node scripts/test-browser-e2e-s31.cjs
+      - name: Upload screenshots and failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sprint31-browser-e2e
+          path: test-results/sprint31/
+          retention-days: 14
+          if-no-files-found: warn
