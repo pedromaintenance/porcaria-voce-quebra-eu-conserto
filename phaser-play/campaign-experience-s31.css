@@ -1,0 +1,16 @@
+/* Sprint 31 · visual candidato; NÃO integrar sem aprovação da direção. */
+.s31Objectives{border:1px solid #55798b;background:#0b2538;border-radius:9px;padding:12px;margin:10px 0 15px;color:#eaf6fb}
+.s31Objectives header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;color:#ffcb6e}
+.s31Objectives header strong{font-size:13px}
+.s31Objectives header span,.s31Objectives p,.s31Objectives small{font-size:11px;line-height:1.45}
+.s31Objectives ul{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));list-style:none;gap:8px;padding:0;margin:8px 0 0}
+.s31Objectives li{display:flex;flex-direction:column;gap:5px;padding:9px;border:1px solid #456273;background:#183548;border-radius:7px;font-size:11px}
+.s31Objectives li.is-done{border-color:#76ac89;background:#16382d;color:#dbf5e1}
+.s31Objectives li small{color:#c5d8de}
+.s31Report{margin-top:12px;border-top:1px solid #567d8f;padding-top:12px}
+.s31Report strong{color:#ffd078}
+.s31Character{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:9px 11px;margin:9px 0 12px;background:#133447;color:#eaf4fa;border:1px solid #7097a9;border-left:4px solid #e0ac49;border-radius:7px}
+.s31Character strong{font-size:12px;color:#ffd17e}
+.s31Character p{font-size:11px;line-height:1.45;margin:4px 0 0}
+.s31Character button{flex:0 0 auto;width:35px;height:35px;cursor:pointer;border:1px solid #7992a6;background:#244659;border-radius:6px;color:#f5faff}
+@media(max-width:640px){.s31Objectives ul{grid-template-columns:1fr}.s31Objectives{padding:8px;margin-top:5px}.s31Character{padding:7px}.s31Character p{font-size:11px}}
