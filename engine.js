@@ -501,6 +501,23 @@
       materialUsed:false,worked:0,toolWait:0,blockedShifts:0,notes:[],scheduleShift:null,
       costLabor:0,reworkHours:0,idleShifts:0,exposureShifts:0,materialWaitShifts:0,toolWaitShifts:0,diagnosisQueueShifts:0};
   }
+  // A origem técnica governa onde a ocorrência nasce. Um laudo de óleo
+  // não pode ser interpretado como um chamado espontâneo da operação.
+  function radioEligible(c){
+    if(!c||c.progression)return false;
+    const layer=c.fmeaSource?.layer;
+    if(layer==='oil/diagnostic-records.json')return false;
+    if(layer==='electronic/diagnostic-records.json'){
+      // O rádio transmite um alerta ATIVO, nunca um histórico inativo.
+      // Lookup tardio preserva a ordem atual de carregamento dos scripts.
+      const catalog=typeof require==='function'
+        ?require('./phaser-play/condition-catalog.js')
+        :globalThis.PORCARIA_CONDITION_CATALOG;
+      return !!catalog?.byCategory('faults').some(p=>
+        p.escalationScenario===c.id&&p.modelId===c.modelId&&p.codeState==='ativo');
+    }
+    return true;
+  }
   function spawn(s,d,n,rng=Math.random){
     let made=0;
     const existing=new Set(s.jobs.map(j=>j.asset));
@@ -513,7 +530,7 @@
     for(let i=0;i<n;i++){
       const pool=d.scenarios.filter(c=>{
         // As consequências surgem somente após o atraso do precursor, nunca no sorteio livre.
-        if(c.progression||!sapEligible(d,c))return false;
+        if(!radioEligible(c)||!sapEligible(d,c))return false;
         const m=model(d,c.modelId);if(!m)return false;
         return [...Array(6)].some((_,x)=>!existing.has(`${c.modelId}·${String(x+1).padStart(2,'0')}`));
       });
@@ -1048,5 +1065,5 @@
   function validate(s){return s&&s.version==='1.1.0'&&Number.isFinite(s.cash)&&Array.isArray(s.team)&&Array.isArray(s.jobs)&&Array.isArray(s.orders)&&s.player&&s.stock&&s.tools&&Array.isArray(s.done)}
   return {create,initFleet,setFleetDuty,ANOMALY,sapEligible,generatePreventiveOrders,assignPreventiveOrder,releasePreventiveOrder,schedulePreventiveOrder,recordDecision,writeLesson,scheduleJob,cancelSchedule,bookPreventive,cancelPreventive,normalizePhysical,physicalBlock,physicalCapacity,consumePhysical,normalizeRoster,localizeDiagnosticOptions,validateDiagnosticReference,availableRecruits,RECRUIT_POOL,TRAINING,COMPETENCY,SKILL_CATALOG,SKILL_GROUPS,baselineSkills,skillsFor,spawn,attach,release,answer,hint,buyTool,orderMaterial,motivate,rest,hire,advance,kpis,validate,
     SHIFT_HOURS,DDS_HOURS,MEAL_HOURS,EFFECTIVE_HOURS,DEFAULT_PRODUCTIVITY_TARGET,productivityProfile,setProductivityTarget,
-    model,scenario,employee,job,options,one,mix,mulberry32,timeLabel};
+    model,scenario,employee,job,options,one,mix,mulberry32,timeLabel,radioEligible};
 });
