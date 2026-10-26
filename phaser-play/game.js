@@ -8,6 +8,7 @@ const IV=window.PORCARIA_INSPECTION_VIEW;
 const S=window.PORCARIA_SECTORS;
 const T=window.PORCARIA_EVIDENCE;
 const M=window.PORCARIA_MONITORING;
+const CAMPAIGN=window.PORCARIA_CAMPAIGN_EXPERIENCE;
 const MOBILE=window.PORCARIA_MOBILE;
 const PANEL_GUIDE=window.PORCARIA_PANEL_GUIDE?.init(document,window);
 const mobileTapEvent=MOBILE?.isMobile(window)?'pointerup':'pointerdown';
@@ -160,6 +161,16 @@ function closeSceneMenu(){
 }
 // Modal tem exclusividade de entrada; nunca permitir selecao de box atraves do overlay.
 function modalOpen(){return (!!$('menuOverlay')&&!$('menuOverlay').hidden)||!!MOBILE?.isSectorMenuOpen?.()}
+function updateCharacterGuidance(name){
+ if(!CAMPAIGN||!state)return;
+ const active=document.querySelector('[data-panel].is-open');if(!active)return;
+ active.querySelector(':scope > .s31Character')?.remove();
+ const text=CAMPAIGN.renderCue(state,name);
+ if(!text)return;
+ const h2=active.querySelector(':scope > h2');
+ if(h2)h2.insertAdjacentHTML('afterend',text);
+ else active.insertAdjacentHTML('afterbegin',text);
+}
 function openPanel(name){
  const overlay=$('menuOverlay');if(!overlay)return;
  if(name==='shift')drawShiftBrief();
@@ -178,6 +189,7 @@ function openPanel(name){
  document.querySelectorAll('.primary-nav [data-open-panel]').forEach(btn=>{const active=btn.dataset.openPanel===name;btn.classList.toggle('is-active',active);btn.setAttribute('aria-expanded',active?'true':'false')});
  document.body.style.overflow='hidden';
  PANEL_GUIDE?.render?.(name);
+ updateCharacterGuidance(name);
  $('closePanel')?.focus();
 }
 function closePanel(){
@@ -918,7 +930,7 @@ function drawManagement(k){
   ['Concluídas',k.done],
   ['Energia supervisor',Math.round(state.player.mental)+'/100']
  ];
- $('management').innerHTML='<p class="muted">Controle da oficina no mesmo ambiente Phaser. Dados e decisões vêm da campanha ativa.</p>'
+ $('management').innerHTML=(CAMPAIGN?.renderGoals(state)||'')+'<p class="muted">Controle da oficina no mesmo ambiente Phaser. Dados e decisões vêm da campanha ativa.</p>'
    +'<div class="managementGrid">'+metrics.map(([name,value])=>'<div class="managementMetric"><small>'+esc(name)+'</small><strong>'+esc(value)+'</strong></div>').join('')+'</div>'
    +'<div class="managementActions"><button class="act secondary" data-open-panel="inspection">🔎 INSPEÇÕES</button><button class="act secondary" data-open-panel="training">📚 TREINAMENTOS</button><button class="act" data-open-panel="planning">🗓️ PLANEJAR OS</button><button class="act secondary" data-open-panel="shift">📋 REVISAR PRÓXIMO TURNO</button><button class="act secondary" data-open-panel="queue">📻 ABRIR CARTEIRA</button><button class="act secondary" data-open-panel="team">👷 EQUIPE</button><button class="act secondary" data-open-panel="store">📦 ESTOQUE</button><button class="act secondary" data-open-panel="stats">📊 INDICADORES</button><button class="act secondary" data-reliability-open>📈 KPIs PCM</button></div>'
    +'<section class="readinessBoard"><div class="readinessHeading"><h3>🛠️ PRONTIDÃO OPERACIONAL · TURNO '+ready.shift+'</h3><span>QUADRO CONSULTIVO</span></div>'
@@ -1123,6 +1135,13 @@ function drawStore(){
 
 function events(){
  MOBILE?.registerClosePanel?.(closePanel);
+ document.addEventListener('click',ev=>{
+  const button=ev.target?.closest?.('[data-campaign-dismiss]');
+  if(!button||!CAMPAIGN)return;
+  ev.stopImmediatePropagation();
+  if(CAMPAIGN.dismiss(state,button.dataset.campaignDismiss)){save();button.closest('.s31Character')?.remove();}
+ });
+
  $('helpBtn').addEventListener('click',()=>openPanel('help'));
  document.addEventListener('input',ev=>{
   if(ev.target?.id!=='productivityTarget')return;
