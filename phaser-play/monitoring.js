@@ -80,18 +80,19 @@
   for(const x of s.inspections)if(x.tick===s.tick)used.add(x.asset);
   const asset=Array.from({length:6},(_,i)=>p.modelId+'·'+String(i+1).padStart(2,'0')).find(a=>!used.has(a));
   if(!asset)return {error:'Nenhum equipamento disponível na frota.'};
-  const i={id:'IN'+String(s.nextInspection++).padStart(4,'0'),asset,modelId:p.modelId,
-   tick:s.tick,day:s.day,shift:s.shift,status:'finding',scene:null,ordinal:0,
-   simulationOnly:true,inspectedTick:s.tick,observed:'Condição recebida: '+p.baseline,
-   observationSource:'monitoramento_didatico',kind:'monitoring_practice'};
-  s.inspections.push(i);
-  const notified=I.notify(s,i.id,null,'baixa');
-  if(notified.error){s.inspections.pop();s.nextInspection--;return notified}
-  const n=notified.notification;
-  n.monitorOnly=true;n.monitorProtocol=protocol;n.monitoring={status:'proposta',baseline:p.baseline,
-   reason:null,interval:null,nextTick:null,samples:[],decisions:[]};
+  // Fluxo de laboratório não cria registro de inspeção física. Saves antigos
+  // com registros 'monitoring_practice' seguem legíveis, mas novos estudos
+  // pertencem somente à carteira do Monitoramento.
+  const n={id:'NM'+String(s.nextNotification++).padStart(4,'0'),inspectionId:null,
+   asset,modelId:p.modelId,openedTick:s.tick,origin:'monitoramento_de_condicao',
+   description:p.baseline,reportedIndication:p.baseline,priority:'baixa',
+   status:'aguarda_revisao_pcm',sourceScenario:null,workOrderId:null,
+   monitorOnly:true,monitorProtocol:protocol,monitorCategory:'oil',
+   monitoring:{status:'proposta',baseline:p.baseline,
+    reason:null,interval:null,nextTick:null,samples:[],decisions:[]}};
+  s.notifications.push(n);
   s.monitoringOpenCount++;
-  return {ok:true,inspection:i,notification:n};
+  return {ok:true,inspection:null,notification:n};
  }
  function decide(s,id,reason,interval){
   const n=get(s,id);
