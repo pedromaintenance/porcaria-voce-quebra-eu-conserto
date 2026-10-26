@@ -15,7 +15,13 @@ for(const [id,p] of Object.entries(M.PROTOCOLS)){
 const fresh=()=>{const s=E.create(D,()=>.5);I.normalized(s);return s};
 const initial=fresh();
 const oldJobs=initial.jobs.map(j=>j.id);
+const priorInspections=initial.inspections.length;
 let opened=M.open(initial,D,I,'baseline');
+assert.equal(opened.inspection,null,'laudo nunca cria inspeção de campo');
+assert.equal(initial.inspections.length,priorInspections,'nenhum registro sintético de ronda pelo laboratório');
+assert.equal(opened.notification.inspectionId,null,'origem independe de inspector');
+assert.equal(opened.notification.origin,'monitoramento_de_condicao');
+assert.equal(opened.notification.monitorCategory,'oil');
 assert.equal(opened.ok,true);
 let note=opened.notification;
 assert.equal(note.status,'aguarda_revisao_pcm');
