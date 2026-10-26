@@ -56,9 +56,18 @@ function scenarioGame(id){
  const original=D.scenarios.find(x=>x.id===id);
  const s=E.create(D,()=>.42);
  s.jobs=[];for(const m of s.team)m.assigned=null;
- const used=E.spawn(s,{...D,scenarios:[original]},1,()=>.42);
+ // Laudos de óleo deixam de ser sorteáveis no Rádio. As cadeias históricas
+ // continuam válidas quando um caso foi convertido em OS por uma via legítima.
+ const radioSeed=E.radioEligible(original)?original:D.scenarios.find(sc=>
+  sc.modelId===original.modelId&&E.radioEligible(sc)&&E.sapEligible(D,sc));
+ assert.ok(radioSeed,'precursor necessita modelo elegível para construir fixture');
+ const used=E.spawn(s,{...D,scenarios:[radioSeed]},1,()=>.42);
  assert.equal(used,1);
  const j=s.jobs[0],m=s.team[0];
+ if(radioSeed.id!==original.id){
+  j.scene=original.id;j.title=original.title;j.report=original.operator;
+  j.options=E.options(D,original,42);
+ }
  assert.equal(j.scene,id);
  assert.equal(E.attach(s,j.id,m.id,0,false),null);
  j.stage=6;j.status='apto';j.repairRemaining=0.01;j.materialUsed=true;
