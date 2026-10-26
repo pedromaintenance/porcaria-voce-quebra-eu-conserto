@@ -1,0 +1,21 @@
+name: Sprint 31 — Fixtures de homologação beta
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  beta-fixtures:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate deterministic saves
+        run: node --check scripts/build-beta-fixtures-s31.cjs && node scripts/build-beta-fixtures-s31.cjs
+      - name: Arquivos para o diretor importar
+        uses: actions/upload-artifact@v4
+        with:
+          name: PORCARIA-beta-fixtures-S31
+          path: test-results/beta-s31/*.json
+          retention-days: 30
+          if-no-files-found: error
