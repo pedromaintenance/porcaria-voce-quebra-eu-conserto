@@ -29,11 +29,17 @@ async function run(browser,test){
   isMobile:test.isMobile,userAgent:test.ua||undefined,deviceScaleFactor:1
  });
  const page=await context.newPage(),errors=[];
+ // Phaser CDN substituído por build oficial NPM no CI: offline, determinístico.
+ await page.route('https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js',
+  route=>route.fulfill({path:require('node:path').resolve('node_modules/phaser/dist/phaser.min.js'),
+   contentType:'application/javascript'}));
  page.on('pageerror',error=>errors.push(error.message));
  try{
   await page.goto(host,{waitUntil:'domcontentloaded',timeout:45000});
   await page.waitForFunction(()=>document.querySelector('#day')?.textContent?.startsWith('DIA '),
    {timeout:60000});
+  await page.locator('#game canvas').waitFor({state:'attached',timeout:30000})
+   .catch(async()=>{throw Error('Phaser não criou canvas: '+(await page.locator('#game').innerText()).slice(0,300)+'; '+errors.join('; '));});
   assert.equal(await page.locator('#game canvas').count(),1,'Phaser canvas disponível');
   await page.screenshot({path:dir+'/'+test.id+'-oficina.png'});
   for(const p of ['queue','inspection','planning','monitoring']){
