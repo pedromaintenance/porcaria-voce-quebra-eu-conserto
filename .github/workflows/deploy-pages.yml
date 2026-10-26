@@ -79,6 +79,13 @@ jobs:
           echo "0637e55b3a1978842c7aa71e27c763b176ea7c8438a82ee5bc711140e1a72c15  phaser-play/assets/oficina-noturna-hq.avif" | sha256sum --check
       - name: Verify Planning PCM room artwork
         run: node scripts/test-planning-room-asset.cjs
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Preparar biblioteca de imagem
+        run: python3 -m pip install --disable-pip-version-check pillow
+      - name: Gerar e validar ícones PWA antes da publicação
+        run: bash scripts/build-pwa-icons.sh
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload website

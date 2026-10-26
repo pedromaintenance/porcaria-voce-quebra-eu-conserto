@@ -1,0 +1,34 @@
+name: Sincronizar ícones PWA do PORCARIA
+on:
+  push:
+    paths:
+      - icon-192.png
+      - scripts/build-pwa-icons.sh
+      - .github/workflows/icon-sync.yml
+permissions:
+  contents: write
+jobs:
+  sync-icons:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Preparar biblioteca de imagem
+        run: python3 -m pip install --disable-pip-version-check pillow
+      - name: Gerar ícones 512 e máscara Android
+        run: bash scripts/build-pwa-icons.sh
+      - name: Versionar ícones gerados
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add icon-512.png icon-maskable-512.png
+          if ! git diff --cached --quiet; then
+            git commit -m "build(pwa): atualizar tamanhos e máscara do novo ícone"
+            git fetch origin "${GITHUB_REF_NAME}"
+            git rebase "origin/${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
