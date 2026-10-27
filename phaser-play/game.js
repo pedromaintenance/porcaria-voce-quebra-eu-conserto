@@ -43,7 +43,7 @@ const WORKER_SHEETS=Object.freeze({
  pedro:'./assets/characters/pedro-v0829-4poses.png',
  geovane:'./assets/characters/geovane-4poses.webp',
  acassio:'./assets/characters/acassio-4poses.png',
- nemuel:'./assets/characters/nemuel-inspetor-4poses.webp',
+ nemuel:'./assets/characters/nemuel-inspetor-4poses-v2.png',
  junior:'./assets/characters/junior/junior-work-4poses.webp',
  diva:'./assets/characters/diva-4poses.webp'
 });
@@ -1853,26 +1853,20 @@ class Workshop extends Phaser.Scene{
   ctx.imageSmoothingEnabled=true;
   ctx.imageSmoothingQuality='high';
   if(texture==='worker_nemuel'){
-   // O WebP original possui botas DUPLICADAS soltas entre y≈660–705,
-   // abaixo dos pés reais das duas poses superiores (até y≈630).
-   // A correção anterior amostrava até y=710 e desenhava ambos os pares.
-   // Excluir a faixa residual sem diminuir o tamanho do personagem no jogo:
-   // a escala das poses superiores continua referenciada na altura 710.
-   // As poses inferiores e os demais trabalhadores permanecem intactos.
-   const upperPoseNominalHeight=710;
+   // Atlas novo aprovado pelo produtor (1211 × 1299): cada pose possui
+   // retângulo próprio, sem reutilizar recortes do atlas anterior.
    const frames=[
-    {x:0,y:0,w:580,h:646},
-    {x:580,y:0,w:580,h:646},
-    {x:0,y:710,w:580,h:534},
-    {x:580,y:710,w:580,h:534}
+    {x:130,y:0,w:440,h:649},    // Esquadro
+    {x:660,y:0,w:450,h:649},    // Joinha
+    {x:125,y:649,w:440,h:650},  // Rádio
+    {x:630,y:710,w:540,h:589}  // Medição agachado
    ];
    for(let i=0;i<frames.length;i++){
     const p=frames[i];
-    const nominalHeight=i<2?upperPoseNominalHeight:p.h;
-    const scale=Math.min(WORKER_RENDER_FRAME.width/p.w,WORKER_RENDER_FRAME.height/nominalHeight);
+    const scale=Math.min(WORKER_RENDER_FRAME.width/p.w,WORKER_RENDER_FRAME.height/p.h);
     const w=Math.floor(p.w*scale),h=Math.floor(p.h*scale);
     const dx=(i%2)*WORKER_RENDER_FRAME.width+Math.floor((WORKER_RENDER_FRAME.width-w)/2);
-    const dy=Math.floor(i/2)*WORKER_RENDER_FRAME.height+(WORKER_RENDER_FRAME.height-h);
+    const dy=Math.floor(i/2)*WORKER_RENDER_FRAME.height+WORKER_RENDER_FRAME.height-h;
     ctx.drawImage(src,p.x,p.y,p.w,p.h,dx,dy,w,h);
    }
   }else{
