@@ -1,50 +1,46 @@
-/* Regressão: Nemuel não pode perder pés nem exibir botas duplicadas.
- * Os outros trabalhadores mantêm enquadramento e escala atuais.
+/* Nemuel v2: bytes originais, coordenadas de quatro poses e compatibilidade.
+ * Não substitui inspeção visual; protege o atlas irregular no Phaser/PWA.
  */
 'use strict';
-const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const crypto=require('node:crypto');
 const root=path.resolve(__dirname,'..');
+const png=fs.readFileSync(path.join(root,'phaser-play/assets/characters/nemuel-inspetor-4poses-v2.png'));
+assert.equal(png.subarray(0,8).toString('hex'),'89504e470d0a1a0a','assinatura PNG');
+const width=png.readUInt32BE(16),height=png.readUInt32BE(20);
+assert.deepEqual([width,height],[1211,1299],'tamanho original do atlas novo');
+assert.equal(png[25],6,'PNG RGBA com transparência');
+const sha=crypto.createHash('sha256').update(png).digest('hex');
+assert.equal(sha,'5852691542117915492e8416d8a952b44bbe38dd2857912db6f55a3ec216b34a','pixels originais do produtor preservados');
 const game=fs.readFileSync(path.join(root,'phaser-play/game.js'),'utf8');
 const html=fs.readFileSync(path.join(root,'phaser-play/index.html'),'utf8');
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
-const bytes=fs.readFileSync(path.join(root,'phaser-play/assets/characters/nemuel-inspetor-4poses.webp'));
-const width=1+bytes[24]+(bytes[25]<<8)+(bytes[26]<<16);
-const height=1+bytes[27]+(bytes[28]<<8)+(bytes[29]<<16);
-assert.deepEqual([width,height],[1160,1244],'a imagem original fica preservada');
-const original=[580,622],dest=[290,311];
+assert.ok(game.includes("nemuel:'./assets/characters/nemuel-inspetor-4poses-v2.png'"));
+assert.ok(game.includes("name==='nemuel'?this.load.image('worker_'+name,url):this.load.spritesheet"),'carregar cartela irregular inteira');
+assert.ok(game.includes("texture==='worker_nemuel'?src.width!==1211||src.height!==1299"),'não rejeitar as dimensões novas');
+assert.ok(game.includes('const WORKER_RENDER_FRAME={width:290,height:311}'));
+assert.ok(game.includes('const WORKER_DISPLAY={width:66,height:80}'));
 const frames=[
- {x:0,y:0,w:580,h:646},
- {x:580,y:0,w:580,h:646},
- {x:0,y:710,w:580,h:534},
- {x:580,y:710,w:580,h:534}
+ {x:130,y:0,w:440,h:649},
+ {x:660,y:0,w:450,h:649},
+ {x:125,y:649,w:440,h:650},
+ {x:630,y:710,w:540,h:589}
 ];
-assert.ok(frames[0].h>original[1],'pose em pé não perde os pés reais');
-assert.ok(frames[0].h<660,'região de botas duplicadas inicia após recorte superior');
-assert.ok(frames[1].h<660,'ambas poses superiores excluem os artefatos');
-assert.equal(frames[2].y,710,'pose inferior preservada');
-for(const [i,f] of frames.entries()){
- assert.ok(f.x>=0&&f.y>=0&&f.x+f.w<=width&&f.y+f.h<=height,'enquadramento fonte válido '+i);
- const nominalHeight=i<2?710:f.h;
- const scale=Math.min(dest[0]/f.w,dest[1]/nominalHeight);
- const w=Math.floor(f.w*scale),h=Math.floor(f.h*scale);
- assert.ok(w<=dest[0]&&h<=dest[1]&&w>0&&h>0,'pose no quadro '+i);
- const dx=(i%2)*dest[0]+Math.floor((dest[0]-w)/2);
- const dy=Math.floor(i/2)*dest[1]+(dest[1]-h);
- assert.ok(dx>=(i%2)*dest[0]&&dx+w<=(i%2+1)*dest[0]);
- assert.ok(dy>=Math.floor(i/2)*dest[1]&&dy+h<=(Math.floor(i/2)+1)*dest[1]);
+for(const [i,p] of frames.entries()){
+ assert.ok(p.x>=0&&p.y>=0&&p.x+p.w<=width&&p.y+p.h<=height,'quadro '+i+' dentro da cartela');
+ const w=Math.floor(p.w*Math.min(290/p.w,311/p.h));
+ const h=Math.floor(p.h*Math.min(290/p.w,311/p.h));
+ assert.ok(w>0&&w<=290&&h>0&&h<=311,'quadro '+i+' cabe no frame de destino');
+ assert.ok(game.includes('{x:'+p.x+',y:'+p.y+',w:'+p.w+',h:'+p.h+'}'),'coordenadas do quadro '+i);
 }
 const render=game.slice(game.indexOf(' workerRenderTexture(texture){'),game.indexOf(' worker(x,y,mechanic,'));
-assert.ok(render.includes("if(texture==='worker_nemuel')"),'correção deve afetar apenas o Nemuel');
-for(const f of frames){
- const literal=`{x:${f.x},y:${f.y},w:${f.w},h:${f.h}}`;
- assert.ok(render.includes(literal),'região fonte '+literal);
-}
-assert.ok(render.includes('const upperPoseNominalHeight=710'),'escala nominal protege tamanho original');
-assert.ok(render.includes('const nominalHeight=i<2?upperPoseNominalHeight:p.h'),'exceção só para poses superiores');
-assert.ok(render.includes('ctx.drawImage(src,p.x,p.y,p.w,p.h,dx,dy,w,h)'),'amostra apenas região válida');
-assert.ok(render.includes('}else{'),'outros trabalhadores permanecem intactos');
-assert.ok(render.includes('ctx.drawImage(src,(i%2)*WORKER_FRAME.width'),'caminho anterior permanece para os demais');
-assert.ok(game.includes('const WORKER_DISPLAY={width:66,height:80}'),'mantém tamanho padronizado');
-assert.ok(html.includes('game.js?v=0.9.34-nemuel-ghostfix'),'cache do script atualizado');
-assert.ok(sw.includes('-nemuelcrop2'),'cache offline atualizado');
-console.log('OK Nemuel: botas fantasmas excluídas das duas poses superiores, quatro frames preservados, escala nominal e demais personagens intactos.');
+assert.ok(render.includes("if(texture==='worker_nemuel')"),'aplicar apenas ao Nemuel');
+assert.ok(render.includes('ctx.drawImage(src,p.x,p.y,p.w,p.h,dx,dy,w,h)'),'pré-filtragem por pose');
+assert.ok(render.includes('ctx.drawImage(src,(i%2)*WORKER_FRAME.width'),'caminho antigo preservado para os demais');
+assert.ok(render.includes('sheet.add(i,0'),'quatro quadros registrados no Phaser');
+assert.ok(html.includes('game.js?v=0.9.35-nemuel-v2'),'JS invalidado no navegador');
+assert.ok(sw.includes("'./phaser-play/assets/characters/nemuel-inspetor-4poses-v2.png'"),'PNG novo no precache offline');
+assert.ok(sw.includes('-atlasv2'),'cache PWA invalidado');
+console.log('OK Nemuel v2: PNG SHA256 exato, quatro poses sem recorte e Phaser/PWA íntegros.');
