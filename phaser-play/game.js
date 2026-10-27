@@ -1607,7 +1607,7 @@ class Workshop extends Phaser.Scene{
  constructor(){super('Workshop');this.machineObjs=[];this.workerSprites=[];this.activeProfile='cropped';this.activeBayLayout=BAY_LAYOUT;}
  preload(){
   Object.entries(ASSETS).forEach(([key,url])=>this.load.image(key,url));
-  Object.entries(WORKER_SHEETS).forEach(([name,url])=>this.load.spritesheet('worker_'+name,url,{
+  Object.entries(WORKER_SHEETS).forEach(([name,url])=>name==='nemuel'?this.load.image('worker_'+name,url):this.load.spritesheet('worker_'+name,url,{
    frameWidth:name==='diva'?WORKER_RENDER_FRAME.width:WORKER_FRAME.width,
    frameHeight:name==='diva'?WORKER_RENDER_FRAME.height:WORKER_FRAME.height
   }));
