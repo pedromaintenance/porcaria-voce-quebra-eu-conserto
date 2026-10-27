@@ -43,7 +43,7 @@ const WORKER_SHEETS=Object.freeze({
  pedro:'./assets/characters/pedro-v0829-4poses.png',
  geovane:'./assets/characters/geovane-4poses.webp',
  acassio:'./assets/characters/acassio-4poses.png',
- nemuel:'./assets/characters/nemuel-inspetor-4poses.webp',
+ nemuel:'./assets/characters/nemuel-inspetor-4poses-v2.png',
  junior:'./assets/characters/junior/junior-work-4poses.webp',
  diva:'./assets/characters/diva-4poses.webp'
 });
@@ -1607,7 +1607,7 @@ class Workshop extends Phaser.Scene{
  constructor(){super('Workshop');this.machineObjs=[];this.workerSprites=[];this.activeProfile='cropped';this.activeBayLayout=BAY_LAYOUT;}
  preload(){
   Object.entries(ASSETS).forEach(([key,url])=>this.load.image(key,url));
-  Object.entries(WORKER_SHEETS).forEach(([name,url])=>this.load.spritesheet('worker_'+name,url,{
+  Object.entries(WORKER_SHEETS).forEach(([name,url])=>name==='nemuel'?this.load.image('worker_'+name,url):this.load.spritesheet('worker_'+name,url,{
    frameWidth:name==='diva'?WORKER_RENDER_FRAME.width:WORKER_FRAME.width,
    frameHeight:name==='diva'?WORKER_RENDER_FRAME.height:WORKER_FRAME.height
   }));
@@ -1842,7 +1842,7 @@ class Workshop extends Phaser.Scene{
   const renderKey=texture+'_prefilter_v0821';
   if(this.textures.exists(renderKey))return renderKey;
   const src=this.textures.get(texture).getSourceImage();
-  if(!src||src.width!==WORKER_FRAME.width*2||src.height!==WORKER_FRAME.height*2)return texture;
+  if(!src||(texture==='worker_nemuel'?src.width!==1211||src.height!==1299:src.width!==WORKER_FRAME.width*2||src.height!==WORKER_FRAME.height*2))return texture;
   // Reduzir cada frame separadamente evita vazamento de pixels entre poses.
   // Canvas pré-filtra em alta qualidade antes da última redução feita pelo GPU.
   const canvas=document.createElement('canvas');
@@ -1853,26 +1853,20 @@ class Workshop extends Phaser.Scene{
   ctx.imageSmoothingEnabled=true;
   ctx.imageSmoothingQuality='high';
   if(texture==='worker_nemuel'){
-   // O WebP original possui botas DUPLICADAS soltas entre y≈660–705,
-   // abaixo dos pés reais das duas poses superiores (até y≈630).
-   // A correção anterior amostrava até y=710 e desenhava ambos os pares.
-   // Excluir a faixa residual sem diminuir o tamanho do personagem no jogo:
-   // a escala das poses superiores continua referenciada na altura 710.
-   // As poses inferiores e os demais trabalhadores permanecem intactos.
-   const upperPoseNominalHeight=710;
+   // Atlas novo aprovado pelo produtor (1211 × 1299): cada pose possui
+   // retângulo próprio, sem reutilizar recortes do atlas anterior.
    const frames=[
-    {x:0,y:0,w:580,h:646},
-    {x:580,y:0,w:580,h:646},
-    {x:0,y:710,w:580,h:534},
-    {x:580,y:710,w:580,h:534}
+    {x:130,y:0,w:440,h:649},    // Esquadro
+    {x:660,y:0,w:450,h:649},    // Joinha
+    {x:125,y:649,w:440,h:650},  // Rádio
+    {x:630,y:710,w:540,h:589}  // Medição agachado
    ];
    for(let i=0;i<frames.length;i++){
     const p=frames[i];
-    const nominalHeight=i<2?upperPoseNominalHeight:p.h;
-    const scale=Math.min(WORKER_RENDER_FRAME.width/p.w,WORKER_RENDER_FRAME.height/nominalHeight);
+    const scale=Math.min(WORKER_RENDER_FRAME.width/p.w,WORKER_RENDER_FRAME.height/p.h);
     const w=Math.floor(p.w*scale),h=Math.floor(p.h*scale);
     const dx=(i%2)*WORKER_RENDER_FRAME.width+Math.floor((WORKER_RENDER_FRAME.width-w)/2);
-    const dy=Math.floor(i/2)*WORKER_RENDER_FRAME.height+(WORKER_RENDER_FRAME.height-h);
+    const dy=Math.floor(i/2)*WORKER_RENDER_FRAME.height+WORKER_RENDER_FRAME.height-h;
     ctx.drawImage(src,p.x,p.y,p.w,p.h,dx,dy,w,h);
    }
   }else{

@@ -55,7 +55,7 @@ const html=fs.readFileSync(path.join(root,'phaser-play/index.html'),'utf8');
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
 for(const key of [...keys,'pedro','geovane','junior','acassio','nemuel']){
  assert.ok(game.includes(key+':\'./assets/characters/'),'sprite no Phaser: '+key);
- assert.ok(sw.includes(key==='junior'?'junior-work-4poses.webp':key==='pedro'?'pedro-v0829-4poses.png':key==='acassio'?'acassio-4poses.png':key==='nemuel'?'nemuel-inspetor-4poses.webp':key+'-4poses.webp'),'sprite no PWA: '+key);
+ assert.ok(sw.includes(key==='junior'?'junior-work-4poses.webp':key==='pedro'?'pedro-v0829-4poses.png':key==='acassio'?'acassio-4poses.png':key==='nemuel'?'nemuel-inspetor-4poses-v2.png':key+'-4poses.webp'),'sprite no PWA: '+key);
 }
 assert.ok(game.includes('E.availableRecruits(state)'));
 assert.ok(game.includes('E.hire(state,id)'));
