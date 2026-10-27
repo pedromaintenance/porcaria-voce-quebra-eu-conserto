@@ -1853,19 +1853,23 @@ class Workshop extends Phaser.Scene{
   ctx.imageSmoothingEnabled=true;
   ctx.imageSmoothingQuality='high';
   if(texture==='worker_nemuel'){
-   // A cartela original tem poses superiores com botas abaixo da linha y=622.
-   // A divisão automática 580×622 cortava os pés e incluía fragmentos
-   // indevidos na metade inferior. Reencaixe exclusivamente deste atlas,
-   // mantendo 4 frames de 290×311 e o mesmo apoio do pé no mundo Phaser.
+   // O WebP original possui botas DUPLICADAS soltas entre y≈660–705,
+   // abaixo dos pés reais das duas poses superiores (até y≈630).
+   // A correção anterior amostrava até y=710 e desenhava ambos os pares.
+   // Excluir a faixa residual sem diminuir o tamanho do personagem no jogo:
+   // a escala das poses superiores continua referenciada na altura 710.
+   // As poses inferiores e os demais trabalhadores permanecem intactos.
+   const upperPoseNominalHeight=710;
    const frames=[
-    {x:0,y:0,w:580,h:710},
-    {x:580,y:0,w:580,h:710},
+    {x:0,y:0,w:580,h:646},
+    {x:580,y:0,w:580,h:646},
     {x:0,y:710,w:580,h:534},
     {x:580,y:710,w:580,h:534}
    ];
    for(let i=0;i<frames.length;i++){
     const p=frames[i];
-    const scale=Math.min(WORKER_RENDER_FRAME.width/p.w,WORKER_RENDER_FRAME.height/p.h);
+    const nominalHeight=i<2?upperPoseNominalHeight:p.h;
+    const scale=Math.min(WORKER_RENDER_FRAME.width/p.w,WORKER_RENDER_FRAME.height/nominalHeight);
     const w=Math.floor(p.w*scale),h=Math.floor(p.h*scale);
     const dx=(i%2)*WORKER_RENDER_FRAME.width+Math.floor((WORKER_RENDER_FRAME.width-w)/2);
     const dy=Math.floor(i/2)*WORKER_RENDER_FRAME.height+(WORKER_RENDER_FRAME.height-h);
