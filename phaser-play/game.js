@@ -1852,11 +1852,32 @@ class Workshop extends Phaser.Scene{
   if(!ctx)return texture;
   ctx.imageSmoothingEnabled=true;
   ctx.imageSmoothingQuality='high';
+  if(texture==='worker_nemuel'){
+   // A cartela original tem poses superiores com botas abaixo da linha y=622.
+   // A divisão automática 580×622 cortava os pés e incluía fragmentos
+   // indevidos na metade inferior. Reencaixe exclusivamente deste atlas,
+   // mantendo 4 frames de 290×311 e o mesmo apoio do pé no mundo Phaser.
+   const frames=[
+    {x:0,y:0,w:580,h:710},
+    {x:580,y:0,w:580,h:710},
+    {x:0,y:710,w:580,h:534},
+    {x:580,y:710,w:580,h:534}
+   ];
+   for(let i=0;i<frames.length;i++){
+    const p=frames[i];
+    const scale=Math.min(WORKER_RENDER_FRAME.width/p.w,WORKER_RENDER_FRAME.height/p.h);
+    const w=Math.floor(p.w*scale),h=Math.floor(p.h*scale);
+    const dx=(i%2)*WORKER_RENDER_FRAME.width+Math.floor((WORKER_RENDER_FRAME.width-w)/2);
+    const dy=Math.floor(i/2)*WORKER_RENDER_FRAME.height+(WORKER_RENDER_FRAME.height-h);
+    ctx.drawImage(src,p.x,p.y,p.w,p.h,dx,dy,w,h);
+   }
+  }else{
   for(let i=0;i<4;i++){
    ctx.drawImage(src,(i%2)*WORKER_FRAME.width,Math.floor(i/2)*WORKER_FRAME.height,
     WORKER_FRAME.width,WORKER_FRAME.height,
     (i%2)*WORKER_RENDER_FRAME.width,Math.floor(i/2)*WORKER_RENDER_FRAME.height,
     WORKER_RENDER_FRAME.width,WORKER_RENDER_FRAME.height);
+  }
   }
   const sheet=this.textures.addCanvas(renderKey,canvas);
   if(!sheet)return texture;
