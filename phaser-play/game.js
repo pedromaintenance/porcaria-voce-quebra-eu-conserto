@@ -1842,7 +1842,7 @@ class Workshop extends Phaser.Scene{
   const renderKey=texture+'_prefilter_v0821';
   if(this.textures.exists(renderKey))return renderKey;
   const src=this.textures.get(texture).getSourceImage();
-  if(!src||src.width!==WORKER_FRAME.width*2||src.height!==WORKER_FRAME.height*2)return texture;
+  if(!src||(texture==='worker_nemuel'?src.width!==1211||src.height!==1299:src.width!==WORKER_FRAME.width*2||src.height!==WORKER_FRAME.height*2))return texture;
   // Reduzir cada frame separadamente evita vazamento de pixels entre poses.
   // Canvas pré-filtra em alta qualidade antes da última redução feita pelo GPU.
   const canvas=document.createElement('canvas');
