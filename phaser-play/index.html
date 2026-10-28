@@ -707,6 +707,26 @@ html.mobile-play .pcmWorkColumn{grid-row:1}html.mobile-play .pcmFindingColumn{gr
 .pcmEvidenceReport li p{margin:5px 0}
 @media(max-width:500px){.pcmTestAction{align-items:stretch;flex-direction:column}.pcmTestAction button{max-width:100%}}
 
+
+/* Monitoramento 0.9.38 — achado à esquerda (30%), decisões à direita (70%). */
+.monitorDecisionColumns{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,7fr);gap:14px;align-items:start;margin-top:12px}
+.monitorFindingColumn,.monitorActionColumn{min-width:0;overflow-wrap:anywhere}
+.monitorFindingColumn .inspectionObservation{margin-top:0}
+.monitorFindingContext{font-size:12px;line-height:1.55;color:#d7e6f2}
+.monitorFindingContext>p{margin:9px 0}
+.monitorFindingContext .monitorOilContext{margin:10px 0}
+.monitorDecisionPanel{margin:0!important}
+.monitorDecisionPanel .pcmActions{display:flex;gap:10px;align-items:stretch}
+.monitorDecisionPanel .pcmActions button{flex:1 1 190px;min-height:44px;max-width:100%}
+.monitorDecisionPanel .monitorEscalateAction{background:#29445b;border:1px solid #efbc67;color:#ffe1a3}
+.monitorDecisionPanel .monitorEscalateAction:hover,.monitorDecisionPanel .monitorEscalateAction:focus-visible{background:#3b5363;border-color:#ffe29d}
+.monitorHistory{font-size:12px;color:#c4dbe9}
+.monitorHistory summary{cursor:pointer;color:#ffcf82;font-weight:800;padding:6px 0}
+.monitorHistory ol{padding-left:20px}
+@media(max-width:760px){.monitorDecisionColumns{grid-template-columns:1fr}.monitorActionColumn{grid-row:1}.monitorFindingColumn{grid-row:2}}
+html.mobile-play .monitorDecisionColumns{grid-template-columns:1fr}
+html.mobile-play .monitorActionColumn{grid-row:1}
+html.mobile-play .monitorFindingColumn{grid-row:2}
 .pcmMonitoringPractice,.pcmMonitoringCard{margin:12px 0;padding:12px;border:1px solid #70885d;border-radius:8px;background:#132c32;color:#e4f1e9}
 .pcmMonitoringPractice h3,.pcmMonitoringCard h4{font-size:13px;color:#f9db8c;margin:0 0 8px}
 .pcmMonitoringPractice p,.pcmMonitoringCard p{font-size:12px;line-height:1.6}
@@ -1050,4 +1070,4 @@ html.mobile-play #planningNotifications,.mobile-play .controlRoomOperations{scro
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div><div id="mobileNotice" role="status" aria-live="polite" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.9.36-pcm-inspections"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./decision-impact.js?v=0.9.11"></script><script src="./decision-ledger.js?v=0.9.12"></script><script src="./lessons-learned.js?v=0.9.13"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./anomaly-progression.js?v=0.9.24-c21"></script><script src="./inspection.js?v=0.9.36-pcm-inspections"></script><script src="./evidence.js?v=0.9.3"></script><script src="./oil-catalog-expansion.js?v=0.9.5"></script><script src="./fault-catalog-expansion.js?v=0.9.6"></script><script src="./undercarriage-catalog-expansion.js?v=0.9.7"></script><script src="./component-catalog-expansion.js?v=0.9.8"></script><script src="./fps-catalog-expansion.js?v=0.9.10"></script><script src="./condition-catalog.js?v=0.9.10"></script><script src="./monitoring.js?v=0.9.18-copy1"></script><script src="./inspection-view.js?v=0.9.36-pcm-inspections"></script><script src="./sector-views.js?v=0.9.36-pcm-inspections"></script><script src="./mobile-experience.js?v=0.9.26-c23"></script><script>window.PORCARIA_MOBILE?.init(window);</script><script src="./mobile-panel-guide.js?v=0.9.27-c24&layout=0.9.31-c29"></script><script src="./monitoring-nav-state.js?v=0.9.30-c28"></script><script src="./game.js?v=0.9.37-pcm-confirm-modal"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
+<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.9.36-pcm-inspections"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./decision-impact.js?v=0.9.11"></script><script src="./decision-ledger.js?v=0.9.12"></script><script src="./lessons-learned.js?v=0.9.13"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./anomaly-progression.js?v=0.9.24-c21"></script><script src="./inspection.js?v=0.9.36-pcm-inspections"></script><script src="./evidence.js?v=0.9.3"></script><script src="./oil-catalog-expansion.js?v=0.9.5"></script><script src="./fault-catalog-expansion.js?v=0.9.6"></script><script src="./undercarriage-catalog-expansion.js?v=0.9.7"></script><script src="./component-catalog-expansion.js?v=0.9.8"></script><script src="./fps-catalog-expansion.js?v=0.9.10"></script><script src="./condition-catalog.js?v=0.9.10"></script><script src="./monitoring.js?v=0.9.38-monitor-escalation"></script><script src="./inspection-view.js?v=0.9.38-monitor-escalation"></script><script src="./sector-views.js?v=0.9.36-pcm-inspections"></script><script src="./mobile-experience.js?v=0.9.26-c23"></script><script>window.PORCARIA_MOBILE?.init(window);</script><script src="./mobile-panel-guide.js?v=0.9.27-c24&layout=0.9.31-c29"></script><script src="./monitoring-nav-state.js?v=0.9.30-c28"></script><script src="./game.js?v=0.9.37-pcm-confirm-modal"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>

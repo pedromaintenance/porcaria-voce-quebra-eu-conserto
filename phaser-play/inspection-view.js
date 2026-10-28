@@ -24,7 +24,7 @@
      :'<p class="muted">Nenhum resultado registrado. Comprar uma ferramenta não executa automaticamente o teste.</p>')
    +'</section>';
  }
- function monitorWidget(n,s,M){
+ function monitorWidget(n,s,M,section='all'){
   if(!M)return '';
   const m=n.monitoring||{},state=m.status||'proposta';
   const record=M.CATALOG?.get(n.monitorProtocol);
@@ -33,15 +33,15 @@
   const followup=n.monitorCategory==='oil'||!n.monitorCategory?'RECOLETA':'NOVA VERIFICAÇÃO';
   const period=id=>'<label>Intervalo para '+followup.toLowerCase()+' (turnos) '+select(id,[[2,'2 turnos'],[4,'4 turnos']])+'</label>';
   const actions=(buttons)=>'<div class="pcmActions">'+buttons+'</div>';
-  const btn=(kind,label,disabled=false)=>'<button type="button" class="act'+(kind==='escalate'?' secondary':'')+'" data-monitor-action="'+kind+'" data-monitor-note="'+esc(n.id)+'" '+(disabled?'disabled':'')+'>'+label+'</button>';
+  const btn=(kind,label,disabled=false)=>'<button type="button" class="act'+(kind==='escalate'?' secondary monitorEscalateAction':'')+'" data-monitor-action="'+kind+'" data-monitor-note="'+esc(n.id)+'" '+(disabled?'disabled':'')+'>'+label+'</button>';
   let controls='';
   if(n.status==='aguarda_revisao_pcm'){
-   controls=urgent?'<p class="inspectionAttention">AVALIAÇÃO PRIORITÁRIA: a condição requer triagem no PCM antes de programar recoleta.</p>'
-    +actions(btn('escalate','ENCAMINHAR AO PCM'))
-    :'<p>Avalie o sinal recebido e programe o acompanhamento, sem abrir OS.</p>'
-    +'<label>Justificativa '+select('monitor-reason-'+esc(n.id),Object.entries(M.REASONS))+'</label>'
+   controls=urgent?'<p class="inspectionAttention">AVALIAÇÃO PRIORITÁRIA: encaminhe ao PCM. Não programe recoleta sem triagem.</p>'
+    +actions(btn('escalate','ESCALONAR AO PCM'))
+    :'<p>Escolha entre acompanhar a condição e encaminhar imediatamente ao PCM. Escalonar cria uma notificação, nunca uma OS automática.</p>'
+    +'<label>Justificativa do acompanhamento '+select('monitor-reason-'+esc(n.id),Object.entries(M.REASONS))+'</label>'
     +period('monitor-interval-'+esc(n.id))
-    +actions(btn('decide','INICIAR MONITORAMENTO SEM OS'));
+    +actions(btn('escalate','ESCALONAR AO PCM')+btn('decide','MONITORAR SEM OS'));
   }else if(n.status==='monitorando'){
    const due=state==='programado'&&s.tick>=m.nextTick;
    if(state==='programado')controls='<p><strong>'+followup+': turno '+Number(m.nextTick)+
@@ -57,8 +57,9 @@
   }else if(n.status==='encerrada_monitoramento'){
    controls='<p>✓ Monitoramento encerrado sem OS após duas verificações estáveis consecutivas.</p>';
   }else if(n.status==='escalonada_monitoramento'){
-   controls='<p>⚠ Monitoramento convertido em nova notificação <strong>'+esc(n.escalationNotificationId||'')+
-    '</strong>. Revisão PCM pendente; nenhuma OS foi criada automaticamente.</p>';
+   controls='<p>⚠ Condição encaminhada como notificação <strong>'+esc(n.escalationNotificationId||'')+
+    '</strong> para revisão PCM. Nenhuma OS foi criada automaticamente.</p>'
+    +actions('<button type="button" class="act secondary" data-open-panel="planning">🗓️ ABRIR PLANEJAMENTO PCM</button>');
   }
   const context=record?.compartment?'<div class="monitorOilContext">'
    +'<p><strong>Compartimento:</strong> '+esc(record.compartment)+'</p>'
@@ -122,12 +123,18 @@
    +'<p>'+esc(x.reading)+'</p>'
    +(x.delayEscalation?'<p><strong>AGRAVAMENTO POR POSTERGAÇÃO:</strong> '+Number(x.lateTurns)+' turnos após o vencimento. '+esc(x.delayExplanation||'')+'</p>':'')
    +'<small>Resultado registrado na carteira.</small></li>').join('');
-  return '<section class="pcmMonitoringCard"><h4>📈 MONITORAMENTO DE CONDIÇÃO</h4>'
+  const finding='<section class="monitorFindingContext">'
    +'<p><strong>Fonte:</strong> '+esc(n.monitorCategory&&M.CATALOG?.CATEGORIES[n.monitorCategory]||'Registro anterior')+' · '+esc(n.monitorProtocol||'')+'</p>'
-    +'<p><strong>Observação inicial:</strong> '+esc(m.baseline||'')+'</p>'
-   +context+faultContext+undercarriageContext+componentContext+fpsContext+'<p>Acompanhe a evolução dos resultados e registre a decisão técnica.</p>'
-   +controls+(history?'<details open><summary>Histórico de verificações ('+(m.samples||[]).length+')</summary><ol>'+history+'</ol></details>':'')
+   +'<p><strong>Observação inicial:</strong> '+esc(m.baseline||'')+'</p>'
+   +context+faultContext+undercarriageContext+componentContext+fpsContext
+   +(history?'<details open class="monitorHistory"><summary>Histórico de verificações ('+(m.samples||[]).length+')</summary><ol>'+history+'</ol></details>':'')
    +'</section>';
+  const decisions='<section class="pcmMonitoringCard monitorDecisionPanel"><h4>📈 DECISÃO DE MONITORAMENTO</h4>'
+   +'<p class="muted">O sinal observado não confirma sozinho a causa raiz. Escolha a tratativa.</p>'
+   +controls+'</section>';
+  if(section==='finding')return finding;
+  if(section==='actions')return decisions;
+  return '<section class="pcmMonitoringCard"><h4>📈 MONITORAMENTO DE CONDIÇÃO</h4>'+finding+decisions+'</section>';
  }
  function renderPCM(n,model,d,I,E,s,T,M){
   const statuses={aguarda_revisao_pcm:'AGUARDA REVISÃO',devolvida:'DEVOLVIDA',aprovada_pcm:'PLANEJAMENTO APROVADO',arquivada_pcm:'ARQUIVADA',convertida_os:'OS GERADA',monitorando:'EM MONITORAMENTO',encerrada_monitoramento:'ENCERRADO SEM OS',escalonada_monitoramento:'ESCALONADO AO PCM'};
@@ -165,7 +172,11 @@
    +'<div class="pcmScopeRow"><label>Ferramenta '+select('pcm-tool-'+id,Object.entries(d.tools).map(([code,v])=>[code,code+' · '+v.name+' · R$ '+v.cost]),'SELECIONE O FERRAMENTAL',res.tool||draft.tool||'')+'</label>'
    +'<label>Prazo da compra '+select('pcm-speed-'+id,[['normal','Normal'],['rush','Urgente']],draft.speed||'normal')+'</label></div>'
    +'<div class="pcmActions"><button class="act secondary" data-pcm-buy="tool" data-notification-id="'+id+'">🛠 COMPRAR FERRAMENTA</button></div></div>';
-  if(n.monitorOnly)return '<article class="inspectionNotification">'+header+details+monitorWidget(n,s,M)+hist+'</article>';
+  if(n.monitorOnly)return '<article class="inspectionNotification monitorDecisionCard" data-monitor-note="'+id+'">'
+   +header+'<div class="monitorDecisionColumns">'
+   +'<div class="monitorFindingColumn">'+details+monitorWidget(n,s,M,'finding')+hist+'</div>'
+   +'<div class="monitorActionColumn">'+monitorWidget(n,s,M,'actions')+'</div>'
+   +'</div></article>';
   let actions='';
   if(n.status==='aguarda_revisao_pcm'){
    const hypotheses=I.hypotheses(s,d,E,n.id);

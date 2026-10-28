@@ -53,7 +53,7 @@ const urgent=receiveOne('FLT023');
 assert.equal(urgent.n.priority,'alta');
 assert.ok(M.decide(urgent.s,urgent.n.id,'trend',2).error,'não permite adiar triagem prioritária');
 const urgentCard=V.monitorWidget(urgent.n,urgent.s,M);
-assert.ok(urgentCard.includes('AVALIAÇÃO PRIORITÁRIA')&&urgentCard.includes('ENCAMINHAR AO PCM'));
+assert.ok(urgentCard.includes('AVALIAÇÃO PRIORITÁRIA')&&urgentCard.includes('ESCALONAR AO PCM'));
 assert.ok(urgentCard.includes('EVENTO OPERACIONAL')&&urgentCard.includes('ATIVO'));
 assert.ok(urgentCard.includes('Código OEM:</strong> NÃO INFORMADO'));
 const beforeUrgentJobs=urgent.s.jobs.length,raised=M.escalate(urgent.s,D,I,urgent.n.id);

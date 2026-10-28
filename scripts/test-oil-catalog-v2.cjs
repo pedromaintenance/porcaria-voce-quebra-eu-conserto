@@ -80,7 +80,7 @@ assert.ok(screen.includes('Sódio')&&screen.includes('REVISAR LINHA DE BASE'));
 const ui=fs.readFileSync('phaser-play/index.html','utf8');
 const sw=fs.readFileSync('sw.js','utf8');
 assert.ok(ui.indexOf('oil-catalog-expansion.js')<ui.indexOf('condition-catalog.js'));
-assert.ok(ui.includes('monitoring.js?v=0.9.18-copy1'));
+assert.match(ui,/monitoring\.js\?v=0\.9\.\d+[-a-z\d]*/,'módulo de monitoramento versionado para cache');
 assert.ok(sw.includes("'./phaser-play/oil-catalog-expansion.js'"));
 assert.ok(sw.includes('-oil095'));
 assert.ok(E.validate(JSON.parse(JSON.stringify(baseline.s))),'save permanece válido após encerrar');
