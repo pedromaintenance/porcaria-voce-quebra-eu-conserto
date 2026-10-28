@@ -91,9 +91,9 @@
      label.setInteractive({useHandCursor:true}).on('pointerdown',()=>this.selectBolt(i));
      return {circle,label};
     });
-    this.gauge=this.add.graphics();
     this.add.rectangle(320,301,504,40,0x07121f).setStrokeStyle(2,0x547083).setInteractive({useHandCursor:true})
       .on('pointerdown',()=>this.tighten());
+    this.gauge=this.add.graphics(); // Renderizar medidor ACIMA da placa de clique, sem interceptar o pointer.
     this.status=this.add.text(320,103,'',{fontFamily:'monospace',fontSize:'12px',color:'#ffe2ae'}).setOrigin(.5);
     this.message=this.add.text(320,341,'',{fontFamily:'monospace',fontSize:'12px',color:'#c3dfeb'}).setOrigin(.5);
     this.refresh();
