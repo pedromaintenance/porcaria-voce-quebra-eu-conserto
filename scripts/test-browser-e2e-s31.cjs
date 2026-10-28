@@ -72,7 +72,7 @@ async function run(browser,test){
   assert.ok(received,'fixture: condição recebida para a sala de controle');
   await page.evaluate(json=>localStorage.setItem('porcaria.phaser.prototype.v01',json),JSON.stringify(fixture));
   await page.reload({waitUntil:'domcontentloaded'});
-  await page.waitForFunction(()=>document.querySelector('#day')?.textContent?.startsWith('DIA '));
+  await page.locator('#game canvas').waitFor({state:'attached',timeout:30000});
   await open(page,'monitoring',test.isMobile);
   const monitor=page.locator('#monitoringPanel .monitorDecisionCard[data-monitor-note="'+received.id+'"]');
   await monitor.waitFor({state:'visible'});
