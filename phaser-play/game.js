@@ -218,33 +218,41 @@ function closeRepairAssist(){
  repairAssistDialog=null;
  previous.game?.destroy(true);
  $('repairAssistStage').replaceChildren();
+ $('boltAssistControls').hidden=true;
  $('repairAssistOverlay').hidden=true;
  $('menuOverlay').inert=false;
  $('layout').inert=false;
  if(previous.focus?.isConnected)previous.focus.focus({preventScroll:true});
 }
-function startRepairAssist(id){
+function startRepairAssist(id,kind='hammer'){
  if(repairAssistDialog)return;
- const eligibility=REPAIR.availability(state,data,E,id,'hammer');
+ const eligibility=REPAIR.availability(state,data,E,id,kind);
  if(!eligibility.available){notify(eligibility.reason);return;}
- const started=REPAIR.start(state,data,E,id,'hammer');
+ const started=REPAIR.start(state,data,E,id,kind);
  if(started.error){notify(started.error);return;}
  // Persistir antes de abrir a janela: sair, recarregar ou mudar de tela consome a tentativa.
  save();
  const overlay=$('repairAssistOverlay');
  const record=E.job(state,id);
- repairAssistDialog={id,focus:document.activeElement,game:null,finished:false};
+ repairAssistDialog={id,kind,focus:document.activeElement,game:null,finished:false};
  $('repairAssistIdentity').textContent=id+' · '+record.asset;
  $('repairAssistStage').replaceChildren();
- $('repairAssistResult').textContent='Realize três golpes. Você pode fechar a atividade; a tentativa não poderá ser repetida neste turno.';
+ $('boltAssistControls').hidden=kind!=='bolt';
+ $('repairAssistTitle').textContent=kind==='bolt'?'🔧 ASSISTÊNCIA MECÂNICA · APERTO DE PARAFUSOS':'🔨 ASSISTÊNCIA MECÂNICA · MARRETAR PINO';
+ $('repairAssistHelp').textContent=kind==='bolt'
+  ?'Jogo abstrato de quatro fixadores: escolha o indicado e acione o medidor na faixa dourada. Não representa sequência ou torque OEM. A tentativa é única por turno.'
+  :'Jogo de precisão abstrato: não é procedimento real de desmontagem. A tentativa é única por turno.';
+ $('repairAssistResult').textContent=kind==='bolt'
+  ?'Quatro etapas: selecione o fixador e pare o medidor. Fechar a atividade também consome a tentativa.'
+  :'Realize três golpes. Fechar a atividade consome a tentativa neste turno.';
  $('repairAssistClose').textContent='ABANDONAR ATIVIDADE';
  overlay.hidden=false;
  $('menuOverlay').inert=true;
  $('layout').inert=true;
  $('repairAssistClose').focus({preventScroll:true});
  try{
-  repairAssistDialog.game=MINIGAMES.launchHammer({Phaser,parent:'repairAssistStage',onFinish:hits=>{
-   if(!repairAssistDialog||repairAssistDialog.id!==id||repairAssistDialog.finished)return;
+  repairAssistDialog.game=MINIGAMES.launch(kind,{Phaser,parent:'repairAssistStage',onFinish:hits=>{
+   if(!repairAssistDialog||repairAssistDialog.id!==id||repairAssistDialog.kind!==kind||repairAssistDialog.finished)return;
    repairAssistDialog.finished=true;
    const result=REPAIR.finish(state,E,id,hits);
    if(result.error){$('repairAssistResult').textContent=result.error;return;}
@@ -263,15 +271,33 @@ function startRepairAssist(id){
 }
 function setupRepairAssist(){
  $('repairAssistClose').addEventListener('click',ev=>{ev.stopPropagation();closeRepairAssist();});
+ $('boltAssistControls').addEventListener('click',ev=>{
+  const button=ev.target.closest('[data-bolt-control]');
+  if(!button||!repairAssistDialog||repairAssistDialog.kind!=='bolt'||repairAssistDialog.finished)return;
+  ev.stopPropagation();
+  const mini=repairAssistDialog.game?.scene?.getScene('BoltTightening');
+  if(!mini)return;
+  if(button.dataset.boltControl==='tighten')mini.tighten();
+  else mini.selectBolt(Number(button.dataset.boltControl));
+ });
  document.addEventListener('keydown',ev=>{
   if(!repairAssistDialog)return;
   if(ev.key==='Escape'){ev.preventDefault();ev.stopImmediatePropagation();closeRepairAssist();return;}
-  if(!repairAssistDialog.finished&&(ev.code==='Space'||ev.key==='Enter')&&ev.target?.id!=='repairAssistClose'){
-   ev.preventDefault();ev.stopImmediatePropagation();
-   repairAssistDialog.game?.scene?.getScene('HammerPin')?.strike();
-   return;
+  if(!repairAssistDialog.finished&&ev.target?.id!=='repairAssistClose'){
+   if(repairAssistDialog.kind==='bolt'&&/^[1-4]$/.test(ev.key)){
+    ev.preventDefault();ev.stopImmediatePropagation();
+    repairAssistDialog.game?.scene?.getScene('BoltTightening')?.selectBolt(Number(ev.key)-1);
+    return;
+   }
+   if(ev.code==='Space'||ev.key==='Enter'){
+    ev.preventDefault();ev.stopImmediatePropagation();
+    const game=repairAssistDialog.game;
+    if(repairAssistDialog.kind==='bolt')game?.scene?.getScene('BoltTightening')?.tighten();
+    else game?.scene?.getScene('HammerPin')?.strike();
+    return;
+   }
   }
-  if(['Tab','0','1','2','3','4','5','6'].includes(ev.key)&&ev.key!=='Tab'){
+  if(['0','1','2','3','4','5','6'].includes(ev.key)){
    ev.preventDefault();ev.stopImmediatePropagation();
   }
  },true);
@@ -1168,10 +1194,15 @@ function drawUI(){
    out+=`<p class="muted">Peça necessária: ${esc(data.items[c.material]?.name)} · estoque: ${state.stock[c.material]||0}</p>`;
    if(!(state.stock[c.material]>0)&&!j.materialUsed)out+=`<button class="act" data-do="order">COMPRAR PEÇA · R$ ${brl(data.items[c.material]?.unit||0)}</button>`;
    out+='<p class="muted">Avance turnos até completar o reparo. Estoque e energia limitam a execução.</p>';
-  const assist=REPAIR.availability(state,data,E,j.id,'hammer');
-  if(assist.supported)out+='<div class="repairAssistOffer"><strong>🔨 ASSISTÊNCIA MECÂNICA · RETIRADA DE PINO</strong>'
-   +'<p>'+esc(assist.available?'Três golpes de precisão, bônus no próximo avanço do turno.':'Indisponível: '+assist.reason)+'</p>'
-   +'<button type="button" class="act" data-repair-assist-start="'+esc(j.id)+'" '+(assist.available?'':'disabled')+'>MARRETAR PINO</button></div>';
+  for(const kind of ['hammer','bolt']){
+   const assist=REPAIR.availability(state,data,E,j.id,kind);
+   if(!assist.supported)continue;
+   const title=kind==='hammer'?'🔨 ASSISTÊNCIA MECÂNICA · RETIRADA DE PINO':'🔧 ASSISTÊNCIA MECÂNICA · APERTO DE PARAFUSOS';
+   const label=kind==='hammer'?'MARRETAR PINO':'APERTAR PARAFUSOS';
+   out+='<div class="repairAssistOffer"><strong>'+title+'</strong>'
+    +'<p>'+esc(assist.available?'Ajudar o mecânico com bônus temporário de eficiência.':'Indisponível: '+assist.reason)+'</p>'
+    +'<button type="button" class="act" data-repair-assist-start="'+esc(j.id)+'" data-repair-assist-kind="'+kind+'" '+(assist.available?'':'disabled')+'>'+label+'</button></div>';
+  }
   }
   out+='<div class="actions"><button class="act secondary" data-do="release">LIBERAR BOX</button></div>';
  }
@@ -1179,7 +1210,7 @@ function drawUI(){
  d.innerHTML=out;
  $('detail').innerHTML=window.PORCARIA_ORDER_QUICK.render({
   job:j,state,data,model:m,scenario:c,diagnostic:diagnosis,preferredBay,feedback:quickFeedback,
-  repairAssist:REPAIR.availability(state,data,E,j.id,'hammer')
+  repairAssists:['hammer','bolt'].map(kind=>({kind,...REPAIR.availability(state,data,E,j.id,kind)}))
  });
  $('stats').innerHTML=`<div class="status">OS concluídas: <b>${k.done}</b> · Críticas: <b>${k.critical}</b></div><div class="status">Reputação: <b>${k.reputation}/100</b> · Utilização: <b>${k.utilization}%</b></div><div class="status">Mecânicos disponíveis: <b>${state.team.filter(x=>!x.assigned).length}</b></div><div class="progress"><i style="width:${k.reputation}%"></i></div><div class="legend">⚒ Clique nos boxes da oficina para selecionar uma OS.</div>`;
  drawTeam();drawTraining();drawStore();drawCompletedOrders();
@@ -1375,7 +1406,7 @@ function events(){
    return;
   }
   const repairStart=ev.target.closest('[data-repair-assist-start]');
-  if(repairStart){startRepairAssist(repairStart.dataset.repairAssistStart);return;}
+  if(repairStart){startRepairAssist(repairStart.dataset.repairAssistStart,repairStart.dataset.repairAssistKind||'hammer');return;}
   const quickDetails=ev.target.closest('[data-order-details]');
   if(quickDetails){openPanel('full-detail');return}
   const quickBack=ev.target.closest('[data-order-back]');
