@@ -1328,7 +1328,12 @@ function events(){
       const error=E.buyTool(state,data,tool);
       if(error){notify(error);return}
     }else return;
-    save();drawUI();notify('Solicitação registrada. A compra não confirma a hipótese técnica.');return;
+    const scrollArea=document.querySelector('.modalContent');
+    const scrollTop=scrollArea?.scrollTop??0;
+    save();drawUI();
+    if(scrollArea)scrollArea.scrollTop=scrollTop;
+    document.querySelector('[data-pcm-buy="'+mode+'"][data-notification-id="'+id+'"]')?.focus({preventScroll:true});
+    notify('Solicitação registrada. As escolhas do PCM foram preservadas.');return;
   }
   const notificationAction=ev.target.closest('[data-notification-action]');
   if(notificationAction){
