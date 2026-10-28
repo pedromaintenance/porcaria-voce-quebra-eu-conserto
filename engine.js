@@ -20,6 +20,8 @@
     :new Proxy({}, {get(_obj,key){return (...args)=>globalThis.PORCARIA_PREVENTIVE_ORDERS[key](...args)}});
   const ANOMALY=typeof require==='function'?require('./phaser-play/anomaly-progression.js')
     :new Proxy({}, {get(_obj,key){return (...args)=>globalThis.PORCARIA_ANOMALY_PROGRESSION[key](...args)}});
+  const REPAIR_ASSIST=typeof require==='function'?require('./phaser-play/repair-assist.js')
+    :new Proxy({}, {get(_obj,key){return globalThis.PORCARIA_REPAIR_ASSIST[key]}});
   // Elenco principal fixo. Saves antigos recebem o inspetor Nemuel uma vez, preservando IDs e OS.
   const INITIAL_TEAM=Object.freeze([
     {name:'Pedro',avatar:'🧯',role:'geral',specialty:'Brigadista',sprite:'pedro'},
@@ -199,7 +201,7 @@
     return Math.max(0,Math.min(EFFECTIVE_HOURS-shift.workedHH,
       Number(m.physical)*EFFECTIVE_HOURS/shift.baseLoss));
   }
-  function consumePhysical(s,m,hh,rng=Math.random){
+  function consumePhysical(s,m,hh,rng=Math.random,physicalFactor=1){
     const requested=Math.max(0,Number(hh)||0);
     if(!requested)return 0;
     const allowed=physicalCapacity(s,m,rng);
@@ -207,7 +209,8 @@
       throw Error('HH acima da capacidade física autorizada para '+m.id);
     const shift=physicalShift(s,m,rng);
     shift.workedHH=Math.round((shift.workedHH+requested)*10000)/10000;
-    m.physical=clamp(m.physical-requested*shift.baseLoss/EFFECTIVE_HOURS);
+    const efficiency=Number.isFinite(physicalFactor)?Math.max(0.85,Math.min(1,physicalFactor)):1;
+    m.physical=clamp(m.physical-requested*shift.baseLoss/EFFECTIVE_HOURS*efficiency);
     if(m.physical<=0)m.exhaustedUntilTick=Math.max(m.exhaustedUntilTick||0,s.tick+3);
     return requested;
   }
@@ -880,7 +883,7 @@
     const inspected=(s.inspections||[]).filter(i=>i.tick===s.tick&&i.inspectorId&&['clear','finding','notified'].includes(i.status));
     const availableCrew=s.team.filter(m=>m.restAt!==s.tick&&!TRAINING.active(s,m)&&!physicalBlock(s,m)).length;
     const pressure=productivityProfile(s.productivityTarget);
-    const work=(member,hh)=>{applyWorkPressure(s,member,hh,pressure);consumePhysical(s,member,hh,rng);};
+    const work=(member,hh,physicalFactor=1)=>{applyWorkPressure(s,member,hh,pressure);consumePhysical(s,member,hh,rng,physicalFactor);};
     const capacity=member=>physicalCapacity(s,member,rng);
     // Inspeções realizadas consomem energia no mesmo turno das OS.
     for(const i of inspected){
@@ -954,14 +957,19 @@
       const special=COMPETENCY.repairSpeed(m,c);
       const fatigue=m.physical<25||m.mental<20?0.62:1;
       const help=j.help?1.28:1;
-      const throughput=special*fatigue*help*pressure.speed;
+      const assist=REPAIR_ASSIST.bonus(j,s.tick,m.id);
+      const assistMultiplier=assist?Math.min(REPAIR_ASSIST.MAX_HELP_MULTIPLIER,help*(1+assist.speed)):help;
+      const throughput=special*fatigue*assistMultiplier*pressure.speed;
       const prod=availableHH*throughput;
       const remaining=j.repairRemaining;const used=Math.min(remaining,prod);
       const workedHH=Math.min(availableHH,used/Math.max(0.01,throughput));
       j.repairRemaining=Math.max(0,Math.round((remaining-used)*10)/10);
       j.worked+=workedHH;j.costLabor+=workedHH*42;hours+=workedHH;
       if(workedHH>0)learnByDoing(s,m,j,c,rng);
-      if(workedHH>0)work(m,workedHH);
+      if(workedHH>0){
+        work(m,workedHH,assist?1-assist.fatigue:1);
+        if(assist)REPAIR_ASSIST.applied(s,{recordDecision},j,workedHH);
+      }
       if(j.help){s.player.physical=clamp(s.player.physical-4);s.player.mental=clamp(s.player.mental-1.5);}
       if(j.repairRemaining<=0.01){
         // HH reais do reparo neste turno são o proxy de momento de liberação.
