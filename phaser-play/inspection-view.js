@@ -153,31 +153,32 @@
   const hist=Array.isArray(n.reviewHistory)&&n.reviewHistory.length
    ?'<details class="inspectionAudit"><summary>Histórico de decisões · '+n.reviewHistory.length+'</summary><ol>'
      +n.reviewHistory.slice(-8).map(h=>'<li>Turno '+Number(h.tick||0)+' · '+esc(h.action)+' · '+esc(h.reason)+'</li>').join('')+'</ol></details>':'';
-  const select=(inputId,options,empty)=>'<select id="'+inputId+'">'+(empty?'<option value="">'+esc(empty)+'</option>':'')
-   +options.map(([code,label])=>'<option value="'+esc(code)+'">'+esc(label)+'</option>').join('')+'</select>';
+  const draft=n.pcmDraft||{},res=n.plannedResources||{};
+  const select=(inputId,options,empty,chosen='')=>'<select id="'+inputId+'">'+(empty?'<option value=""'+(!chosen?' selected':'')+'>'+esc(empty)+'</option>':'')
+   +options.map(([code,label])=>'<option value="'+esc(code)+'"'+(String(chosen)===String(code)?' selected':'')+'>'+esc(label)+'</option>').join('')+'</select>';
   const reasonChoices=items=>'<label>Motivo da decisão '+select('pcm-reason-'+id,Object.entries(items),'SELECIONE O MOTIVO')+'</label>';
   const buy='<div class="pcmResourceBox"><h4>APROVISIONAMENTO · ESCOLHA DO PLANEJADOR</h4>'
    +'<p class="muted">Os itens não são recomendações automáticas. Escolher e comprar não revela o diagnóstico correto.</p>'
-   +'<div class="pcmScopeRow"><label>Material '+select('pcm-item-'+id,Object.entries(d.items).map(([code,v])=>[code,code+' · '+v.name+' · R$ '+v.unit]),'SELECIONE UMA PEÇA')+'</label>'
-   +'<label>Quantidade '+select('pcm-qty-'+id,[1,2,3,4,5].map(v=>[String(v),String(v)]))+'</label></div>'
+   +'<div class="pcmScopeRow"><label>Material '+select('pcm-item-'+id,Object.entries(d.items).map(([code,v])=>[code,code+' · '+v.name+' · R$ '+v.unit]),'SELECIONE UMA PEÇA',res.material||draft.material||'')+'</label>'
+   +'<label>Quantidade '+select('pcm-qty-'+id,[1,2,3,4,5].map(v=>[String(v),String(v)]),res.qty||draft.qty||'1')+'</label></div>'
    +'<div class="pcmActions"><button class="act secondary" data-pcm-buy="material" data-notification-id="'+id+'">📦 SOLICITAR MATERIAL</button></div>'
-   +'<div class="pcmScopeRow"><label>Ferramenta '+select('pcm-tool-'+id,Object.entries(d.tools).map(([code,v])=>[code,code+' · '+v.name+' · R$ '+v.cost]),'SELECIONE O FERRAMENTAL')+'</label>'
-   +'<label>Prazo da compra '+select('pcm-speed-'+id,[['normal','Normal'],['rush','Urgente']])+'</label></div>'
+   +'<div class="pcmScopeRow"><label>Ferramenta '+select('pcm-tool-'+id,Object.entries(d.tools).map(([code,v])=>[code,code+' · '+v.name+' · R$ '+v.cost]),'SELECIONE O FERRAMENTAL',res.tool||draft.tool||'')+'</label>'
+   +'<label>Prazo da compra '+select('pcm-speed-'+id,[['normal','Normal'],['rush','Urgente']],draft.speed||'normal')+'</label></div>'
    +'<div class="pcmActions"><button class="act secondary" data-pcm-buy="tool" data-notification-id="'+id+'">🛠 COMPRAR FERRAMENTA</button></div></div>';
   if(n.monitorOnly)return '<article class="inspectionNotification">'+header+details+monitorWidget(n,s,M)+hist+'</article>';
   let actions='';
   if(n.status==='aguarda_revisao_pcm'){
    const hypotheses=I.hypotheses(s,d,E,n.id);
    const options=hypotheses?.map((arr,i)=>'<label class="pcmHypothesis">'+esc(I.STAGES[i])
-    +select('pcm-diagnosis-'+i+'-'+id,arr.map(x=>[x.id,x.label]),i===5?'NÃO DEFINIR A CAUSA':'SELECIONE UMA HIPÓTESE')
+    +select('pcm-diagnosis-'+i+'-'+id,arr.map(x=>[x.id,x.label]),i===5?'NÃO DEFINIR A CAUSA':'SELECIONE UMA HIPÓTESE',draft.diagnosis?.[i]||'')
     +'</label>')||[];
    actions='<div class="pcmReviewArea"><h4>HIPÓTESES DO PLANEJADOR · SEM GABARITO</h4>'
-    +'<p class="muted">As escolhas são encaminhadas à equipe. Não haverá indicação de acerto ou erro nesta tela. A causa pode permanecer sem definição.</p>'
+    +'<p class="muted">Complete Sistema, Grupo, Subgrupo, Componente e Dano, ou aprove sem pré-diagnóstico (com desgaste da equipe após alocação). A Causa é opcional e não gera penalidade.</p>'
     +'<div class="pcmHypothesisSections"><h5>LOCAL DE INSTALAÇÃO</h5><div class="pcmHypothesisGrid">'+options.slice(0,3).join('')+'</div>'
     +'<h5>MODO DE FALHA</h5><div class="pcmHypothesisGrid">'+options.slice(3).join('')+'</div></div>'
-    +'<div class="pcmScopeRow"><label>Estratégia de serviço '+select('pcm-action-'+id,Object.entries(I.ACTIONS))+'</label>'
-    +'<label>Disciplina '+select('pcm-trade-'+id,Object.entries(I.TRADES))+'</label>'
-    +'<label>HH previstas '+select('pcm-hh-'+id,[0.5,1,2,3,4,5,6,8,10,12,16,20,24,40].map(v=>[String(v),v+' HH']))+'</label></div>'
+    +'<div class="pcmScopeRow"><label>Estratégia de serviço '+select('pcm-action-'+id,Object.entries(I.ACTIONS),null,draft.action||'')+'</label>'
+    +'<label>Disciplina '+select('pcm-trade-'+id,Object.entries(I.TRADES),null,draft.trade||'')+'</label>'
+    +'<label>HH previstas '+select('pcm-hh-'+id,[0.5,1,2,3,4,5,6,8,10,12,16,20,24,40].map(v=>[String(v),v+' HH']),null,draft.estimatedHH||'')+'</label></div>'
     +'<div class="pcmActions"><button class="act" data-notification-action="approve" data-notification-id="'+id+'">✓ ENVIAR PLANEJAMENTO</button>'
     +'<button class="act secondary" data-notification-action="return" data-notification-id="'+id+'">↩ DEVOLVER</button>'
     +'<button class="act secondary" data-notification-action="archive" data-notification-id="'+id+'">ARQUIVAR</button></div>'
@@ -189,8 +190,9 @@
     +'<button class="act secondary" data-notification-action="archive" data-notification-id="'+id+'">ARQUIVAR</button></div>'
     +reasonChoices(I.ARCHIVE_REASONS)+'</div>';
   }else if(n.status==='aprovada_pcm'){
-   actions='<div class="pcmApprovedScope"><strong>HIPÓTESES ENCAMINHADAS · SEM AVALIAÇÃO</strong><p>'+esc(n.planningScope?.description||'')+'</p>'
+   actions='<div class="pcmApprovedScope"><strong>'+(n.planningDiagnosis?'PRÉ-DIAGNÓSTICO ENCAMINHADO · SEM GABARITO':'SEM PRÉ-DIAGNÓSTICO · EQUIPE TERÁ DESGASTE')+'</strong><p>'+esc(n.planningScope?.description||'')+'</p>'
     +'<small>'+esc(n.planningScope?.tradeLabel||'')+' · '+Number(n.planningScope?.estimatedHH||0)+' HH planejadas; equipe ainda não alocada.</small></div>'
+    +'<p class="muted">Informe material e ferramenta antes de gerar OS. A seleção é previsão do PCM e não substitui disponibilidade real no estoque.</p>'
     +'<div class="pcmActions"><button class="act" data-notification-action="convert" data-notification-id="'+id+'">GERAR OS PARA O MECÂNICO</button>'
     +'<button class="act secondary" data-notification-action="archive" data-notification-id="'+id+'">ARQUIVAR</button></div>'
     +reasonChoices(I.ARCHIVE_REASONS)+buy;
@@ -199,7 +201,9 @@
   }else if(n.status==='arquivada_pcm'){
    actions='<p class="inspectionAttention">Motivo do arquivamento: '+esc(n.reviewReason||'')+'</p>';
   }
-  return '<article class="inspectionNotification">'+header+details+deterioration+renderEvidence(n,d,T,s)+actions+hist+'</article>';
+  return '<article class="inspectionNotification pcmReviewLayout" data-notification-id="'+id+'">'+header
+   +'<div class="pcmReviewColumns"><div class="pcmFindingColumn">'+details+deterioration+renderEvidence(n,d,T,s)+hist+'</div>'
+   +'<div class="pcmWorkColumn">'+actions+'</div></div></article>';
  }
 
  function render(s,d,I,E,T,M){
