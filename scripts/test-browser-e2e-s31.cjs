@@ -5,6 +5,7 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const {chromium}=require('playwright-core');
+const D=require('../game-data.json'),E=require('../engine.js'),I=require('../phaser-play/inspection.js');
 const host=process.env.PORCARIA_TEST_URL||'http://127.0.0.1:8765/phaser-play/';
 const dir=process.env.PORCARIA_QA_ARTIFACTS||'test-results/sprint31';
 fs.mkdirSync(dir,{recursive:true});
@@ -29,6 +30,7 @@ async function run(browser,test){
   isMobile:test.isMobile,userAgent:test.ua||undefined,deviceScaleFactor:1
  });
  const page=await context.newPage(),errors=[];
+ page.on('dialog',dialog=>{errors.push('Diálogo nativo inesperado: '+dialog.type());dialog.dismiss();});
  // Phaser CDN substituído por build oficial NPM no CI: offline, determinístico.
  await page.route('https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js',
   route=>route.fulfill({path:require('node:path').resolve('node_modules/phaser/dist/phaser.min.js'),
@@ -60,6 +62,35 @@ async function run(browser,test){
    }
    await close(page);
   }
+  // PCM — confirmação visual real após aprovação de escopo sem diagnóstico/material/ferramenta.
+  const fixture=E.create(D,()=>.42);
+  const rec=I.plan(fixture,D)[0];
+  const n=I.inspectAndRoute(fixture,D,rec.id).notification;
+  assert.ok(n&&I.review(fixture,n.id,'approve',{action:'verificar',trade:'mecanica',estimatedHH:2},D,E).ok,
+   'fixture: planejamento aprovado sem pré-diagnóstico');
+  await page.evaluate(json=>localStorage.setItem('porcaria.phaser.prototype.v01',json),JSON.stringify(fixture));
+  await page.reload({waitUntil:'domcontentloaded'});
+  await page.waitForFunction(()=>document.querySelector('#day')?.textContent?.startsWith('DIA '));
+  await open(page,'planning',test.isMobile);
+  const convert=page.locator('#planningNotifications [data-notification-action="convert"][data-notification-id="'+n.id+'"]');
+  await convert.click();
+  const warningDialog=page.locator('#pcmConfirmOverlay');
+  await warningDialog.waitFor({state:'visible'});
+  assert.equal(await page.locator('#pcmConfirmWarnings li').count(),3,'três pendências independentes no diálogo');
+  assert.equal(await page.locator('#pcmConfirmCancel').evaluate(x=>document.activeElement===x),true,'foco inicial em cancelar');
+  assert.equal(await page.locator('#menuOverlay').evaluate(x=>x.inert),true,'PCM bloqueado durante confirmação');
+  await page.screenshot({path:dir+'/'+test.id+'-pcm-confirmacao.png'});
+  await page.keyboard.press('Escape');
+  await warningDialog.waitFor({state:'hidden'});
+  assert.equal(await page.locator('#menuOverlay').evaluate(x=>x.inert),false,'cancelar libera o formulário');
+  assert.ok(await convert.count()===1,'cancelar não converte a notificação');
+  await convert.click();
+  await warningDialog.waitFor({state:'visible'});
+  await page.locator('#pcmConfirmProceed').click();
+  await warningDialog.waitFor({state:'hidden'});
+  assert.ok(await page.locator('#planningNotifications').innerText().then(x=>x.includes('OS GERADA')),
+   'confirmar gera OS apenas após decisão do jogador');
+  await close(page);
   // Avanço do turno passa pelo briefing/confirmar, não deve avançar por clique acidental.
   await page.locator('#advance').click();
   assert.equal(await page.locator('[data-panel="shift"].is-open').count(),1,'briefing antes do turno');
