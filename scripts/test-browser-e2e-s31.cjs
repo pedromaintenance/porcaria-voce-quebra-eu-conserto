@@ -137,6 +137,39 @@ async function run(browser,test){
   assert.equal(await page.locator('#detail [data-repair-assist-start="'+repairJob.id+'"]').isDisabled(),true,
    'recarregar mantém tentativa registrada');
   await close(page);
+  // Ciclo 41: selecionar quatro fixadores na ordem abstrata e apertar no medidor.
+  const boltState=E.create(D,()=>.42),boltOrder=boltState.jobs[0];
+  const bearing=D.scenarios.find(x=>x.id==='INC001');
+  boltOrder.scene=bearing.id;boltOrder.title=bearing.title;boltOrder.modelId=bearing.modelId;
+  boltOrder.asset='EQ01·06';boltOrder.stage=6;boltOrder.diagRemaining=0;
+  boltOrder.repairRemaining=100;boltOrder.repairTarget=100;
+  boltState.stock[bearing.material]=10;boltState.tools[bearing.tool]=true;
+  assert.equal(E.attach(boltState,boltOrder.id,boltState.team[0].id,0,false),null);
+  await page.evaluate(raw=>localStorage.setItem('porcaria.phaser.prototype.v01',raw),JSON.stringify(boltState));
+  await page.reload({waitUntil:'domcontentloaded'});
+  await page.locator('#game canvas').waitFor({state:'attached',timeout:30000});
+  await open(page,'detail',test.isMobile);
+  const boltButton=page.locator('#detail [data-repair-assist-kind="bolt"]');
+  assert.equal(await boltButton.isVisible(),true,'aperto disponível para rolamento elegível');
+  await boltButton.click();
+  const boltCanvas=page.locator('#repairAssistStage canvas');
+  await boltCanvas.waitFor({state:'visible',timeout:30000});
+  await page.screenshot({path:dir+'/'+test.id+'-aperto-parafusos.png'});
+  const boltPositions=[[220,134],[420,223],[420,134],[220,223]];
+  for(const [x,y] of boltPositions){
+   const size=await boltCanvas.boundingBox();
+   assert.ok(size?.width>0&&size?.height>0);
+   await boltCanvas.click({position:{x:x/640*size.width,y:y/360*size.height}});
+   await boltCanvas.click({position:{x:320/640*size.width,y:301/360*size.height}});
+  }
+  await page.waitForFunction(()=>document.querySelector('#repairAssistResult')?.textContent?.includes('Bônus válido apenas neste turno.'));
+  await page.locator('#repairAssistClose').click();
+  assert.equal(await boltButton.isDisabled(),true,'limite por turno aplicado ao aperto');
+  await page.reload({waitUntil:'domcontentloaded'});
+  await page.locator('#game canvas').waitFor({state:'attached',timeout:30000});
+  await open(page,'detail',test.isMobile);
+  assert.equal(await page.locator('#detail [data-repair-assist-kind="bolt"]').isDisabled(),true,'save do aperto preservado');
+  await close(page);
   // Avanço do turno passa pelo briefing/confirmar, não deve avançar por clique acidental.
   await page.locator('#advance').click();
   assert.equal(await page.locator('[data-panel="shift"].is-open').count(),1,'briefing antes do turno');
