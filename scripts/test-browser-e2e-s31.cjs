@@ -105,6 +105,38 @@ async function run(browser,test){
   assert.ok(await page.locator('#planningNotifications').innerText().then(x=>x.includes('OS GERADA')),
    'confirmar gera OS apenas após decisão do jogador');
   await close(page);
+  // Primeiro desafio de oficina: OS de pino do D9, com tentativa única por turno.
+  const repair=E.create(D,()=>.42),repairJob=repair.jobs[0];
+  const pin=D.scenarios.find(x=>x.id==='INC040');
+  repairJob.scene=pin.id;repairJob.title=pin.title;repairJob.modelId=pin.modelId;
+  repairJob.asset='EQ07·06';repairJob.stage=6;repairJob.diagRemaining=0;
+  repairJob.repairRemaining=100;repairJob.repairTarget=100;
+  repair.stock[pin.material]=10;repair.tools[pin.tool]=true;
+  assert.equal(E.attach(repair,repairJob.id,repair.team[0].id,0,false),null);
+  await page.evaluate(raw=>localStorage.setItem('porcaria.phaser.prototype.v01',raw),JSON.stringify(repair));
+  await page.reload({waitUntil:'domcontentloaded'});
+  await page.waitForFunction(()=>document.querySelector('#day')?.textContent?.startsWith('DIA '));
+  // Dia é texto inicial do HTML; aguardar o canvas garante que events() já registrou os controles.
+  await page.locator('#game canvas').waitFor({state:'attached',timeout:30000});
+  await open(page,'detail',test.isMobile);
+  const startRepair=page.locator('#detail [data-repair-assist-start="'+repairJob.id+'"]');
+  assert.equal(await startRepair.count(),1,'desafio visível na OS elegível');
+  await startRepair.click();
+  const hammerCanvas=page.locator('#repairAssistStage canvas');
+  await hammerCanvas.waitFor({state:'visible',timeout:30000});
+  await page.screenshot({path:dir+'/'+test.id+'-marretar-pino.png'});
+  for(let i=0;i<3;i++)await hammerCanvas.click({position:{x:180,y:115}});
+  await page.waitForFunction(()=>document.querySelector('#repairAssistResult')?.textContent?.includes('Bônus válido apenas neste turno.'));
+  await page.locator('#repairAssistClose').click();
+  assert.equal(await startRepair.isDisabled(),true,'recompensa não pode ser repetida');
+  await page.reload({waitUntil:'domcontentloaded'});
+  await page.waitForFunction(()=>document.querySelector('#day')?.textContent?.startsWith('DIA '));
+  // Dia é texto inicial do HTML; aguardar o canvas garante que events() já registrou os controles.
+  await page.locator('#game canvas').waitFor({state:'attached',timeout:30000});
+  await open(page,'detail',test.isMobile);
+  assert.equal(await page.locator('#detail [data-repair-assist-start="'+repairJob.id+'"]').isDisabled(),true,
+   'recarregar mantém tentativa registrada');
+  await close(page);
   // Avanço do turno passa pelo briefing/confirmar, não deve avançar por clique acidental.
   await page.locator('#advance').click();
   assert.equal(await page.locator('[data-panel="shift"].is-open').count(),1,'briefing antes do turno');

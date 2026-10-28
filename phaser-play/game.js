@@ -3,6 +3,8 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const E=window.PORCARIA_ENGINE;
+const REPAIR=window.PORCARIA_REPAIR_ASSIST;
+const MINIGAMES=window.PORCARIA_REPAIR_MINIGAMES;
 const I=window.PORCARIA_INSPECTION;
 const IV=window.PORCARIA_INSPECTION_VIEW;
 const S=window.PORCARIA_SECTORS;
@@ -74,6 +76,7 @@ let stockReturnJobId=null; // Contexto de navegação, não faz parte do save.
 let completedOrderId=null;
 let completedSearch=''; // Estado transitório de interface, nunca no save.
 let pcmDecisionDialog=null; // Confirmação visual transitória, independente do save.
+let repairAssistDialog=null; // Phaser independente, instanciado somente durante a atividade.
 
 const SCENE_REFERENCE={crop:{x:320,y:130,width:1350,height:563},sourceWidth:1976,sourceHeight:796,worldX:319,worldY:45,width:1080,height:450};
 const CUSTOM_BACKGROUND_KEY='porcaria.phaser.customBackdrop.official20261016';
@@ -209,6 +212,70 @@ function openQueueForBay(bay){
 function save(){try{localStorage.setItem(SAVE,JSON.stringify(state))}catch(e){console.warn('Save',e)}}
 function action(error){if(error)notify(error);else{save();drawUI();if(scene)scene.refresh()}}
 function notify(t){const area=$('toast');if(!area)return;area.textContent=t;area.hidden=false;clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>{area.hidden=true},4400)}
+function closeRepairAssist(){
+ if(!repairAssistDialog)return;
+ const previous=repairAssistDialog;
+ repairAssistDialog=null;
+ previous.game?.destroy(true);
+ $('repairAssistStage').replaceChildren();
+ $('repairAssistOverlay').hidden=true;
+ $('menuOverlay').inert=false;
+ $('layout').inert=false;
+ if(previous.focus?.isConnected)previous.focus.focus({preventScroll:true});
+}
+function startRepairAssist(id){
+ if(repairAssistDialog)return;
+ const eligibility=REPAIR.availability(state,data,E,id,'hammer');
+ if(!eligibility.available){notify(eligibility.reason);return;}
+ const started=REPAIR.start(state,data,E,id,'hammer');
+ if(started.error){notify(started.error);return;}
+ // Persistir antes de abrir a janela: sair, recarregar ou mudar de tela consome a tentativa.
+ save();
+ const overlay=$('repairAssistOverlay');
+ const record=E.job(state,id);
+ repairAssistDialog={id,focus:document.activeElement,game:null,finished:false};
+ $('repairAssistIdentity').textContent=id+' · '+record.asset;
+ $('repairAssistStage').replaceChildren();
+ $('repairAssistResult').textContent='Realize três golpes. Você pode fechar a atividade; a tentativa não poderá ser repetida neste turno.';
+ $('repairAssistClose').textContent='ABANDONAR ATIVIDADE';
+ overlay.hidden=false;
+ $('menuOverlay').inert=true;
+ $('layout').inert=true;
+ $('repairAssistClose').focus({preventScroll:true});
+ try{
+  repairAssistDialog.game=MINIGAMES.launchHammer({Phaser,parent:'repairAssistStage',onFinish:hits=>{
+   if(!repairAssistDialog||repairAssistDialog.id!==id||repairAssistDialog.finished)return;
+   repairAssistDialog.finished=true;
+   const result=REPAIR.finish(state,E,id,hits);
+   if(result.error){$('repairAssistResult').textContent=result.error;return;}
+   save();drawUI();
+   const grade=result.grade;
+   $('repairAssistResult').textContent=grade.label+' · velocidade +'+Math.round(grade.speed*100)
+    +'% · redução adicional do desgaste físico '+Math.round(grade.fatigue*100)+'%. Bônus válido apenas neste turno.';
+   $('repairAssistClose').textContent='VOLTAR À OS';
+   $('repairAssistClose').focus({preventScroll:true});
+  }});
+  $('repairAssistStage').focus({preventScroll:true});
+ }catch(error){
+  $('repairAssistResult').textContent='Falha ao iniciar o minigame. A tentativa permanece registrada; detalhes: '+error.message;
+  $('repairAssistClose').textContent='VOLTAR À OS';
+ }
+}
+function setupRepairAssist(){
+ $('repairAssistClose').addEventListener('click',ev=>{ev.stopPropagation();closeRepairAssist();});
+ document.addEventListener('keydown',ev=>{
+  if(!repairAssistDialog)return;
+  if(ev.key==='Escape'){ev.preventDefault();ev.stopImmediatePropagation();closeRepairAssist();return;}
+  if(!repairAssistDialog.finished&&(ev.code==='Space'||ev.key==='Enter')&&ev.target?.id!=='repairAssistClose'){
+   ev.preventDefault();ev.stopImmediatePropagation();
+   repairAssistDialog.game?.scene?.getScene('HammerPin')?.strike();
+   return;
+  }
+  if(['Tab','0','1','2','3','4','5','6'].includes(ev.key)&&ev.key!=='Tab'){
+   ev.preventDefault();ev.stopImmediatePropagation();
+  }
+ },true);
+}
 // O modal de confirmação faz parte da interface Phaser/PWA; nunca usar confirm() nativo para gerar OS.
 function showPCMDecisionDialog(id,warnings){
  if(pcmDecisionDialog||!Array.isArray(warnings)||!warnings.length)return;
@@ -1101,13 +1168,18 @@ function drawUI(){
    out+=`<p class="muted">Peça necessária: ${esc(data.items[c.material]?.name)} · estoque: ${state.stock[c.material]||0}</p>`;
    if(!(state.stock[c.material]>0)&&!j.materialUsed)out+=`<button class="act" data-do="order">COMPRAR PEÇA · R$ ${brl(data.items[c.material]?.unit||0)}</button>`;
    out+='<p class="muted">Avance turnos até completar o reparo. Estoque e energia limitam a execução.</p>';
+  const assist=REPAIR.availability(state,data,E,j.id,'hammer');
+  if(assist.supported)out+='<div class="repairAssistOffer"><strong>🔨 ASSISTÊNCIA MECÂNICA · RETIRADA DE PINO</strong>'
+   +'<p>'+esc(assist.available?'Três golpes de precisão, bônus no próximo avanço do turno.':'Indisponível: '+assist.reason)+'</p>'
+   +'<button type="button" class="act" data-repair-assist-start="'+esc(j.id)+'" '+(assist.available?'':'disabled')+'>MARRETAR PINO</button></div>';
   }
   out+='<div class="actions"><button class="act secondary" data-do="release">LIBERAR BOX</button></div>';
  }
  out+=resourceInfo;
  d.innerHTML=out;
  $('detail').innerHTML=window.PORCARIA_ORDER_QUICK.render({
-  job:j,state,data,model:m,scenario:c,diagnostic:diagnosis,preferredBay,feedback:quickFeedback
+  job:j,state,data,model:m,scenario:c,diagnostic:diagnosis,preferredBay,feedback:quickFeedback,
+  repairAssist:REPAIR.availability(state,data,E,j.id,'hammer')
  });
  $('stats').innerHTML=`<div class="status">OS concluídas: <b>${k.done}</b> · Críticas: <b>${k.critical}</b></div><div class="status">Reputação: <b>${k.reputation}/100</b> · Utilização: <b>${k.utilization}%</b></div><div class="status">Mecânicos disponíveis: <b>${state.team.filter(x=>!x.assigned).length}</b></div><div class="progress"><i style="width:${k.reputation}%"></i></div><div class="legend">⚒ Clique nos boxes da oficina para selecionar uma OS.</div>`;
  drawTeam();drawTraining();drawStore();drawCompletedOrders();
@@ -1205,6 +1277,7 @@ function drawStore(){
 function events(){
  MOBILE?.registerClosePanel?.(closePanel);
  setupPCMDecisionDialog();
+ setupRepairAssist();
  $('helpBtn').addEventListener('click',()=>openPanel('help'));
  document.addEventListener('input',ev=>{
   if(ev.target?.id!=='productivityTarget')return;
@@ -1301,6 +1374,8 @@ function events(){
    $('trainingTab-'+trainingUI.tab)?.focus();
    return;
   }
+  const repairStart=ev.target.closest('[data-repair-assist-start]');
+  if(repairStart){startRepairAssist(repairStart.dataset.repairAssistStart);return;}
   const quickDetails=ev.target.closest('[data-order-details]');
   if(quickDetails){openPanel('full-detail');return}
   const quickBack=ev.target.closest('[data-order-back]');
@@ -2209,7 +2284,7 @@ async function boot(){
   save();
   selected=state.jobs[0]?.id;events();drawUI();
   if(!I||!IV||!S||!T||!M||!window.PORCARIA_PREVENTIVE||!window.PORCARIA_PREVENTIVE_ORDERS||!window.PORCARIA_RELIABILITY||!window.PORCARIA_PRODUCTION||!window.PORCARIA_PCM_OPTIONS||!window.PORCARIA_FLEET_TELEMETRY||!window.PORCARIA_FLEET_VIEW||!window.Phaser||!window.PORCARIA_LAYOUT||!window.PORCARIA_PLANNING||!window.PORCARIA_WEEKLY||!window.PORCARIA_WEEKLY_SCHEDULE||!window.PORCARIA_SHIFT_BRIEF||!window.PORCARIA_READINESS||!window.PORCARIA_DIAGNOSTIC||!window.PORCARIA_DIAGNOSTIC_VIEW||!window.PORCARIA_ORDER_QUICK||!window.PORCARIA_CLOSED_ORDERS)throw Error('Módulos do Phaser/PCM não carregaram. Verifique conexão.');
-  if(!window.PORCARIA_RENDER_QUALITY)throw Error('Configuração de nitidez indisponível.');
+  if(!window.PORCARIA_RENDER_QUALITY||!REPAIR||!MINIGAMES)throw Error('Módulo de assistência mecânica indisponível.');
   renderProfile=window.PORCARIA_RENDER_QUALITY.profile({
    viewportWidth:window.innerWidth,devicePixelRatio:window.devicePixelRatio,
    override:new URLSearchParams(window.location.search).get('quality'),sceneRef:SCENE_REFERENCE
