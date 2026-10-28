@@ -647,6 +647,15 @@
       ||PREVENTIVE.allocationBlock(s,mid,bay);
     if(bookingError)return bookingError;
     j.assigned=mid;j.bay=bay;j.help=!!help;m.assigned=id;j.scheduleShift ??= s.tick;
+    if(j.unplannedDiagnosis&&!j.noPrediagnosisPenaltyApplied){
+      m.mental=clamp(m.mental-12);
+      m.physical=clamp(m.physical-10);
+      m.morale=clamp(m.morale-10);
+      j.noPrediagnosisPenaltyApplied=true;
+      recordDecision(s,'pcm_no_prediagnosis_impact',{orderId:id,mechanicId:mid,
+        mental:-12,physical:-10,morale:-10,classification:'risco_de_escopo_sem_pre_diagnostico'});
+      msg(s,`Sem pré-diagnóstico PCM: ${m.name} perdeu 12 mental, 10 física e 10 moral.`,'bad');
+    }
     j.status=j.stage<6?'diagnostico':'apto';
     SCHEDULE.fulfill(s,id,mid,bay,(type,fields)=>recordDecision(s,type,fields));
     recordDecision(s,'allocation',{orderId:id,scene:j.scene,asset:j.asset,modelId:j.modelId,

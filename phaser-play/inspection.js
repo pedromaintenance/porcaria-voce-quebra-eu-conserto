@@ -99,6 +99,20 @@
   s.inspectionLabor.byEmployee[who]=Math.round((booked+INSPECTION_HH)*10)/10;
   return {ok:true,inspection:rec};
  }
+ function inspectAllScheduled(s,d){
+  normalized(s);
+  const pending=s.inspections.filter(x=>x.tick===s.tick&&x.status==='pending'
+   &&!['monitoring_practice','diagnostic_practice'].includes(x.kind));
+  let completed=0,notified=0,clear=0;
+  const errors=[];
+  for(const x of pending){
+   const result=inspectAndRoute(s,d,x.id);
+   if(result.error){errors.push({id:x.id,error:result.error});continue;}
+   completed++;
+   if(result.notification)notified++;else clear++;
+  }
+  return {ok:errors.length===0,completed,notified,clear,errors};
+ }
  function inspectAndRoute(s,d,id){
   const result=inspect(s,d,id);
   if(result.error)return result;
@@ -227,15 +241,14 @@
   }
   if(decision==='approve'){
    if(n.status!=='aguarda_revisao_pcm')return {error:'Aprovação exige uma notificação aguardando revisão.'};
-   const proposed=Array.isArray(payload.diagnosis)?diagnosisPayload(s,d,E,n,payload):null;
+   const hasDiagnosis=Array.isArray(payload.diagnosis)&&payload.diagnosis.some(Boolean);
+   const proposed=hasDiagnosis?diagnosisPayload(s,d,E,n,payload):null;
    if(proposed?.error)return {error:proposed.error};
-   const mapped=d?.scenarios?.find(x=>x.id===n.sourceScenario&&x.modelId===n.modelId);
-   if(mapped?.category==='fps'&&!proposed)return {error:'FPS: registre Sistema, Grupo, Subgrupo, Componente e Dano no diagnóstico PCM; a causa pode permanecer indefinida.'};
    const action=Object.hasOwn(ACTIONS,payload.action)?ACTIONS[payload.action]:null;
-   const scope=proposed ? (action||ACTIONS.verificar) : trim(payload.scope,700);
+   const scope=proposed ? (action||ACTIONS.verificar) : (trim(payload.scope,700)||action||ACTIONS.verificar);
    const trade=String(payload.trade||'');
    const hh=Number(payload.estimatedHH);
-   if(Array.isArray(payload.diagnosis)&&!action)return {error:'Escolha a estratégia do serviço.'};
+   if(hasDiagnosis&&!action)return {error:'Escolha a estratégia do serviço.'};
    if(scope.length<20||scope.length>700)return {error:'Delimite o serviço em 20 a 700 caracteres, sem antecipar causas não confirmadas.'};
    if(!Object.hasOwn(TRADES,trade))return {error:'Disciplina não cadastrada.'};
    if(!Number.isFinite(hh)||hh<0.5||hh>80||Math.round(hh*2)!==hh*2)
@@ -244,7 +257,8 @@
    const note=selected||trim(payload.reason,500);
    if(note.length>500)return {error:'Observação PCM limitada a 500 caracteres.'};
    n.planningScope={description:scope,trade,tradeLabel:TRADES[trade],estimatedHH:hh,planningNote:note,reviewedTick:s.tick};
-   if(proposed)n.planningDiagnosis={codes:proposed.codes,labels:proposed.labels,optionalCause:proposed.optionalCause,evaluated:false};
+   n.planningDiagnosis=proposed?{codes:proposed.codes,labels:proposed.labels,optionalCause:proposed.optionalCause,evaluated:false}:null;
+   n.planningWithoutDiagnosis=!proposed;
    n.reviewedTick=s.tick;n.reviewReason=null;n.status='aprovada_pcm';
    audit(n,s,'approve','Escopo aprovado: '+TRADES[trade]+' · '+hh+' HH.');
    if(typeof E?.recordDecision==='function')E.recordDecision(s,'pcm_review',{
@@ -267,8 +281,6 @@
   if(!Array.isArray(s.jobs)||s.jobs.length>=32)return {error:'A carteira atingiu o limite interno de 32 OS. Conclua algum serviço antes de converter.'};
   const sc=d.scenarios.find(x=>x.id===n.sourceScenario&&x.modelId===n.modelId);
   if(!sc)return {error:'Roteiro de cenário incompatível com a notificação. Nenhuma OS foi criada.'};
-  if(sc.category==='fps'&&(!Array.isArray(n.planningDiagnosis?.codes)||n.planningDiagnosis.codes.slice(0,5).some(x=>!x)))
-   return {error:'OS FPS bloqueada: diagnóstico e revisão PCM incompletos.'};
   if(!d.models.some(x=>x.id===n.modelId)||!String(n.asset).startsWith(n.modelId+'·'))
    return {error:'Equipamento inválido para conversão.'};
   if(!Number.isSafeInteger(s.nextJob)||s.nextJob<1)return {error:'Sequência de ordens inválida.'};
@@ -286,6 +298,9 @@
    notes:[],scheduleShift:null,costLabor:0,reworkHours:0,
    source:'notificacao_inspecao',notificationId:n.id,inspectionId:n.inspectionId,
    approvedScope:{...n.planningScope},
+   plannedResources:n.plannedResources?{...n.plannedResources}:null,
+   unplannedDiagnosis:!n.planningDiagnosis?.codes?.slice(0,5).every(Boolean),
+   noPrediagnosisPenaltyApplied:false,
    plannerDiagnosis:n.planningDiagnosis?{...n.planningDiagnosis,codes:[...n.planningDiagnosis.codes],labels:[...n.planningDiagnosis.labels]}:null
   };
   return {ok:true,orderDraft:candidate,notification:n};
@@ -321,5 +336,5 @@
    converted:s.notifications.filter(x=>x.status==='convertida_os').length,
    total:s.inspections.length,notifications:s.notifications.length};
  }
- return {normalized,plan,schedule,inspect,inspectAndRoute,notify,review,convert,commitConversion,hypotheses,summary,TRADES,RETURN_REASONS,ARCHIVE_REASONS,ACTIONS,STAGES,LIMIT_PER_SHIFT,INSPECTION_HH,isOilScenario,activeFault,inspectionEligible};
+ return {normalized,plan,schedule,inspect,inspectAllScheduled,inspectAndRoute,notify,review,convert,commitConversion,hypotheses,summary,TRADES,RETURN_REASONS,ARCHIVE_REASONS,ACTIONS,STAGES,LIMIT_PER_SHIFT,INSPECTION_HH,isOilScenario,activeFault,inspectionEligible};
 });

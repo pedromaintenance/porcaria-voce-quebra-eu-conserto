@@ -847,6 +847,22 @@ function drawBays(){
  }).join('');
 }
 function drawInspection(){if($('inspectionPanel'))$('inspectionPanel').innerHTML=S.inspections(state,data,I,E)}
+function capturePCMDraft(id){
+ const n=state.notifications?.find(x=>x.id===id);
+ if(!n||!['aguarda_revisao_pcm','aprovada_pcm'].includes(n.status))return;
+ const read=key=>$('pcm-'+key+'-'+id)?.value;
+ const old=n.pcmDraft||{};
+ n.pcmDraft={...old,diagnosis:Array.from({length:6},(_,i)=>read('diagnosis-'+i)??old.diagnosis?.[i]??''),
+  action:read('action')??old.action??'',trade:read('trade')??old.trade??'',
+  estimatedHH:read('hh')??old.estimatedHH??'',reason:read('reason')??old.reason??'',
+  material:read('item')??old.material??'',qty:read('qty')??old.qty??'1',
+  tool:read('tool')??old.tool??'',speed:read('speed')??old.speed??'normal'};
+ if(n.status==='aprovada_pcm'){
+  n.plannedResources={material:n.pcmDraft.material||null,qty:Number(n.pcmDraft.qty)||1,
+   tool:n.pcmDraft.tool||null};
+ }
+ save();
+}
 function drawMonitoring(){
  const host=$('monitoringPanel');if(!host)return;
  const nav=window.PORCARIA_MONITOR_NAV;
@@ -1131,6 +1147,10 @@ function events(){
   if(impact)impact.textContent='Ritmo '+Math.round(p.speed*100)+'% · Fadiga '+p.fatigueMultiplier.toFixed(2)+'× · Moral −'+p.moraleLossPerHour.toFixed(2)+' pts/HH';
  });
  document.addEventListener('change',ev=>{
+  if(ev.target?.matches?.('select[id^="pcm-"]')){
+   const id=ev.target.closest('[data-notification-id]')?.dataset.notificationId;
+   if(id)capturePCMDraft(id);
+  }
   if(ev.target?.id==='pcmScenarioOrder'){pcmScenarioOrder=ev.target.value;drawPCMAlternatives();return}
   if(ev.target?.id==='pcmScenarioMechanic'){pcmScenarioMechanic=ev.target.value;drawPCMAlternatives();return}
   if(ev.target?.id==='pcmScenarioBay'){pcmScenarioBay=Number(ev.target.value);drawPCMAlternatives();return}
@@ -1272,6 +1292,13 @@ function events(){
   const inspectionAction=ev.target.closest('[data-inspection-action]');
   if(inspectionAction){
    const id=inspectionAction.dataset.inspectionId,kind=inspectionAction.dataset.inspectionAction;
+   if(kind==='all'){
+    const batch=I.inspectAllScheduled(state,data);
+    if(batch.completed) {save();drawUI();}
+    notify('Inspeções: '+batch.completed+' realizadas · '+batch.notified+' notificações PCM · '+batch.clear+' sem achado'
+     +(batch.errors.length?' · '+batch.errors.length+' pendentes ('+batch.errors[0].error+')':'')+'.');
+    return;
+   }
    const result=kind==='schedule'?I.schedule(state,data,$('fieldAsset')?.value,$('fieldInspector')?.value):
     kind==='inspect'?I.inspectAndRoute(state,data,id):
     kind==='notify'?I.notify(state,id,null,$('inspection-priority-'+id)?.value):{error:'Ação inválida.'};
@@ -1287,6 +1314,7 @@ function events(){
   const pcmBuy=ev.target.closest('[data-pcm-buy]');
   if(pcmBuy){
     const id=pcmBuy.dataset.notificationId,mode=pcmBuy.dataset.pcmBuy;
+    capturePCMDraft(id);
     const n=state.notifications.find(x=>x.id===id);
     if(!n||!['aguarda_revisao_pcm','aprovada_pcm'].includes(n.status)){notify('Notificação indisponível para aprovisionamento.');return}
     if(mode==='material'){
@@ -1305,6 +1333,16 @@ function events(){
   const notificationAction=ev.target.closest('[data-notification-action]');
   if(notificationAction){
    const id=notificationAction.dataset.notificationId,decision=notificationAction.dataset.notificationAction;
+   capturePCMDraft(id);
+   const n=state.notifications.find(x=>x.id===id);
+   if(decision==='convert'&&n){
+    const warnings=[];
+    if(!n.planningDiagnosis?.codes?.slice(0,5).every(Boolean))
+     warnings.push('• SEM PRÉ-DIAGNÓSTICO: o primeiro mecânico alocado perderá 12 pontos de energia mental, 10 física e 10 de moral.');
+    if(!n.plannedResources?.material)warnings.push('• MATERIAL NÃO ALOCADO: a OS será criada sem previsão de material.');
+    if(!n.plannedResources?.tool)warnings.push('• FERRAMENTA NÃO ALOCADA: a OS será criada sem previsão de ferramenta.');
+    if(warnings.length&&!window.confirm('CONFIRMAR GERAÇÃO DE OS?\n\n'+warnings.join('\n')+'\n\nDeseja continuar?'))return;
+   }
    const payload={
       reason:$('pcm-reason-'+id)?.value,
       diagnosis:Array.from({length:6},(_,i)=>$('pcm-diagnosis-'+i+'-'+id)?.value||''),

@@ -53,8 +53,12 @@
    +'<label>Profissional<select id="fieldInspector">'+staff.map(m=>'<option value="'+esc(m.id)+'">'+esc(m.name)+' · '+(10.5-(schedule[m.id]||0)).toFixed(1)+' HH disponíveis</option>').join('')+'</select></label></div>'
    +'<button class="act" data-inspection-action="schedule" '+(!available.length||!staff.length?'disabled':'')+'>PROGRAMAR INSPEÇÃO</button>'
    +'<small>Há '+available.length+' equipamentos elegíveis e '+staff.length+' profissionais com capacidade para inspeção.</small></section>';
+  const totalPending=today.filter(x=>x.status==='pending').length;
+  const batch='<div class="inspectionBatch"><button type="button" class="act" data-inspection-action="all" '
+   +(totalPending?'':'disabled')+'>🔎 REALIZAR TODAS AS INSPEÇÕES AGENDADAS ('+totalPending+')</button>'
+   +'<small>Conclui somente as inspeções pendentes deste turno; achados geram notificações no PCM, sem criar OS.</small></div>';
   return '<p class="inspectionIntro"><strong>INSPEÇÃO DE CAMPO</strong> · Avalie equipamentos, registre anormalidades e encaminhe achados ao PCM.</p>'
-   +control+'<div class="inspectionMetrics"><div><small>PROGRAMADAS</small><strong>'+today.length+'</strong></div>'
+   +control+batch+'<div class="inspectionMetrics"><div><small>PROGRAMADAS</small><strong>'+today.length+'</strong></div>'
    +'<div><small>AGUARDANDO EXECUÇÃO</small><strong>'+today.filter(i=>i.status==='pending').length+'</strong></div>'
    +'<div><small>ACHADOS ENVIADOS</small><strong>'+today.filter(i=>i.notificationId).length+'</strong></div>'
    +'<div><small>CONCLUÍDAS SEM ACHADO</small><strong>'+today.filter(i=>i.status==='clear').length+'</strong></div></div>'
