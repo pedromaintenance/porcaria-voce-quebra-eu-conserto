@@ -253,7 +253,9 @@ function startRepairAssist(id){
    $('repairAssistResult').textContent=grade.label+' · velocidade +'+Math.round(grade.speed*100)
     +'% · redução adicional do desgaste físico '+Math.round(grade.fatigue*100)+'%. Bônus válido apenas neste turno.';
    $('repairAssistClose').textContent='VOLTAR À OS';
+   $('repairAssistClose').focus({preventScroll:true});
   }});
+  $('repairAssistStage').focus({preventScroll:true});
  }catch(error){
   $('repairAssistResult').textContent='Falha ao iniciar o minigame. A tentativa permanece registrada; detalhes: '+error.message;
   $('repairAssistClose').textContent='VOLTAR À OS';
@@ -263,7 +265,12 @@ function setupRepairAssist(){
  $('repairAssistClose').addEventListener('click',ev=>{ev.stopPropagation();closeRepairAssist();});
  document.addEventListener('keydown',ev=>{
   if(!repairAssistDialog)return;
-  if(ev.key==='Escape'){ev.preventDefault();ev.stopImmediatePropagation();closeRepairAssist();}
+  if(ev.key==='Escape'){ev.preventDefault();ev.stopImmediatePropagation();closeRepairAssist();return;}
+  if(!repairAssistDialog.finished&&(ev.code==='Space'||ev.key==='Enter')&&ev.target?.id!=='repairAssistClose'){
+   ev.preventDefault();ev.stopImmediatePropagation();
+   repairAssistDialog.game?.scene?.getScene('HammerPin')?.strike();
+   return;
+  }
   if(['Tab','0','1','2','3','4','5','6'].includes(ev.key)&&ev.key!=='Tab'){
    ev.preventDefault();ev.stopImmediatePropagation();
   }
