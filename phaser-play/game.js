@@ -73,6 +73,7 @@ let lessonFilter='all',lessonSelectedOrderId=null; // Navegação temporária.
 let stockReturnJobId=null; // Contexto de navegação, não faz parte do save.
 let completedOrderId=null;
 let completedSearch=''; // Estado transitório de interface, nunca no save.
+let pcmDecisionDialog=null; // Confirmação visual transitória, independente do save.
 
 const SCENE_REFERENCE={crop:{x:320,y:130,width:1350,height:563},sourceWidth:1976,sourceHeight:796,worldX:319,worldY:45,width:1080,height:450};
 const CUSTOM_BACKGROUND_KEY='porcaria.phaser.customBackdrop.official20261016';
@@ -208,6 +209,70 @@ function openQueueForBay(bay){
 function save(){try{localStorage.setItem(SAVE,JSON.stringify(state))}catch(e){console.warn('Save',e)}}
 function action(error){if(error)notify(error);else{save();drawUI();if(scene)scene.refresh()}}
 function notify(t){const area=$('toast');if(!area)return;area.textContent=t;area.hidden=false;clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>{area.hidden=true},4400)}
+// O modal de confirmação faz parte da interface Phaser/PWA; nunca usar confirm() nativo para gerar OS.
+function showPCMDecisionDialog(id,warnings){
+ if(pcmDecisionDialog||!Array.isArray(warnings)||!warnings.length)return;
+ const n=state.notifications.find(x=>x.id===id);
+ const overlay=$('pcmConfirmOverlay');
+ if(!n||!overlay)return;
+ pcmDecisionDialog={id,returnFocus:document.activeElement};
+ $('pcmConfirmAsset').textContent=n.id+' · '+n.asset;
+ $('pcmConfirmWarnings').innerHTML=warnings.map(w=>
+  '<li class="pcmDecisionWarning"><span class="pcmDecisionWarningSymbol" aria-hidden="true">!</span>'
+  +'<div><strong>'+esc(w.title)+'</strong><p>'+esc(w.description)+'</p></div></li>'
+ ).join('');
+ overlay.hidden=false;
+ $('menuOverlay').inert=true;
+ $('layout').inert=true;
+ $('pcmConfirmCancel').focus({preventScroll:true});
+}
+function closePCMDecisionDialog(restoreFocus=true){
+ if(!pcmDecisionDialog)return null;
+ const pending=pcmDecisionDialog;
+ pcmDecisionDialog=null;
+ $('pcmConfirmOverlay').hidden=true;
+ $('menuOverlay').inert=false;
+ $('layout').inert=false;
+ if(restoreFocus&&pending.returnFocus?.isConnected)pending.returnFocus.focus({preventScroll:true});
+ return pending;
+}
+function finishPCMConversion(id){
+ const result=I.commitConversion(state,data,E,id);
+ if(result.error){notify(result.error);return;}
+ save();drawUI();
+ notify('OS '+result.order.id+' criada a partir da notificação '+id+'. Abra o Planejamento PCM para programar a equipe.');
+ $('closePanel')?.focus({preventScroll:true});
+}
+function setupPCMDecisionDialog(){
+ const overlay=$('pcmConfirmOverlay');
+ overlay.addEventListener('click',ev=>{
+  ev.stopPropagation(); // Nunca propagar confirmação para ações do painel PCM abaixo.
+  if(!pcmDecisionDialog)return;
+  const action=ev.target.closest('[data-pcm-dialog-action]')?.dataset.pcmDialogAction;
+  if(action==='cancel'||ev.target===overlay){closePCMDecisionDialog();return;}
+  if(action!=='proceed')return;
+  const pending=closePCMDecisionDialog(false);
+  if(pending)finishPCMConversion(pending.id);
+ });
+ document.addEventListener('keydown',ev=>{
+  if(!pcmDecisionDialog)return;
+  if(ev.key==='Escape'){ev.preventDefault();ev.stopImmediatePropagation();closePCMDecisionDialog();return;}
+  if(ev.key==='Tab'){
+   const buttons=[...overlay.querySelectorAll('button:not(:disabled)')];
+   const first=buttons[0],last=buttons[buttons.length-1];
+   if(!buttons.includes(document.activeElement)){
+    ev.preventDefault();(ev.shiftKey?last:first)?.focus();return;
+   }
+   if(ev.shiftKey&&document.activeElement===first){ev.preventDefault();last?.focus();return;}
+   if(!ev.shiftKey&&document.activeElement===last){ev.preventDefault();first?.focus();return;}
+   return;
+  }
+  // Bloqueia atalhos numéricos que mudariam de setor durante a decisão.
+  if(!ev.altKey&&!ev.ctrlKey&&!ev.metaKey&&/^[0-9]$/.test(ev.key)){
+   ev.preventDefault();ev.stopImmediatePropagation();
+  }
+ },true);
+}
 function job(){return E.job(state,selected)||state.jobs[0]}
 function pick(id,from='workshop'){
  if(!E.job(state,id))return;
@@ -1139,6 +1204,7 @@ function drawStore(){
 
 function events(){
  MOBILE?.registerClosePanel?.(closePanel);
+ setupPCMDecisionDialog();
  $('helpBtn').addEventListener('click',()=>openPanel('help'));
  document.addEventListener('input',ev=>{
   if(ev.target?.id!=='productivityTarget')return;
@@ -1340,13 +1406,20 @@ function events(){
    const id=notificationAction.dataset.notificationId,decision=notificationAction.dataset.notificationAction;
    capturePCMDraft(id);
    const n=state.notifications.find(x=>x.id===id);
-   if(decision==='convert'&&n){
+   if(decision==='convert'){
+    if(!n||n.status!=='aprovada_pcm'){notify('A notificação não está pronta para gerar OS.');return;}
     const warnings=[];
     if(!n.planningDiagnosis?.codes?.slice(0,5).every(Boolean))
-     warnings.push('• SEM PRÉ-DIAGNÓSTICO: o primeiro mecânico alocado perderá 12 pontos de energia mental, 10 física e 10 de moral.');
-    if(!n.plannedResources?.material)warnings.push('• MATERIAL NÃO ALOCADO: a OS será criada sem previsão de material.');
-    if(!n.plannedResources?.tool)warnings.push('• FERRAMENTA NÃO ALOCADA: a OS será criada sem previsão de ferramenta.');
-    if(warnings.length&&!window.confirm('CONFIRMAR GERAÇÃO DE OS?\n\n'+warnings.join('\n')+'\n\nDeseja continuar?'))return;
+     warnings.push({title:'PRÉ-DIAGNÓSTICO NÃO REALIZADO',
+      description:'O primeiro mecânico alocado perderá 12 pontos de energia mental, 10 de energia física e 10 de moral. A penalidade é aplicada uma única vez.'});
+    if(!n.plannedResources?.material)
+     warnings.push({title:'MATERIAL NÃO SELECIONADO',
+      description:'A ordem será aberta sem previsão de material no planejamento. O reparo ainda dependerá dos recursos reais.'});
+    if(!n.plannedResources?.tool)
+     warnings.push({title:'FERRAMENTA NÃO SELECIONADA',
+      description:'A ordem será aberta sem previsão de ferramental. Verifique a disponibilidade antes de executar.'});
+    if(warnings.length){showPCMDecisionDialog(id,warnings);return;}
+    finishPCMConversion(id);return;
    }
    const payload={
       reason:$('pcm-reason-'+id)?.value,
@@ -1354,11 +1427,10 @@ function events(){
       action:$('pcm-action-'+id)?.value,trade:$('pcm-trade-'+id)?.value,
       estimatedHH:$('pcm-hh-'+id)?.value,priority:$('pcm-priority-'+id)?.value
    };
-   const result=decision==='convert'?I.commitConversion(state,data,E,id):I.review(state,id,decision,payload,data,E);
+   const result=I.review(state,id,decision,payload,data,E);
    if(result.error){notify(result.error);return}
    save();drawUI();
-   if(decision==='convert')notify('OS '+result.order.id+' criada a partir da notificação '+id+'. Abra o Planejamento PCM para programar a equipe.');
-   else notify('Notificação '+id+': '+({return:'devolvida para complementação',resubmit:'reenviada para revisão',archive:'arquivada',approve:'escopo aprovado'}[decision]||'atualizada')+'.');
+   notify('Notificação '+id+': '+({return:'devolvida para complementação',resubmit:'reenviada para revisão',archive:'arquivada',approve:'escopo aprovado'}[decision]||'atualizada')+'.');
    return;
   }
   const planHorizon=ev.target.closest('[data-planning-horizon]');
