@@ -6,13 +6,26 @@
 })(typeof window!=='undefined'?window:globalThis,function(){
  'use strict';
  // Piloto restrito a casos de pino de esteira com catálogo auditado. Nada de liberar em toda OS.
- const SCENARIOS=Object.freeze({hammer:Object.freeze(['INC023','INC040'])});
+ const SCENARIOS=Object.freeze({
+  hammer:Object.freeze(['INC023','INC040']),
+  // Montagem genérica de fixadores em conjuntos com rolamentos, não procedimento OEM.
+  bolt:Object.freeze(['INC001','INC025','INC086'])
+ });
  const MAX_HELP_MULTIPLIER=1.40;
  const GRADES=Object.freeze({
-  0:Object.freeze({speed:0,fatigue:0,label:'SEM BÔNUS'}),
-  1:Object.freeze({speed:0.04,fatigue:0.01,label:'EXECUÇÃO PARCIAL'}),
-  2:Object.freeze({speed:0.08,fatigue:0.025,label:'BOA EXECUÇÃO'}),
-  3:Object.freeze({speed:0.12,fatigue:0.04,label:'EXECUÇÃO PRECISA'})
+  hammer:Object.freeze({
+   0:Object.freeze({speed:0,fatigue:0,label:'SEM BÔNUS'}),
+   1:Object.freeze({speed:0.04,fatigue:0.01,label:'EXECUÇÃO PARCIAL'}),
+   2:Object.freeze({speed:0.08,fatigue:0.025,label:'BOA EXECUÇÃO'}),
+   3:Object.freeze({speed:0.12,fatigue:0.04,label:'EXECUÇÃO PRECISA'})
+  }),
+  bolt:Object.freeze({
+   0:Object.freeze({speed:0,fatigue:0,label:'SEM BÔNUS'}),
+   1:Object.freeze({speed:0.015,fatigue:0.03,label:'EXECUÇÃO PARCIAL'}),
+   2:Object.freeze({speed:0.03,fatigue:0.06,label:'EXECUÇÃO REGULAR'}),
+   3:Object.freeze({speed:0.045,fatigue:0.09,label:'BOA EXECUÇÃO'}),
+   4:Object.freeze({speed:0.06,fatigue:0.12,label:'EXECUÇÃO PRECISA'})
+  })
  });
  function availability(s,d,E,id,kind='hammer'){
   const j=E.job(s,id);
@@ -46,8 +59,8 @@
   const j=E.job(s,id),a=j?.repairAssist;
   if(!a||a.tick!==s.tick||a.status!=='started'||s.repairAssistTurn?.orderId!==id)
    return {error:'Tentativa inexistente, encerrada ou de outro turno.'};
-  if(!Number.isInteger(hits)||hits<0||hits>3)return {error:'Resultado inválido.'};
-  const grade=GRADES[hits];
+  if(!Number.isInteger(hits)||!Object.hasOwn(GRADES[a.kind]||{},hits))return {error:'Resultado inválido.'};
+  const grade=GRADES[a.kind][hits];
   a.status=hits?'ready':'no_bonus';
   a.score=hits;a.speed=grade.speed;a.fatigue=grade.fatigue;
   E.recordDecision(s,'repair_assist_result',{orderId:id,kind:a.kind,score:hits,
@@ -59,7 +72,7 @@
   if(!a||a.status!=='ready'||a.tick!==tick||a.mechanicId!==mechanicId)return null;
   if(!SCENARIOS[a.kind]?.includes(j.scene))return null;
   // A bonificação nunca se aplica sobre save editado com valores fora do contrato.
-  const grade=GRADES[a.score];
+  const grade=GRADES[a.kind]?.[a.score];
   if(!grade||!a.score)return null;
   return grade;
  }
