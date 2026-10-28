@@ -160,8 +160,11 @@
   init(s,I);
   const n=get(s,id),m=n?.monitoring;
   const p=protocol(n?.monitorProtocol);
-  const urgent=n?.status==='aguarda_revisao_pcm'&&m?.status==='proposta'&&p?.triage==='avaliacao_prioritaria';
-  if(!n||!urgent&&!(n.status==='monitorando'&&['programado','aguarda_decisao','requer_avaliacao'].includes(m?.status)))
+  // Escalonar é decisão legítima desde a chegada do sinal, sem obrigar monitoramento prévio.
+  // Triagem prioritária continua impedida de entrar em monitoramento sem PCM.
+  const initial=n?.status==='aguarda_revisao_pcm'&&m?.status==='proposta';
+  const urgent=!!initial&&p?.triage==='avaliacao_prioritaria';
+  if(!n||!(initial||(n.status==='monitorando'&&['programado','aguarda_decisao','requer_avaliacao'].includes(m?.status))))
    return {error:'Monitoramento não elegível para escalonamento.'};
   if(n.escalationNotificationId)return {error:'Já existe notificação escalonada.'};
   if(!p)return {error:'Registro de condição não encontrado.'};

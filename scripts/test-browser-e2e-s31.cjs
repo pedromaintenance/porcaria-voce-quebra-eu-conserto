@@ -5,7 +5,7 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const {chromium}=require('playwright-core');
-const D=require('../game-data.json'),E=require('../engine.js'),I=require('../phaser-play/inspection.js');
+const D=require('../game-data.json'),E=require('../engine.js'),I=require('../phaser-play/inspection.js'),M=require('../phaser-play/monitoring.js');
 const host=process.env.PORCARIA_TEST_URL||'http://127.0.0.1:8765/phaser-play/';
 const dir=process.env.PORCARIA_QA_ARTIFACTS||'test-results/sprint31';
 fs.mkdirSync(dir,{recursive:true});
@@ -68,9 +68,23 @@ async function run(browser,test){
   const n=I.inspectAndRoute(fixture,D,rec.id).notification;
   assert.ok(n&&I.review(fixture,n.id,'approve',{action:'verificar',trade:'mecanica',estimatedHH:2},D,E).ok,
    'fixture: planejamento aprovado sem pré-diagnóstico');
+  const received=M.receive(fixture,D,I,{initial:true}).received[0];
+  assert.ok(received,'fixture: condição recebida para a sala de controle');
   await page.evaluate(json=>localStorage.setItem('porcaria.phaser.prototype.v01',json),JSON.stringify(fixture));
   await page.reload({waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>document.querySelector('#day')?.textContent?.startsWith('DIA '));
+  await open(page,'monitoring',test.isMobile);
+  const monitor=page.locator('#monitoringPanel .monitorDecisionCard[data-monitor-note="'+received.id+'"]');
+  await monitor.waitFor({state:'visible'});
+  assert.equal(await monitor.locator('.monitorFindingColumn').count(),1,'achado à esquerda');
+  assert.equal(await monitor.locator('.monitorActionColumn').count(),1,'opções à direita');
+  assert.equal(await monitor.locator('[data-monitor-action="escalate"]').count(),1,'escalonamento imediato visível');
+  assert.equal(await monitor.locator('[data-monitor-action="decide"]').count(),1,'acompanhamento também disponível');
+  await page.screenshot({path:dir+'/'+test.id+'-monitor-30-70.png'});
+  await monitor.locator('[data-monitor-action="escalate"]').click();
+  assert.ok(await page.locator('#monitoringPanel').innerText().then(x=>x.includes('ESCALONADO AO PCM')),
+    'escalonamento sem monitoramento prévio');
+  await close(page);
   await open(page,'planning',test.isMobile);
   const convert=page.locator('#planningNotifications [data-notification-action="convert"][data-notification-id="'+n.id+'"]');
   await convert.click();

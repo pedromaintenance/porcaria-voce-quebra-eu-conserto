@@ -13,6 +13,26 @@ for(const [id,p] of Object.entries(M.PROTOCOLS)){
  assert.ok(p.baseline.length>40&&p.results.length>0);
 }
 const fresh=()=>{const s=E.create(D,()=>.5);I.normalized(s);return s};
+// Desde a primeira chegada, a triagem permite escalonar sem monitorar previamente.
+for(const protocol of ['baseline','sample','wear']){
+ const freshCase=fresh();
+ const created=M.open(freshCase,D,I,protocol);
+ assert.equal(created.ok,true);
+ const n=created.notification;
+ const before=freshCase.jobs.length;
+ const display=V.renderPCM(n,id=>id,D,I,E,freshCase,null,M);
+ assert.ok(display.includes('monitorDecisionColumns'),'duas colunas no monitoramento');
+ assert.ok(display.includes('monitorFindingColumn')&&display.includes('monitorActionColumn'),'achado e decisão separados');
+ assert.ok(display.includes('data-monitor-action="escalate"'),'escalonamento desde o primeiro contato');
+ assert.ok(display.includes('data-monitor-action="decide"'),'monitorar continua alternativa');
+ const raised=M.escalate(freshCase,D,I,n.id);
+ assert.equal(raised.ok,true,'escalonar imediatamente '+protocol);
+ assert.equal(raised.escalation.status,'aguarda_revisao_pcm');
+ assert.equal(freshCase.jobs.length,before,'não cria OS automaticamente');
+ assert.equal(M.escalate(freshCase,D,I,n.id).error!==undefined,true,'não duplicar nota PCM');
+ const after=V.renderPCM(n,id=>id,D,I,E,freshCase,null,M);
+ assert.ok(after.includes('data-open-panel="planning"'),'atalho PCM após encaminhar');
+}
 const initial=fresh();
 const oldJobs=initial.jobs.map(j=>j.id);
 const priorInspections=initial.inspections.length;
