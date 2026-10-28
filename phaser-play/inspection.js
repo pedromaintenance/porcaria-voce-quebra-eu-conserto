@@ -244,6 +244,9 @@
    const hasDiagnosis=Array.isArray(payload.diagnosis)&&payload.diagnosis.some(Boolean);
    const proposed=hasDiagnosis?diagnosisPayload(s,d,E,n,payload):null;
    if(proposed?.error)return {error:proposed.error};
+   const mapped=d?.scenarios?.find(x=>x.id===n.sourceScenario&&x.modelId===n.modelId);
+   if(mapped&&E?.sapEligible?.(d,mapped)===false)
+    return {error:'Classificação SAP pendente: não é possível aprovar OS para este cenário.'};
    const action=Object.hasOwn(ACTIONS,payload.action)?ACTIONS[payload.action]:null;
    const scope=proposed ? (action||ACTIONS.verificar) : (trim(payload.scope,700)||action||ACTIONS.verificar);
    const trade=String(payload.trade||'');
