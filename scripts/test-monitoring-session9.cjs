@@ -14,7 +14,7 @@ for(const [id,p] of Object.entries(M.PROTOCOLS)){
 }
 const fresh=()=>{const s=E.create(D,()=>.5);I.normalized(s);return s};
 // Desde a primeira chegada, a triagem permite escalonar sem monitorar previamente.
-for(const protocol of ['baseline','sample','wear']){
+for(const protocol of ['baseline','sample','differential']){
  const freshCase=fresh();
  const created=M.open(freshCase,D,I,protocol);
  assert.equal(created.ok,true);
