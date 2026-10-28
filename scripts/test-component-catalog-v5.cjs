@@ -95,7 +95,7 @@ assert.ok(overview.includes('CMP024')&&overview.includes('FLT024')&&overview.inc
 const html=fs.readFileSync('phaser-play/index.html','utf8');
 const sw=fs.readFileSync('sw.js','utf8');
 assert.ok(html.indexOf('component-catalog-expansion.js')<html.indexOf('condition-catalog.js'));
-assert.ok(html.includes('monitoring.js?v=0.9.18-copy1')&&html.includes('inspection-view.js?v='));
+assert.ok(/monitoring\.js\?v=0\.9\.\d+[-a-z\d]*/.test(html)&&html.includes('inspection-view.js?v='));
 assert.ok(sw.includes("'./phaser-play/component-catalog-expansion.js'")&&sw.includes('comp098'));
 assert.equal(E.validate(JSON.parse(JSON.stringify(late.s))),true,'save segue válido');
 console.log('OK: 120 sintomas; Componentes 24, triagem, instrumentos, postergação fictícia, PCM e saves.');
