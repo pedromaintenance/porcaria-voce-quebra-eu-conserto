@@ -218,6 +218,7 @@ function closeRepairAssist(){
  repairAssistDialog=null;
  previous.game?.destroy(true);
  $('repairAssistStage').replaceChildren();
+ $('boltAssistControls').hidden=true;
  $('repairAssistOverlay').hidden=true;
  $('menuOverlay').inert=false;
  $('layout').inert=false;
@@ -236,6 +237,7 @@ function startRepairAssist(id,kind='hammer'){
  repairAssistDialog={id,kind,focus:document.activeElement,game:null,finished:false};
  $('repairAssistIdentity').textContent=id+' · '+record.asset;
  $('repairAssistStage').replaceChildren();
+ $('boltAssistControls').hidden=kind!=='bolt';
  $('repairAssistTitle').textContent=kind==='bolt'?'🔧 ASSISTÊNCIA MECÂNICA · APERTO DE PARAFUSOS':'🔨 ASSISTÊNCIA MECÂNICA · MARRETAR PINO';
  $('repairAssistHelp').textContent=kind==='bolt'
   ?'Jogo abstrato de quatro fixadores: escolha o indicado e acione o medidor na faixa dourada. Não representa sequência ou torque OEM. A tentativa é única por turno.'
@@ -269,6 +271,15 @@ function startRepairAssist(id,kind='hammer'){
 }
 function setupRepairAssist(){
  $('repairAssistClose').addEventListener('click',ev=>{ev.stopPropagation();closeRepairAssist();});
+ $('boltAssistControls').addEventListener('click',ev=>{
+  const button=ev.target.closest('[data-bolt-control]');
+  if(!button||!repairAssistDialog||repairAssistDialog.kind!=='bolt'||repairAssistDialog.finished)return;
+  ev.stopPropagation();
+  const mini=repairAssistDialog.game?.scene?.getScene('BoltTightening');
+  if(!mini)return;
+  if(button.dataset.boltControl==='tighten')mini.tighten();
+  else mini.selectBolt(Number(button.dataset.boltControl));
+ });
  document.addEventListener('keydown',ev=>{
   if(!repairAssistDialog)return;
   if(ev.key==='Escape'){ev.preventDefault();ev.stopImmediatePropagation();closeRepairAssist();return;}

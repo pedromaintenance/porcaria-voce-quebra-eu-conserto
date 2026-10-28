@@ -71,5 +71,6 @@ assert.ok(html.includes('repair-minigames.js?v=0.9.41-bolt'));
 assert.ok(game.includes("MINIGAMES.launch(kind"),'mesmo modal aceita ambos minigames');
 assert.ok(game.includes("data-repair-assist-kind"),'o botão encaminha o tipo correto');
 assert.ok(quick.includes('APERTAR PARAFUSOS'),'OS rápida expõe novo botão');
+assert.ok(html.includes('id="boltAssistControls"')&&html.includes('data-bolt-control="tighten"'),'controles de toque grandes');
 assert.ok(sw.includes('bolt-v41'),'PWA atualizado');
 console.log('OK Ciclo 41: quatro fixadores, save, compatibilidade com pinos, esforço, HH e bloqueios.');

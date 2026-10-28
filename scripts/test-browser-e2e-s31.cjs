@@ -155,12 +155,11 @@ async function run(browser,test){
   const boltCanvas=page.locator('#repairAssistStage canvas');
   await boltCanvas.waitFor({state:'visible',timeout:30000});
   await page.screenshot({path:dir+'/'+test.id+'-aperto-parafusos.png'});
-  const boltPositions=[[220,134],[420,223],[420,134],[220,223]];
-  for(const [x,y] of boltPositions){
-   const size=await boltCanvas.boundingBox();
-   assert.ok(size?.width>0&&size?.height>0);
-   await boltCanvas.click({position:{x:x/640*size.width,y:y/360*size.height}});
-   await boltCanvas.click({position:{x:320/640*size.width,y:301/360*size.height}});
+  const boltControls=page.locator('#boltAssistControls');
+  await boltControls.waitFor({state:'visible'});
+  for(const i of [0,3,1,2]){
+   await boltControls.locator('[data-bolt-control="'+i+'"]').click();
+   await boltControls.locator('[data-bolt-control="tighten"]').click();
   }
   await page.waitForFunction(()=>document.querySelector('#repairAssistResult')?.textContent?.includes('Bônus válido apenas neste turno.'));
   await page.locator('#repairAssistClose').click();

@@ -990,6 +990,13 @@ html.mobile-play #planningNotifications,.mobile-play .controlRoomOperations{scro
 #repairAssistIdentity{color:#f7bf71;font-size:12px;font-weight:900;letter-spacing:.04em}
 #repairAssistStage{width:100%;max-width:640px;min-height:190px;margin:15px auto 10px;overflow:hidden;border:1px solid #4d7994;background:#0a1d2d}
 #repairAssistStage canvas{display:block;max-width:100%;width:100%;height:auto;touch-action:manipulation}
+.boltAssistControls[hidden]{display:none!important}
+.boltAssistControls{margin:10px 0;padding:12px;background:#17344a;border:1px solid #56738a;border-radius:7px}
+.boltAssistControls p{margin:0 0 9px;color:#d9eaf4;font-size:12px}
+.boltAssistButtons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.boltAssistButtons button{min-height:48px;padding:7px;font-size:11px}
+.boltAssistButtons [data-bolt-control="tighten"]{grid-column:1/-1;background:#f3b64d;color:#102339;font-weight:900}
+@media(max-width:560px){.boltAssistButtons{grid-template-columns:repeat(2,minmax(0,1fr))}}
 #repairAssistResult{padding:11px;border-left:3px solid #e9b258;background:#16364c;font-size:12px;line-height:1.5}
 .repairAssistModal footer{display:flex;justify-content:flex-end;margin-top:12px}
 .repairAssistModal button{min-height:44px}
@@ -1078,7 +1085,15 @@ html.mobile-play #planningNotifications,.mobile-play .controlRoomOperations{scro
 <div id="repairAssistIdentity"></div>
 <h2 id="repairAssistTitle">🔨 ASSISTÊNCIA MECÂNICA · MARRETAR PINO</h2>
 <p id="repairAssistHelp" class="repairAssistHint">Jogo de precisão abstrato: não é um procedimento real de desmontagem. A tentativa é consumida ao iniciar; material e ferramental continuam obrigatórios.</p>
-<div id="repairAssistStage" tabindex="0" aria-label="Área Phaser do desafio de impactos"></div>
+<div id="repairAssistStage" tabindex="0" aria-label="Área Phaser do desafio de impactos"></div><div id="boltAssistControls" class="boltAssistControls" role="group" aria-label="Comandos de aperto" hidden>
+<p>Sequência lúdica: fixadores 1 → 4 → 2 → 3. Escolha o indicado e acione o medidor na faixa dourada.</p>
+<div class="boltAssistButtons">
+<button type="button" class="act secondary" data-bolt-control="0">FIXADOR 1</button>
+<button type="button" class="act secondary" data-bolt-control="1">FIXADOR 2</button>
+<button type="button" class="act secondary" data-bolt-control="2">FIXADOR 3</button>
+<button type="button" class="act secondary" data-bolt-control="3">FIXADOR 4</button>
+<button type="button" class="act" data-bolt-control="tighten">APLICAR APERTO</button>
+</div></div>
 <p id="repairAssistResult" role="status" aria-live="polite"></p>
 <footer><button id="repairAssistClose" type="button" class="act secondary">ABANDONAR ATIVIDADE</button></footer>
 </section></div>
