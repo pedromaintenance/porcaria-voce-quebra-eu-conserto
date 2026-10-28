@@ -976,6 +976,25 @@ html.mobile-play #planningNotifications,.mobile-play .controlRoomOperations{scro
 .pcmDecisionDialog button:focus-visible{outline:3px solid #fff0aa;outline-offset:3px}
 @media(max-width:520px){.pcmDecisionBody{padding:13px}.pcmDecisionHeader{padding:9px 12px}
  .pcmDecisionFooter{flex-direction:column}.pcmDecisionFooter button{flex:0 0 auto;width:100%}}
+
+/* Ciclo 39-40 · Assistência mecânica Phaser, sem avisos nativos. */
+.repairAssistOffer{margin:12px 0;padding:13px;background:#142e40;border:1px solid #c09046;border-radius:9px}
+.repairAssistOffer strong{display:block;color:#ffd08b;font-size:12px}
+.repairAssistOffer small,.repairAssistOffer p{display:block;color:#c8dce7;font-size:12px;line-height:1.5;margin:6px 0}
+.repairAssistOffer button{min-height:44px;margin-top:6px}
+#repairAssistOverlay[hidden]{display:none!important}
+.repairAssistBackdrop{position:fixed;inset:0;z-index:155;display:flex;align-items:center;justify-content:center;padding:12px;background:#020a14ed;backdrop-filter:blur(5px)}
+.repairAssistModal{width:min(760px,100%);max-height:calc(100dvh - 24px);overflow-y:auto;background:#0b2031;color:#e6f3fd;border:2px solid #dca754;border-radius:12px;box-shadow:0 22px 70px #000a;padding:18px}
+.repairAssistModal h2{font-size:19px;line-height:1.25;color:#ffd18d;margin:8px 0 6px}
+.repairAssistModal .repairAssistHint{font-size:12px;line-height:1.5;color:#b9d4e4}
+#repairAssistIdentity{color:#f7bf71;font-size:12px;font-weight:900;letter-spacing:.04em}
+#repairAssistStage{width:100%;max-width:640px;min-height:190px;margin:15px auto 10px;overflow:hidden;border:1px solid #4d7994;background:#0a1d2d}
+#repairAssistStage canvas{display:block;max-width:100%;width:100%;height:auto;touch-action:manipulation}
+#repairAssistResult{padding:11px;border-left:3px solid #e9b258;background:#16364c;font-size:12px;line-height:1.5}
+.repairAssistModal footer{display:flex;justify-content:flex-end;margin-top:12px}
+.repairAssistModal button{min-height:44px}
+.repairAssistModal button:focus-visible{outline:3px solid #ffde89;outline-offset:2px}
+@media(max-width:520px){.repairAssistModal{padding:10px}.repairAssistModal h2{font-size:15px}#repairAssistStage{min-height:150px}}
 </style><link rel="stylesheet" href="./responsive-scenes-v27.css?v=0.9.30-c28"><link rel="stylesheet" href="./mobile-split-v29.css?v=0.9.31-c29"></head><body>
 <div id="layout">
 <header class="top" role="banner">
@@ -1054,6 +1073,15 @@ html.mobile-play #planningNotifications,.mobile-play .controlRoomOperations{scro
 <input type="search" id="closedOrderSearch" placeholder="Buscar OS, equipamento, sintoma ou caso..." aria-label="Buscar histórico de OS concluídas">
 <div id="closedOrders" aria-live="polite"></div></section><h2>📋 Diário do turno</h2><div id="logs"></div><div class="actions"><button class="act secondary" id="save">Exportar save</button><label class="act secondary uploadSave" for="importSave">Importar save<input id="importSave" type="file" accept=".json,application/json"></label><button class="act secondary" id="reset">Reiniciar</button></div><p class="hint">Build Phaser 0.8.30 · histórico diagnóstico por OS, autoria das confirmações e etapas visuais; quadro de prontidão da equipe, HH nominais e alertas de bloqueio em Gestão · câmera nos boxes + menus pop-up · arte provisória · simulação fictícia. Save independente do jogo de gestão.</p></section></div></div></div>
 </div>
+<div id="repairAssistOverlay" class="repairAssistBackdrop" hidden>
+<section class="repairAssistModal" role="dialog" aria-modal="true" aria-labelledby="repairAssistTitle" aria-describedby="repairAssistHelp">
+<div id="repairAssistIdentity"></div>
+<h2 id="repairAssistTitle">🔨 ASSISTÊNCIA MECÂNICA · MARRETAR PINO</h2>
+<p id="repairAssistHelp" class="repairAssistHint">Jogo de precisão abstrato: não é um procedimento real de desmontagem. A tentativa é consumida ao iniciar; material e ferramental continuam obrigatórios.</p>
+<div id="repairAssistStage" aria-label="Área Phaser do desafio de impactos"></div>
+<p id="repairAssistResult" role="status" aria-live="polite"></p>
+<footer><button id="repairAssistClose" type="button" class="act secondary">ABANDONAR ATIVIDADE</button></footer>
+</section></div>
 <div id="pcmConfirmOverlay" class="pcmDecisionBackdrop" hidden>
 <section class="pcmDecisionDialog" role="dialog" aria-modal="true" aria-labelledby="pcmConfirmTitle" aria-describedby="pcmConfirmIntro" tabindex="-1">
 <header class="pcmDecisionHeader"><span class="pcmDecisionOverline">⚠ DECISÃO DO PLANEJAMENTO PCM</span>
@@ -1070,4 +1098,4 @@ html.mobile-play #planningNotifications,.mobile-play .controlRoomOperations{scro
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div><div id="mobileNotice" role="status" aria-live="polite" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="../engine.js?v=0.9.36-pcm-inspections"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./decision-impact.js?v=0.9.11"></script><script src="./decision-ledger.js?v=0.9.12"></script><script src="./lessons-learned.js?v=0.9.13"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./anomaly-progression.js?v=0.9.24-c21"></script><script src="./inspection.js?v=0.9.36-pcm-inspections"></script><script src="./evidence.js?v=0.9.3"></script><script src="./oil-catalog-expansion.js?v=0.9.5"></script><script src="./fault-catalog-expansion.js?v=0.9.6"></script><script src="./undercarriage-catalog-expansion.js?v=0.9.7"></script><script src="./component-catalog-expansion.js?v=0.9.8"></script><script src="./fps-catalog-expansion.js?v=0.9.10"></script><script src="./condition-catalog.js?v=0.9.10"></script><script src="./monitoring.js?v=0.9.38-monitor-escalation"></script><script src="./inspection-view.js?v=0.9.38-monitor-escalation"></script><script src="./sector-views.js?v=0.9.36-pcm-inspections"></script><script src="./mobile-experience.js?v=0.9.26-c23"></script><script>window.PORCARIA_MOBILE?.init(window);</script><script src="./mobile-panel-guide.js?v=0.9.27-c24&layout=0.9.31-c29"></script><script src="./monitoring-nav-state.js?v=0.9.30-c28"></script><script src="./game.js?v=0.9.37-pcm-confirm-modal"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>
+<script src="../training.js?v=0.8.28"></script><script src="../competency.js?v=0.8.27"></script><script src="./repair-assist.js?v=0.9.39"></script><script src="../engine.js?v=0.9.39-repair"></script><script src="./layout-math.js?v=0.8.2"></script><script src="./shift-brief.js?v=0.7.7"></script><script src="./planning.js?v=0.8.27"></script><script src="./decision-impact.js?v=0.9.11"></script><script src="./decision-ledger.js?v=0.9.12"></script><script src="./lessons-learned.js?v=0.9.13"></script><script src="./weekly.js?v=0.7.9"></script><script src="./readiness.js?v=0.8.8"></script><script src="./diagnostic-board.js?v=0.8.8"></script><script src="./diagnostic-view.js?v=0.8.8"></script><script src="./closed-orders.js?v=0.8.11"></script><script src="./render-quality.js?v=0.8.22"></script><script src="./order-quick.js?v=0.8.25"></script><script src="./training-view.js?v=0.8.30"></script><script src="./anomaly-progression.js?v=0.9.24-c21"></script><script src="./inspection.js?v=0.9.36-pcm-inspections"></script><script src="./evidence.js?v=0.9.3"></script><script src="./oil-catalog-expansion.js?v=0.9.5"></script><script src="./fault-catalog-expansion.js?v=0.9.6"></script><script src="./undercarriage-catalog-expansion.js?v=0.9.7"></script><script src="./component-catalog-expansion.js?v=0.9.8"></script><script src="./fps-catalog-expansion.js?v=0.9.10"></script><script src="./condition-catalog.js?v=0.9.10"></script><script src="./monitoring.js?v=0.9.38-monitor-escalation"></script><script src="./inspection-view.js?v=0.9.38-monitor-escalation"></script><script src="./sector-views.js?v=0.9.36-pcm-inspections"></script><script src="./mobile-experience.js?v=0.9.26-c23"></script><script>window.PORCARIA_MOBILE?.init(window);</script><script src="./mobile-panel-guide.js?v=0.9.27-c24&layout=0.9.31-c29"></script><script src="./monitoring-nav-state.js?v=0.9.30-c28"></script><script src="./repair-minigames.js?v=0.9.40-hammer"></script><script src="./game.js?v=0.9.40-hammer"></script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("../sw.js").catch(console.warn);</script></body></html>

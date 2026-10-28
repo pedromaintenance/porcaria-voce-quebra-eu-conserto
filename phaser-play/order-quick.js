@@ -8,7 +8,7 @@
  'use strict';
  const esc=s=>String((typeof globalThis!=='undefined'&&globalThis.PORCARIA_IMMERSIVE_COPY?.clean(s))??s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const money=n=>Number(n||0).toLocaleString('pt-BR',{maximumFractionDigits:0});
- function render({job:j,state,data,model,scenario,diagnostic:r,preferredBay=null,feedback=null}){
+ function render({job:j,state,data,model,scenario,diagnostic:r,preferredBay=null,feedback=null,repairAssist=null}){
   if(!j)return '<p class="orderEmpty">Nenhuma OS selecionada.</p>';
   const shell=['<article class="quickOrder">'];
   shell.push('<div class="quickIdentity"><strong>'+esc(model?.title||j.modelId)+' · '+esc(j.id)+'</strong><span>'+esc(j.assigned?'BOX '+(Number(j.bay)+1)+' · '+(state.team.find(m=>m.id===j.assigned)?.name||'Equipe'):'AGUARDANDO ALOCAÇÃO')+'</span></div>');
@@ -53,6 +53,9 @@
     shell.push('<div class="quickPart"><span>Peça: <b>'+esc(part?.name||scenario.material)+'</b> · '+available+' no estoque'+(inbound?' · '+inbound+' em trânsito':'')+'</span>'+
      (available<=0&&!j.materialUsed?'<button class="act" data-do="order">COMPRAR PEÇA · R$ '+money((part?.unit||0)*1.65)+'</button>':'')+'</div>');
    }
+   if(repairAssist?.supported) shell.push('<div class="repairAssistOffer"><strong>🔨 ASSISTÊNCIA MECÂNICA</strong>'
+    +'<small>'+esc(repairAssist.available?'Ajude o mecânico no turno.':'Indisponível: '+repairAssist.reason)+'</small>'
+    +'<button class="act" type="button" data-repair-assist-start="'+esc(j.id)+'" '+(repairAssist.available?'':'disabled')+'>MARRETAR PINO</button></div>');
   }else if(!state.tools?.[scenario?.tool]){
    const tool=data.tools?.[scenario?.tool];
    shell.push('<div class="quickMissingTool"><span>⚠ Ferramenta necessária para o diagnóstico: <b>'+esc(tool?.name||scenario?.tool||'Ferramenta')+'</b></span>'+
