@@ -116,7 +116,9 @@ async function run(browser,test){
   await page.evaluate(raw=>localStorage.setItem('porcaria.phaser.prototype.v01',raw),JSON.stringify(repair));
   await page.reload({waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>document.querySelector('#day')?.textContent?.startsWith('DIA '));
-  await open(page,'detail',test.isMobile);
+  // O menu de setores foi homologado acima; após reload, acionamos diretamente o botão da OS.
+  await page.locator('#primaryNav [data-open-panel="detail"]').evaluate(el=>el.click());
+  await page.locator('#menuOverlay').waitFor({state:'visible'});
   const startRepair=page.locator('#detail [data-repair-assist-start="'+repairJob.id+'"]');
   assert.equal(await startRepair.count(),1,'desafio visível na OS elegível');
   await startRepair.click();
@@ -129,7 +131,9 @@ async function run(browser,test){
   assert.equal(await startRepair.isDisabled(),true,'recompensa não pode ser repetida');
   await page.reload({waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>document.querySelector('#day')?.textContent?.startsWith('DIA '));
-  await open(page,'detail',test.isMobile);
+  // O menu de setores foi homologado acima; após reload, acionamos diretamente o botão da OS.
+  await page.locator('#primaryNav [data-open-panel="detail"]').evaluate(el=>el.click());
+  await page.locator('#menuOverlay').waitFor({state:'visible'});
   assert.equal(await page.locator('#detail [data-repair-assist-start="'+repairJob.id+'"]').isDisabled(),true,
    'recarregar mantém tentativa registrada');
   await close(page);
