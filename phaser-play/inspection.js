@@ -262,6 +262,8 @@
    n.planningScope={description:scope,trade,tradeLabel:TRADES[trade],estimatedHH:hh,planningNote:note,reviewedTick:s.tick};
    n.planningDiagnosis=proposed?{codes:proposed.codes,labels:proposed.labels,optionalCause:proposed.optionalCause,evaluated:false}:null;
    n.planningWithoutDiagnosis=!proposed;
+   if(n.pcmDraft)n.plannedResources={material:n.pcmDraft.material||null,
+    qty:Number(n.pcmDraft.qty)||1,tool:n.pcmDraft.tool||null};
    n.reviewedTick=s.tick;n.reviewReason=null;n.status='aprovada_pcm';
    audit(n,s,'approve','Escopo aprovado: '+TRADES[trade]+' · '+hh+' HH.');
    if(typeof E?.recordDecision==='function')E.recordDecision(s,'pcm_review',{

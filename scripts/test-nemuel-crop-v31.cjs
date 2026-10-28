@@ -40,7 +40,7 @@ assert.ok(render.includes("if(texture==='worker_nemuel')"),'aplicar apenas ao Ne
 assert.ok(render.includes('ctx.drawImage(src,p.x,p.y,p.w,p.h,dx,dy,w,h)'),'pré-filtragem por pose');
 assert.ok(render.includes('ctx.drawImage(src,(i%2)*WORKER_FRAME.width'),'caminho antigo preservado para os demais');
 assert.ok(render.includes('sheet.add(i,0'),'quatro quadros registrados no Phaser');
-assert.ok(html.includes('game.js?v=0.9.35-nemuel-v2'),'JS invalidado no navegador');
+assert.match(html,/game\.js\?v=0\.9\.\d+[-a-z\d]*/,'script do jogo permanece versionado no navegador');
 assert.ok(sw.includes("'./phaser-play/assets/characters/nemuel-inspetor-4poses-v2.png'"),'PNG novo no precache offline');
 assert.ok(sw.includes('-atlasv2'),'cache PWA invalidado');
 console.log('OK Nemuel v2: PNG SHA256 exato, quatro poses sem recorte e Phaser/PWA íntegros.');

@@ -182,7 +182,7 @@
     +'<div class="pcmActions"><button class="act" data-notification-action="approve" data-notification-id="'+id+'">✓ ENVIAR PLANEJAMENTO</button>'
     +'<button class="act secondary" data-notification-action="return" data-notification-id="'+id+'">↩ DEVOLVER</button>'
     +'<button class="act secondary" data-notification-action="archive" data-notification-id="'+id+'">ARQUIVAR</button></div>'
-    +reasonChoices({...I.RETURN_REASONS,...I.ARCHIVE_REASONS})+'</div>';
+    +reasonChoices({...I.RETURN_REASONS,...I.ARCHIVE_REASONS})+buy+'</div>';
   }else if(n.status==='devolvida'){
    actions='<div class="pcmReviewArea"><p class="inspectionAttention">Motivo: '+esc(n.reviewReason||'Complementação solicitada')+'</p>'
     +'<label>Prioridade '+select('pcm-priority-'+id,['baixa','media','alta'].map(v=>[v,v.toUpperCase()]))+'</label>'
