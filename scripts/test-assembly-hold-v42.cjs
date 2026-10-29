@@ -58,6 +58,13 @@ assert(html.includes("addEventListener('pointerdown'")&&html.includes("addEventL
 assert(html.includes("addEventListener('pointercancel'")&&html.includes("addEventListener('keyup'"),'cancelamento e teclado');
 assert(html.includes("addEventListener('visibilitychange'"),'perder foco do navegador deve cancelar');
 assert(html.includes('translateY(')&&html.includes('rotate('),'animação de parafuso e deslocamento de peça');
+assert(html.includes('id="focusRing"')&&html.includes('focusRingProgress'),'progresso contextual no componente');
+assert(html.includes('setPointerCapture')&&html.includes('lostpointercapture'),'ponteiro capturado e liberado de forma segura');
+assert(html.includes('145 102 610 290'),'enquadramento móvel aproxima os fixadores');
+assert(html.includes('r="51"')&&html.includes('bp-hit-target'),'alvo invisível de toque ampliado');
+assert(html.includes('prefers-reduced-motion'),'respeitar preferência de movimento reduzido');
+assert(!html.includes('holdLabel" aria-live="polite"'),'não anunciar porcentagem nova a cada quadro');
+
 assert(!html.includes("document.addEventListener('click',e=>"),'clique simples nunca deve mutar a montagem');
 const inline=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(Boolean);
 assert.equal(inline.length,1);
