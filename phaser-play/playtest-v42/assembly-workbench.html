@@ -64,6 +64,22 @@ p{line-height:1.5}small{color:#a9bfd1}
 .action.is-holding{border-color:#ffe089;box-shadow:inset 0 0 0 2px #dcab50}
 .action.is-holding::before{content:'';position:absolute;inset:0 auto 0 0;width:var(--hold-percent,0%);background:#ffd06b3c;pointer-events:none}
 .schematic .bp-placeholder[data-action]{opacity:.36;pointer-events:visiblePainted}
+
+/* Ciclo 42.2: alvos amplos, foco contextual e responsividade mobile. */
+.bp-hit-target{pointer-events:all;stroke:none!important;fill:transparent!important}
+.schematic .bp-hit-target{touch-action:none}
+#focusRing{pointer-events:none!important;filter:drop-shadow(0 0 9px #ffd07866)}
+.action[data-action]{min-height:56px}
+@media(max-width:620px){
+ .schematic{aspect-ratio:610/290;max-height:none}
+ .action[data-action]{min-height:58px}
+ .hold-label{font-size:13px}
+ .panel{padding:11px}
+}
+@media(prefers-reduced-motion:reduce){
+ .schematic .bp-part,.schematic .bp-bolt{transition:none!important}
+ .schematic .bp-interactive{filter:none}
+}
 </style>
 </head>
 <body>
@@ -75,7 +91,7 @@ p{line-height:1.5}small{color:#a9bfd1}
   <section class="panel">
     <div class="headline"><h1>Articulação do trator</h1><span class="flag">BANCADA BLUEPRINT · PROTÓTIPO</span></div>
     <p class="hint">Segure o toque ou o clique por <b>2 segundos</b> para soltar parafusos ou movimentar peças. Soltou antes? A animação volta ao início. Também funciona segurando ESPAÇO ou ENTER.</p>
-    <div class="phase" id="phaseLabel">DESMONTAGEM</div><div class="hold-meter" aria-label="Progresso da interação" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="holdMeter"><i id="holdFill"></i></div><p class="hold-label" id="holdLabel" aria-live="polite">SEGURE A PEÇA OU O PARAFUSO · 2 SEGUNDOS</p>
+    <div class="phase" id="phaseLabel">DESMONTAGEM</div><div class="hold-meter" aria-label="Progresso da interação" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="holdMeter"><i id="holdFill"></i></div><p class="hold-label" id="holdLabel">SEGURE A PEÇA OU O PARAFUSO · 2 SEGUNDOS</p>
     <div class="bar" role="progressbar" aria-label="Progresso da tarefa" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress"><i id="progressFill"></i></div>
     <div class="metrics"><span id="progressText">0% concluído</span><span id="actionsCount">0 interações</span><span id="errorsCount">0 tentativas bloqueadas</span></div>
     <svg class="schematic" id="machine" viewBox="0 0 900 480" role="img" aria-label="Ilustração original de conjunto mecânico com componentes clicáveis"></svg>
@@ -99,7 +115,12 @@ const $=id=>document.getElementById(id);
 let s;
 try{s=JSON.parse(localStorage.getItem(KEY)); if(!M.isValid(s))s=M.create();}
 catch(_){s=M.create();}
-const coords={guard:[450,235],leftPad:[290,225],rightPad:[610,225],leftRetainer:[350,218],rightRetainer:[550,218],pin:[450,218],bushing:[450,218]};
+// Área visual é distinta da área de toque. O zoom adaptativo amplia a oficina em telas pequenas.
+const isCompact=()=>window.innerWidth<=620;
+function adjustView(){
+  $('machine').setAttribute('viewBox',isCompact()?'145 102 610 290':'0 0 900 480');
+}
+window.addEventListener('resize',adjustView);
 const boltPos={g1:[370,166],g2:[530,303],l1:[244,187],l2:[308,266],r1:[592,187],r2:[654,266]};
 function esc(v){return String(v).replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));}
 function doAction(id){
@@ -120,20 +141,23 @@ function boltSvg(id,available){
   const attr=actionAttr(action,M.labels[id],available);
   if(!present){
     return '<g class="bp-hole'+(interactive?' bp-interactive bp-bolt':'')+'"'+attr+'><circle cx="'+x+'" cy="'+y+'" r="20" fill="#07325c" stroke="'+(interactive?'#ffc76b':'#457eaf')+'" stroke-width="2" stroke-dasharray="4 4"/>'+
-      '<circle cx="'+x+'" cy="'+y+'" r="9" fill="none" stroke="#508aaf" stroke-width="1.5"/>'+ (interactive?'<path d="M'+(x-9)+' '+y+'h18 M'+x+' '+(y-9)+'v18" stroke="#f7c66c" stroke-width="2" opacity=".7"/>':'')+'</g>';
+      '<circle cx="'+x+'" cy="'+y+'" r="9" fill="none" stroke="#508aaf" stroke-width="1.5"/>'+ (interactive?'<path d="M'+(x-9)+' '+y+'h18 M'+x+' '+(y-9)+'v18" stroke="#f7c66c" stroke-width="2" opacity=".7"/><circle class="bp-hit-target" cx="'+x+'" cy="'+y+'" r="51" fill="transparent" pointer-events="all"/>':'')+'</g>';
   }
   return '<g class="'+(interactive?'bp-interactive bp-bolt':'bp-bolt')+'"'+attr+'>'+
     '<circle cx="'+x+'" cy="'+y+'" r="24" fill="#0b4576" stroke="'+stroke+'" stroke-width="3"/>'+
     '<circle cx="'+x+'" cy="'+y+'" r="15" fill="#145f96" stroke="'+stroke+'" stroke-width="2"/>'+
     '<path d="M'+(x-10)+' '+y+'h20 M'+x+' '+(y-10)+'v20" stroke="'+stroke+'" stroke-width="3" stroke-linecap="round"/>'+
-    (interactive?'<circle cx="'+x+'" cy="'+y+'" r="30" fill="none" stroke="#ffc76b" stroke-width="1" stroke-dasharray="3 5"/>':'')+
+    (interactive?'<circle cx="'+x+'" cy="'+y+'" r="32" fill="none" stroke="#ffc76b" stroke-width="1" stroke-dasharray="3 5"/><circle class="bp-hit-target" cx="'+x+'" cy="'+y+'" r="51" fill="transparent" pointer-events="all"/>':'')+
     '</g>';
 }
 function shape(id,content){
   const action=(s.phase==='disassembly'?'removePart:':'installPart:')+id;
   const clickable=M.actions(s).some(a=>a.id===action),installed=s.installed[id];
   const attr=clickable?' data-action="'+esc(action)+'" tabindex="0" role="button" aria-label="'+esc((installed?'Retirar ':'Instalar ')+M.parts.find(p=>p.id===id).name)+'"':'';
-  return '<g class="'+(installed?(clickable?'bp-interactive bp-part':'bp-part'):'bp-placeholder')+'"'+attr+'>'+content+'</g>';
+  const hitBox={guard:[175,120,560,230],leftPad:[190,135,215,175],rightPad:[495,135,215,175],
+  leftRetainer:[306,184,82,82],rightRetainer:[512,184,82,82],pin:[300,192,300,65],bushing:[395,170,110,110]}[id];
+  const target=clickable&&hitBox?'<rect class="bp-hit-target" x="'+hitBox[0]+'" y="'+hitBox[1]+'" width="'+hitBox[2]+'" height="'+hitBox[3]+'" fill="transparent" pointer-events="all"/>':'';
+  return '<g class="'+(installed?(clickable?'bp-interactive bp-part':'bp-part'):'bp-placeholder')+'"'+attr+'>'+content+target+'</g>';
 }
 function blueprint(){
   const choices=new Set(M.actions(s).map(a=>a.id));
@@ -173,6 +197,11 @@ function blueprint(){
     '<path d="M36 422h828" stroke="#79c6e6" stroke-width="1" opacity=".6"/>'+
     '<text x="36" y="450" font-size="12" fill="#99d5f3" font-family="monospace">PORCARIA • OFICINA DE MONTAGEM</text>'+
     '<text x="864" y="450" font-size="12" fill="#99d5f3" font-family="monospace" text-anchor="end">REPRESENTAÇÃO LÚDICA · SEM ESCALA</text>';
+  inner+='<g id="focusRing" aria-hidden="true" opacity="0" pointer-events="none">'+
+    '<circle r="58" fill="#072b4c" fill-opacity=".45" stroke="#568fb5" stroke-width="8"/>'+
+    '<circle id="focusRingProgress" r="58" fill="none" stroke="#ffce69" stroke-width="8" stroke-linecap="round" transform="rotate(-90)" stroke-dasharray="364.425" stroke-dashoffset="364.425"/>'+
+    '<circle r="45" fill="none" stroke="#bfeeff" stroke-width="1.5" stroke-dasharray="4 6"/>'+
+    '</g>';
   if(s.phase==='complete')inner+='<rect x="295" y="55" width="310" height="45" fill="#124c54" stroke="#87edce" stroke-width="2" rx="8"/>'+
     '<text x="450" y="83" fill="#c8ffed" font-size="17" text-anchor="middle" font-weight="bold">MONTAGEM CONCLUÍDA</text>';
   return inner;
@@ -182,7 +211,7 @@ const phase={disassembly:'ETAPA 1 — DESMONTAGEM',inspection:'ETAPA 2 — INSPE
 $('phaseLabel').textContent=phase[s.phase];
 const pct=M.progress(s);$('progressFill').style.width=pct+'%';$('progress').setAttribute('aria-valuenow',pct);
 $('progressText').textContent=pct+'% concluído';$('actionsCount').textContent=s.actions+' interações';$('errorsCount').textContent=s.errors+' tentativas bloqueadas';
-$('machine').innerHTML=blueprint();
+$('machine').innerHTML=blueprint();adjustView();
 const acts=M.actions(s);
 $('actions').innerHTML=acts.map(a=>'<button type="button" class="action '+(a.type==='inspect'?'primary':'')+'" data-action="'+esc(a.id)+'">'+esc(a.label)+'</button>').join('')||
 '<div class="success">✓ Conjunto remontado. Todas as peças e fixadores voltaram aos seus lugares.</div>';
@@ -193,18 +222,32 @@ $('history').innerHTML=s.log.slice(-8).reverse().map(x=>'<li>'+esc(x)+'</li>').j
 const HOLD=window.PORCARIA_HOLD_ACTION;
 let activeNode=null,activeId=null,activePointer=null,activeKey=null,downX=0,downY=0,frameId=0;
 const DURATION=2000;
+const RING_LENGTH=364.425;
+const reduceMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches||false;
+function updateFocusRing(id,progress){
+  const ring=$('focusRing'),stroke=$('focusRingProgress');
+  const target=activeNode?.ownerSVGElement?activeNode:$('machine').querySelector('[data-action="'+id+'"]');
+  if(!ring||!stroke||!target){if(ring)ring.setAttribute('opacity','0');return;}
+  try{
+    const box=target.getBBox();
+    ring.setAttribute('transform','translate('+(box.x+box.width/2)+' '+(box.y+box.height/2)+')');
+    ring.setAttribute('opacity','1');
+    stroke.setAttribute('stroke-dashoffset',String(RING_LENGTH*(1-progress)));
+  }catch(_){ring.setAttribute('opacity','0');}
+}
 function drawHold(id,progress,phase){
   if(id!==activeId||!activeNode)return;
   const pct=Math.round(progress*100);
   $('holdFill').style.width=pct+'%';
   $('holdMeter').setAttribute('aria-valuenow',String(pct));
+  updateFocusRing(id,progress);
   const verb=id.startsWith('removeBolt:')?'SOLTANDO PARAFUSO':id.startsWith('installBolt:')?'FIXANDO PARAFUSO':
     id.startsWith('removePart:')?'RETIRANDO PEÇA':id.startsWith('installPart:')?'INSTALANDO PEÇA':'INSPECIONANDO';
   $('holdLabel').textContent=(phase==='rewinding'?'RETROCEDENDO · ':verb+' · ')+pct+'%';
   if(activeNode.ownerSVGElement){
     const removing=id.startsWith('remove');
     if(id.includes('Bolt:')){
-      const angle=(removing?1:-1)*progress*720;
+      const angle=reduceMotion?0:(removing?1:-1)*progress*720;
       const distance=(removing?-12:12)*progress;
       activeNode.style.transform='translateY('+distance+'px) rotate('+angle+'deg) scale('+(1-progress*.10)+')';
     }else{
@@ -227,6 +270,7 @@ function clearVisual(){
   activeNode=null;activeId=null;
   $('holdFill').style.width='0%';$('holdMeter').setAttribute('aria-valuenow','0');
   $('holdLabel').textContent='SEGURE A PEÇA OU O PARAFUSO · 2 SEGUNDOS';
+  const ring=$('focusRing');if(ring)ring.setAttribute('opacity','0');
 }
 const hold=HOLD.create({durationMs:DURATION,rewindMs:350,onProgress:drawHold,onComplete:id=>{
   clearVisual();
@@ -268,6 +312,13 @@ document.addEventListener('pointerdown',e=>{
   e.preventDefault();
   if(begin(node.getAttribute('data-action'),node,performance.now())){
     activePointer=e.pointerId;downX=e.clientX;downY=e.clientY;
+    // A captura evita que soltar fora do hotspot deixe a animação presa.
+    try{node.setPointerCapture?.(e.pointerId);}catch(_){}
+  }
+});
+document.addEventListener('lostpointercapture',e=>{
+  if(activePointer!==null&&e.pointerId===activePointer&&hold.state().phase==='holding'){
+    activePointer=null;cancel();
   }
 });
 window.addEventListener('pointerup',e=>{
