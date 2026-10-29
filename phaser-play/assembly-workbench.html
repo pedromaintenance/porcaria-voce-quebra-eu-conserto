@@ -37,6 +37,21 @@ p{line-height:1.5}small{color:#a9bfd1}
 .side{display:flex;flex-direction:column;gap:12px}
 .footer-note{max-width:1500px;margin:0 auto;padding:0 18px 20px;color:#8faabc;font-size:11px}
 @media(max-width:900px){main{grid-template-columns:1fr}.actions{max-height:unset}.schematic{max-height:410px}header{padding:10px 16px}}
+
+/* Ciclo 42: linguagem blueprint, SVG procedural, sem assets rasterizados. */
+.schematic{background:#073460;border:1px solid #64b9ea;box-shadow:inset 0 0 0 4px #0a3761,0 12px 30px #00101f99;aspect-ratio:900/480}
+.schematic .bp-part,.schematic .bp-bolt{transition:filter .16s ease,opacity .16s ease}
+.schematic .bp-interactive{cursor:pointer;filter:drop-shadow(0 0 6px #ffce72);outline:none}
+.schematic .bp-interactive>path:first-child,
+.schematic .bp-interactive>rect:first-child,
+.schematic .bp-interactive>circle:first-child{stroke:#f6be57;stroke-width:4}
+.schematic .bp-interactive:hover{filter:drop-shadow(0 0 10px #ffcc5b)}
+.schematic .bp-placeholder{opacity:.26;pointer-events:none}
+.schematic .bp-placeholder[data-action]{opacity:.7;pointer-events:visiblePainted;filter:drop-shadow(0 0 5px #ffcf69)}
+.schematic .bp-placeholder path,.schematic .bp-placeholder rect,.schematic .bp-placeholder circle{fill:transparent!important;stroke:#7acbf0!important;stroke-dasharray:8 6}
+.schematic .bp-placeholder[data-action] path,.schematic .bp-placeholder[data-action] rect,.schematic .bp-placeholder[data-action] circle{stroke:#f9c563!important}
+.schematic [data-action]:focus-visible{filter:drop-shadow(0 0 10px #f6da82);outline:none}
+@media(hover:none){.schematic .bp-interactive{filter:drop-shadow(0 0 5px #ffcb66)}}
 </style>
 </head>
 <body>
@@ -46,7 +61,7 @@ p{line-height:1.5}small{color:#a9bfd1}
 </header>
 <main>
   <section class="panel">
-    <div class="headline"><h1>Articulação do trator</h1><span class="flag">PROTÓTIPO JOGÁVEL</span></div>
+    <div class="headline"><h1>Articulação do trator</h1><span class="flag">BANCADA BLUEPRINT · PROTÓTIPO</span></div>
     <p class="hint">Toque nos fixadores e componentes destacados ou use os botões ao lado. Cada peça só sai depois de liberar o que a prende.</p>
     <div class="phase" id="phaseLabel">DESMONTAGEM</div>
     <div class="bar" role="progressbar" aria-label="Progresso da tarefa" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress"><i id="progressFill"></i></div>
@@ -80,42 +95,74 @@ $('feedback').textContent=result.ok?'✓ '+result.action.label:result.reason;
 try{localStorage.setItem(KEY,JSON.stringify(s));}catch(_){}
 render();
 }
-function boltSvg(id,available){
-const [x,y]=boltPos[id];const present=s.fastened[id];const action=(s.phase==='disassembly'?'removeBolt:':'installBolt:')+id;
-const clickable=available.has(action);
-if(!present&&!clickable)return '';
-return '<g '+(clickable?'data-action="'+esc(action)+'" tabindex="0" role="button" aria-label="'+esc(M.labels[id])+'"':'')+'>'+
- '<circle cx="'+x+'" cy="'+y+'" r="21" fill="'+(present?'#d7dce0':'#384656')+'" stroke="'+(clickable?'#ffc15a':'#637684')+'" stroke-width="4"/>'+
- '<path d="M'+(x-9)+' '+y+'h18 M'+x+' '+(y-9)+'v18" stroke="'+(present?'#395364':'#a7b2ba')+'" stroke-width="4" stroke-linecap="round"/>'+
- '</g>';
+function actionAttr(id,label,actions){
+  return actions.has(id)
+    ? ' data-action="'+esc(id)+'" tabindex="0" role="button" aria-label="'+esc(label)+'"'
+    : '';
 }
-function shape(id,content,ghost){
-const available=M.actions(s).find(a=>a.id===(s.phase==='disassembly'?'removePart:':'installPart:')+id);
-if(!s.installed[id]&&!available)return '';
-const attr=available?' data-action="'+available.id+'" tabindex="0" role="button" aria-label="'+esc(available.label)+'"':'';
-return '<g'+attr+' opacity="'+(ghost?.48:1)+'">'+content+'</g>';
+function boltSvg(id,available){
+  const [x,y]=boltPos[id],present=s.fastened[id];
+  const action=(s.phase==='disassembly'?'removeBolt:':'installBolt:')+id;
+  const interactive=available.has(action),stroke=interactive?'#f8c45d':'#78c8f0';
+  const attr=actionAttr(action,M.labels[id],available);
+  if(!present){
+    return '<g class="bp-hole"'+attr+'><circle cx="'+x+'" cy="'+y+'" r="20" fill="#07325c" stroke="'+(interactive?'#ffc76b':'#457eaf')+'" stroke-width="2" stroke-dasharray="4 4"/>'+
+      '<circle cx="'+x+'" cy="'+y+'" r="9" fill="none" stroke="#508aaf" stroke-width="1.5"/></g>';
+  }
+  return '<g class="'+(interactive?'bp-interactive bp-bolt':'bp-bolt')+'"'+attr+'>'+
+    '<circle cx="'+x+'" cy="'+y+'" r="24" fill="#0b4576" stroke="'+stroke+'" stroke-width="3"/>'+
+    '<circle cx="'+x+'" cy="'+y+'" r="15" fill="#145f96" stroke="'+stroke+'" stroke-width="2"/>'+
+    '<path d="M'+(x-10)+' '+y+'h20 M'+x+' '+(y-10)+'v20" stroke="'+stroke+'" stroke-width="3" stroke-linecap="round"/>'+
+    (interactive?'<circle cx="'+x+'" cy="'+y+'" r="30" fill="none" stroke="#ffc76b" stroke-width="1" stroke-dasharray="3 5"/>':'')+
+    '</g>';
+}
+function shape(id,content){
+  const action=(s.phase==='disassembly'?'removePart:':'installPart:')+id;
+  const clickable=M.actions(s).some(a=>a.id===action),installed=s.installed[id];
+  const attr=clickable?' data-action="'+esc(action)+'" tabindex="0" role="button" aria-label="'+esc((installed?'Retirar ':'Instalar ')+M.parts.find(p=>p.id===id).name)+'"':'';
+  return '<g class="'+(installed?(clickable?'bp-interactive bp-part':'bp-part'):'bp-placeholder')+'"'+attr+'>'+content+'</g>';
 }
 function blueprint(){
-const choices=new Set(M.actions(s).map(a=>a.id));
-let inner='';
-inner+='<defs><linearGradient id="steel" x1="0" x2="1"><stop stop-color="#415769"/><stop offset=".55" stop-color="#9fb2bd"/><stop offset="1" stop-color="#445b6b"/></linearGradient>'+
- '<linearGradient id="metal" x1="0" x2="1"><stop stop-color="#aebbc5"/><stop offset=".5" stop-color="#dbe3e7"/><stop offset="1" stop-color="#637583"/></linearGradient></defs>';
-inner+='<rect x="85" y="136" width="730" height="188" rx="52" fill="#1b3446" stroke="#748c99" stroke-width="12"/>';
-inner+='<path d="M105 320h690l-60 45H165Z" fill="#324d5e" stroke="#7992a0" stroke-width="5"/>';
-inner+=shape('bushing','<circle cx="450" cy="223" r="49" fill="#d8ab5a" stroke="#f9d083" stroke-width="9"/><circle cx="450" cy="223" r="26" fill="#1d3441"/>',false);
-inner+=shape('pin','<rect x="304" y="200" width="292" height="46" rx="19" fill="url(#metal)" stroke="#dde9ef" stroke-width="6"/><path d="M336 211h230" stroke="#8297a6" stroke-width="5"/>',false);
-inner+=shape('leftRetainer','<circle cx="348" cy="222" r="40" fill="#687e8b" stroke="#b8c5cf" stroke-width="9"/><circle cx="348" cy="222" r="18" fill="#253d4c"/>',false);
-inner+=shape('rightRetainer','<circle cx="552" cy="222" r="40" fill="#687e8b" stroke="#b8c5cf" stroke-width="9"/><circle cx="552" cy="222" r="18" fill="#253d4c"/>',false);
-inner+=shape('leftPad','<path d="M204 167l156-28 39 55-25 107-177-28Z" fill="url(#steel)" stroke="#a5b8c3" stroke-width="7"/><path d="M228 238l114 24" stroke="#a8c0ce" stroke-width="8"/>',false);
-inner+=shape('rightPad','<path d="M696 167l-156-28-39 55 25 107 177-28Z" fill="url(#steel)" stroke="#a5b8c3" stroke-width="7"/><path d="M672 238l-114 24" stroke="#a8c0ce" stroke-width="8"/>',false);
-if(s.installed.leftPad||choices.has('installPart:leftPad'))for(const b of ['l1','l2'])inner+=boltSvg(b,choices);
-if(s.installed.rightPad||choices.has('installPart:rightPad'))for(const b of ['r1','r2'])inner+=boltSvg(b,choices);
-inner+=shape('guard','<path d="M207 114h486l58 53-30 173H179l-30-173Z" fill="#b38c44" stroke="#f3c069" stroke-width="7"/><path d="M220 192h460M220 285h460" stroke="#6b522a" stroke-width="6"/><text x="450" y="238" font-size="25" font-family="monospace" fill="#2b261b" text-anchor="middle" font-weight="bold">PROTEÇÃO INFERIOR</text>',false);
-if(s.installed.guard||choices.has('installPart:guard'))for(const b of ['g1','g2'])inner+=boltSvg(b,choices);
-if(!s.installed.guard)inner+='<text x="450" y="105" fill="#b9d5e4" font-size="19" font-family="monospace" text-anchor="middle">CONJUNTO DE ARTICULAÇÃO</text>';
-inner+='<text x="450" y="421" fill="#aac5d7" font-size="18" font-family="monospace" text-anchor="middle">TOQUE NAS PEÇAS DESTACADAS</text>';
-if(s.phase==='complete')inner+='<rect x="255" y="405" width="390" height="48" fill="#215844" stroke="#8ce4af" rx="10"/><text x="450" y="435" fill="#d7ffde" font-size="20" text-anchor="middle" font-weight="bold">MONTAGEM CONCLUÍDA</text>';
-return inner;
+  const choices=new Set(M.actions(s).map(a=>a.id));
+  let inner='<defs>'+
+    '<pattern id="bp-minor" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#69b8eb" stroke-width=".6" opacity=".13"/></pattern>'+
+    '<pattern id="bp-major" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M100 0H0V100" fill="none" stroke="#8ed8ff" stroke-width="1.2" opacity=".17"/></pattern>'+
+    '<pattern id="bp-hatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="12" stroke="#85cff3" stroke-width="2" opacity=".38"/></pattern>'+
+    '</defs>';
+  inner+='<rect width="900" height="480" fill="#073460"/><rect width="900" height="480" fill="url(#bp-minor)"/><rect width="900" height="480" fill="url(#bp-major)"/>'+
+    '<rect x="14" y="14" width="872" height="452" fill="none" stroke="#62b4e0" stroke-width="1" opacity=".55"/>'+
+    '<path d="M450 48v337 M66 226h774" stroke="#70c5eb" opacity=".25" stroke-width="1" stroke-dasharray="10 8"/>'+
+    '<circle cx="450" cy="225" r="160" fill="none" stroke="#78cbf4" stroke-width="1" opacity=".17" stroke-dasharray="7 6"/>'+
+    '<text x="36" y="46" fill="#b2e4ff" font-size="15" font-family="monospace" letter-spacing="2">PRANCHA 01 • VISTA FRONTAL</text>'+
+    '<text x="864" y="46" fill="#8cccea" font-size="13" font-family="monospace" text-anchor="end">DESENHO INTERATIVO</text>';
+  // Estrutura fixa em projeção ortogonal, original do jogo.
+  inner+='<path d="M115 178h670l25 40-25 94H115l-25-94Z" fill="#104d7f" fill-opacity=".68" stroke="#8bd5f6" stroke-width="3"/>'+
+    '<path d="M144 304h612l-38 42H182Z" fill="url(#bp-hatch)" stroke="#6eb9e0" stroke-width="2"/>'+
+    '<path d="M125 178V134 M775 178V134 M125 146H775" stroke="#9be4ff" stroke-width="1.4" opacity=".75"/>'+
+    '<path d="M118 146l14 -9 M768 155l14 -9" stroke="#9be4ff" stroke-width="2"/>'+
+    '<circle cx="450" cy="225" r="68" fill="#073460" stroke="#9bdfff" stroke-width="2" stroke-dasharray="4 6"/>';
+  // Formas vetoriais procedurais: não são desenhos de catálogo, medidas ou especificações.
+  inner+=shape('bushing','<circle cx="450" cy="225" r="49" fill="#135d94" stroke="#a5e5ff" stroke-width="5"/><circle cx="450" cy="225" r="27" fill="#073460" stroke="#7dc9ef" stroke-width="4"/><circle cx="450" cy="225" r="42" fill="none" stroke="#b4e8ff" stroke-width="1" stroke-dasharray="3 4"/>');
+  inner+=shape('pin','<rect x="309" y="205" width="282" height="40" rx="14" fill="#0f538a" stroke="#b0e8ff" stroke-width="4"/><path d="M333 215h234 M333 233h234" stroke="#79c9ee" stroke-width="2"/><path d="M314 225h-23 M586 225h23" stroke="#b0e8ff" stroke-width="3"/>');
+  inner+=shape('leftRetainer','<circle cx="347" cy="225" r="39" fill="#114f82" stroke="#b0e7ff" stroke-width="5"/><circle cx="347" cy="225" r="21" fill="#073460" stroke="#6bbfed" stroke-width="3"/>');
+  inner+=shape('rightRetainer','<circle cx="553" cy="225" r="39" fill="#114f82" stroke="#b0e7ff" stroke-width="5"/><circle cx="553" cy="225" r="21" fill="#073460" stroke="#6bbfed" stroke-width="3"/>');
+  inner+=shape('leftPad','<path d="M198 166l151-27 47 52-29 113-172-31Z" fill="#0d4e83" stroke="#a2e5ff" stroke-width="4"/><path d="M218 204l126-27M208 253l134 23" stroke="#6bbbe6" stroke-width="2"/>');
+  inner+=shape('rightPad','<path d="M702 166l-151-27-47 52 29 113 172-31Z" fill="#0d4e83" stroke="#a2e5ff" stroke-width="4"/><path d="M682 204l-126-27M692 253l-134 23" stroke="#6bbbe6" stroke-width="2"/>');
+  if(s.installed.leftPad)for(const id of ['l1','l2'])inner+=boltSvg(id,choices);
+  if(s.installed.rightPad)for(const id of ['r1','r2'])inner+=boltSvg(id,choices);
+  inner+=shape('guard','<path d="M210 108h480l54 62-29 168H185l-29-168Z" fill="#0a3f71" fill-opacity=".93" stroke="#b6e9ff" stroke-width="4"/>'+
+    '<path d="M210 134h480M215 302h470M247 156l-25 120M653 156l25 120" fill="none" stroke="#6fc4ee" stroke-width="2"/>'+
+    '<rect x="330" y="204" width="240" height="52" rx="4" fill="#0a335a" stroke="#80cbea" stroke-width="2"/>'+
+    '<text x="450" y="235" font-size="17" font-family="monospace" fill="#a7dff9" text-anchor="middle">PROTEÇÃO INFERIOR</text>');
+  if(s.installed.guard)for(const id of ['g1','g2'])inner+=boltSvg(id,choices);
+  inner+='<path d="M110 365v21h680v-21 M98 375h24 M778 375h24" stroke="#78c8ee" stroke-width="1.4" fill="none" opacity=".75"/>'+
+    '<text x="450" y="405" fill="#b6e8ff" font-size="15" font-family="monospace" text-anchor="middle">SELECIONE OS COMPONENTES DESTACADOS EM AMARELO</text>'+
+    '<path d="M36 422h828" stroke="#79c6e6" stroke-width="1" opacity=".6"/>'+
+    '<text x="36" y="450" font-size="12" fill="#99d5f3" font-family="monospace">PORCARIA • OFICINA DE MONTAGEM</text>'+
+    '<text x="864" y="450" font-size="12" fill="#99d5f3" font-family="monospace" text-anchor="end">REPRESENTAÇÃO LÚDICA · SEM ESCALA</text>';
+  if(s.phase==='complete')inner+='<rect x="295" y="55" width="310" height="45" fill="#124c54" stroke="#87edce" stroke-width="2" rx="8"/>'+
+    '<text x="450" y="83" fill="#c8ffed" font-size="17" text-anchor="middle" font-weight="bold">MONTAGEM CONCLUÍDA</text>';
+  return inner;
 }
 function render(){
 const phase={disassembly:'ETAPA 1 — DESMONTAGEM',inspection:'ETAPA 2 — INSPEÇÃO E TROCA',assembly:'ETAPA 3 — REMONTAGEM',complete:'SERVIÇO CONCLUÍDO'};
