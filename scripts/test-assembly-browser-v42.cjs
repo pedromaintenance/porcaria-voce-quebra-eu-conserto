@@ -21,6 +21,8 @@ async function desktop(browser){
   try{
     await page.goto(HOST,{waitUntil:'domcontentloaded'});
     assert.equal(await page.locator('#machine').getAttribute('viewBox'),'0 0 900 480');
+    assert.equal(await page.locator('#availableCount').innerText(),'2 opções disponíveis');
+    assert.match(await page.locator('#taskGuide').innerText(),/fixadores destacados/);
     let p=await point(page,'removeBolt:g1');
     await page.mouse.move(p.x,p.y);await page.mouse.down();await sleep(600);await page.mouse.up();
     await sleep(480);
@@ -32,11 +34,28 @@ async function desktop(browser){
     assert.equal(await page.locator('#history').innerText().then(t=>t.includes('Parafuso solto')),true);
     assert.equal(await page.locator('#actionsCount').innerText(),'1 interações');
     assert.equal(await page.locator('[data-action="removeBolt:g1"]').count(),0,'Alvo removido após progresso completo');
+    assert.equal(await page.locator('#inventoryCount').innerText(),'1 item','peça vai para bancada');
+    assert.equal(await page.locator('[data-inventory-item="g1"]').count(),1);
+    // Uma recarga não apaga a peça retirada nem reabre o mesmo parafuso.
+    await page.reload({waitUntil:'domcontentloaded'});
+    assert.equal(await page.locator('#actionsCount').innerText(),'1 interações');
+    assert.equal(await page.locator('#inventoryCount').innerText(),'1 item');
     p=await point(page,'removeBolt:g2');
     await page.mouse.move(p.x,p.y);await page.mouse.down();await sleep(400);
     await page.mouse.move(p.x+75,p.y);await sleep(500);await page.mouse.up();await sleep(400);
     assert.equal(await page.locator('#actionsCount').innerText(),'1 interações',
       'Arrastar longe cancela sem progresso persistido');
+    // Teclado: retenção de ESPAÇO durante 2 segundos também aplica a ação.
+    const keyboardTarget=page.locator('#actions [data-action="removeBolt:g2"]');
+    await keyboardTarget.focus();
+    await page.keyboard.down('Space');await sleep(2100);await page.keyboard.up('Space');
+    assert.equal(await page.locator('#actionsCount').innerText(),'2 interações');
+    assert.match(await page.locator('#taskGuide').innerText(),/Remova a peça liberada/);
+    p=await point(page,'removePart:guard');
+    await page.mouse.move(p.x,p.y);await page.mouse.down();await sleep(2100);await page.mouse.up();
+    assert.equal(await page.locator('#actionsCount').innerText(),'3 interações');
+    assert.equal(await page.locator('[data-inventory-item="guard"]').count(),1,'proteção no inventário');
+    assert.equal(await page.locator('#inventoryCount').innerText(),'3 itens');
     assert.equal(errors.length,0,errors.join('; '));
     await page.screenshot({path:artifacts+'/desktop-blueprint.png',fullPage:true});
   }finally{await context.close();}
