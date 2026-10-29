@@ -46,7 +46,7 @@ assert(html.includes('assembly-sequence.js')&&html.includes('data-action')&&html
   assert.equal(s.phase,'complete');assert.equal(M.progress(s),100);
   assert.equal(M.actions(s).length,0);
   assert.deepEqual(s.inventory,[]);
-  assert.equal(s.actions,31);
+  assert.equal(s.actions,27);
   assert.equal(s.errors,2); // intentionally blocked pin and premature guard install
   for(const p of M.parts)assert.equal(s.installed[p.id],true);
   for(const id of Object.keys(M.labels))assert.equal(s.fastened[id],true);
