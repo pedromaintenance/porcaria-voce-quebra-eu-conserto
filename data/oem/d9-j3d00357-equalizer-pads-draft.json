@@ -137,7 +137,8 @@
         "requiredEvidence": [
           "pads-stage-signoff"
         ],
-        "technicalCheckpoint": "Libera apenas uma etapa de narrativa, não autoriza intervenção na máquina"
+        "technicalCheckpoint": "Libera apenas uma etapa de narrativa, não autoriza intervenção na máquina",
+        "requiresChoiceGroup": "lifting-tool"
       }
     ]
   },
