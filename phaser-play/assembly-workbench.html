@@ -222,18 +222,32 @@ $('history').innerHTML=s.log.slice(-8).reverse().map(x=>'<li>'+esc(x)+'</li>').j
 const HOLD=window.PORCARIA_HOLD_ACTION;
 let activeNode=null,activeId=null,activePointer=null,activeKey=null,downX=0,downY=0,frameId=0;
 const DURATION=2000;
+const RING_LENGTH=364.425;
+const reduceMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches||false;
+function updateFocusRing(id,progress){
+  const ring=$('focusRing'),stroke=$('focusRingProgress');
+  const target=activeNode?.ownerSVGElement?activeNode:$('machine').querySelector('[data-action="'+id+'"]');
+  if(!ring||!stroke||!target){if(ring)ring.setAttribute('opacity','0');return;}
+  try{
+    const box=target.getBBox();
+    ring.setAttribute('transform','translate('+(box.x+box.width/2)+' '+(box.y+box.height/2)+')');
+    ring.setAttribute('opacity','1');
+    stroke.setAttribute('stroke-dashoffset',String(RING_LENGTH*(1-progress)));
+  }catch(_){ring.setAttribute('opacity','0');}
+}
 function drawHold(id,progress,phase){
   if(id!==activeId||!activeNode)return;
   const pct=Math.round(progress*100);
   $('holdFill').style.width=pct+'%';
   $('holdMeter').setAttribute('aria-valuenow',String(pct));
+  updateFocusRing(id,progress);
   const verb=id.startsWith('removeBolt:')?'SOLTANDO PARAFUSO':id.startsWith('installBolt:')?'FIXANDO PARAFUSO':
     id.startsWith('removePart:')?'RETIRANDO PEÇA':id.startsWith('installPart:')?'INSTALANDO PEÇA':'INSPECIONANDO';
   $('holdLabel').textContent=(phase==='rewinding'?'RETROCEDENDO · ':verb+' · ')+pct+'%';
   if(activeNode.ownerSVGElement){
     const removing=id.startsWith('remove');
     if(id.includes('Bolt:')){
-      const angle=(removing?1:-1)*progress*720;
+      const angle=reduceMotion?0:(removing?1:-1)*progress*720;
       const distance=(removing?-12:12)*progress;
       activeNode.style.transform='translateY('+distance+'px) rotate('+angle+'deg) scale('+(1-progress*.10)+')';
     }else{
@@ -256,6 +270,7 @@ function clearVisual(){
   activeNode=null;activeId=null;
   $('holdFill').style.width='0%';$('holdMeter').setAttribute('aria-valuenow','0');
   $('holdLabel').textContent='SEGURE A PEÇA OU O PARAFUSO · 2 SEGUNDOS';
+  const ring=$('focusRing');if(ring)ring.setAttribute('opacity','0');
 }
 const hold=HOLD.create({durationMs:DURATION,rewindMs:350,onProgress:drawHold,onComplete:id=>{
   clearVisual();
@@ -297,6 +312,13 @@ document.addEventListener('pointerdown',e=>{
   e.preventDefault();
   if(begin(node.getAttribute('data-action'),node,performance.now())){
     activePointer=e.pointerId;downX=e.clientX;downY=e.clientY;
+    // A captura evita que soltar fora do hotspot deixe a animação presa.
+    try{node.setPointerCapture?.(e.pointerId);}catch(_){}
+  }
+});
+document.addEventListener('lostpointercapture',e=>{
+  if(activePointer!==null&&e.pointerId===activePointer&&hold.state().phase==='holding'){
+    activePointer=null;cancel();
   }
 });
 window.addEventListener('pointerup',e=>{
