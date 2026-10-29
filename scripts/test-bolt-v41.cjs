@@ -67,6 +67,12 @@ const quick=fs.readFileSync('phaser-play/order-quick.js','utf8');
 const sw=fs.readFileSync('sw.js','utf8');
 assert.ok(scene.includes('class BoltTightening')&&scene.includes('launchBolt')&&scene.includes('sequence=[0,3,1,2]'));
 assert.ok(scene.includes('launchHammer'),'o piloto de pinos permanece disponível');
+assert.ok(scene.includes('function drawBlueprint('),'minigames têm base procedural unificada');
+assert.ok(scene.includes('drawBlueprint(this,640,320)')&&scene.includes('drawBlueprint(this,640,360)'),
+  'pino e parafuso compartilham fundo azul de engenharia');
+assert.ok(scene.includes('PRANCHA INTERATIVA')&&scene.includes('DESENHO LÚDICO, SEM ESCALA'),
+  'anotações da interface mostram caráter lúdico, sem valores técnicos inventados');
+
 assert.ok(html.includes('repair-minigames.js?v=0.9.41-bolt'));
 assert.ok(game.includes("MINIGAMES.launch(kind"),'mesmo modal aceita ambos minigames');
 assert.ok(game.includes("data-repair-assist-kind"),'o botão encaminha o tipo correto');
