@@ -37,7 +37,7 @@ Fonte recebida do usuário: oito PDFs SIS 2.0 da publicação **M0116841-01** (T
 ## Documentação adicional desejável
 1. No catálogo do jogo, descrição técnica integral e SAP dos casos **INC023** e **INC040**;
 2. Vista explodida da **Equalizer Bar**, nomenclatura e PNs dos pinos laterais e central do D9 J3D00357;
-3. Literaturas de **Equalizer Bar Pads - Remove and Install** (pré-requisito explícito em i08467781);
+3. **Equalizer Bar Pads - Remove and Install** RECEBIDO e analisado em 29/10/2026. Próxima fonte da cadeia: **Bottom Guard - Remove and Install** (necessária para completar seu `Start By`);
 4. Para extensão ao bogie: **Idler - Remove and Install** e documentação de **Track Roller - Remove and Install** quando essa cadeia for simulada.
 
 ## Referências de leitura
@@ -51,3 +51,25 @@ Fonte recebida do usuário: oito PDFs SIS 2.0 da publicação **M0116841-01** (T
 - M0116841-01 — Track Roller Frame (Front) - Remove and Install, **i09980443** no cabeçalho.
 
 **Revisão obrigatória**: o vínculo entre a peça catálogo 311-1298 e os cartuchos numerados (8)/(12) da desmontagem exige PN por posição, não está estabelecido pelas imagens de procedimento isoladamente.
+
+## Atualização 29/10/2026 — Pré-requisito Equalizer Bar Pads
+**Fonte efetivamente recebida**: *Equalizer Bar Pads - Remove and Install (M0116841-01)*, SMCS 7206, publicada em **01/04/2021**; artigo de cabeçalho **i08202810**, rodapé **i05439085**. Divergência entre identificadores preservada até conferência no SIS. Cinco páginas; fonte protegida, somente esta síntese própria é pública.
+
+### Constatações verificáveis
+- **p.1, Start By**: dois protetores inferiores centrais (*two middle bottom guards*) são pré-requisito, com remissão à literatura *Bottom Guard - Remove and Install* ainda não recebida.
+- **p.1, Table 1**: ferramental A = cavalete de elevação 9U-7536 com bomba elétrica hidráulica adequada (alternativas de tensão); ferramental B = grupo elevador 504-9826/504-9827 conforme alimentação. O próprio manual permite **A ou B**, não exige ambos.
+- **pp.2–3, steps 1–8**: remoção dos pads do lado esquerdo enquanto a elevação controlada se dá no lado direito; quatro primeiros passos com A, quatro seguintes com B são **caminhos alternativos** para a mesma intervenção, não oito passos cumulativos.
+- **pp.3–4, steps 9–16**: operação equivalente do lado direito, com elevação do lado esquerdo e opções A/B.
+- **p.4, Installation Procedure**: manda reinstalar em ordem inversa. O arquivo **não traz torques específicos** para esses parafusos; não improvisar números nem afirmar que a sequência inversa é suficiente para executar serviço em campo.
+
+### Arquitetura do jogo
+- Nova fixture original `data/oem/d9-j3d00357-equalizer-pads-draft.json`: D9, revisão rastreável, etapas com dependências, evidências, riscos, links de página e seleção exclusiva A/B.
+- `src/oem-procedures.js` ganhou suporte a `choiceGroups` de modo `exactly-one` e `requiresChoiceGroup`; um ramo só fica disponível após escolha válida.
+- Esta fixture permanece `draft`, `gameplay.eligible=false`, sem vínculo de `INC023/INC040`; **não é procedimento para executar manutenção real**.
+- O fluxo de gameplay será `Bottom Guard (documento pendente) -> Pads -> Equalizer Bar -> interação de pino lateral`. A confirmação de cada etapa não equivale a certificação técnica.
+
+### Pendências agora objetivas
+1. **Bottom Guard - Remove and Install**, pois completa o pré-requisito real da operação dos pads.
+2. **Vista explodida e PNs da Equalizer Bar** no J3D00357, para vincular o pino lateral corretamente.
+3. **Mapeamento SAP e descrição original** de INC023/INC040 antes de associar a assistência do jogo.
+4. Homologação das alternativas A/B, aplicação serial e requisitos de segurança, com revisão de engenharia.
