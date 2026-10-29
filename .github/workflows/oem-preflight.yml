@@ -5,8 +5,10 @@ on:
     paths:
       - 'src/oem-procedures.js'
       - 'phaser-play/assembly-sequence.js'
+      - 'phaser-play/assembly-hold.js'
       - 'phaser-play/assembly-workbench.html'
       - 'scripts/test-assembly-sequence-v42.cjs'
+      - 'scripts/test-assembly-hold-v42.cjs'
       - 'scripts/test-oem-procedures.cjs'
       - 'data/oem/**'
       - '.github/workflows/oem-preflight.yml'
@@ -15,8 +17,10 @@ on:
     paths:
       - 'src/oem-procedures.js'
       - 'phaser-play/assembly-sequence.js'
+      - 'phaser-play/assembly-hold.js'
       - 'phaser-play/assembly-workbench.html'
       - 'scripts/test-assembly-sequence-v42.cjs'
+      - 'scripts/test-assembly-hold-v42.cjs'
       - 'scripts/test-oem-procedures.cjs'
       - 'data/oem/**'
       - '.github/workflows/oem-preflight.yml'
@@ -38,6 +42,10 @@ jobs:
       - name: Validate assembly engine and UI syntax
         run: |
           node --check phaser-play/assembly-sequence.js
+          node --check phaser-play/assembly-hold.js
           node --check scripts/test-assembly-sequence-v42.cjs
+          node --check scripts/test-assembly-hold-v42.cjs
       - name: Validate teardown and rebuild mechanics
         run: node scripts/test-assembly-sequence-v42.cjs
+      - name: Validate hold-to-interact and rollback
+        run: node scripts/test-assembly-hold-v42.cjs
