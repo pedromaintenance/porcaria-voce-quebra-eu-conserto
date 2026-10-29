@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - 'src/oem-procedures.js'
+      - 'phaser-play/assembly-sequence.js'
+      - 'phaser-play/assembly-workbench.html'
+      - 'scripts/test-assembly-sequence-v42.cjs'
       - 'scripts/test-oem-procedures.cjs'
       - 'data/oem/**'
       - '.github/workflows/oem-preflight.yml'
@@ -29,3 +32,9 @@ jobs:
         run: node --check src/oem-procedures.js
       - name: Validate OEM dependency and lifting-tool gate
         run: node scripts/test-oem-procedures.cjs
+      - name: Validate assembly engine and UI syntax
+        run: |
+          node --check phaser-play/assembly-sequence.js
+          node --check scripts/test-assembly-sequence-v42.cjs
+      - name: Validate teardown and rebuild mechanics
+        run: node scripts/test-assembly-sequence-v42.cjs
