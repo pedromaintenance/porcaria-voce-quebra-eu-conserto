@@ -8,6 +8,15 @@ assert(M.isValid(M.create()));
 assert(!/Caterpillar|SIS 2\.0|M0116841|i05439085|Disassembly and Assembly/.test(html),
   'não expor referências documentais na interface do jogador');
 assert(html.includes('assembly-sequence.js')&&html.includes('data-action')&&html.includes('Peças na bancada'));
+
+assert(html.includes('id="bp-minor"')&&html.includes('id="bp-major"'),'blueprint exige malha leve e principal');
+assert(html.includes('id="bp-hatch"'),'blueprint exige hachura vetorial');
+assert(html.includes('bp-placeholder')&&html.includes('stroke-dasharray'),'peças removidas mostram contorno tracejado');
+assert(html.includes('pointer-events:none'),'componentes ocultos não devem interceptar os cliques');
+assert(html.includes('SEM ESCALA')&&html.includes('REPRESENTAÇÃO LÚDICA'),'anotações não podem sugerir cotas reais');
+assert(html.includes('BANCADA BLUEPRINT'),'estética técnica deliberada na bancada');
+assert(!/<img[^>]+src=/.test(html),'diagrama da bancada deve ser procedural, sem colagem raster');
+
 const inlineScripts=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(s=>s.trim());
 assert.equal(inlineScripts.length,1,'deve haver um controlador inline independente');
 for(const source of inlineScripts)new vm.Script(source,{filename:'assembly-workbench-inline.js'});
