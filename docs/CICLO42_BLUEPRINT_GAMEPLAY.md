@@ -38,3 +38,16 @@
 - CI sintático/regressões e, posteriormente, validação visual no navegador e aprovação do produtor.
 
 **Estado:** primeira implementação visual integrada à branch de desenvolvimento; não publicada na campanha.
+
+## Ciclo 42.1 — Interação de pressionar e segurar (29/10/2026)
+- Qualquer ação de fixador, retirada/instalação de peça ou inspeção na **bancada isolada** inicia somente com `pointerdown` (mouse/toque) ou `keydown` (Espaço/Enter) e exige **2.000 ms contínuos**.
+- Enquanto mantém a entrada: parafusos giram até 720° com deslocamento discreto; peças movem-se até 30 px no blueprint. A barra visual informa o percentual do gesto.
+- `pointerup`/`keyup` antes de 2 s faz o desenho e a barra **retrocederem ao zero** em 350 ms. Progresso parcial nunca é armazenado e o jogador deve reiniciar do zero.
+- `pointercancel`, mover o cursor/dedo para longe, `blur`, troca de aba ou `visibilitychange`: cancelam sem executar a ação.
+- Ao atingir 2 s contínuos, somente uma aplicação é registrada no motor de peças, que conserva todos os bloqueios de precedência.
+- Componente: `phaser-play/assembly-hold.js` (máquina de estados independente), integrado em `assembly-workbench.html`.
+- Cobertura de teste em `scripts/test-assembly-hold-v42.cjs`, incluída no CI.
+- **Pages experimental publicado** na rota `/phaser-play/playtest-v42/` por cópia seletiva dos arquivos de teste; campanha principal não alterada. Desafios independentes de pino/parafuso mantêm a mecânica original.
+
+### Gate de integração
+- Confirmar pela experiência real no desktop e no celular se a animação de recuo é perceptível, se a área de retenção é suficiente e se os gestos não atrapalham rolagem da página.
