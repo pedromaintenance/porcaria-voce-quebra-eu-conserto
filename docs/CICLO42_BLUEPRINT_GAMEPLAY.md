@@ -51,3 +51,41 @@
 
 ### Gate de integração
 - Confirmar pela experiência real no desktop e no celular se a animação de recuo é perceptível, se a área de retenção é suficiente e se os gestos não atrapalham rolagem da página.
+
+## Ciclo 42.2 — pesquisa de UX, inspeção crítica e melhorias (29/10/2026)
+
+### Pesquisa comparada (referências públicas de interface, não documentação de engenharia)
+- **Apple HIG — Buttons / Designing for Games**: controles direcionados ao toque precisam de tamanho suficiente e de estado visível de pressão. Referência geral de 44×44 pt; em interfaces de jogos, preferir contato direto com objetos.
+  - https://developer.apple.com/design/human-interface-guidelines/buttons
+  - https://developer.apple.com/design/human-interface-guidelines/game-controls
+- **Android Accessibility — Touch target size**: referência de 48×48 dp e espaçamento entre alvos; áreas de toque podem ser maiores que a arte visível.
+  - https://support.google.com/accessibility/android/answer/7101858?hl=en
+- **MDN — Pointer Events, pointer capture e touch-action**: `setPointerCapture` e `lostpointercapture` para concluir/cancelar gestos com consistência, evitando que soltar fora do componente mantenha pressão fantasma. `touch-action:none` apenas nos alvos interativos, preservando o scroll ao redor.
+  - https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events
+  - https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action
+- **Car Mechanic Simulator 2021 (benchmark conceitual)**: destaque visual contextual do componente que pode ser retirado. Não copiar interface, texturas, ilustrações ou instruções.
+  - https://store.steampowered.com/app/1190000/Car_Mechanic_Simulator_2021/
+
+### Problemas encontrados
+1. A prancha SVG original era encolhida em telas de 390 px; parafusos pequenos exigiam precisão excessiva, apesar da lista de ações ter botões maiores.
+2. A única barra de progresso ficava acima do desenho, distante do componente que estava sendo pressionado.
+3. Fora da área do documento/iframe, o `pointerup` poderia não chegar à janela; uma captura explícita reduz riscos de retenção indevida.
+4. O elemento de texto de progresso estava anunciado a cada quadro (`aria-live`), gerando excesso de feedback para leitores de tela.
+
+### Entregas
+- Enquadramento aproximado `viewBox="145 102 610 290"` para até 620 px, mantendo o enquadramento original em desktop.
+- Alvos de toque invisíveis `r=51` (unidades SVG), separados da geometria visual do fixador. Com zoom mobile, a área clicável renderizada cresce para aproximadamente 60–65 px em celulares de 390 px, dependendo das dimensões reais.
+- Alvos geométricos grandes para peças, com `pointer-events` controlado, sem liberar ações fora da sequência.
+- **Anel radial** junto ao componente mostra o avanço de 0–100% do hold; a barra horizontal continua como redundância.
+- `setPointerCapture` ao iniciar, `lostpointercapture` para cancelar, limite de deslocamento e cancelamento por desfoque/aba.
+- Respeito a `prefers-reduced-motion`: o parafuso não gira quando o usuário pede movimento reduzido; o tempo de retenção e feedback de progresso continuam.
+- Botões auxiliares ampliados (56–58 px), mantendo mouse, toque, Enter e Espaço.
+- Testes de máquina de estado, sintaxe e **E2E de Chrome real em desktop/touch**, com screenshot do protótipo.
+
+### Critérios de homologação
+- Segurar 600 ms + soltar -> **nenhuma alteração**, anel retorna ao zero.
+- Segurar 2,1 segundos -> exatamente uma alteração.
+- Arrastar além de 48 px -> cancelar sem alterar.
+- Celular 390 px -> `viewBox` compacto e alvo circular >=44 px CSS (teste automatizado).
+- Nenhum documento técnico aparece para o jogador; blueprint é original e lúdico.
+- A rota de laboratório no Pages é independente da campanha e da sua persistência.
