@@ -1,0 +1,156 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "d9-j3d00357-equalizer-bar-pads-preflight",
+  "status": "draft",
+  "purpose": "Dependency graph for original game design; not an OEM work instruction.",
+  "equipment": {
+    "make": "Caterpillar",
+    "model": "D9",
+    "serialPrefix": "J3D",
+    "serialRange": null,
+    "exampleSerial": "J3D00357",
+    "applicationVerified": false
+  },
+  "component": {
+    "name": "Equalizer Bar Pads",
+    "partNumber": null
+  },
+  "source": {
+    "literatureId": "M0116841-01",
+    "revision": "01",
+    "publicationDate": "2021-04-01",
+    "language": "en",
+    "articleIdHeader": "i08202810",
+    "articleIdFooter": "i05439085",
+    "accessRights": "unverified",
+    "referenceOnly": true
+  },
+  "operation": {
+    "kind": "remove-install",
+    "prerequisiteIds": [
+      "bottom-guard-remove-install-unavailable"
+    ],
+    "safetyRequirements": [
+      "verify-machine-isolation",
+      "verify-lift-system-suitability",
+      "verify-support-and-controlled-load",
+      "keep-personnel-clear-of-loaded-components"
+    ],
+    "choiceGroups": [
+      {
+        "id": "lifting-tool",
+        "mode": "exactly-one",
+        "options": [
+          {
+            "id": "A",
+            "label": "Lift stand + hydraulic pump"
+          },
+          {
+            "id": "B",
+            "label": "Lift group"
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "id": "external-bottom-guard",
+        "title": "Confirmar pré-requisito dos protetores inferiores",
+        "predecessorIds": [],
+        "actionType": "external-prerequisite",
+        "sourceReference": "Equalizer Bar Pads - Remove and Install, p.1, Start By",
+        "riskTags": [
+          "access",
+          "stored-energy"
+        ],
+        "requiredEvidence": [
+          "external-procedure-completed"
+        ],
+        "technicalCheckpoint": "Referência Bottom Guard pendente; não executar instrução técnica a partir deste grafo"
+      },
+      {
+        "id": "select-lifting-tool",
+        "title": "Selecionar um dos sistemas de elevação disponíveis",
+        "predecessorIds": [
+          "external-bottom-guard"
+        ],
+        "actionType": "tool-choice",
+        "choiceGroup": "lifting-tool",
+        "sourceReference": "Equalizer Bar Pads - Remove and Install, p.1, Table 1",
+        "riskTags": [
+          "lifting"
+        ],
+        "requiredEvidence": [
+          "tool-option-selection"
+        ],
+        "technicalCheckpoint": "A ou B, nunca executar as duas rotas como obrigatórias"
+      },
+      {
+        "id": "release-left-pads",
+        "title": "Ramo de liberação dos apoios esquerdos",
+        "predecessorIds": [
+          "select-lifting-tool"
+        ],
+        "actionType": "staged-removal",
+        "requiresChoiceGroup": "lifting-tool",
+        "sourceReference": "Equalizer Bar Pads - Remove and Install, pp.2-3, steps 1-8",
+        "riskTags": [
+          "controlled-lifting",
+          "pinch-point"
+        ],
+        "requiredEvidence": [
+          "opposite-side-lift-position-verified",
+          "retaining-hardware-check"
+        ],
+        "technicalCheckpoint": "Elevação do lado direito para acesso aos pads do lado esquerdo"
+      },
+      {
+        "id": "release-right-pads",
+        "title": "Ramo de liberação dos apoios direitos",
+        "predecessorIds": [
+          "release-left-pads"
+        ],
+        "actionType": "staged-removal",
+        "requiresChoiceGroup": "lifting-tool",
+        "sourceReference": "Equalizer Bar Pads - Remove and Install, pp.3-4, steps 9-16",
+        "riskTags": [
+          "controlled-lifting",
+          "pinch-point"
+        ],
+        "requiredEvidence": [
+          "opposite-side-lift-position-verified",
+          "retaining-hardware-check"
+        ],
+        "technicalCheckpoint": "Elevação do lado esquerdo para acesso aos pads do lado direito"
+      },
+      {
+        "id": "pads-clearance-gate",
+        "title": "Confirmar que os apoios já não bloqueiam a próxima operação",
+        "predecessorIds": [
+          "release-right-pads"
+        ],
+        "actionType": "cross-procedure-gate",
+        "sourceReference": "Equalizer Bar - Remove and Install, p.2, Start By",
+        "riskTags": [
+          "handoff"
+        ],
+        "requiredEvidence": [
+          "pads-stage-signoff"
+        ],
+        "technicalCheckpoint": "Libera apenas uma etapa de narrativa, não autoriza intervenção na máquina"
+      }
+    ]
+  },
+  "gameplay": {
+    "eligible": false,
+    "minigame": null,
+    "relatedIncidentIds": [],
+    "status": "not-integrated",
+    "note": "INC023 and INC040 not linked until SAP, part number and service evidence validate equivalence"
+  },
+  "review": {
+    "engineeringValidatedBy": null,
+    "validatedAt": null,
+    "confidence": "unverified"
+  }
+}
