@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#091623">
+<title>PORCARIA | Bancada de montagem — Protótipo</title>
+<style>
+:root{color-scheme:dark;--gold:#efae3e;--ink:#081521;--panel:#122638;--edge:#36576e;--muted:#b5c8d9}
+*{box-sizing:border-box}body{background:radial-gradient(ellipse at 30% 0%,#21354a,#07111d 65%);color:#eaf2f7;font-family:system-ui,Segoe UI,sans-serif;margin:0;min-height:100vh}button{font:inherit;cursor:pointer}
+header{background:#0b1d2be9;border-bottom:2px solid var(--gold);padding:12px max(20px,calc((100vw - 1500px)/2));display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+header b{font-size:clamp(19px,2.5vw,28px);color:#ffbe49;letter-spacing:2px}header span{font-size:12px;color:#b9cada}
+header button{background:#2b4357;border:1px solid #7b93a7;color:white;border-radius:8px;padding:9px 14px}
+main{max-width:1500px;margin:0 auto;padding:18px;display:grid;grid-template-columns:minmax(0,1.7fr) minmax(320px,.85fr);gap:14px}
+h1{font-size:clamp(20px,3vw,29px);margin:2px 0 8px;color:#ffca75}h2{font-size:14px;text-transform:uppercase;letter-spacing:1px;color:#ffd38e;margin:0 0 12px}
+p{line-height:1.5}small{color:#a9bfd1}
+.panel{background:#112436d9;border:1px solid #3a596d;border-radius:13px;padding:17px;box-shadow:0 10px 35px #0003}
+.headline{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px}
+.flag{border:1px solid #826843;color:#ffe1a3;background:#302e25;padding:5px 9px;border-radius:99px;font-weight:800;font-size:11px;white-space:nowrap}
+.phase{background:#263c50;border-left:4px solid var(--gold);padding:11px;margin:16px 0;border-radius:5px;color:#fbe4b9;font-weight:750}
+.bar{height:11px;background:#07131d;border:1px solid #34516b;border-radius:15px;overflow:hidden}
+.bar>i{display:block;background:linear-gradient(90deg,#d48331,#ffd66e);width:0%;height:100%;transition:width .24s}
+.metrics{display:flex;gap:14px;flex-wrap:wrap;margin:9px 0 15px;color:#b9d1e1;font-size:12px}
+.schematic{width:100%;display:block;max-height:530px;border:1px solid #3a5466;border-radius:12px;background:radial-gradient(circle at 45% 40%,#304657,#13283b 70%);touch-action:manipulation}
+.schematic [data-action]{cursor:pointer;filter:drop-shadow(0 0 5px #ffb74b66);outline:none}
+.schematic [data-action]:focus-visible{stroke:#ffdb82!important;stroke-width:5px!important}
+.hint{font-size:12px;color:#a7bed0;margin:12px 0 0}
+.actions{display:grid;gap:9px;max-height:490px;overflow:auto;scrollbar-width:thin}
+.action{background:linear-gradient(180deg,#25445b,#173248);color:#f6faff;border:1px solid #66839b;padding:12px;border-radius:9px;text-align:left;min-height:48px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.action:hover,.action:focus-visible{border-color:#ffbf57;background:#344e62;outline:none}.action:active{transform:scale(.99)}
+.action::after{content:'›';font-size:24px;color:#eab358}.action.primary{border-color:#e9ae56;background:linear-gradient(180deg,#654a2a,#4a341f)}
+.inventory{display:flex;flex-wrap:wrap;gap:6px;min-height:32px}
+.chip{border:1px solid #496576;border-radius:99px;background:#21394b;padding:6px 9px;font-size:11px;color:#d6e5ef}
+.feed{margin:0;padding-left:19px;font-size:12px;line-height:1.55;max-height:160px;overflow:auto}
+.feed li{margin:3px 0}.success{background:#183f37;border:1px solid #4ba889;padding:14px;color:#c8f9dc;border-radius:10px}
+#feedback{min-height:2.3em;color:#ffdb97;font-size:12px}
+.side{display:flex;flex-direction:column;gap:12px}
+.footer-note{max-width:1500px;margin:0 auto;padding:0 18px 20px;color:#8faabc;font-size:11px}
+@media(max-width:900px){main{grid-template-columns:1fr}.actions{max-height:unset}.schematic{max-height:410px}header{padding:10px 16px}}
+</style>
+</head>
+<body>
+<header>
+  <div><b>P.O.R.C.A.R.I.A.</b> <span>OFICINA INTERATIVA · BANCADA EXPERIMENTAL</span></div>
+  <button type="button" id="reset">↻ Reiniciar exercício</button>
+</header>
+<main>
+  <section class="panel">
+    <div class="headline"><h1>Articulação do trator</h1><span class="flag">PROTÓTIPO JOGÁVEL</span></div>
+    <p class="hint">Toque nos fixadores e componentes destacados ou use os botões ao lado. Cada peça só sai depois de liberar o que a prende.</p>
+    <div class="phase" id="phaseLabel">DESMONTAGEM</div>
+    <div class="bar" role="progressbar" aria-label="Progresso da tarefa" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress"><i id="progressFill"></i></div>
+    <div class="metrics"><span id="progressText">0% concluído</span><span id="actionsCount">0 interações</span><span id="errorsCount">0 tentativas bloqueadas</span></div>
+    <svg class="schematic" id="machine" viewBox="0 0 900 480" role="img" aria-label="Ilustração original de conjunto mecânico com componentes clicáveis"></svg>
+    <p id="feedback" aria-live="polite"></p>
+  </section>
+  <aside class="side">
+    <section class="panel"><h2>Próximas ações</h2><div class="actions" id="actions"></div></section>
+    <section class="panel"><h2>Peças na bancada</h2><div class="inventory" id="inventory"></div></section>
+    <section class="panel"><h2>Histórico da desmontagem</h2><ol class="feed" id="history"></ol></section>
+  </aside>
+</main>
+<p class="footer-note">Simulação lúdica: representação simplificada. Não use as ações do jogo para executar manutenção em equipamento real.</p>
+<script src="./assembly-sequence.js?v=0.9.42"></script>
+<script>
+(function(){
+'use strict';
+const M=window.PORCARIA_ASSEMBLY;
+const KEY='porcaria-workbench-demo-v1';
+const $=id=>document.getElementById(id);
+let s;
+try{s=JSON.parse(localStorage.getItem(KEY)); if(!M.isValid(s))s=M.create();}
+catch(_){s=M.create();}
+const coords={guard:[450,235],leftPad:[290,225],rightPad:[610,225],leftRetainer:[350,218],rightRetainer:[550,218],pin:[450,218],bushing:[450,218]};
+const boltPos={g1:[370,166],g2:[530,303],l1:[244,187],l2:[308,266],r1:[592,187],r2:[654,266]};
+function esc(v){return String(v).replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));}
+function doAction(id){
+const result=M.apply(s,id);
+$('feedback').textContent=result.ok?'✓ '+result.action.label:result.reason;
+try{localStorage.setItem(KEY,JSON.stringify(s));}catch(_){}
+render();
+}
+function boltSvg(id,available){
+const [x,y]=boltPos[id];const present=s.fastened[id];const action=(s.phase==='disassembly'?'removeBolt:':'installBolt:')+id;
+const clickable=available.has(action);
+if(!present&&!clickable)return '';
+return '<g '+(clickable?'data-action="'+esc(action)+'" tabindex="0" role="button" aria-label="'+esc(M.labels[id])+'"':'')+'>'+
+ '<circle cx="'+x+'" cy="'+y+'" r="21" fill="'+(present?'#d7dce0':'#384656')+'" stroke="'+(clickable?'#ffc15a':'#637684')+'" stroke-width="4"/>'+
+ '<path d="M'+(x-9)+' '+y+'h18 M'+x+' '+(y-9)+'v18" stroke="'+(present?'#395364':'#a7b2ba')+'" stroke-width="4" stroke-linecap="round"/>'+
+ '</g>';
+}
+function shape(id,content,ghost){
+const available=M.actions(s).find(a=>a.id===(s.phase==='disassembly'?'removePart:':'installPart:')+id);
+if(!s.installed[id]&&!available)return '';
+const attr=available?' data-action="'+available.id+'" tabindex="0" role="button" aria-label="'+esc(available.label)+'"':'';
+return '<g'+attr+' opacity="'+(ghost?.48:1)+'">'+content+'</g>';
+}
+function blueprint(){
+const choices=new Set(M.actions(s).map(a=>a.id));
+let inner='';
+inner+='<defs><linearGradient id="steel" x1="0" x2="1"><stop stop-color="#415769"/><stop offset=".55" stop-color="#9fb2bd"/><stop offset="1" stop-color="#445b6b"/></linearGradient>'+
+ '<linearGradient id="metal" x1="0" x2="1"><stop stop-color="#aebbc5"/><stop offset=".5" stop-color="#dbe3e7"/><stop offset="1" stop-color="#637583"/></linearGradient></defs>';
+inner+='<rect x="85" y="136" width="730" height="188" rx="52" fill="#1b3446" stroke="#748c99" stroke-width="12"/>';
+inner+='<path d="M105 320h690l-60 45H165Z" fill="#324d5e" stroke="#7992a0" stroke-width="5"/>';
+inner+=shape('bushing','<circle cx="450" cy="223" r="49" fill="#d8ab5a" stroke="#f9d083" stroke-width="9"/><circle cx="450" cy="223" r="26" fill="#1d3441"/>',false);
+inner+=shape('pin','<rect x="304" y="200" width="292" height="46" rx="19" fill="url(#metal)" stroke="#dde9ef" stroke-width="6"/><path d="M336 211h230" stroke="#8297a6" stroke-width="5"/>',false);
+inner+=shape('leftRetainer','<circle cx="348" cy="222" r="40" fill="#687e8b" stroke="#b8c5cf" stroke-width="9"/><circle cx="348" cy="222" r="18" fill="#253d4c"/>',false);
+inner+=shape('rightRetainer','<circle cx="552" cy="222" r="40" fill="#687e8b" stroke="#b8c5cf" stroke-width="9"/><circle cx="552" cy="222" r="18" fill="#253d4c"/>',false);
+inner+=shape('leftPad','<path d="M204 167l156-28 39 55-25 107-177-28Z" fill="url(#steel)" stroke="#a5b8c3" stroke-width="7"/><path d="M228 238l114 24" stroke="#a8c0ce" stroke-width="8"/>',false);
+inner+=shape('rightPad','<path d="M696 167l-156-28-39 55 25 107 177-28Z" fill="url(#steel)" stroke="#a5b8c3" stroke-width="7"/><path d="M672 238l-114 24" stroke="#a8c0ce" stroke-width="8"/>',false);
+if(s.installed.leftPad||choices.has('installPart:leftPad'))for(const b of ['l1','l2'])inner+=boltSvg(b,choices);
+if(s.installed.rightPad||choices.has('installPart:rightPad'))for(const b of ['r1','r2'])inner+=boltSvg(b,choices);
+inner+=shape('guard','<path d="M207 114h486l58 53-30 173H179l-30-173Z" fill="#b38c44" stroke="#f3c069" stroke-width="7"/><path d="M220 192h460M220 285h460" stroke="#6b522a" stroke-width="6"/><text x="450" y="238" font-size="25" font-family="monospace" fill="#2b261b" text-anchor="middle" font-weight="bold">PROTEÇÃO INFERIOR</text>',false);
+if(s.installed.guard||choices.has('installPart:guard'))for(const b of ['g1','g2'])inner+=boltSvg(b,choices);
+if(!s.installed.guard)inner+='<text x="450" y="105" fill="#b9d5e4" font-size="19" font-family="monospace" text-anchor="middle">CONJUNTO DE ARTICULAÇÃO</text>';
+inner+='<text x="450" y="421" fill="#aac5d7" font-size="18" font-family="monospace" text-anchor="middle">TOQUE NAS PEÇAS DESTACADAS</text>';
+if(s.phase==='complete')inner+='<rect x="255" y="405" width="390" height="48" fill="#215844" stroke="#8ce4af" rx="10"/><text x="450" y="435" fill="#d7ffde" font-size="20" text-anchor="middle" font-weight="bold">MONTAGEM CONCLUÍDA</text>';
+return inner;
+}
+function render(){
+const phase={disassembly:'ETAPA 1 — DESMONTAGEM',inspection:'ETAPA 2 — INSPEÇÃO E TROCA',assembly:'ETAPA 3 — REMONTAGEM',complete:'SERVIÇO CONCLUÍDO'};
+$('phaseLabel').textContent=phase[s.phase];
+const pct=M.progress(s);$('progressFill').style.width=pct+'%';$('progress').setAttribute('aria-valuenow',pct);
+$('progressText').textContent=pct+'% concluído';$('actionsCount').textContent=s.actions+' interações';$('errorsCount').textContent=s.errors+' tentativas bloqueadas';
+$('machine').innerHTML=blueprint();
+const acts=M.actions(s);
+$('actions').innerHTML=acts.map(a=>'<button type="button" class="action '+(a.type==='inspect'?'primary':'')+'" data-action="'+esc(a.id)+'">'+esc(a.label)+'</button>').join('')||
+'<div class="success">✓ Conjunto remontado. Todas as peças e fixadores voltaram aos seus lugares.</div>';
+$('inventory').innerHTML=(s.inventory.length?s.inventory.map(item=>'<span class="chip">'+esc(item.kind==='bolt'?M.labels[item.id]:M.parts.find(p=>p.id===item.id)?.name||item.id)+'</span>').join(''):'<small>Bancada vazia.</small>');
+$('history').innerHTML=s.log.slice(-8).reverse().map(x=>'<li>'+esc(x)+'</li>').join('')||'<li>Nenhuma peça removida.</li>';
+}
+document.addEventListener('click',e=>{const el=e.target.closest('[data-action]');if(el)doAction(el.getAttribute('data-action'));});
+$('machine').addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const el=e.target.closest('[data-action]');if(el){e.preventDefault();doAction(el.getAttribute('data-action'));}});
+$('reset').addEventListener('click',()=>{s=M.create();try{localStorage.removeItem(KEY);}catch(_){}$('feedback').textContent='Exercício reiniciado.';render();});
+render();
+})();
+</script>
+</body></html>
