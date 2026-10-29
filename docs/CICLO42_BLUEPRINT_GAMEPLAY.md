@@ -89,3 +89,17 @@
 - Celular 390 px -> `viewBox` compacto e alvo circular >=44 px CSS (teste automatizado).
 - Nenhum documento técnico aparece para o jogador; blueprint é original e lúdico.
 - A rota de laboratório no Pages é independente da campanha e da sua persistência.
+
+## Ciclo 42.3 — Acabamento de desmontagem e remontagem (29/10/2026)
+
+**Objetivo:** feedback legível sem adicionar novos comandos, moedas, telas obrigatórias ou dificuldades. A retenção de 2 segundos e o reset ao soltar continuam imutáveis.
+
+- **Retirada visual:** após 2 s completos, um clone não interativo do componente percorre ~42 px com redução de escala e desaparece em 340 ms, enquanto a alteração de estado já foi registrada uma única vez. A animação não adiciona atraso, não modifica o resultado e não afeta o histórico.
+- **Instalação:** elemento reinstalado recebe movimento curto de entrada `translateY(16px)` e escala 0,94 → 1 em 340 ms.
+- **Inventário em bancada:** itens removidos passam a ser cartões com ícones distintos para peças/fixadores, contagem e destaque momentâneo do item novo.
+- **Orientação contextual:** mostra quantas opções de ação estão disponíveis e uma dica curta com base na fase e no tipo das ações autorizadas pelo motor; sem forçar ordem indevida entre fixadores independentes.
+- **Sem reforços artificiais:** animação não habilita peças, não altera saves/custos/tempo da campanha e não cria recompensas.
+- **Acessibilidade:** animação de confirmação desabilitada quando `prefers-reduced-motion`; indicadores textuais persistem.
+- **Testes:** Node garante presença de feedback sem alterar contrato do motor. E2E em Chrome verifica inventário após remover, persistência após recarga, arraste cancelando, teclado e progressão até remoção da proteção; mobile valida toque e enquadramento.
+
+**Pendente antes de integrar à campanha:** homologação visual pelo produtor, confirmação das áreas de toque no aparelho real e conexão opcional com os minigames específicos de pino e fixador.
