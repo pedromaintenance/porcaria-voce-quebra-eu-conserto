@@ -31,12 +31,12 @@ footer{text-align:center;color:#91b6d0;font-size:12px;padding:15px 15px 28px}
 </style>
 </head>
 <body>
-<header><div><div class="logo">P.O.R.C.A.R.I.A.</div><div class="sub">LABORATÓRIO EXPERIMENTAL · CICLO 42</div></div><span class="tag">TESTE ISOLADO · NÃO ALTERA A CAMPANHA</span></header>
+<header><div><div class="logo">P.O.R.C.A.R.I.A.</div><div class="sub">LABORATÓRIO EXPERIMENTAL · CICLO 42 · HOLD 2S</div></div><span class="tag">TESTE ISOLADO · NÃO ALTERA A CAMPANHA</span></header>
 <main>
 <aside>
-<h1>Escolha o exercício</h1><p>Teste o visual blueprint e as interações de montagem com mouse, teclado ou toque.</p>
+<h1>Escolha o exercício</h1><p>Na bancada, <strong>segure por 2 segundos</strong> para girar um parafuso ou deslocar uma peça. Solte antes para ver a ação retroceder. Os desafios Phaser seguem com seus controles próprios.</p>
 <div class="tabs" role="group" aria-label="Exercícios disponíveis">
-<button type="button" class="tab active" data-mode="bench" aria-pressed="true"><span>🔧</span><div>Bancada de montagem<small class="meta">Peças, parafusos e remontagem</small></div></button>
+<button type="button" class="tab active" data-mode="bench" aria-pressed="true"><span>🔧</span><div>Bancada de montagem<small class="meta">Segurar 2s, soltar e retroceder</small></div></button>
 <button type="button" class="tab" data-mode="bolt" aria-pressed="false"><span>⚙️</span><div>Aperto de parafusos<small class="meta">Desafio Phaser · 4 fixadores</small></div></button>
 <button type="button" class="tab" data-mode="hammer" aria-pressed="false"><span>🔨</span><div>Retirada de pino<small class="meta">Desafio Phaser · 3 impactos</small></div></button>
 </div>
@@ -46,9 +46,9 @@ footer{text-align:center;color:#91b6d0;font-size:12px;padding:15px 15px 28px}
 </aside>
 <section class="stage">
 <div class="status"><b id="current">Bancada de montagem</b><button type="button" id="restart" class="reset">↻ Reiniciar exercício</button></div>
-<div id="results" role="status" aria-live="polite">Solte os parafusos, remova as peças e monte novamente.</div>
+<div id="results" role="status" aria-live="polite">Segure cada peça ou parafuso por 2 segundos. Solte antes para reiniciar.</div>
 <div class="viewer">
-<iframe id="bench" title="Bancada de montagem interativa" src="./assembly-workbench.html?v=42-test-1" loading="eager"></iframe>
+<iframe id="bench" title="Bancada de montagem interativa" src="./assembly-workbench.html?v=42-test-2" loading="eager"></iframe>
 <div id="phaserPanel">
 <div id="phaserMount"></div>
 <div class="controls"><span id="instructions">Selecione os componentes com mouse ou toque.</span><span>Prancha azul · sem escala</span></div>
@@ -58,12 +58,12 @@ footer{text-align:center;color:#91b6d0;font-size:12px;padding:15px 15px 28px}
 </main>
 <footer>Protótipo original de interação mecânica. <a href="./assembly-workbench.html" target="_blank" rel="noopener">Abrir bancada em tela inteira</a>.</footer>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="./repair-minigames.js?v=42-test-1"></script>
+<script src="./repair-minigames.js?v=42-test-2"></script>
 <script>
 (()=>{
 'use strict';
 const $=s=>document.querySelector(s);
-const modes={bench:{name:'Bancada de montagem',hint:'Solte os parafusos, retire as peças e monte novamente.'},
+const modes={bench:{name:'Bancada de montagem',hint:'Segure 2 segundos em cada componente. Soltou antes? A animação retrocede.'},
  bolt:{name:'Aperto de parafusos · Phaser',hint:'Selecione os quatro fixadores na ordem indicada. Toque na barra no instante certo.'},
  hammer:{name:'Retirada de pino · Phaser',hint:'Toque ou pressione ESPAÇO no instante em que o cursor chegar à zona dourada.'}};
 let current='bench',game=null,finished=false;
@@ -83,7 +83,7 @@ function launch(mode){
 }
 document.querySelectorAll('[data-mode]').forEach(el=>el.addEventListener('click',()=>launch(el.dataset.mode)));
 $('#restart').addEventListener('click',()=>{
- if(current==='bench'){const frame=$('#bench');frame.src='./assembly-workbench.html?v=42-test-1&restart='+Date.now();$('#results').textContent='A bancada foi recarregada. Para zerar as peças, use Reiniciar exercício dentro dela.';}
+ if(current==='bench'){const frame=$('#bench');try{frame.contentWindow.localStorage.removeItem('porcaria-workbench-demo-v1');}catch(e){} frame.src='./assembly-workbench.html?v=42-test-2&restart='+Date.now();$('#results').textContent='Bancada reiniciada. Segure uma área ativa por 2 segundos para interagir.';}
  else launch(current);
 });
 window.addEventListener('pagehide',destroy);

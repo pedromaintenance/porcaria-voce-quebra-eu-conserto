@@ -52,6 +52,18 @@ p{line-height:1.5}small{color:#a9bfd1}
 .schematic .bp-placeholder[data-action] path,.schematic .bp-placeholder[data-action] rect,.schematic .bp-placeholder[data-action] circle{stroke:#f9c563!important}
 .schematic [data-action]:focus-visible{filter:drop-shadow(0 0 10px #f6da82);outline:none}
 @media(hover:none){.schematic .bp-interactive{filter:drop-shadow(0 0 5px #ffcb66)}}
+
+/* Ciclo 42: gesto de 2 segundos. Cada peça transforma-se no próprio desenho. */
+.hold-meter{height:8px;background:#061b34;border:1px solid #3d88b8;border-radius:9px;overflow:hidden}
+.hold-meter i{height:100%;width:0%;display:block;background:linear-gradient(90deg,#f09e35,#ffe187);transition:none}
+.hold-label{font:700 12px/1.4 monospace;color:#ffd284;margin:8px 0 9px;letter-spacing:.025em;min-height:18px}
+.schematic [data-action],.action[data-action]{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.schematic [data-action]{transform-origin:center;transform-box:fill-box;will-change:transform}
+.schematic [data-action].bp-hole{transform-origin:center;transform-box:fill-box}
+.action[data-action]{position:relative;overflow:hidden}
+.action.is-holding{border-color:#ffe089;box-shadow:inset 0 0 0 2px #dcab50}
+.action.is-holding::before{content:'';position:absolute;inset:0 auto 0 0;width:var(--hold-percent,0%);background:#ffd06b3c;pointer-events:none}
+.schematic .bp-placeholder[data-action]{opacity:.36;pointer-events:visiblePainted}
 </style>
 </head>
 <body>
@@ -62,8 +74,8 @@ p{line-height:1.5}small{color:#a9bfd1}
 <main>
   <section class="panel">
     <div class="headline"><h1>Articulação do trator</h1><span class="flag">BANCADA BLUEPRINT · PROTÓTIPO</span></div>
-    <p class="hint">Toque nos fixadores e componentes destacados ou use os botões ao lado. Cada peça só sai depois de liberar o que a prende.</p>
-    <div class="phase" id="phaseLabel">DESMONTAGEM</div>
+    <p class="hint">Segure o toque ou o clique por <b>2 segundos</b> para soltar parafusos ou movimentar peças. Soltou antes? A animação volta ao início. Também funciona segurando ESPAÇO ou ENTER.</p>
+    <div class="phase" id="phaseLabel">DESMONTAGEM</div><div class="hold-meter" aria-label="Progresso da interação" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="holdMeter"><i id="holdFill"></i></div><p class="hold-label" id="holdLabel" aria-live="polite">SEGURE A PEÇA OU O PARAFUSO · 2 SEGUNDOS</p>
     <div class="bar" role="progressbar" aria-label="Progresso da tarefa" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress"><i id="progressFill"></i></div>
     <div class="metrics"><span id="progressText">0% concluído</span><span id="actionsCount">0 interações</span><span id="errorsCount">0 tentativas bloqueadas</span></div>
     <svg class="schematic" id="machine" viewBox="0 0 900 480" role="img" aria-label="Ilustração original de conjunto mecânico com componentes clicáveis"></svg>
@@ -77,6 +89,7 @@ p{line-height:1.5}small{color:#a9bfd1}
 </main>
 <p class="footer-note">Simulação lúdica: representação simplificada. Não use as ações do jogo para executar manutenção em equipamento real.</p>
 <script src="./assembly-sequence.js?v=0.9.42"></script>
+<script src="./assembly-hold.js?v=0.9.42-hold"></script>
 <script>
 (function(){
 'use strict';
@@ -106,8 +119,8 @@ function boltSvg(id,available){
   const interactive=available.has(action),stroke=interactive?'#f8c45d':'#78c8f0';
   const attr=actionAttr(action,M.labels[id],available);
   if(!present){
-    return '<g class="bp-hole"'+attr+'><circle cx="'+x+'" cy="'+y+'" r="20" fill="#07325c" stroke="'+(interactive?'#ffc76b':'#457eaf')+'" stroke-width="2" stroke-dasharray="4 4"/>'+
-      '<circle cx="'+x+'" cy="'+y+'" r="9" fill="none" stroke="#508aaf" stroke-width="1.5"/></g>';
+    return '<g class="bp-hole'+(interactive?' bp-interactive bp-bolt':'')+'"'+attr+'><circle cx="'+x+'" cy="'+y+'" r="20" fill="#07325c" stroke="'+(interactive?'#ffc76b':'#457eaf')+'" stroke-width="2" stroke-dasharray="4 4"/>'+
+      '<circle cx="'+x+'" cy="'+y+'" r="9" fill="none" stroke="#508aaf" stroke-width="1.5"/>'+ (interactive?'<path d="M'+(x-9)+' '+y+'h18 M'+x+' '+(y-9)+'v18" stroke="#f7c66c" stroke-width="2" opacity=".7"/>':'')+'</g>';
   }
   return '<g class="'+(interactive?'bp-interactive bp-bolt':'bp-bolt')+'"'+attr+'>'+
     '<circle cx="'+x+'" cy="'+y+'" r="24" fill="#0b4576" stroke="'+stroke+'" stroke-width="3"/>'+
@@ -176,9 +189,122 @@ $('actions').innerHTML=acts.map(a=>'<button type="button" class="action '+(a.typ
 $('inventory').innerHTML=(s.inventory.length?s.inventory.map(item=>'<span class="chip">'+esc(item.kind==='bolt'?M.labels[item.id]:M.parts.find(p=>p.id===item.id)?.name||item.id)+'</span>').join(''):'<small>Bancada vazia.</small>');
 $('history').innerHTML=s.log.slice(-8).reverse().map(x=>'<li>'+esc(x)+'</li>').join('')||'<li>Nenhuma peça removida.</li>';
 }
-document.addEventListener('click',e=>{const el=e.target.closest('[data-action]');if(el)doAction(el.getAttribute('data-action'));});
-$('machine').addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const el=e.target.closest('[data-action]');if(el){e.preventDefault();doAction(el.getAttribute('data-action'));}});
-$('reset').addEventListener('click',()=>{s=M.create();try{localStorage.removeItem(KEY);}catch(_){}$('feedback').textContent='Exercício reiniciado.';render();});
+// Controles por retenção: nenhum clique curto altera o estado persistido.
+const HOLD=window.PORCARIA_HOLD_ACTION;
+let activeNode=null,activeId=null,activePointer=null,activeKey=null,downX=0,downY=0,frameId=0;
+const DURATION=2000;
+function drawHold(id,progress,phase){
+  if(id!==activeId||!activeNode)return;
+  const pct=Math.round(progress*100);
+  $('holdFill').style.width=pct+'%';
+  $('holdMeter').setAttribute('aria-valuenow',String(pct));
+  const verb=id.startsWith('removeBolt:')?'SOLTANDO PARAFUSO':id.startsWith('installBolt:')?'FIXANDO PARAFUSO':
+    id.startsWith('removePart:')?'RETIRANDO PEÇA':id.startsWith('installPart:')?'INSTALANDO PEÇA':'INSPECIONANDO';
+  $('holdLabel').textContent=(phase==='rewinding'?'RETROCEDENDO · ':verb+' · ')+pct+'%';
+  if(activeNode.ownerSVGElement){
+    const removing=id.startsWith('remove');
+    if(id.includes('Bolt:')){
+      const angle=(removing?1:-1)*progress*720;
+      const distance=(removing?-12:12)*progress;
+      activeNode.style.transform='translateY('+distance+'px) rotate('+angle+'deg) scale('+(1-progress*.10)+')';
+    }else{
+      const shift=(removing?-30:26)*progress;
+      activeNode.style.transform='translateY('+shift+'px) scale('+(1-progress*.035)+')';
+      if(activeNode.classList.contains('bp-placeholder'))activeNode.style.opacity=String(.36+progress*.64);
+    }
+  }else{
+    activeNode.style.setProperty('--hold-percent',pct+'%');
+    activeNode.classList.toggle('is-holding',progress>0);
+  }
+}
+function clearVisual(){
+  if(activeNode){
+    activeNode.style.removeProperty('transform');
+    activeNode.style.removeProperty('opacity');
+    activeNode.style.removeProperty('--hold-percent');
+    activeNode.classList.remove('is-holding');
+  }
+  activeNode=null;activeId=null;
+  $('holdFill').style.width='0%';$('holdMeter').setAttribute('aria-valuenow','0');
+  $('holdLabel').textContent='SEGURE A PEÇA OU O PARAFUSO · 2 SEGUNDOS';
+}
+const hold=HOLD.create({durationMs:DURATION,rewindMs:350,onProgress:drawHold,onComplete:id=>{
+  clearVisual();
+  activePointer=null;activeKey=null;
+  doAction(id);
+}});
+function loop(now){
+  frameId=0;
+  hold.tick(now);
+  if(hold.state().phase!=='idle')frameId=requestAnimationFrame(loop);
+  else if(activeId)clearVisual();
+}
+function schedule(){if(!frameId)frameId=requestAnimationFrame(loop);}
+function begin(id,node,time){
+  if(!node||!id)return false;
+  if(activeId&&activeId!==id&&hold.state().phase==='holding')return false;
+  if(activeNode&&activeNode!==node)clearVisual();
+  activeNode=node;activeId=id;
+  const started=hold.start(id,time);
+  if(started){$('feedback').textContent='Mantenha pressionado por 2 segundos.';schedule();}
+  return started;
+}
+function release(now){
+  const done=hold.release(now);
+  if(done)return;
+  if(hold.state().phase==='rewinding'){
+    $('feedback').textContent='Soltou antes do final. Movimento retornando ao início.';
+    schedule();
+  }
+}
+function cancel(){
+  hold.cancel(performance.now());schedule();
+  $('feedback').textContent='Interação interrompida. Segure novamente desde o início.';
+}
+document.addEventListener('pointerdown',e=>{
+  if(e.button!==0||activePointer!==null||activeKey!==null)return;
+  const node=e.target.closest('[data-action]');
+  if(!node)return;
+  e.preventDefault();
+  if(begin(node.getAttribute('data-action'),node,performance.now())){
+    activePointer=e.pointerId;downX=e.clientX;downY=e.clientY;
+  }
+});
+window.addEventListener('pointerup',e=>{
+  if(activePointer===null||e.pointerId!==activePointer)return;
+  activePointer=null;release(performance.now());
+});
+window.addEventListener('pointercancel',e=>{
+  if(activePointer===null||e.pointerId!==activePointer)return;
+  activePointer=null;cancel();
+});
+window.addEventListener('pointermove',e=>{
+  if(activePointer===null||e.pointerId!==activePointer)return;
+  if(Math.hypot(e.clientX-downX,e.clientY-downY)>48){activePointer=null;cancel();}
+},{passive:true});
+document.addEventListener('keydown',e=>{
+  if(!['Enter',' '].includes(e.key)||e.repeat||activePointer!==null||activeKey!==null)return;
+  const node=e.target.closest?.('[data-action]');
+  if(!node)return;
+  e.preventDefault();
+  if(begin(node.getAttribute('data-action'),node,performance.now()))activeKey=e.key;
+});
+window.addEventListener('keyup',e=>{
+  if(activeKey===null||e.key!==activeKey)return;
+  e.preventDefault();activeKey=null;release(performance.now());
+});
+document.addEventListener('contextmenu',e=>{
+  if(e.target.closest('[data-action]'))e.preventDefault();
+});
+window.addEventListener('blur',()=>{
+  if(activePointer!==null||activeKey!==null){activePointer=null;activeKey=null;cancel();}
+});
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden&&hold.state().phase==='holding'){
+    activePointer=null;activeKey=null;cancel();
+  }
+});
+$('reset').addEventListener('click',()=>{hold.reset();clearVisual();activePointer=null;activeKey=null;s=M.create();try{localStorage.removeItem(KEY);}catch(_){}$('feedback').textContent='Exercício reiniciado.';render();});
 render();
 })();
 </script>
