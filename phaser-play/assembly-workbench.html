@@ -149,7 +149,7 @@ function playCommitAnimation(action,node){
   const isInstall=action.startsWith('install');
   if(!isRemoval&&!isInstall)return;
   const svg=$('machine');
-  if(isRemoval&&node?.ownerSVGElement===svg){
+  if(isRemoval&&node?.tagName?.toLowerCase()==='g'){
     const ghost=node.cloneNode(true);
     ghost.removeAttribute('data-action');ghost.removeAttribute('tabindex');ghost.removeAttribute('role');
     ghost.removeAttribute('aria-label');ghost.querySelectorAll('.bp-hit-target').forEach(el=>el.remove());
@@ -177,11 +177,20 @@ function playCommitAnimation(action,node){
   }
 }
 function doAction(id,node){
+  // Guardar a geometria antes de o render substituir o SVG original.
+  const snapshot=node?.ownerSVGElement===$('machine')?node.cloneNode(true):null;
   const result=M.apply(s,id);
   $('feedback').textContent=result.ok?'✓ '+result.action.label:result.reason;
   try{localStorage.setItem(KEY,JSON.stringify(s));}catch(_){}
   render();
-  if(result.ok)playCommitAnimation(id,node);
+  if(result.ok){
+    playCommitAnimation(id,snapshot);
+    if(result.action?.type==='removePart'||result.action?.type==='removeBolt'){
+      const itemId=result.action.bolt||result.action.part;
+      const tile=[...document.querySelectorAll('[data-inventory-item]')].find(x=>x.dataset.inventoryItem===itemId);
+      tile?.classList.add('new-item');
+    }
+  }
 }
 function actionAttr(id,label,actions){
   return actions.has(id)
