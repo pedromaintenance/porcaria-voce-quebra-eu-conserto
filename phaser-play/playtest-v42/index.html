@@ -31,12 +31,12 @@ footer{text-align:center;color:#91b6d0;font-size:12px;padding:15px 15px 28px}
 </style>
 </head>
 <body>
-<header><div><div class="logo">P.O.R.C.A.R.I.A.</div><div class="sub">LABORATÓRIO EXPERIMENTAL · CICLO 42.2 · BLUEPRINT REFINADO</div></div><span class="tag">TESTE ISOLADO · NÃO ALTERA A CAMPANHA</span></header>
+<header><div><div class="logo">P.O.R.C.A.R.I.A.</div><div class="sub">LABORATÓRIO EXPERIMENTAL · CICLO 42.3 · MONTAGEM ANIMADA</div></div><span class="tag">TESTE ISOLADO · NÃO ALTERA A CAMPANHA</span></header>
 <main>
 <aside>
-<h1>Escolha o exercício</h1><p>Na bancada, <strong>segure por 2 segundos</strong> para girar um parafuso ou deslocar uma peça. Agora o desenho aproxima os componentes no celular, exibe um anel de progresso e cancela ao soltar ou arrastar demais. Os desafios Phaser seguem com seus controles próprios.</p>
+<h1>Escolha o exercício</h1><p>Na bancada, <strong>segure por 2 segundos</strong> para girar um parafuso ou deslocar uma peça. Agora os componentes se afastam ao serem retirados, encaixam durante a montagem, e a bancada mostra cada peça removida. Os alvos continuam ampliados no celular. Os desafios Phaser seguem com seus controles próprios.</p>
 <div class="tabs" role="group" aria-label="Exercícios disponíveis">
-<button type="button" class="tab active" data-mode="bench" aria-pressed="true"><span>🔧</span><div>Bancada de montagem<small class="meta">Alvos ampliados, anel e hold 2s</small></div></button>
+<button type="button" class="tab active" data-mode="bench" aria-pressed="true"><span>🔧</span><div>Bancada de montagem<small class="meta">Peças animadas, bancada e hold 2s</small></div></button>
 <button type="button" class="tab" data-mode="bolt" aria-pressed="false"><span>⚙️</span><div>Aperto de parafusos<small class="meta">Desafio Phaser · 4 fixadores</small></div></button>
 <button type="button" class="tab" data-mode="hammer" aria-pressed="false"><span>🔨</span><div>Retirada de pino<small class="meta">Desafio Phaser · 3 impactos</small></div></button>
 </div>
@@ -48,7 +48,7 @@ footer{text-align:center;color:#91b6d0;font-size:12px;padding:15px 15px 28px}
 <div class="status"><b id="current">Bancada de montagem</b><button type="button" id="restart" class="reset">↻ Reiniciar exercício</button></div>
 <div id="results" role="status" aria-live="polite">Segure cada peça ou parafuso por 2 segundos. Solte antes para reiniciar.</div>
 <div class="viewer">
-<iframe id="bench" title="Bancada de montagem interativa" src="./assembly-workbench.html?v=42-test-3" loading="eager"></iframe>
+<iframe id="bench" title="Bancada de montagem interativa" src="./assembly-workbench.html?v=42-test-4" loading="eager"></iframe>
 <div id="phaserPanel">
 <div id="phaserMount"></div>
 <div class="controls"><span id="instructions">Selecione os componentes com mouse ou toque.</span><span>Prancha azul · sem escala</span></div>
@@ -58,12 +58,12 @@ footer{text-align:center;color:#91b6d0;font-size:12px;padding:15px 15px 28px}
 </main>
 <footer>Protótipo original de interação mecânica. <a href="./assembly-workbench.html" target="_blank" rel="noopener">Abrir bancada em tela inteira</a>.</footer>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="./repair-minigames.js?v=42-test-3"></script>
+<script src="./repair-minigames.js?v=42-test-4"></script>
 <script>
 (()=>{
 'use strict';
 const $=s=>document.querySelector(s);
-const modes={bench:{name:'Bancada de montagem',hint:'Segure 2 segundos em cada componente. Soltou antes? A animação retrocede.'},
+const modes={bench:{name:'Bancada de montagem',hint:'Segure 2 segundos em cada componente. Soltou antes? O movimento retrocede. Complete para retirar ou encaixar a peça.'},
  bolt:{name:'Aperto de parafusos · Phaser',hint:'Selecione os quatro fixadores na ordem indicada. Toque na barra no instante certo.'},
  hammer:{name:'Retirada de pino · Phaser',hint:'Toque ou pressione ESPAÇO no instante em que o cursor chegar à zona dourada.'}};
 let current='bench',game=null,finished=false;
@@ -83,7 +83,7 @@ function launch(mode){
 }
 document.querySelectorAll('[data-mode]').forEach(el=>el.addEventListener('click',()=>launch(el.dataset.mode)));
 $('#restart').addEventListener('click',()=>{
- if(current==='bench'){const frame=$('#bench');try{frame.contentWindow.localStorage.removeItem('porcaria-workbench-demo-v1');}catch(e){} frame.src='./assembly-workbench.html?v=42-test-3&restart='+Date.now();$('#results').textContent='Bancada reiniciada. Segure uma área ativa por 2 segundos para interagir.';}
+ if(current==='bench'){const frame=$('#bench');try{frame.contentWindow.localStorage.removeItem('porcaria-workbench-demo-v1');}catch(e){} frame.src='./assembly-workbench.html?v=42-test-4&restart='+Date.now();$('#results').textContent='Bancada reiniciada. Segure uma área ativa por 2 segundos para interagir.';}
  else launch(current);
 });
 window.addEventListener('pagehide',destroy);
