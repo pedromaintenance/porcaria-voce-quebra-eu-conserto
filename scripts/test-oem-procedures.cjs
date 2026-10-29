@@ -41,7 +41,8 @@ for (const kit of ['A','B']) {
   assert.deepEqual(availableSteps(pilot, ['external-bottom-guard', 'select-lifting-tool', 'release-left-pads'], selected).map(s => s.id), ['release-right-pads']);
 }
 assert.deepEqual(availableSteps(pilot, ['external-bottom-guard', 'select-lifting-tool'], { 'lifting-tool': 'C' }), []);
-assert.deepEqual(availableSteps(pilot, ['external-bottom-guard', 'select-lifting-tool', 'release-left-pads', 'release-right-pads']).map(s => s.id), ['pads-clearance-gate']);
+assert.deepEqual(availableSteps(pilot, ['external-bottom-guard', 'select-lifting-tool', 'release-left-pads', 'release-right-pads']).map(s => s.id), []);
+assert.deepEqual(availableSteps(pilot, ['external-bottom-guard', 'select-lifting-tool', 'release-left-pads', 'release-right-pads'], { 'lifting-tool': 'A' }).map(s => s.id), ['pads-clearance-gate']);
 const malformed = structuredClone(pilot);
 malformed.operation.choiceGroups[0].options.push({ id: 'A', label: 'duplicated' });
 assert(validateProcedure(malformed).errors.includes('invalid-choice-options:lifting-tool'));
