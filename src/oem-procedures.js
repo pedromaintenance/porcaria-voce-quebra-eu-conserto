@@ -17,11 +17,26 @@
     if (!Array.isArray(op.steps)) errors.push('missing-steps');
     const steps = Array.isArray(op.steps) ? op.steps : [];
     const ids = new Set(), state = new Map(), byId = new Map();
+    const choiceGroups = new Map();
+    for (const group of (Array.isArray(op.choiceGroups) ? op.choiceGroups : [])) {
+      if (!group || !isText(group.id) || choiceGroups.has(group.id)) {
+        errors.push('invalid-choice-group'); continue;
+      }
+      const options = Array.isArray(group.options)
+        ? group.options.map(option => typeof option === 'string' ? option : option && option.id)
+        : [];
+      if (group.mode !== 'exactly-one' || options.length < 2 || options.some(id => !isText(id)) || new Set(options).size !== options.length) {
+        errors.push('invalid-choice-options:' + group.id);
+      }
+      choiceGroups.set(group.id, new Set(options));
+    }
     for (const step of steps) {
       if (!step || !isText(step.id)) { errors.push('invalid-step-id'); continue; }
       if (ids.has(step.id)) errors.push('duplicate-step:' + step.id);
       ids.add(step.id); byId.set(step.id, step);
       if (!Array.isArray(step.predecessorIds)) errors.push('invalid-predecessors:' + step.id);
+      if (step.choiceGroup && !choiceGroups.has(step.choiceGroup)) errors.push('unknown-choice-group:' + step.id);
+      if (step.requiresChoiceGroup && !choiceGroups.has(step.requiresChoiceGroup)) errors.push('unknown-required-choice-group:' + step.id);
     }
     function visit(id) {
       if (state.get(id) === 1) { errors.push('dependency-cycle:' + id); return; }
@@ -49,10 +64,18 @@
     if (opts.serial && record.status === 'validated' && equipment.serialRange && !isText(equipment.serialPrefix)) warnings.push('serial-range-requires-domain-review');
     return { ok: errors.length === 0, errors: [...new Set(errors)], warnings };
   }
-  function availableSteps(record, completedIds) {
+  function availableSteps(record, completedIds, selections = {}) {
     const done = new Set(completedIds || []);
-    return (record && record.operation && Array.isArray(record.operation.steps) ? record.operation.steps : [])
-      .filter(step => !done.has(step.id) && Array.isArray(step.predecessorIds) && step.predecessorIds.every(id => done.has(id)));
+    const op = record && record.operation || {};
+    const groups = new Map((Array.isArray(op.choiceGroups) ? op.choiceGroups : []).map(group => [
+      group.id, new Set((Array.isArray(group.options) ? group.options : []).map(option => typeof option === 'string' ? option : option.id))
+    ]));
+    return (Array.isArray(op.steps) ? op.steps : [])
+      .filter(step => !done.has(step.id)
+        && Array.isArray(step.predecessorIds)
+        && step.predecessorIds.every(id => done.has(id))
+        && (!step.requiresChoiceGroup || (groups.has(step.requiresChoiceGroup)
+            && groups.get(step.requiresChoiceGroup).has(selections && selections[step.requiresChoiceGroup]))));
   }
   return { validateProcedure, availableSteps };
 });
