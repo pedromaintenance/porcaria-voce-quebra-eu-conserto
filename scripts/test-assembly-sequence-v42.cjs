@@ -8,7 +8,7 @@ assert(M.isValid(M.create()));
 assert(!/Caterpillar|SIS 2\.0|M0116841|i05439085|Disassembly and Assembly/.test(html),
   'não expor referências documentais na interface do jogador');
 assert(html.includes('assembly-sequence.js')&&html.includes('data-action')&&html.includes('Peças na bancada'));
-const inlineScripts=[...html.matchAll(/<script(?:\\s[^>]*)?>([\\s\\S]*?)<\\/script>/g)].map(m=>m[1]).filter(s=>s.trim());
+const inlineScripts=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(s=>s.trim());
 assert.equal(inlineScripts.length,1,'deve haver um controlador inline independente');
 for(const source of inlineScripts)new vm.Script(source,{filename:'assembly-workbench-inline.js'});
 
