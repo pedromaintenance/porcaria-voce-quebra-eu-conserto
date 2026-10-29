@@ -62,6 +62,15 @@ assert(html.includes('id="focusRing"')&&html.includes('focusRingProgress'),'prog
 assert(html.includes('setPointerCapture')&&html.includes('lostpointercapture'),'ponteiro capturado e liberado de forma segura');
 assert(html.includes('145 102 610 290'),'enquadramento móvel aproxima os fixadores');
 assert(html.includes('r="51"')&&html.includes('bp-hit-target'),'alvo invisível de toque ampliado');
+assert(html.includes('function playCommitAnimation(')&&html.includes('bp-exit-ghost'),
+  'peças removidas devem sair visualmente da montagem');
+assert(html.includes("snapshot=node?.ownerSVGElement==="),
+  'geometria original preservada antes da renderização');
+assert(html.includes('data-inventory-item')&&html.includes('new-item'),
+  'inventário deve indicar nova peça removida');
+assert(html.includes('id="taskGuide"')&&html.includes('id="availableCount"')&&html.includes('id="inventoryCount"'),
+  'orientação contextual e contadores legíveis');
+
 assert(html.includes('prefers-reduced-motion'),'respeitar preferência de movimento reduzido');
 assert(!html.includes('holdLabel" aria-live="polite"'),'não anunciar porcentagem nova a cada quadro');
 
