@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#062646">
+<title>PORCARIA | Laboratório integrado de desmontagem</title>
+<style>
+:root{color-scheme:dark;--gold:#f1bb61;--blue:#0c355c;--edge:#417da6;--white:#e8f5ff}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 38% -17%,#1a517e,#061725 62%);color:var(--white);font-family:system-ui,Segoe UI,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:14px max(15px,calc((100% - 1460px)/2));background:#071c30e9;border-bottom:2px solid var(--gold)}
+strong.logo{font-size:clamp(19px,3vw,27px);color:#ffcc77;letter-spacing:.1em}
+.subtitle{color:#a4cce7;font:12px/1.4 monospace}
+a{color:#ffdd92}button{font:inherit;cursor:pointer;border:1px solid #f5be66;background:#3c4b49;color:#ffe3b9;border-radius:9px;padding:11px 15px;font-weight:800;min-height:45px}
+button:hover,button:focus-visible{background:#5d5941;outline:2px solid #ffe3a3}
+main{max-width:1460px;margin:auto;padding:16px}
+.heading{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+h1{font-size:clamp(21px,3vw,28px);margin:0;color:#ffd38e}
+.heading p{font-size:13px;color:#bad7eb;margin:5px 0}
+.tip{background:#103654;border:1px solid #477ea5;border-left:4px solid #f9c96e;border-radius:9px;padding:12px 16px;margin:0 0 12px;line-height:1.55;font-size:13px}
+.lab{background:#071d34;border:1px solid var(--edge);border-radius:13px;overflow:hidden;box-shadow:0 12px 34px #0007}
+#bench{width:100%;height:80vh;min-height:610px;border:0;display:block;background:#081827}
+footer{text-align:center;color:#8eaec7;font-size:12px;padding:15px 14px 24px}
+@media(max-width:800px){main{padding:8px}.heading{padding:8px}#bench{height:78vh;min-height:630px}.tip{padding:10px;margin:0 3px 9px}}
+</style>
+</head>
+<body>
+<header><div><strong class="logo">P.O.R.C.A.R.I.A.</strong><div class="subtitle">OFICINA BLUEPRINT · CICLO 42.4 · LABORATÓRIO INTEGRADO</div></div>
+<a href="../index.html">Ir para o jogo Phaser</a></header>
+<main>
+<div class="heading"><div><h1>Manutenção da articulação</h1>
+<p>Um único cenário: desmontar, liberar o pino, substituir a bucha e remontar.</p></div>
+<button type="button" id="reset">↻ Reiniciar serviço</button></div>
+<p class="tip"><b>Controles:</b> segure componentes e parafusos por <b>2 segundos</b>. Soltou cedo? O movimento retrocede.
+Ao alcançar o pino, <b>toque na barra de precisão três vezes</b>, quando o marcador cruzar a faixa dourada.
+Depois continue a desmontagem e remontagem. Não há mais desafio separado de torque.</p>
+<div class="lab"><iframe title="Bancada integrada de montagem e marreta" id="bench" src="../assembly-workbench.html?v=42.4" loading="eager"></iframe></div>
+</main>
+<footer>Protótipo independente da campanha · desenho técnico estilizado, sem escala · <a href="../assembly-workbench.html?v=42.4" target="_blank" rel="noopener">Abrir a bancada diretamente</a></footer>
+<script>
+const frame=document.getElementById('bench');
+document.getElementById('reset').addEventListener('click',()=>{
+  try{frame.contentWindow.localStorage.removeItem('porcaria-workbench-demo-v1');}catch(_){}
+  frame.src='../assembly-workbench.html?v=42.4&reset='+Date.now();
+});
+</script>
+</body></html>
