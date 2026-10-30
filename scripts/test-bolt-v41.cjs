@@ -74,9 +74,11 @@ assert.ok(scene.includes('PRANCHA INTERATIVA')&&scene.includes('DESENHO LÚDICO,
   'anotações da interface mostram caráter lúdico, sem valores técnicos inventados');
 
 assert.ok(html.includes('repair-minigames.js?v=0.9.41-bolt'));
-assert.ok(game.includes("MINIGAMES.launch(kind"),'mesmo modal aceita ambos minigames');
+assert.ok(game.includes('repairAssistBlueprintFrame'),'OS abre bancada de desmontagem e montagem');
+assert.ok(game.includes("if(kind!=='hammer')"),'torque separado deixa de ser oferecido');
 assert.ok(game.includes("data-repair-assist-kind"),'o botão encaminha o tipo correto');
-assert.ok(quick.includes('APERTAR PARAFUSOS'),'OS rápida expõe novo botão');
-assert.ok(html.includes('id="boltAssistControls"')&&html.includes('data-bolt-control="tighten"'),'controles de toque grandes');
+assert.ok(quick.includes("repairAssists.filter(x=>x.supported)"),'OS rápida respeita lista de assistências elegíveis');
+assert.ok(game.includes("repairAssists:['hammer']"),'somente marreta aparece como assistência ativa');
+assert.ok(html.includes('repairAssistBlueprintFrame'),'interface da OS comporta bancada integrada');
 assert.ok(sw.includes('bolt-v41'),'PWA atualizado');
 console.log('OK Ciclo 41: quatro fixadores, save, compatibilidade com pinos, esforço, HH e bloqueios.');
