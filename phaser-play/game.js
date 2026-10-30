@@ -212,13 +212,15 @@ function openQueueForBay(bay){
 function save(){try{localStorage.setItem(SAVE,JSON.stringify(state))}catch(e){console.warn('Save',e)}}
 function action(error){if(error)notify(error);else{save();drawUI();if(scene)scene.refresh()}}
 function notify(t){const area=$('toast');if(!area)return;area.textContent=t;area.hidden=false;clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>{area.hidden=true},4400)}
+// Ciclo 42.4 — assistência de pino integrada à bancada de desmontagem.
+// A sessão é consumida antes da abertura para preservar a regra de uma tentativa/turno.
 function closeRepairAssist(){
  if(!repairAssistDialog)return;
  const previous=repairAssistDialog;
  repairAssistDialog=null;
- previous.game?.destroy(true);
+ previous.game?.destroy?.(true);
  $('repairAssistStage').replaceChildren();
- $('boltAssistControls').hidden=true;
+ $('boltAssistControls').hidden=true; // controles legados removidos do fluxo.
  $('repairAssistOverlay').hidden=true;
  $('menuOverlay').inert=false;
  $('layout').inert=false;
@@ -226,80 +228,56 @@ function closeRepairAssist(){
 }
 function startRepairAssist(id,kind='hammer'){
  if(repairAssistDialog)return;
+ if(kind!=='hammer'){notify('Aperto e soltura de fixadores agora fazem parte da bancada de montagem.');return;}
  const eligibility=REPAIR.availability(state,data,E,id,kind);
  if(!eligibility.available){notify(eligibility.reason);return;}
  const started=REPAIR.start(state,data,E,id,kind);
  if(started.error){notify(started.error);return;}
- // Persistir antes de abrir a janela: sair, recarregar ou mudar de tela consome a tentativa.
- save();
- const overlay=$('repairAssistOverlay');
+ save(); // fechamento, recarga e troca de tela não reabrem a tentativa.
  const record=E.job(state,id);
- repairAssistDialog={id,kind,focus:document.activeElement,game:null,finished:false};
+ repairAssistDialog={id,kind,focus:document.activeElement,game:null,frame:null,finished:false,turn:state.tick};
  $('repairAssistIdentity').textContent=id+' · '+record.asset;
  $('repairAssistStage').replaceChildren();
- $('boltAssistControls').hidden=kind!=='bolt';
- $('repairAssistTitle').textContent=kind==='bolt'?'🔧 ASSISTÊNCIA MECÂNICA · APERTO DE PARAFUSOS':'🔨 ASSISTÊNCIA MECÂNICA · MARRETAR PINO';
- $('repairAssistHelp').textContent=kind==='bolt'
-  ?'Jogo abstrato de quatro fixadores: escolha o indicado e acione o medidor na faixa dourada. Não representa sequência ou torque OEM. A tentativa é única por turno.'
-  :'Jogo de precisão abstrato: não é procedimento real de desmontagem. A tentativa é única por turno.';
- $('repairAssistResult').textContent=kind==='bolt'
-  ?'Quatro etapas: selecione o fixador e pare o medidor. Fechar a atividade também consome a tentativa.'
-  :'Realize três golpes. Fechar a atividade consome a tentativa neste turno.';
+ $('boltAssistControls').hidden=true;
+ $('repairAssistTitle').textContent='🔨 ASSISTÊNCIA MECÂNICA · BANCADA DE DESMONTAGEM';
+ $('repairAssistHelp').textContent='Solte os fixadores e retire as peças por retenção de 2 segundos. Ao chegar ao pino, aplique três golpes com precisão na própria prancha. Depois remonte o conjunto. A tentativa é única por turno.';
+ $('repairAssistResult').textContent='Siga a montagem no desenho blueprint. Abandonar a atividade consome esta tentativa.';
  $('repairAssistClose').textContent='ABANDONAR ATIVIDADE';
- overlay.hidden=false;
+ $('repairAssistOverlay').hidden=false;
  $('menuOverlay').inert=true;
  $('layout').inert=true;
+ const frame=document.createElement('iframe');
+ frame.id='repairAssistBlueprintFrame';
+ frame.title='Bancada blueprint integrada ao reparo da OS';
+ frame.loading='eager';
+ frame.setAttribute('aria-label','Montagem e desmontagem com marreta integrada');
+ frame.src='./assembly-workbench.html?mode=campaign&order='+encodeURIComponent(id)+'&turn='+encodeURIComponent(state.tick)+'&v=0.9.42.4';
+ $('repairAssistStage').appendChild(frame);
+ repairAssistDialog.frame=frame;
  $('repairAssistClose').focus({preventScroll:true});
- try{
-  repairAssistDialog.game=MINIGAMES.launch(kind,{Phaser,parent:'repairAssistStage',onFinish:hits=>{
-   if(!repairAssistDialog||repairAssistDialog.id!==id||repairAssistDialog.kind!==kind||repairAssistDialog.finished)return;
-   repairAssistDialog.finished=true;
-   const result=REPAIR.finish(state,E,id,hits);
-   if(result.error){$('repairAssistResult').textContent=result.error;return;}
-   save();drawUI();
-   const grade=result.grade;
-   $('repairAssistResult').textContent=grade.label+' · velocidade +'+Math.round(grade.speed*100)
-    +'% · redução adicional do desgaste físico '+Math.round(grade.fatigue*100)+'%. Bônus válido apenas neste turno.';
-   $('repairAssistClose').textContent='VOLTAR À OS';
-   $('repairAssistClose').focus({preventScroll:true});
-  }});
-  $('repairAssistStage').focus({preventScroll:true});
- }catch(error){
-  $('repairAssistResult').textContent='Falha ao iniciar o minigame. A tentativa permanece registrada; detalhes: '+error.message;
-  $('repairAssistClose').textContent='VOLTAR À OS';
- }
 }
 function setupRepairAssist(){
  $('repairAssistClose').addEventListener('click',ev=>{ev.stopPropagation();closeRepairAssist();});
- $('boltAssistControls').addEventListener('click',ev=>{
-  const button=ev.target.closest('[data-bolt-control]');
-  if(!button||!repairAssistDialog||repairAssistDialog.kind!=='bolt'||repairAssistDialog.finished)return;
-  ev.stopPropagation();
-  const mini=repairAssistDialog.game?.scene?.getScene('BoltTightening');
-  if(!mini)return;
-  if(button.dataset.boltControl==='tighten')mini.tighten();
-  else mini.selectBolt(Number(button.dataset.boltControl));
+ window.addEventListener('message',ev=>{
+  const session=repairAssistDialog;
+  if(!session||session.kind!=='hammer'||session.finished||ev.origin!==window.location.origin||
+   ev.source!==session.frame?.contentWindow)return;
+  const m=ev.data;
+  if(!m||m.type!=='porcaria:assembly:complete'||m.version!==1||m.completed!==true||
+    m.orderId!==session.id||m.turn!==session.turn||
+    !Number.isInteger(m.hits)||m.hits<0||m.hits>3)return;
+  const result=REPAIR.finish(state,E,session.id,m.hits);
+  if(result.error){$('repairAssistResult').textContent=result.error;return;}
+  session.finished=true;
+  save();drawUI();
+  const grade=result.grade;
+  $('repairAssistResult').textContent=grade.label+' · velocidade +'+Math.round(grade.speed*100)+
+    '% · redução do desgaste físico '+Math.round(grade.fatigue*100)+'%. Bônus válido apenas neste turno.';
+  $('repairAssistClose').textContent='VOLTAR À OS';
  });
  document.addEventListener('keydown',ev=>{
   if(!repairAssistDialog)return;
-  if(ev.key==='Escape'){ev.preventDefault();ev.stopImmediatePropagation();closeRepairAssist();return;}
-  if(!repairAssistDialog.finished&&ev.target?.id!=='repairAssistClose'){
-   if(repairAssistDialog.kind==='bolt'&&/^[1-4]$/.test(ev.key)){
-    ev.preventDefault();ev.stopImmediatePropagation();
-    repairAssistDialog.game?.scene?.getScene('BoltTightening')?.selectBolt(Number(ev.key)-1);
-    return;
-   }
-   if(ev.code==='Space'||ev.key==='Enter'){
-    ev.preventDefault();ev.stopImmediatePropagation();
-    const game=repairAssistDialog.game;
-    if(repairAssistDialog.kind==='bolt')game?.scene?.getScene('BoltTightening')?.tighten();
-    else game?.scene?.getScene('HammerPin')?.strike();
-    return;
-   }
-  }
-  if(['0','1','2','3','4','5','6'].includes(ev.key)){
-   ev.preventDefault();ev.stopImmediatePropagation();
-  }
+  if(ev.key==='Escape'){ev.preventDefault();ev.stopImmediatePropagation();closeRepairAssist();}
  },true);
 }
 // O modal de confirmação faz parte da interface Phaser/PWA; nunca usar confirm() nativo para gerar OS.
@@ -1194,7 +1172,7 @@ function drawUI(){
    out+=`<p class="muted">Peça necessária: ${esc(data.items[c.material]?.name)} · estoque: ${state.stock[c.material]||0}</p>`;
    if(!(state.stock[c.material]>0)&&!j.materialUsed)out+=`<button class="act" data-do="order">COMPRAR PEÇA · R$ ${brl(data.items[c.material]?.unit||0)}</button>`;
    out+='<p class="muted">Avance turnos até completar o reparo. Estoque e energia limitam a execução.</p>';
-  for(const kind of ['hammer','bolt']){
+  for(const kind of ['hammer']){
    const assist=REPAIR.availability(state,data,E,j.id,kind);
    if(!assist.supported)continue;
    const title=kind==='hammer'?'🔨 ASSISTÊNCIA MECÂNICA · RETIRADA DE PINO':'🔧 ASSISTÊNCIA MECÂNICA · APERTO DE PARAFUSOS';
@@ -1210,7 +1188,7 @@ function drawUI(){
  d.innerHTML=out;
  $('detail').innerHTML=window.PORCARIA_ORDER_QUICK.render({
   job:j,state,data,model:m,scenario:c,diagnostic:diagnosis,preferredBay,feedback:quickFeedback,
-  repairAssists:['hammer','bolt'].map(kind=>({kind,...REPAIR.availability(state,data,E,j.id,kind)}))
+  repairAssists:['hammer'].map(kind=>({kind,...REPAIR.availability(state,data,E,j.id,kind)}))
  });
  $('stats').innerHTML=`<div class="status">OS concluídas: <b>${k.done}</b> · Críticas: <b>${k.critical}</b></div><div class="status">Reputação: <b>${k.reputation}/100</b> · Utilização: <b>${k.utilization}%</b></div><div class="status">Mecânicos disponíveis: <b>${state.team.filter(x=>!x.assigned).length}</b></div><div class="progress"><i style="width:${k.reputation}%"></i></div><div class="legend">⚒ Clique nos boxes da oficina para selecionar uma OS.</div>`;
  drawTeam();drawTraining();drawStore();drawCompletedOrders();
