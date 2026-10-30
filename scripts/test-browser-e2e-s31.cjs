@@ -153,7 +153,7 @@ async function run(browser,test){
   await content.evaluate(({k,v})=>localStorage.setItem(k,v),{k:sessionKey,v:JSON.stringify(assemblyFixture)});
   await content.evaluate(()=>location.reload());
   const bench=page.frameLocator('#repairAssistBlueprintFrame');
-  await bench.locator('[data-action="installBolt:g2"]').waitFor({state:'attached'});
+  await bench.locator('#actions [data-action="installBolt:g2"]').waitFor({state:'attached'});
   await page.screenshot({path:dir+'/'+test.id+'-marretar-pino-integrado.png'});
   const last=bench.locator('#actions [data-action="installBolt:g2"]');
   await last.dispatchEvent('pointerdown',{pointerId:77,button:0,clientX:1,clientY:1});
