@@ -61,6 +61,7 @@
     if(!isValid(s))return {ok:false,reason:'Estado do jogo inválido.'};
     const match=actions(s).find(a=>a.id===id);
     if(!match){s.errors++;return {ok:false,reason:'Esta peça ainda está bloqueada. Siga a sequência de desmontagem.'};}
+    if(id==='removePart:pin'&&s.pinImpact?.round!==3)return {ok:false,reason:'Conclua os três golpes controlados antes de retirar o pino.'};
     if(match.type==='inspect'){
       s.replacementReady=true;s.phase='assembly';
       s.log.push('Peça danificada identificada: separar bucha nova.');
