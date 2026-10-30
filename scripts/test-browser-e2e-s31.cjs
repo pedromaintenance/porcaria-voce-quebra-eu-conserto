@@ -148,9 +148,9 @@ async function run(browser,test){
   await hammerFrame.waitFor({state:'visible',timeout:30000});
   assert.equal(await page.locator('#repairAssistStage canvas').count(),0,'sem canvas separado de marreta');
   const content=await (await hammerFrame.elementHandle()).contentFrame();
-  const fixture=assembledAlmostComplete();
+  const assemblyFixture=assembledAlmostComplete();
   const sessionKey='porcaria-workbench-campaign-v1-'+repairJob.id+'-'+repair.tick;
-  await content.evaluate(({k,v})=>localStorage.setItem(k,v),{k:sessionKey,v:JSON.stringify(fixture)});
+  await content.evaluate(({k,v})=>localStorage.setItem(k,v),{k:sessionKey,v:JSON.stringify(assemblyFixture)});
   await content.evaluate(()=>location.reload());
   const bench=page.frameLocator('#repairAssistBlueprintFrame');
   await bench.locator('[data-action="installBolt:g2"]').waitFor({state:'attached'});
