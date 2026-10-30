@@ -103,3 +103,17 @@
 - **Testes:** Node garante presença de feedback sem alterar contrato do motor. E2E em Chrome verifica inventário após remover, persistência após recarga, arraste cancelando, teclado e progressão até remoção da proteção; mobile valida toque e enquadramento.
 
 **Pendente antes de integrar à campanha:** homologação visual pelo produtor, confirmação das áreas de toque no aparelho real e conexão opcional com os minigames específicos de pino e fixador.
+
+## Ciclo 42.4 — Marreta integrada, torque independente aposentado
+
+- A desmontagem mantém a ordem `proteção → apoios → travas → pino → bucha`; o pino só sai após **três golpes controlados**. O desafio usa uma barra de tempo e marcador de precisão na **mesma prancha SVG**, sem trocar de tela.
+- O jogador ativa cada golpe por toque, clique ou teclado no pino/barra quando o cursor alcançar a janela dourada. A precisão gera uma pontuação **0–3**, mas as três ações sempre permitem concluir a retirada (não prender a OS por desempenho).
+- O pino se desloca um pouco com cada golpe; só no terceiro é transferido ao inventário. Na instalação, retorna à posição e o mecanismo convencional de segurar 2 segundos prossegue.
+- `phaser-play/assembly-pin-impact.js`: pontuação/dificuldade originais, separados da DOM; `assembly-sequence.js` impede remover o pino antes de três impactos.
+- `assembly-workbench.html?mode=campaign&order=<id>&turn=<tick>`: salva o protótipo na chave **por OS/turno**, diferente do save da campanha. O `postMessage` de conclusão é validado em `game.js` pela origem, referência de iframe, OS, turno e faixa de pontuação, antes de aplicar `REPAIR.finish`.
+- `phaser-play/game.js`: somente OS elegíveis para pino recebem assistência; iniciado o serviço, a tentativa é consumida no turno antes de abrir a bancada, como no fluxo existente.
+- O minigame independente de aperto/torque **não é mais exposto** na campanha ou no laboratório. Os parafusos já fazem parte da bancada por hold de 2s; regras históricas de saves/bonificações antigos permanecem no domínio para compatibilidade, mas não geram novas atividades.
+- Nenhum texto de publicações técnicas ou parâmetros OEM é apresentado ao jogador.
+- QA de lógica `test-assembly-pin-v42.cjs`, QA de Chrome desktop/mobile `test-assembly-browser-v42.cjs` e teste end-to-end de campanha adaptado ao iframe.
+
+**Importante:** o processo é abstrato, feito para o jogo; valores de esforço, posição e tempo não representam instruções reais de campo.
