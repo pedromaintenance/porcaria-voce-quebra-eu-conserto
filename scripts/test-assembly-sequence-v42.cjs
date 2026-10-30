@@ -3,6 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const M=require('../phaser-play/assembly-sequence.js');
+const PIN=require('../phaser-play/assembly-pin-impact.js');
 const html=fs.readFileSync('phaser-play/assembly-workbench.html','utf8');
 assert(M.isValid(M.create()));
 assert(!/Caterpillar|SIS 2\.0|M0116841|i05439085|Disassembly and Assembly/.test(html),
@@ -43,6 +44,14 @@ for(const source of inlineScripts)new vm.Script(source,{filename:'assembly-workb
   step('removeBolt:r1');step('removeBolt:r2');step('removePart:rightPad');
   step('removePart:rightRetainer');
   assert(M.actions(s).some(a=>a.id==='removePart:pin'));
+  assert.equal(M.apply(s,'removePart:pin').ok,false,'pino exige golpes');
+  assert.equal(PIN.canStrike(s),true);
+  for(let i=0;i<3;i++){
+    // Simular golpes na posição desejada: domínio não depende de RAF nem do browser.
+    const stroke=PIN.strike(s,0);
+    assert.equal(stroke.ok,true);assert.equal(stroke.round,i+1);
+  }
+  assert.equal(s.pinImpact.round,3);
   step('removePart:pin');step('removePart:bushing');
   assert.equal(s.phase,'inspection');assert.equal(M.progress(s),50);
   step('inspect');assert.equal(s.phase,'assembly');assert.equal(s.replacementReady,true);
@@ -60,7 +69,7 @@ for(const source of inlineScripts)new vm.Script(source,{filename:'assembly-workb
   assert.equal(M.actions(s).length,0);
   assert.deepEqual(s.inventory,[]);
   assert.equal(s.actions,27);
-  assert.equal(s.errors,2); // intentionally blocked pin and premature guard install
+  assert.equal(s.errors,3); // blocked before access, before impact and premature guard
   for(const p of M.parts)assert.equal(s.installed[p.id],true);
   for(const id of Object.keys(M.labels))assert.equal(s.fastened[id],true);
   const save=JSON.parse(JSON.stringify(s));
