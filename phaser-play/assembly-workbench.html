@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#091623">
+<title>PORCARIA | Bancada de montagem — Protótipo</title>
+<style>
+:root{color-scheme:dark;--gold:#efae3e;--ink:#081521;--panel:#122638;--edge:#36576e;--muted:#b5c8d9}
+*{box-sizing:border-box}body{background:radial-gradient(ellipse at 30% 0%,#21354a,#07111d 65%);color:#eaf2f7;font-family:system-ui,Segoe UI,sans-serif;margin:0;min-height:100vh}button{font:inherit;cursor:pointer}
+header{background:#0b1d2be9;border-bottom:2px solid var(--gold);padding:12px max(20px,calc((100vw - 1500px)/2));display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+header b{font-size:clamp(19px,2.5vw,28px);color:#ffbe49;letter-spacing:2px}header span{font-size:12px;color:#b9cada}
+header button{background:#2b4357;border:1px solid #7b93a7;color:white;border-radius:8px;padding:9px 14px}
+main{max-width:1500px;margin:0 auto;padding:18px;display:grid;grid-template-columns:minmax(0,1.7fr) minmax(320px,.85fr);gap:14px}
+h1{font-size:clamp(20px,3vw,29px);margin:2px 0 8px;color:#ffca75}h2{font-size:14px;text-transform:uppercase;letter-spacing:1px;color:#ffd38e;margin:0 0 12px}
+p{line-height:1.5}small{color:#a9bfd1}
+.panel{background:#112436d9;border:1px solid #3a596d;border-radius:13px;padding:17px;box-shadow:0 10px 35px #0003}
+.headline{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px}
+.flag{border:1px solid #826843;color:#ffe1a3;background:#302e25;padding:5px 9px;border-radius:99px;font-weight:800;font-size:11px;white-space:nowrap}
+.phase{background:#263c50;border-left:4px solid var(--gold);padding:11px;margin:16px 0;border-radius:5px;color:#fbe4b9;font-weight:750}
+.bar{height:11px;background:#07131d;border:1px solid #34516b;border-radius:15px;overflow:hidden}
+.bar>i{display:block;background:linear-gradient(90deg,#d48331,#ffd66e);width:0%;height:100%;transition:width .24s}
+.metrics{display:flex;gap:14px;flex-wrap:wrap;margin:9px 0 15px;color:#b9d1e1;font-size:12px}
+.schematic{width:100%;display:block;max-height:530px;border:1px solid #3a5466;border-radius:12px;background:radial-gradient(circle at 45% 40%,#304657,#13283b 70%);touch-action:manipulation}
+.schematic [data-action]{cursor:pointer;filter:drop-shadow(0 0 5px #ffb74b66);outline:none}
+.schematic [data-action]:focus-visible{stroke:#ffdb82!important;stroke-width:5px!important}
+.hint{font-size:12px;color:#a7bed0;margin:12px 0 0}
+.actions{display:grid;gap:9px;max-height:490px;overflow:auto;scrollbar-width:thin}
+.action{background:linear-gradient(180deg,#25445b,#173248);color:#f6faff;border:1px solid #66839b;padding:12px;border-radius:9px;text-align:left;min-height:48px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.action:hover,.action:focus-visible{border-color:#ffbf57;background:#344e62;outline:none}.action:active{transform:scale(.99)}
+.action::after{content:'›';font-size:24px;color:#eab358}.action.primary{border-color:#e9ae56;background:linear-gradient(180deg,#654a2a,#4a341f)}
+.inventory{display:flex;flex-wrap:wrap;gap:6px;min-height:32px}
+.chip{border:1px solid #496576;border-radius:99px;background:#21394b;padding:6px 9px;font-size:11px;color:#d6e5ef}
+.feed{margin:0;padding-left:19px;font-size:12px;line-height:1.55;max-height:160px;overflow:auto}
+.feed li{margin:3px 0}.success{background:#183f37;border:1px solid #4ba889;padding:14px;color:#c8f9dc;border-radius:10px}
+#feedback{min-height:2.3em;color:#ffdb97;font-size:12px}
+.side{display:flex;flex-direction:column;gap:12px}
+.footer-note{max-width:1500px;margin:0 auto;padding:0 18px 20px;color:#8faabc;font-size:11px}
+@media(max-width:900px){main{grid-template-columns:1fr}.actions{max-height:unset}.schematic{max-height:410px}header{padding:10px 16px}}
+
+/* Ciclo 42: linguagem blueprint, SVG procedural, sem assets rasterizados. */
+.schematic{background:#073460;border:1px solid #64b9ea;box-shadow:inset 0 0 0 4px #0a3761,0 12px 30px #00101f99;aspect-ratio:900/480}
+.schematic .bp-part,.schematic .bp-bolt{transition:filter .16s ease,opacity .16s ease}
+.schematic .bp-interactive{cursor:pointer;filter:drop-shadow(0 0 6px #ffce72);outline:none}
+.schematic .bp-interactive>path:first-child,
+.schematic .bp-interactive>rect:first-child,
+.schematic .bp-interactive>circle:first-child{stroke:#f6be57;stroke-width:4}
+.schematic .bp-interactive:hover{filter:drop-shadow(0 0 10px #ffcc5b)}
+.schematic .bp-placeholder{opacity:.26;pointer-events:none}
+.schematic .bp-placeholder[data-action]{opacity:.7;pointer-events:visiblePainted;filter:drop-shadow(0 0 5px #ffcf69)}
+.schematic .bp-placeholder path,.schematic .bp-placeholder rect,.schematic .bp-placeholder circle{fill:transparent!important;stroke:#7acbf0!important;stroke-dasharray:8 6}
+.schematic .bp-placeholder[data-action] path,.schematic .bp-placeholder[data-action] rect,.schematic .bp-placeholder[data-action] circle{stroke:#f9c563!important}
+.schematic [data-action]:focus-visible{filter:drop-shadow(0 0 10px #f6da82);outline:none}
+@media(hover:none){.schematic .bp-interactive{filter:drop-shadow(0 0 5px #ffcb66)}}
+
+/* Ciclo 42: gesto de 2 segundos. Cada peça transforma-se no próprio desenho. */
+.hold-meter{height:8px;background:#061b34;border:1px solid #3d88b8;border-radius:9px;overflow:hidden}
+.hold-meter i{height:100%;width:0%;display:block;background:linear-gradient(90deg,#f09e35,#ffe187);transition:none}
+.hold-label{font:700 12px/1.4 monospace;color:#ffd284;margin:8px 0 9px;letter-spacing:.025em;min-height:18px}
+.schematic [data-action],.action[data-action]{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.schematic [data-action]{transform-origin:center;transform-box:fill-box;will-change:transform}
+.schematic [data-action].bp-hole{transform-origin:center;transform-box:fill-box}
+.action[data-action]{position:relative;overflow:hidden}
+.action.is-holding{border-color:#ffe089;box-shadow:inset 0 0 0 2px #dcab50}
+.action.is-holding::before{content:'';position:absolute;inset:0 auto 0 0;width:var(--hold-percent,0%);background:#ffd06b3c;pointer-events:none}
+.schematic .bp-placeholder[data-action]{opacity:.36;pointer-events:visiblePainted}
+
+/* Ciclo 42.2: alvos amplos, foco contextual e responsividade mobile. */
+.bp-hit-target{pointer-events:all;stroke:none!important;fill:transparent!important}
+.schematic .bp-hit-target{touch-action:none}
+#focusRing{pointer-events:none!important;filter:drop-shadow(0 0 9px #ffd07866)}
+.action[data-action]{min-height:56px}
+@media(max-width:620px){
+ .schematic{aspect-ratio:610/290;max-height:none}
+ .action[data-action]{min-height:58px}
+ .hold-label{font-size:13px}
+ .panel{padding:11px}
+}
+@media(prefers-reduced-motion:reduce){
+ .schematic .bp-part,.schematic .bp-bolt{transition:none!important}
+ .schematic .bp-interactive{filter:none}
+}
+
+/* Ciclo 42.3: objetivos contextuais e peças organizadas na bancada. */
+.section-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+.section-heading h2{margin:0}
+.count{font:700 11px monospace;color:#b7dbef;white-space:nowrap}
+.task-guide{color:#f4d99a;font-size:12px;padding:9px 11px;border-left:3px solid #f5be5b;background:#133b5b;border-radius:3px;margin:0 0 12px}
+.action.recommended{border-color:#e5b55c;background:linear-gradient(180deg,#3d5362,#244056)}
+.action.recommended::after{color:#ffcf71}
+.inventory{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:7px}
+.chip{display:flex;align-items:center;gap:9px;min-width:0;border-radius:8px;padding:9px;color:#d9f0ff}
+.chip i{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;background:#1c577b;border:1px solid #6cb5da;border-radius:6px;font-style:normal;color:#ffd283;font-size:16px}
+.chip span{overflow-wrap:anywhere}
+.chip.new-item{animation:chip-pop .35s ease-out}
+@keyframes chip-pop{from{opacity:.5;transform:translateY(-7px)}to{opacity:1;transform:translateY(0)}}
+.schematic .bp-exit-ghost{pointer-events:none!important;transform-origin:center;transform-box:fill-box}
+@media(prefers-reduced-motion:reduce){.chip.new-item{animation:none!important}}
+
+/* Impacto: mesmo blueprint, sem modal separado, faixa e cursor tocáveis. */
+.schematic [data-strike-pin],.action[data-strike-pin]{cursor:pointer;touch-action:manipulation;user-select:none}
+.schematic [data-strike-pin]:focus-visible{outline:2px solid #ffd58c}
+#impactMini{filter:drop-shadow(0 0 7px #ffcc5b44)}
+.action[data-strike-pin]{background:linear-gradient(180deg,#634b2d,#3f3a35);border-color:#ffc56d}
+</style>
+</head>
+<body>
+<header>
+  <div><b>P.O.R.C.A.R.I.A.</b> <span>OFICINA INTERATIVA · BANCADA EXPERIMENTAL</span></div>
+  <button type="button" id="reset">↻ Reiniciar exercício</button>
+</header>
+<main>
+  <section class="panel">
+    <div class="headline"><h1>Articulação do trator</h1><span class="flag">BANCADA BLUEPRINT · PROTÓTIPO</span></div>
+    <p class="hint">Segure o toque ou o clique por <b>2 segundos</b> para soltar parafusos ou movimentar peças. Soltou antes? A animação volta ao início. Também funciona segurando ESPAÇO ou ENTER.</p>
+    <div class="phase" id="phaseLabel">DESMONTAGEM</div><div class="hold-meter" aria-label="Progresso da interação" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="holdMeter"><i id="holdFill"></i></div><p class="hold-label" id="holdLabel">SEGURE A PEÇA OU O PARAFUSO · 2 SEGUNDOS</p>
+    <div class="bar" role="progressbar" aria-label="Progresso da tarefa" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress"><i id="progressFill"></i></div>
+    <div class="metrics"><span id="progressText">0% concluído</span><span id="actionsCount">0 interações</span><span id="errorsCount">0 tentativas bloqueadas</span></div>
+    <svg class="schematic" id="machine" viewBox="0 0 900 480" role="img" aria-label="Ilustração original de conjunto mecânico com componentes clicáveis"></svg>
+    <p id="feedback" aria-live="polite"></p>
+  </section>
+  <aside class="side">
+    <section class="panel"><div class="section-heading"><h2>Próximas ações</h2><span class="count" id="availableCount">2 disponíveis</span></div>
+    <p class="task-guide" id="taskGuide">Comece pelos fixadores em amarelo.</p>
+    <div class="actions" id="actions"></div></section>
+    <section class="panel"><div class="section-heading"><h2>Peças na bancada</h2><span class="count" id="inventoryCount">0 itens</span></div>
+    <div class="inventory" id="inventory"></div></section>
+    <section class="panel"><h2>Histórico da desmontagem</h2><ol class="feed" id="history"></ol></section>
+  </aside>
+</main>
+<p class="footer-note">Simulação lúdica: representação simplificada. Não use as ações do jogo para executar manutenção em equipamento real.</p>
+<script src="./assembly-sequence.js?v=0.9.42"></script>
+<script src="./assembly-hold.js?v=0.9.42-hold"></script>
+<script src="./assembly-pin-impact.js?v=0.9.42-pin"></script>
+<script>
+(function(){
+'use strict';
+const M=window.PORCARIA_ASSEMBLY;
+const params=new URLSearchParams(window.location.search);
+const campaign=params.get('mode')==='campaign';
+const jobId=(params.get('order')||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,60);
+const turn=(params.get('turn')||'').replace(/[^0-9]/g,'').slice(0,12);
+const KEY=campaign&&jobId&&turn
+ ?'porcaria-workbench-campaign-v1-'+jobId+'-'+turn
+ :'porcaria-workbench-demo-v1';
+const PIN=window.PORCARIA_PIN_IMPACT;
+const impactReady=()=>PIN.canStrike(s)&&PIN.status(s).round<3;
+let impactAnchor=performance.now();
+let lastImpactText='';
+const $=id=>document.getElementById(id);
+let s;
+try{s=JSON.parse(localStorage.getItem(KEY)); if(!M.isValid(s))s=M.create();}
+catch(_){s=M.create();}
+// Área visual é distinta da área de toque. O zoom adaptativo amplia a oficina em telas pequenas.
+const isCompact=()=>window.innerWidth<=620;
+function adjustView(){
+  $('machine').setAttribute('viewBox',isCompact()?'145 102 610 290':'0 0 900 480');
+}
+window.addEventListener('resize',adjustView);
+const boltPos={g1:[370,166],g2:[530,303],l1:[244,187],l2:[308,266],r1:[592,187],r2:[654,266]};
+function esc(v){return String(v).replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));}
+// A confirmação da ação anima apenas a representação visual; o motor aplica uma única mudança.
+function playCommitAnimation(action,node){
+  if(!action||reduceMotion)return;
+  const isRemoval=action.startsWith('remove');
+  const isInstall=action.startsWith('install');
+  if(!isRemoval&&!isInstall)return;
+  const svg=$('machine');
+  if(isRemoval&&node?.tagName?.toLowerCase()==='g'){
+    const ghost=node.cloneNode(true);
+    ghost.removeAttribute('data-action');ghost.removeAttribute('tabindex');ghost.removeAttribute('role');
+    ghost.removeAttribute('aria-label');ghost.querySelectorAll('.bp-hit-target').forEach(el=>el.remove());
+    ghost.classList.add('bp-exit-ghost');ghost.style.pointerEvents='none';
+    ghost.style.removeProperty('transform');ghost.style.removeProperty('opacity');
+    svg.appendChild(ghost);
+    if(typeof ghost.animate==='function'){
+      const animation=ghost.animate([
+        {opacity:.85,transform:'translate(0px,0px) scale(1)'},
+        {opacity:0,transform:'translate(42px,-30px) scale(.72)'}
+      ],{duration:340,easing:'ease-out',fill:'forwards'});
+      animation.onfinish=()=>ghost.remove();
+      animation.oncancel=()=>ghost.remove();
+    }else ghost.remove();
+  }
+  if(isInstall){
+    const isBolt=action.includes('Bolt:');
+    const ident=action.split(':')[1];
+    const selector=isBolt?'[data-bolt="'+ident+'"]':'[data-part="'+ident+'"]';
+    const entered=svg.querySelector(selector);
+    if(entered?.animate)entered.animate([
+      {opacity:.4,transform:'translateY(16px) scale(.94)'},
+      {opacity:1,transform:'translateY(0) scale(1)'}
+    ],{duration:340,easing:'ease-out'});
+  }
+}
+function doAction(id,node){
+  // Guardar a geometria antes de o render substituir o SVG original.
+  const snapshot=node?.ownerSVGElement===$('machine')?node.cloneNode(true):null;
+  const result=M.apply(s,id);
+  $('feedback').textContent=result.ok?'✓ '+result.action.label:result.reason;
+  try{localStorage.setItem(KEY,JSON.stringify(s));}catch(_){}
+  render();
+  if(result.ok&&s.phase==='complete'&&campaign&&jobId&&turn){
+    window.parent.postMessage({type:'porcaria:assembly:complete',version:1,orderId:jobId,
+      turn:Number(turn),hits:PIN.status(s).hits,completed:true},window.location.origin);
+  }
+  if(result.ok){
+    playCommitAnimation(id,snapshot);
+    if(result.action?.type==='removePart'||result.action?.type==='removeBolt'){
+      const itemId=result.action.bolt||result.action.part;
+      const tile=[...document.querySelectorAll('[data-inventory-item]')].find(x=>x.dataset.inventoryItem===itemId);
+      tile?.classList.add('new-item');
+    }
+  }
+}
+function actionAttr(id,label,actions){
+  return actions.has(id)
+    ? ' data-action="'+esc(id)+'" tabindex="0" role="button" aria-label="'+esc(label)+'"'
+    : '';
+}
+function boltSvg(id,available){
+  const [x,y]=boltPos[id],present=s.fastened[id];
+  const action=(s.phase==='disassembly'?'removeBolt:':'installBolt:')+id;
+  const interactive=available.has(action),stroke=interactive?'#f8c45d':'#78c8f0';
+  const attr=actionAttr(action,M.labels[id],available);
+  if(!present){
+    return '<g data-bolt="'+id+'" class="bp-hole'+(interactive?' bp-interactive bp-bolt':'')+'"'+attr+'><circle cx="'+x+'" cy="'+y+'" r="20" fill="#07325c" stroke="'+(interactive?'#ffc76b':'#457eaf')+'" stroke-width="2" stroke-dasharray="4 4"/>'+
+      '<circle cx="'+x+'" cy="'+y+'" r="9" fill="none" stroke="#508aaf" stroke-width="1.5"/>'+ (interactive?'<path d="M'+(x-9)+' '+y+'h18 M'+x+' '+(y-9)+'v18" stroke="#f7c66c" stroke-width="2" opacity=".7"/><circle class="bp-hit-target" cx="'+x+'" cy="'+y+'" r="51" fill="transparent" pointer-events="all"/>':'')+'</g>';
+  }
+  return '<g data-bolt="'+id+'" class="'+(interactive?'bp-interactive bp-bolt':'bp-bolt')+'"'+attr+'>'+
+    '<circle cx="'+x+'" cy="'+y+'" r="24" fill="#0b4576" stroke="'+stroke+'" stroke-width="3"/>'+
+    '<circle cx="'+x+'" cy="'+y+'" r="15" fill="#145f96" stroke="'+stroke+'" stroke-width="2"/>'+
+    '<path d="M'+(x-10)+' '+y+'h20 M'+x+' '+(y-10)+'v20" stroke="'+stroke+'" stroke-width="3" stroke-linecap="round"/>'+
+    (interactive?'<circle cx="'+x+'" cy="'+y+'" r="32" fill="none" stroke="#ffc76b" stroke-width="1" stroke-dasharray="3 5"/><circle class="bp-hit-target" cx="'+x+'" cy="'+y+'" r="51" fill="transparent" pointer-events="all"/>':'')+
+    '</g>';
+}
+function shape(id,content){
+  const action=(s.phase==='disassembly'?'removePart:':'installPart:')+id;
+  const clickable=M.actions(s).some(a=>a.id===action),installed=s.installed[id];
+  const special=id==='pin'&&s.phase==='disassembly'&&clickable;
+  const attr=special?' data-strike-pin="true" tabindex="0" role="button" aria-label="Golpear pino com a ferramenta"':
+    clickable?' data-action="'+esc(action)+'" tabindex="0" role="button" aria-label="'+esc((installed?'Retirar ':'Instalar ')+M.parts.find(p=>p.id===id).name)+'"':'';
+  const hitBox={guard:[175,120,560,230],leftPad:[190,135,215,175],rightPad:[495,135,215,175],
+  leftRetainer:[306,184,82,82],rightRetainer:[512,184,82,82],pin:[300,192,300,65],bushing:[395,170,110,110]}[id];
+  const target=clickable&&hitBox?'<rect class="bp-hit-target" x="'+hitBox[0]+'" y="'+hitBox[1]+'" width="'+hitBox[2]+'" height="'+hitBox[3]+'" fill="transparent" pointer-events="all"/>':'';
+  const motion=id==='pin'&&s.phase==='disassembly'&&PIN.canStrike(s)
+    ?' transform="translate('+(PIN.status(s).round*8)+' 0)"':'';
+  return '<g data-part="'+id+'" class="'+(installed?(clickable?'bp-interactive bp-part':'bp-part'):'bp-placeholder')+'"'+attr+motion+'>'+content+target+'</g>';
+}
+function blueprint(){
+  const choices=new Set(M.actions(s).map(a=>a.id));
+  let inner='<defs>'+
+    '<pattern id="bp-minor" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#69b8eb" stroke-width=".6" opacity=".13"/></pattern>'+
+    '<pattern id="bp-major" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M100 0H0V100" fill="none" stroke="#8ed8ff" stroke-width="1.2" opacity=".17"/></pattern>'+
+    '<pattern id="bp-hatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="12" stroke="#85cff3" stroke-width="2" opacity=".38"/></pattern>'+
+    '</defs>';
+  inner+='<rect width="900" height="480" fill="#073460"/><rect width="900" height="480" fill="url(#bp-minor)"/><rect width="900" height="480" fill="url(#bp-major)"/>'+
+    '<rect x="14" y="14" width="872" height="452" fill="none" stroke="#62b4e0" stroke-width="1" opacity=".55"/>'+
+    '<path d="M450 48v337 M66 226h774" stroke="#70c5eb" opacity=".25" stroke-width="1" stroke-dasharray="10 8"/>'+
+    '<circle cx="450" cy="225" r="160" fill="none" stroke="#78cbf4" stroke-width="1" opacity=".17" stroke-dasharray="7 6"/>'+
+    '<text x="36" y="46" fill="#b2e4ff" font-size="15" font-family="monospace" letter-spacing="2">PRANCHA 01 • VISTA FRONTAL</text>'+
+    '<text x="864" y="46" fill="#8cccea" font-size="13" font-family="monospace" text-anchor="end">DESENHO INTERATIVO</text>';
+  // Estrutura fixa em projeção ortogonal, original do jogo.
+  inner+='<path d="M115 178h670l25 40-25 94H115l-25-94Z" fill="#104d7f" fill-opacity=".68" stroke="#8bd5f6" stroke-width="3"/>'+
+    '<path d="M144 304h612l-38 42H182Z" fill="url(#bp-hatch)" stroke="#6eb9e0" stroke-width="2"/>'+
+    '<path d="M125 178V134 M775 178V134 M125 146H775" stroke="#9be4ff" stroke-width="1.4" opacity=".75"/>'+
+    '<path d="M118 146l14 -9 M768 155l14 -9" stroke="#9be4ff" stroke-width="2"/>'+
+    '<circle cx="450" cy="225" r="68" fill="#073460" stroke="#9bdfff" stroke-width="2" stroke-dasharray="4 6"/>';
+  // Formas vetoriais procedurais: não são desenhos de catálogo, medidas ou especificações.
+  inner+=shape('bushing','<circle cx="450" cy="225" r="49" fill="#135d94" stroke="#a5e5ff" stroke-width="5"/><circle cx="450" cy="225" r="27" fill="#073460" stroke="#7dc9ef" stroke-width="4"/><circle cx="450" cy="225" r="42" fill="none" stroke="#b4e8ff" stroke-width="1" stroke-dasharray="3 4"/>');
+  inner+=shape('pin','<rect x="309" y="205" width="282" height="40" rx="14" fill="#0f538a" stroke="#b0e8ff" stroke-width="4"/><path d="M333 215h234 M333 233h234" stroke="#79c9ee" stroke-width="2"/><path d="M314 225h-23 M586 225h23" stroke="#b0e8ff" stroke-width="3"/>');
+  inner+=shape('leftRetainer','<circle cx="347" cy="225" r="39" fill="#114f82" stroke="#b0e7ff" stroke-width="5"/><circle cx="347" cy="225" r="21" fill="#073460" stroke="#6bbfed" stroke-width="3"/>');
+  inner+=shape('rightRetainer','<circle cx="553" cy="225" r="39" fill="#114f82" stroke="#b0e7ff" stroke-width="5"/><circle cx="553" cy="225" r="21" fill="#073460" stroke="#6bbfed" stroke-width="3"/>');
+  inner+=shape('leftPad','<path d="M198 166l151-27 47 52-29 113-172-31Z" fill="#0d4e83" stroke="#a2e5ff" stroke-width="4"/><path d="M218 204l126-27M208 253l134 23" stroke="#6bbbe6" stroke-width="2"/>');
+  inner+=shape('rightPad','<path d="M702 166l-151-27-47 52 29 113 172-31Z" fill="#0d4e83" stroke="#a2e5ff" stroke-width="4"/><path d="M682 204l-126-27M692 253l-134 23" stroke="#6bbbe6" stroke-width="2"/>');
+  if(s.installed.leftPad)for(const id of ['l1','l2'])inner+=boltSvg(id,choices);
+  if(s.installed.rightPad)for(const id of ['r1','r2'])inner+=boltSvg(id,choices);
+  inner+=shape('guard','<path d="M210 108h480l54 62-29 168H185l-29-168Z" fill="#0a3f71" fill-opacity=".93" stroke="#b6e9ff" stroke-width="4"/>'+
+    '<path d="M210 134h480M215 302h470M247 156l-25 120M653 156l25 120" fill="none" stroke="#6fc4ee" stroke-width="2"/>'+
+    '<rect x="330" y="204" width="240" height="52" rx="4" fill="#0a335a" stroke="#80cbea" stroke-width="2"/>'+
+    '<text x="450" y="235" font-size="17" font-family="monospace" fill="#a7dff9" text-anchor="middle">PROTEÇÃO INFERIOR</text>');
+  if(s.installed.guard)for(const id of ['g1','g2'])inner+=boltSvg(id,choices);
+  inner+='<path d="M110 365v21h680v-21 M98 375h24 M778 375h24" stroke="#78c8ee" stroke-width="1.4" fill="none" opacity=".75"/>'+
+    '<text x="450" y="405" fill="#b6e8ff" font-size="15" font-family="monospace" text-anchor="middle">SELECIONE OS COMPONENTES DESTACADOS EM AMARELO</text>'+
+    '<path d="M36 422h828" stroke="#79c6e6" stroke-width="1" opacity=".6"/>'+
+    '<text x="36" y="450" font-size="12" fill="#99d5f3" font-family="monospace">PORCARIA • OFICINA DE MONTAGEM</text>'+
+    '<text x="864" y="450" font-size="12" fill="#99d5f3" font-family="monospace" text-anchor="end">REPRESENTAÇÃO LÚDICA · SEM ESCALA</text>';
+  inner+='<g id="focusRing" aria-hidden="true" opacity="0" pointer-events="none">'+
+    '<circle r="58" fill="#072b4c" fill-opacity=".45" stroke="#568fb5" stroke-width="8"/>'+
+    '<circle id="focusRingProgress" r="58" fill="none" stroke="#ffce69" stroke-width="8" stroke-linecap="round" transform="rotate(-90)" stroke-dasharray="364.425" stroke-dashoffset="364.425"/>'+
+    '<circle r="45" fill="none" stroke="#bfeeff" stroke-width="1.5" stroke-dasharray="4 6"/>'+
+    '</g>';
+  if(impactReady()){
+    const shot=PIN.status(s);
+    inner+='<g id="impactMini" aria-label="Desafio de marreta integrado ao desenho">'+
+      '<rect x="225" y="327" width="450" height="67" rx="9" fill="#0a3259" stroke="#ffc66b" stroke-width="2"/>'+
+      '<text id="impactTitle" x="450" y="344" fill="#ffe3a8" text-anchor="middle" font-family="monospace" font-size="13">MARRETAR PINO · GOLPE '+(shot.round+1)+'/3 · PRECISOS '+shot.hits+'</text>'+
+      '<rect x="265" y="361" width="370" height="17" rx="7" fill="#06223e" stroke="#6caed1" stroke-width="1"/>'+
+      '<rect id="impactZone" x="337" y="362" width="47" height="15" rx="5" fill="#f2bb52" opacity=".95"/>'+
+      '<line id="impactCursor" x1="265" x2="265" y1="356" y2="385" stroke="#f6ffff" stroke-width="3"/>'+
+      '<rect data-strike-pin="true" tabindex="0" role="button" aria-label="Aplicar golpe no instante da faixa dourada" x="225" y="327" width="450" height="67" fill="transparent" pointer-events="all"/>'+
+      '</g>';
+  }
+  if(s.phase==='complete')inner+='<rect x="295" y="55" width="310" height="45" fill="#124c54" stroke="#87edce" stroke-width="2" rx="8"/>'+
+    '<text x="450" y="83" fill="#c8ffed" font-size="17" text-anchor="middle" font-weight="bold">MONTAGEM CONCLUÍDA</text>';
+  return inner;
+}
+function render(){
+const phase={disassembly:'ETAPA 1 — DESMONTAGEM',inspection:'ETAPA 2 — INSPEÇÃO E TROCA',assembly:'ETAPA 3 — REMONTAGEM',complete:'SERVIÇO CONCLUÍDO'};
+$('phaseLabel').textContent=phase[s.phase];
+const pct=M.progress(s);$('progressFill').style.width=pct+'%';$('progress').setAttribute('aria-valuenow',pct);
+$('progressText').textContent=pct+'% concluído';$('actionsCount').textContent=s.actions+' interações';$('errorsCount').textContent=s.errors+' tentativas bloqueadas';
+$('machine').innerHTML=blueprint();adjustView();
+const acts=M.actions(s);
+const isImpact=impactReady();
+$('availableCount').textContent=acts.length+' '+(acts.length===1?'opção disponível':'opções disponíveis');
+const allBolts=acts.length>0&&acts.every(a=>a.type==='removeBolt'||a.type==='installBolt');
+const guidance=s.phase==='complete'?'Todas as peças e fixadores estão montados.':
+ s.phase==='inspection'?'Inspecione a bucha e separe a peça nova.':
+ isImpact?'MARRETAR PINO: toque no pino ou na barra quando a linha alcançar a faixa dourada. São três golpes.':
+ allBolts?'Segure os fixadores destacados em amarelo por 2 segundos.':
+ s.phase==='disassembly'?'Remova a peça liberada para revelar o próximo componente.':
+ 'Instale a peça destacada e fixe os parafusos para prosseguir.';
+$('taskGuide').textContent=guidance;
+$('actions').innerHTML=acts.map((a,i)=>a.id==='removePart:pin'
+ ?'<button type="button" class="action primary" data-strike-pin="true">🔨 Golpear pino · '+(PIN.status(s).round+1)+'/3</button>'
+ :'<button type="button" class="action '+(a.type==='inspect'?'primary ':'')+(i===0?'recommended':'')+'" data-action="'+esc(a.id)+'">'+esc(a.label)+'</button>').join('')||
+'<div class="success">✓ Conjunto remontado. Todas as peças e fixadores voltaram aos seus lugares.</div>';
+$('inventoryCount').textContent=s.inventory.length+' '+(s.inventory.length===1?'item':'itens');
+$('inventory').innerHTML=(s.inventory.length?s.inventory.map(item=>'<span class="chip" data-inventory-item="'+esc(item.id)+'"><i aria-hidden="true">'+(item.kind==='bolt'?'✣':'▣')+'</i><span>'+esc(item.kind==='bolt'?M.labels[item.id]:M.parts.find(p=>p.id===item.id)?.name||item.id)+'</span></span>').join(''):'<small>Bancada vazia. As peças retiradas aparecem aqui.</small>');
+$('history').innerHTML=s.log.slice(-8).reverse().map(x=>'<li>'+esc(x)+'</li>').join('')||'<li>Nenhuma peça removida.</li>';
+}
+// Controles por retenção: nenhum clique curto altera o estado persistido.
+const HOLD=window.PORCARIA_HOLD_ACTION;
+function updateImpactTrack(now){
+  if(!impactReady()||document.hidden)return;
+  const cursor=$('impactCursor'),zone=$('impactZone');
+  if(!cursor||!zone)return;
+  const elapsed=now-impactAnchor,round=PIN.status(s).round;
+  const pct=PIN.progress(elapsed),target=PIN.target(round);
+  const point=265+pct*370;
+  cursor.setAttribute('x1',String(point));cursor.setAttribute('x2',String(point));
+  zone.setAttribute('x',String(265+Math.max(0,target-.07)*370));
+  zone.setAttribute('width',String(.14*370));
+}
+function strikePin(now){
+  if(!impactReady())return;
+  const result=PIN.strike(s,now-impactAnchor);
+  if(!result.ok)return;
+  impactAnchor=now;
+  lastImpactText=result.precise?'Golpe preciso!':result.partial?'Impacto parcial.':'Golpe fora da faixa de precisão.';
+  $('feedback').textContent=lastImpactText+' '+result.round+'/3';
+  try{localStorage.setItem(KEY,JSON.stringify(s));}catch(_){}
+  if(result.finished){
+    const pinNode=$('machine').querySelector('[data-part="pin"]');
+    doAction('removePart:pin',pinNode);
+    $('feedback').textContent='🔨 Três golpes concluídos · '+result.hits+'/3 precisos. Pino removido.';
+  }else{
+    render();
+  }
+}
+
+let activeNode=null,activeId=null,activePointer=null,activeKey=null,downX=0,downY=0,frameId=0;
+const DURATION=2000;
+const RING_LENGTH=364.425;
+const reduceMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches||false;
+function updateFocusRing(id,progress){
+  const ring=$('focusRing'),stroke=$('focusRingProgress');
+  const target=activeNode?.ownerSVGElement?activeNode:$('machine').querySelector('[data-action="'+id+'"]');
+  if(!ring||!stroke||!target){if(ring)ring.setAttribute('opacity','0');return;}
+  try{
+    const box=target.getBBox();
+    ring.setAttribute('transform','translate('+(box.x+box.width/2)+' '+(box.y+box.height/2)+')');
+    ring.setAttribute('opacity','1');
+    stroke.setAttribute('stroke-dashoffset',String(RING_LENGTH*(1-progress)));
+  }catch(_){ring.setAttribute('opacity','0');}
+}
+function drawHold(id,progress,phase){
+  if(id!==activeId||!activeNode)return;
+  const pct=Math.round(progress*100);
+  $('holdFill').style.width=pct+'%';
+  $('holdMeter').setAttribute('aria-valuenow',String(pct));
+  updateFocusRing(id,progress);
+  const verb=id.startsWith('removeBolt:')?'SOLTANDO PARAFUSO':id.startsWith('installBolt:')?'FIXANDO PARAFUSO':
+    id.startsWith('removePart:')?'RETIRANDO PEÇA':id.startsWith('installPart:')?'INSTALANDO PEÇA':'INSPECIONANDO';
+  $('holdLabel').textContent=(phase==='rewinding'?'RETROCEDENDO · ':verb+' · ')+pct+'%';
+  if(activeNode.ownerSVGElement){
+    const removing=id.startsWith('remove');
+    if(id.includes('Bolt:')){
+      const angle=reduceMotion?0:(removing?1:-1)*progress*720;
+      const distance=(removing?-12:12)*progress;
+      activeNode.style.transform='translateY('+distance+'px) rotate('+angle+'deg) scale('+(1-progress*.10)+')';
+    }else{
+      const shift=(removing?-30:26)*progress;
+      activeNode.style.transform='translateY('+shift+'px) scale('+(1-progress*.035)+')';
+      if(activeNode.classList.contains('bp-placeholder'))activeNode.style.opacity=String(.36+progress*.64);
+    }
+  }else{
+    activeNode.style.setProperty('--hold-percent',pct+'%');
+    activeNode.classList.toggle('is-holding',progress>0);
+  }
+}
+function clearVisual(){
+  if(activeNode){
+    activeNode.style.removeProperty('transform');
+    activeNode.style.removeProperty('opacity');
+    activeNode.style.removeProperty('--hold-percent');
+    activeNode.classList.remove('is-holding');
+  }
+  activeNode=null;activeId=null;
+  $('holdFill').style.width='0%';$('holdMeter').setAttribute('aria-valuenow','0');
+  $('holdLabel').textContent='SEGURE A PEÇA OU O PARAFUSO · 2 SEGUNDOS';
+  const ring=$('focusRing');if(ring)ring.setAttribute('opacity','0');
+}
+const hold=HOLD.create({durationMs:DURATION,rewindMs:350,onProgress:drawHold,onComplete:id=>{
+  const completedNode=activeNode;
+  clearVisual();
+  activePointer=null;activeKey=null;
+  doAction(id,completedNode);
+}});
+function loop(now){
+  frameId=0;
+  hold.tick(now);
+  if(impactReady())updateImpactTrack(now);
+  if(hold.state().phase!=='idle'||impactReady())frameId=requestAnimationFrame(loop);
+  else if(activeId)clearVisual();
+}
+function schedule(){if(!frameId)frameId=requestAnimationFrame(loop);}
+function begin(id,node,time){
+  if(!node||!id)return false;
+  if(activeId&&activeId!==id&&hold.state().phase==='holding')return false;
+  if(activeNode&&activeNode!==node)clearVisual();
+  activeNode=node;activeId=id;
+  const started=hold.start(id,time);
+  if(started){$('feedback').textContent='Mantenha pressionado por 2 segundos.';schedule();}
+  return started;
+}
+function release(now){
+  const done=hold.release(now);
+  if(done)return;
+  if(hold.state().phase==='rewinding'){
+    $('feedback').textContent='Soltou antes do final. Movimento retornando ao início.';
+    schedule();
+  }
+}
+function cancel(){
+  hold.cancel(performance.now());schedule();
+  $('feedback').textContent='Interação interrompida. Segure novamente desde o início.';
+}
+document.addEventListener('pointerdown',e=>{
+  if(e.button!==0||activePointer!==null||activeKey!==null)return;
+  const hammer=e.target.closest('[data-strike-pin]');
+  if(hammer){
+    e.preventDefault();
+    strikePin(performance.now());
+    schedule();
+    return;
+  }
+  const node=e.target.closest('[data-action]');
+  if(!node)return;
+  e.preventDefault();
+  if(begin(node.getAttribute('data-action'),node,performance.now())){
+    activePointer=e.pointerId;downX=e.clientX;downY=e.clientY;
+    // A captura evita que soltar fora do hotspot deixe a animação presa.
+    try{node.setPointerCapture?.(e.pointerId);}catch(_){}
+  }
+});
+document.addEventListener('lostpointercapture',e=>{
+  if(activePointer!==null&&e.pointerId===activePointer&&hold.state().phase==='holding'){
+    activePointer=null;cancel();
+  }
+});
+window.addEventListener('pointerup',e=>{
+  if(activePointer===null||e.pointerId!==activePointer)return;
+  activePointer=null;release(performance.now());
+});
+window.addEventListener('pointercancel',e=>{
+  if(activePointer===null||e.pointerId!==activePointer)return;
+  activePointer=null;cancel();
+});
+window.addEventListener('pointermove',e=>{
+  if(activePointer===null||e.pointerId!==activePointer)return;
+  if(Math.hypot(e.clientX-downX,e.clientY-downY)>48){activePointer=null;cancel();}
+},{passive:true});
+document.addEventListener('keydown',e=>{
+  if(!['Enter',' '].includes(e.key)||e.repeat||activePointer!==null||activeKey!==null)return;
+  if(e.target.closest?.('[data-strike-pin]')){
+    e.preventDefault();
+    strikePin(performance.now());
+    schedule();
+    return;
+  }
+  const node=e.target.closest?.('[data-action]');
+  if(!node)return;
+  e.preventDefault();
+  if(begin(node.getAttribute('data-action'),node,performance.now()))activeKey=e.key;
+});
+window.addEventListener('keyup',e=>{
+  if(activeKey===null||e.key!==activeKey)return;
+  e.preventDefault();activeKey=null;release(performance.now());
+});
+document.addEventListener('contextmenu',e=>{
+  if(e.target.closest('[data-action]'))e.preventDefault();
+});
+window.addEventListener('blur',()=>{
+  if(activePointer!==null||activeKey!==null){activePointer=null;activeKey=null;cancel();}
+});
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden&&hold.state().phase==='holding'){
+    activePointer=null;activeKey=null;cancel();
+  }
+});
+$('reset').addEventListener('click',()=>{hold.reset();clearVisual();activePointer=null;activeKey=null;impactAnchor=performance.now();s=M.create();try{localStorage.removeItem(KEY);}catch(_){}$('feedback').textContent='Exercício reiniciado.';render();});
+render();
+schedule();
+})();
+</script>
+</body></html>

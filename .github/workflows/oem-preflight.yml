@@ -1,0 +1,59 @@
+name: PORCARIA - OEM procedure preflight
+
+on:
+  pull_request:
+    paths:
+      - 'src/oem-procedures.js'
+      - 'phaser-play/assembly-sequence.js'
+      - 'phaser-play/assembly-hold.js'
+      - 'phaser-play/assembly-pin-impact.js'
+      - 'scripts/test-assembly-pin-v42.cjs'
+      - 'phaser-play/assembly-workbench.html'
+      - 'scripts/test-assembly-sequence-v42.cjs'
+      - 'scripts/test-assembly-hold-v42.cjs'
+      - 'scripts/test-oem-procedures.cjs'
+      - 'data/oem/**'
+      - '.github/workflows/oem-preflight.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/oem-procedures.js'
+      - 'phaser-play/assembly-sequence.js'
+      - 'phaser-play/assembly-hold.js'
+      - 'phaser-play/assembly-pin-impact.js'
+      - 'scripts/test-assembly-pin-v42.cjs'
+      - 'phaser-play/assembly-workbench.html'
+      - 'scripts/test-assembly-sequence-v42.cjs'
+      - 'scripts/test-assembly-hold-v42.cjs'
+      - 'scripts/test-oem-procedures.cjs'
+      - 'data/oem/**'
+      - '.github/workflows/oem-preflight.yml'
+
+jobs:
+  oem-preflight:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate OEM module syntax
+        run: node --check src/oem-procedures.js
+      - name: Validate OEM dependency and lifting-tool gate
+        run: node scripts/test-oem-procedures.cjs
+      - name: Validate assembly engine and UI syntax
+        run: |
+          node --check phaser-play/assembly-sequence.js
+          node --check phaser-play/assembly-hold.js
+          node --check phaser-play/assembly-pin-impact.js
+          node --check scripts/test-assembly-pin-v42.cjs
+          node --check scripts/test-assembly-sequence-v42.cjs
+          node --check scripts/test-assembly-hold-v42.cjs
+      - name: Validate teardown and rebuild mechanics
+        run: node scripts/test-assembly-sequence-v42.cjs
+      - name: Validate hold-to-interact and rollback
+        run: node scripts/test-assembly-hold-v42.cjs
+      - name: Validate inline pin impact and campaign wiring
+        run: node scripts/test-assembly-pin-v42.cjs

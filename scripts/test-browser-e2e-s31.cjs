@@ -7,6 +7,28 @@ const fs=require('node:fs');
 const {chromium}=require('playwright-core');
 const D=require('../game-data.json'),E=require('../engine.js'),I=require('../phaser-play/inspection.js'),M=require('../phaser-play/monitoring.js');
 const host=process.env.PORCARIA_TEST_URL||'http://127.0.0.1:8765/phaser-play/';
+const ASSEMBLY=require('../phaser-play/assembly-sequence.js');
+const PIN=require('../phaser-play/assembly-pin-impact.js');
+function assembledAlmostComplete(){
+ const s=ASSEMBLY.create();
+ for(const id of ['removeBolt:g1','removeBolt:g2','removePart:guard',
+  'removeBolt:l1','removeBolt:l2','removePart:leftPad','removePart:leftRetainer',
+  'removeBolt:r1','removeBolt:r2','removePart:rightPad','removePart:rightRetainer']){
+  assert.equal(ASSEMBLY.apply(s,id).ok,true,id);
+ }
+ for(const desired of PIN.targets){
+  const time=460*Math.asin(desired*2-1);
+  assert.equal(PIN.strike(s,time).precise,true);
+ }
+ for(const id of ['removePart:pin','removePart:bushing','inspect','installPart:bushing',
+  'installPart:pin','installPart:leftRetainer','installPart:rightRetainer',
+  'installPart:leftPad','installBolt:l1','installBolt:l2',
+  'installPart:rightPad','installBolt:r1','installBolt:r2',
+  'installPart:guard','installBolt:g1'])assert.equal(ASSEMBLY.apply(s,id).ok,true,id);
+ assert.equal(s.phase,'assembly');
+ assert.deepEqual(ASSEMBLY.actions(s).map(a=>a.id),['installBolt:g2']);
+ return s;
+}
 const dir=process.env.PORCARIA_QA_ARTIFACTS||'test-results/sprint31';
 fs.mkdirSync(dir,{recursive:true});
 const cases=[
@@ -122,11 +144,22 @@ async function run(browser,test){
   const startRepair=page.locator('#detail [data-repair-assist-start="'+repairJob.id+'"]');
   assert.equal(await startRepair.count(),1,'desafio visível na OS elegível');
   await startRepair.click();
-  const hammerCanvas=page.locator('#repairAssistStage canvas');
-  await hammerCanvas.waitFor({state:'visible',timeout:30000});
-  await page.screenshot({path:dir+'/'+test.id+'-marretar-pino.png'});
-  for(let i=0;i<3;i++)await hammerCanvas.click({position:{x:180,y:115}});
-  await page.waitForFunction(()=>document.querySelector('#repairAssistResult')?.textContent?.includes('Bônus válido apenas neste turno.'));
+  const hammerFrame=page.locator('#repairAssistBlueprintFrame');
+  await hammerFrame.waitFor({state:'visible',timeout:30000});
+  assert.equal(await page.locator('#repairAssistStage canvas').count(),0,'sem canvas separado de marreta');
+  const content=await (await hammerFrame.elementHandle()).contentFrame();
+  const assemblyFixture=assembledAlmostComplete();
+  const sessionKey='porcaria-workbench-campaign-v1-'+repairJob.id+'-'+repair.tick;
+  await content.evaluate(({k,v})=>localStorage.setItem(k,v),{k:sessionKey,v:JSON.stringify(assemblyFixture)});
+  await content.evaluate(()=>location.reload());
+  const bench=page.frameLocator('#repairAssistBlueprintFrame');
+  await bench.locator('#actions [data-action="installBolt:g2"]').waitFor({state:'attached'});
+  await page.screenshot({path:dir+'/'+test.id+'-marretar-pino-integrado.png'});
+  const last=bench.locator('#actions [data-action="installBolt:g2"]');
+  await last.dispatchEvent('pointerdown',{pointerId:77,button:0,clientX:1,clientY:1});
+  // Ao concluir 2s, o botão desaparece (re-render); não tentar soltar o nó removido.
+  await page.waitForTimeout(2150);
+  await page.waitForFunction(()=>document.querySelector('#repairAssistResult')?.textContent?.includes('Bônus válido apenas neste turno.'),{timeout:30000});
   await page.locator('#repairAssistClose').click();
   assert.equal(await startRepair.isDisabled(),true,'recompensa não pode ser repetida');
   await page.reload({waitUntil:'domcontentloaded'});
@@ -137,7 +170,7 @@ async function run(browser,test){
   assert.equal(await page.locator('#detail [data-repair-assist-start="'+repairJob.id+'"]').isDisabled(),true,
    'recarregar mantém tentativa registrada');
   await close(page);
-  // Ciclo 41: selecionar quatro fixadores na ordem abstrata e apertar no medidor.
+  // Ciclo 42.4: não há minigame de torque separado, mas os dados de saves antigos seguem válidos.
   const boltState=E.create(D,()=>.42),boltOrder=boltState.jobs[0];
   const bearing=D.scenarios.find(x=>x.id==='INC001');
   boltOrder.scene=bearing.id;boltOrder.title=bearing.title;boltOrder.modelId=bearing.modelId;
@@ -149,25 +182,8 @@ async function run(browser,test){
   await page.reload({waitUntil:'domcontentloaded'});
   await page.locator('#game canvas').waitFor({state:'attached',timeout:30000});
   await open(page,'detail',test.isMobile);
-  const boltButton=page.locator('#detail [data-repair-assist-kind="bolt"]');
-  assert.equal(await boltButton.isVisible(),true,'aperto disponível para rolamento elegível');
-  await boltButton.click();
-  const boltCanvas=page.locator('#repairAssistStage canvas');
-  await boltCanvas.waitFor({state:'visible',timeout:30000});
-  await page.screenshot({path:dir+'/'+test.id+'-aperto-parafusos.png'});
-  const boltControls=page.locator('#boltAssistControls');
-  await boltControls.waitFor({state:'visible'});
-  for(const i of [0,3,1,2]){
-   await boltControls.locator('[data-bolt-control="'+i+'"]').click();
-   await boltControls.locator('[data-bolt-control="tighten"]').click();
-  }
-  await page.waitForFunction(()=>document.querySelector('#repairAssistResult')?.textContent?.includes('Bônus válido apenas neste turno.'));
-  await page.locator('#repairAssistClose').click();
-  assert.equal(await boltButton.isDisabled(),true,'limite por turno aplicado ao aperto');
-  await page.reload({waitUntil:'domcontentloaded'});
-  await page.locator('#game canvas').waitFor({state:'attached',timeout:30000});
-  await open(page,'detail',test.isMobile);
-  assert.equal(await page.locator('#detail [data-repair-assist-kind="bolt"]').isDisabled(),true,'save do aperto preservado');
+  assert.equal(await page.locator('#detail [data-repair-assist-kind="bolt"]').count(),0,
+   'minigame de torque removido da interface');
   await close(page);
   // Avanço do turno passa pelo briefing/confirmar, não deve avançar por clique acidental.
   await page.locator('#advance').click();

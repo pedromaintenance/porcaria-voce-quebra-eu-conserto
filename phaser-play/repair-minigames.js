@@ -4,12 +4,30 @@
  root.PORCARIA_REPAIR_MINIGAMES=api;
 })(typeof window!=='undefined'?window:globalThis,function(){
  'use strict';
+
+ // Fundo procedural: malha de desenho técnico, gerada em Phaser (sem textura externa).
+ function drawBlueprint(scene,width,height){
+  const grid=scene.add.graphics();
+  grid.fillStyle(0x07345f,1).fillRect(0,0,width,height);
+  for(let x=0;x<=width;x+=20){
+   grid.lineStyle(1,0x75bfe5,x%100===0?.18:.075).lineBetween(x,0,x,height);
+  }
+  for(let y=0;y<=height;y+=20){
+   grid.lineStyle(1,0x75bfe5,y%100===0?.18:.075).lineBetween(0,y,width,y);
+  }
+  grid.lineStyle(1,0x8acded,.45).strokeRect(10,10,width-20,height-20);
+  grid.lineStyle(1,0xb2e8ff,.3).lineBetween(width/2,52,width/2,height-28);
+  scene.add.text(16,height-17,'PRANCHA INTERATIVA · DESENHO LÚDICO, SEM ESCALA',{
+    fontFamily:'monospace',fontSize:'8px',color:'#9fd2ed'
+  });
+ }
+
  function launchHammer({Phaser,parent,onFinish}){
   if(!Phaser||!parent||typeof onFinish!=='function')throw Error('Interface de minigame indisponível.');
   class HammerPin extends Phaser.Scene{
    constructor(){super({key:'HammerPin'});this.hits=0;this.round=0;this.elapsed=0;this.finished=false;}
    create(){
-    this.add.rectangle(320,160,640,320,0x0a1d2d);
+    drawBlueprint(this,640,320);
     this.add.rectangle(320,38,606,58,0x183448).setStrokeStyle(2,0xd5a04c);
     this.add.text(320,25,'RETIRADA DE PINO · ASSISTÊNCIA MECÂNICA',{
      fontFamily:'monospace',fontSize:'16px',color:'#ffda97',fontStyle:'bold'
@@ -17,9 +35,9 @@
     this.add.text(320,65,'Acione no instante em que o cursor passar pela janela dourada.',{
      fontFamily:'monospace',fontSize:'11px',color:'#c9dce8'
     }).setOrigin(.5);
-    this.add.rectangle(320,164,490,94,0x304759).setStrokeStyle(3,0x8192a2);
-    this.add.rectangle(320,164,340,34,0x8d9baa).setStrokeStyle(2,0xdae5ec);
-    this.add.rectangle(320,164,50,52,0xbabfc8).setStrokeStyle(2,0x1e303d);
+    this.add.rectangle(320,164,490,94,0x164b79).setStrokeStyle(3,0x8fd9ff);
+    this.add.rectangle(320,164,340,34,0x2b78a1).setStrokeStyle(2,0xa4e4ff);
+    this.add.rectangle(320,164,50,52,0x12679d).setStrokeStyle(2,0xc2f0ff);
     this.track=this.add.graphics();
     this.feedback=this.add.text(320,245,'ESPAÇO / ENTER / TOQUE PARA GOLPEAR',{
      fontFamily:'monospace',fontSize:'14px',color:'#ffe5af',align:'center'
@@ -38,7 +56,7 @@
     const target=[.32,.69,.46][this.round];
     this.progress=progress;
     this.track.clear();
-    this.track.fillStyle(0x07121f).fillRoundedRect(75,204,490,16,6);
+    this.track.fillStyle(0x07325b).fillRoundedRect(75,204,490,16,6);
     this.track.fillStyle(0xffc457).fillRoundedRect(80+target*455-29,205,58,14,5);
     this.track.lineStyle(3,0xe1f3ff).lineBetween(80+progress*455,194,80+progress*455,229);
    }
@@ -60,7 +78,7 @@
   }
   return new Phaser.Game({
    type:Phaser.CANVAS,parent,width:640,height:320,
-   backgroundColor:'#081d2d',
+   backgroundColor:'#07345f',
    scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_HORIZONTALLY},
    render:{pixelArt:true,antialias:false},
    scene:[HammerPin]
@@ -74,7 +92,7 @@
   class BoltTightening extends Phaser.Scene{
    constructor(){super({key:'BoltTightening'});this.round=0;this.hits=0;this.elapsed=0;this.finished=false;this.phase='select';this.progress=0;}
    create(){
-    this.add.rectangle(320,180,640,360,0x0a1d2d);
+    drawBlueprint(this,640,360);
     this.add.rectangle(320,31,615,52,0x183448).setStrokeStyle(2,0xe0aa56);
     this.add.text(320,31,'FIXADORES · ASSISTÊNCIA MECÂNICA',{
      fontFamily:'monospace',fontSize:'16px',fontStyle:'bold',color:'#ffda97'
@@ -82,10 +100,10 @@
     this.add.text(320,76,'1–4: selecionar fixador · ESPAÇO/ENTER: confirmar aperto',{
      fontFamily:'monospace',fontSize:'12px',color:'#c6dbe9'
     }).setOrigin(.5);
-    this.add.rectangle(320,177,290,176,0x536a77).setStrokeStyle(5,0x98abb6);
-    this.add.circle(320,177,43,0x263947).setStrokeStyle(3,0xb5c8d2);
+    this.add.rectangle(320,177,290,176,0x115381).setStrokeStyle(5,0x83d3f8);
+    this.add.circle(320,177,43,0x07345f).setStrokeStyle(3,0xb7e7ff);
     this.fasteners=coords.map(([x,y],i)=>{
-     const circle=this.add.circle(x,y,27,0x9babb9).setStrokeStyle(3,0x273c4c).setInteractive({useHandCursor:true});
+     const circle=this.add.circle(x,y,27,0x3685b6).setStrokeStyle(3,0x9bddff).setInteractive({useHandCursor:true});
      const label=this.add.text(x,y,String(i+1),{fontFamily:'monospace',fontSize:'17px',fontStyle:'bold',color:'#0b2334'}).setOrigin(.5);
      circle.on('pointerdown',()=>this.selectBolt(i));
      label.setInteractive({useHandCursor:true}).on('pointerdown',()=>this.selectBolt(i));
@@ -112,7 +130,7 @@
     this.fasteners.forEach((bolt,i)=>{
      const done=sequence.slice(0,this.round).includes(i);
      const active=!this.finished&&current===i;
-     bolt.circle.setFillStyle(done?0x69aa8a:active?0xe0b460:0x9babb9);
+     bolt.circle.setFillStyle(done?0x55a98a:active?0xe0b460:0x3685b6);
      bolt.label.setColor(done?'#061e2d':'#112738');
     });
    }
@@ -131,7 +149,7 @@
     this.elapsed+=Math.min(70,delta);
     this.progress=(Math.sin(this.elapsed/520)+1)/2;
     this.gauge.clear();
-    this.gauge.fillStyle(0x30475c).fillRoundedRect(78,290,484,22,5);
+    this.gauge.fillStyle(0x0b416c).fillRoundedRect(78,290,484,22,5);
     this.gauge.fillStyle(0xeab651).fillRoundedRect(78+0.5*484-41,291,82,20,4);
     this.gauge.lineStyle(3,0xe6f3fb).lineBetween(78+this.progress*484,283,78+this.progress*484,318);
    }
@@ -148,7 +166,7 @@
   }
   return new Phaser.Game({
    type:Phaser.CANVAS,parent,width:640,height:360,
-   backgroundColor:'#081d2d',
+   backgroundColor:'#07345f',
    scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_HORIZONTALLY},
    render:{pixelArt:true,antialias:false},
    scene:[BoltTightening]
