@@ -3,6 +3,7 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const {chromium}=require('playwright-core');
+const M=require('../phaser-play/assembly-sequence.js');
 const HOST=process.env.PORCARIA_HOLD_URL||'http://127.0.0.1:8765/phaser-play/assembly-workbench.html';
 const artifacts='test-results/assembly-v42';
 fs.mkdirSync(artifacts,{recursive:true});
@@ -58,6 +59,26 @@ async function desktop(browser){
     assert.equal(await page.locator('#inventoryCount').innerText(),'3 itens');
     assert.equal(errors.length,0,errors.join('; '));
     await page.screenshot({path:artifacts+'/desktop-blueprint.png',fullPage:true});
+    // O pino especial só aparece após a desmontagem de apoios e travas.
+    const pinScene=M.create();
+    for(const id of ['removeBolt:g1','removeBolt:g2','removePart:guard',
+      'removeBolt:l1','removeBolt:l2','removePart:leftPad','removePart:leftRetainer',
+      'removeBolt:r1','removeBolt:r2','removePart:rightPad','removePart:rightRetainer'])
+      assert.equal(M.apply(pinScene,id).ok,true,id);
+    await page.evaluate(value=>localStorage.setItem('porcaria-workbench-demo-v1',value),
+      JSON.stringify(pinScene));
+    await page.reload({waitUntil:'domcontentloaded'});
+    assert.equal(await page.locator('#impactMini').count(),1,'marreta aparece apenas após liberar o pino');
+    assert.equal(await page.locator('#actions [data-action="removePart:pin"]').count(),0,
+      'pino não pode ser removido com hold, precisa de impactos');
+    for(let i=0;i<3;i++)await page.locator('#actions [data-strike-pin]').click();
+    await page.waitForFunction(()=>document.querySelector('[data-inventory-item="pin"]')!==null);
+    const state=await page.evaluate(()=>JSON.parse(localStorage.getItem('porcaria-workbench-demo-v1')));
+    assert.equal(state.pinImpact.round,3);
+    assert.equal(state.installed.pin,false,'três golpes liberam extração mecânica');
+    assert.equal(await page.locator('#impactMini').count(),0,'desafio desaparece após a remoção');
+    assert.equal(errors.length,0,errors.join('; '));
+    await page.screenshot({path:artifacts+'/desktop-pin-integrated.png',fullPage:true});
   }finally{await context.close();}
 }
 async function mobile(browser){
