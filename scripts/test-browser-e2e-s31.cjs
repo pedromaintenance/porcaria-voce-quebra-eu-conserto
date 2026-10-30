@@ -157,8 +157,8 @@ async function run(browser,test){
   await page.screenshot({path:dir+'/'+test.id+'-marretar-pino-integrado.png'});
   const last=bench.locator('#actions [data-action="installBolt:g2"]');
   await last.dispatchEvent('pointerdown',{pointerId:77,button:0,clientX:1,clientY:1});
+  // Ao concluir 2s, o botão desaparece (re-render); não tentar soltar o nó removido.
   await page.waitForTimeout(2150);
-  await last.dispatchEvent('pointerup',{pointerId:77,button:0,clientX:1,clientY:1});
   await page.waitForFunction(()=>document.querySelector('#repairAssistResult')?.textContent?.includes('Bônus válido apenas neste turno.'),{timeout:30000});
   await page.locator('#repairAssistClose').click();
   assert.equal(await startRepair.isDisabled(),true,'recompensa não pode ser repetida');
