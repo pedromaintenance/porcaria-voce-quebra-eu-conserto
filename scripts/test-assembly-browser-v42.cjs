@@ -71,7 +71,14 @@ async function desktop(browser){
     assert.equal(await page.locator('#impactMini').count(),1,'marreta aparece apenas após liberar o pino');
     assert.equal(await page.locator('#actions [data-action="removePart:pin"]').count(),0,
       'pino não pode ser removido com hold, precisa de impactos');
-    for(let i=0;i<3;i++)await page.locator('#actions [data-strike-pin]').click();
+    await page.locator('#actions [data-strike-pin]').click();
+    assert.equal(await page.locator('#impactTitle').innerText().then(v=>v.includes('GOLPE 2/3')),true,
+      'primeiro impacto incrementa o contador sem retirar pino');
+    assert.equal(await page.locator('#impactFx .impact-fx').count(),1,
+      'efeito vetorial aparece após o primeiro impacto');
+    await page.screenshot({path:artifacts+'/desktop-first-impact.png',fullPage:true});
+    await page.locator('#actions [data-strike-pin]').click();
+    await page.locator('#actions [data-strike-pin]').click();
     await page.waitForFunction(()=>document.querySelector('[data-inventory-item="pin"]')!==null);
     const state=await page.evaluate(()=>JSON.parse(localStorage.getItem('porcaria-workbench-demo-v1')));
     assert.equal(state.pinImpact.round,3);
@@ -98,6 +105,22 @@ async function mobile(browser){
     assert.equal(await page.locator('#actionsCount').innerText(),'0 interações','toque curto não deve remover');
     await start();await sleep(2120);await end();
     assert.equal(await page.locator('#actionsCount').innerText(),'1 interações','hold touch conclui uma ação');
+    const pinScene=M.create();
+    for(const id of ['removeBolt:g1','removeBolt:g2','removePart:guard',
+      'removeBolt:l1','removeBolt:l2','removePart:leftPad','removePart:leftRetainer',
+      'removeBolt:r1','removeBolt:r2','removePart:rightPad','removePart:rightRetainer'])
+      assert.equal(M.apply(pinScene,id).ok,true,id);
+    await page.evaluate(value=>localStorage.setItem('porcaria-workbench-demo-v1',value),
+      JSON.stringify(pinScene));
+    await page.reload({waitUntil:'domcontentloaded'});
+    assert.equal(await page.locator('#machine').getAttribute('viewBox'),'145 95 610 320',
+      'marreta inteira deve caber na prancha móvel');
+    const impact=page.locator('#impactMini [data-strike-pin]');
+    await impact.waitFor({state:'attached'});
+    const bounds=await impact.boundingBox();
+    assert(bounds&&bounds.width>110&&bounds.height>22,'área de golpe deve ser confortável no celular');
+    await impact.tap();
+    assert.equal(await page.locator('#impactTitle').innerText().then(v=>v.includes('GOLPE 2/3')),true);
     assert.equal(errors.length,0,errors.join('; '));
     await page.screenshot({path:artifacts+'/mobile-blueprint.png',fullPage:true});
   }finally{await context.close();}
