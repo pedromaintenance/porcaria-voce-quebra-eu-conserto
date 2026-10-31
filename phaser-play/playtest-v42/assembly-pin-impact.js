@@ -36,7 +36,7 @@
   const round=current.round+1,hits=current.hits+(precise?1:0);
   assembly.pinImpact={round,hits};
   const quality=precise?'precise':partial?'partial':'off';
-  return {ok:true,round,hits,precise,partial,quality,advancePx:8*round,
+  return {ok:true,round,hits,precise,partial,quality,advancePx:12*round,
     position,target:target(round-1),finished:round===3};
  }
  return Object.freeze({targets,progress,target,canStrike,status,isValid,strike});
