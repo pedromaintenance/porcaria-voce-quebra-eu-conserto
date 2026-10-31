@@ -24,23 +24,23 @@ footer{text-align:center;color:#8eaec7;font-size:12px;padding:15px 14px 24px}
 </style>
 </head>
 <body>
-<header><div><strong class="logo">P.O.R.C.A.R.I.A.</strong><div class="subtitle">OFICINA BLUEPRINT · CICLO 42.4 · LABORATÓRIO INTEGRADO</div></div>
+<header><div><strong class="logo">P.O.R.C.A.R.I.A.</strong><div class="subtitle">OFICINA BLUEPRINT · CICLO 42.5 · LABORATÓRIO INTEGRADO</div></div>
 <a href="../index.html">Ir para o jogo Phaser</a></header>
 <main>
 <div class="heading"><div><h1>Manutenção da articulação</h1>
 <p>Um único cenário: desmontar, liberar o pino, substituir a bucha e remontar.</p></div>
 <button type="button" id="reset">↻ Reiniciar serviço</button></div>
 <p class="tip"><b>Controles:</b> segure componentes e parafusos por <b>2 segundos</b>. Soltou cedo? O movimento retrocede.
-Ao alcançar o pino, <b>toque na barra de precisão três vezes</b>, quando o marcador cruzar a faixa dourada.
+Ao alcançar o pino, <b>toque na barra de precisão três vezes</b> quando o marcador cruzar a faixa dourada. Agora cada golpe mostra a cabeça da marreta, uma onda de impacto e o avanço do pino.
 Depois continue a desmontagem e remontagem. Não há mais desafio separado de torque.</p>
-<div class="lab"><iframe title="Bancada integrada de montagem e marreta" id="bench" src="./assembly-workbench.html?v=42.4" loading="eager"></iframe></div>
+<div class="lab"><iframe title="Bancada integrada de montagem e marreta" id="bench" src="./assembly-workbench.html?v=42.5" loading="eager"></iframe></div>
 </main>
-<footer>Protótipo independente da campanha · desenho técnico estilizado, sem escala · <a href="./assembly-workbench.html?v=42.4" target="_blank" rel="noopener">Abrir a bancada diretamente</a></footer>
+<footer>Protótipo independente da campanha · desenho técnico estilizado, sem escala · <a href="./assembly-workbench.html?v=42.5" target="_blank" rel="noopener">Abrir a bancada diretamente</a></footer>
 <script>
 const frame=document.getElementById('bench');
 document.getElementById('reset').addEventListener('click',()=>{
   try{frame.contentWindow.localStorage.removeItem('porcaria-workbench-demo-v1');}catch(_){}
-  frame.src='./assembly-workbench.html?v=42.4&reset='+Date.now();
+  frame.src='./assembly-workbench.html?v=42.5&reset='+Date.now();
 });
 </script>
 </body></html>
