@@ -117,3 +117,18 @@
 - QA de lógica `test-assembly-pin-v42.cjs`, QA de Chrome desktop/mobile `test-assembly-browser-v42.cjs` e teste end-to-end de campanha adaptado ao iframe.
 
 **Importante:** o processo é abstrato, feito para o jogo; valores de esforço, posição e tempo não representam instruções reais de campo.
+
+
+## Ciclo 42.5 — Sensação de impacto e legibilidade (30/10/2026)
+
+- **Objetivo:** melhorar o feedback físico da marreta sem criar novos controles, menus, pontuações ou recursos.
+- Cada um dos três golpes usa o mesmo cursor de precisão e dispara uma **animação autoral de blueprint** (cabeça de marreta, onda radial, quatro linhas de esforço e breve reação do pino). O resultado é expresso também em texto: preciso, parcial ou fora da faixa.
+- O deslocamento visual cumulativo do pino passou a 12 unidades de desenho por golpe. A **pontuação continua inalterada (0–3 golpes precisos)** e não exige acerto para avançar a desmontagem.
+- O indicador de três círculos mostra golpes efetuados; a animação de retirada no terceiro golpe continua compatível com a bancada.
+- No celular, quando a marreta está ativa, a prancha amplia o enquadramento para `viewBox="145 95 610 320"`, mantendo o medidor inteiro visível. As demais etapas preservam o enquadramento anterior.
+- `prefers-reduced-motion`: anula efeitos decorativos sem anular o gesto, a contagem ou o resultado. Nenhum som obrigatório e nenhuma vibração automática.
+- `sw.js` preenche o cache de assets da bancada (HTML/JS) para compatibilidade PWA; versões das URLs da bancada e do jogo foram atualizadas para evitar scripts antigos.
+- `scripts/test-assembly-pin-v42.cjs` confere qualidade/avanço e a presença dos elementos; `test-assembly-browser-v42.cjs` testa o primeiro impacto e o enquadramento mobile em Chrome real.
+- `phaser-play/playtest-v42/` segue como laboratório independente com a mesma versão do motor.
+
+**Regra de produto:** técnica lúdica, desenho sem escala; nenhuma instrução de manutenção real ou fonte documental na interface.
