@@ -251,7 +251,7 @@ function startRepairAssist(id,kind='hammer'){
  frame.title='Bancada blueprint integrada ao reparo da OS';
  frame.loading='eager';
  frame.setAttribute('aria-label','Montagem e desmontagem com marreta integrada');
- frame.src='./assembly-workbench.html?mode=campaign&order='+encodeURIComponent(id)+'&turn='+encodeURIComponent(state.tick)+'&v=0.9.42.4';
+ frame.src='./assembly-workbench.html?mode=campaign&order='+encodeURIComponent(id)+'&turn='+encodeURIComponent(state.tick)+'&v=0.9.42.5';
  $('repairAssistStage').appendChild(frame);
  repairAssistDialog.frame=frame;
  $('repairAssistClose').focus({preventScroll:true});
