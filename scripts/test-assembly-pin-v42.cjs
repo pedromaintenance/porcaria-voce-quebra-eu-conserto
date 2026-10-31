@@ -21,6 +21,8 @@ for(let i=0;i<3;i++){
  assert.equal(stroke.round,i+1);
  assert.equal(stroke.precise,true);
  assert.equal(stroke.hits,i+1);
+ assert.equal(stroke.quality,'precise','acerto dentro da faixa usa feedback preciso');
+ assert.equal(stroke.advancePx,(i+1)*12,'cada impacto avança o pino sem alterar a pontuação');
  assert.equal(PIN.isValid(s),true);
  if(i<2)assert.equal(M.apply(s,'removePart:pin').ok,false);
 }
@@ -35,6 +37,18 @@ assert.equal(M.apply(s,'installPart:bushing').ok,true);
 assert.equal(M.apply(s,'installPart:pin').ok,true,'remontagem não exige marretar outra vez');
 assert.ok(html.includes('data-strike-pin'),'marreta deve estar no blueprint');
 assert.ok(html.includes('id="impactMini"')&&html.includes('impactCursor'));
+
+assert.ok(html.includes('id="impactFx"')&&html.includes('function playImpactFeedback('),
+ 'animação de golpe acoplada à mesma prancha');
+assert.ok(html.includes('hammer-silhouette')&&html.includes('impact-ring'),
+ 'cabeça da marreta e onda de choque desenhadas por SVG');
+assert.ok(html.includes('id="pinCore"')&&html.includes('playImpactFeedback(result)'),
+ 'recuo visual do pino associado a cada resultado');
+assert.ok(html.includes("'145 95 610 320'")&&html.includes('impact-active'),
+ 'marreta totalmente visível no recorte de tela móvel');
+assert.ok(html.includes('if(reduceMotion)'),
+ 'preferência de movimento reduzido não bloqueia o serviço');
+
 assert.ok(html.includes("PIN.strike(s,now-impactAnchor)"),'pontuação ligada ao motor interno');
 assert.ok(html.includes("doAction('removePart:pin'"),'marreta desbloqueia a peça real');
 assert.ok(html.includes('porcaria:assembly:complete'),'comunicação restrita com campanha');
