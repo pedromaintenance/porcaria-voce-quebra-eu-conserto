@@ -35,7 +35,9 @@
   const precise=distance<=.07,partial=distance<=.16;
   const round=current.round+1,hits=current.hits+(precise?1:0);
   assembly.pinImpact={round,hits};
-  return {ok:true,round,hits,precise,partial,position,target:target(round-1),finished:round===3};
+  const quality=precise?'precise':partial?'partial':'off';
+  return {ok:true,round,hits,precise,partial,quality,advancePx:8*round,
+    position,target:target(round-1),finished:round===3};
  }
  return Object.freeze({targets,progress,target,canStrike,status,isValid,strike});
 });
