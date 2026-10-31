@@ -72,7 +72,7 @@ async function desktop(browser){
     assert.equal(await page.locator('#actions [data-action="removePart:pin"]').count(),0,
       'pino não pode ser removido com hold, precisa de impactos');
     await page.locator('#actions [data-strike-pin]').click();
-    assert.equal(await page.locator('#impactTitle').innerText().then(v=>v.includes('GOLPE 2/3')),true,
+    assert.equal(await page.locator('#impactTitle').textContent().then(v=>v.includes('GOLPE 2/3')),true,
       'primeiro impacto incrementa o contador sem retirar pino');
     assert.equal(await page.locator('#impactFx .impact-fx').count(),1,
       'efeito vetorial aparece após o primeiro impacto');
@@ -120,7 +120,7 @@ async function mobile(browser){
     const bounds=await impact.boundingBox();
     assert(bounds&&bounds.width>110&&bounds.height>22,'área de golpe deve ser confortável no celular');
     await impact.tap();
-    assert.equal(await page.locator('#impactTitle').innerText().then(v=>v.includes('GOLPE 2/3')),true);
+    assert.equal(await page.locator('#impactTitle').textContent().then(v=>v.includes('GOLPE 2/3')),true);
     assert.equal(errors.length,0,errors.join('; '));
     await page.screenshot({path:artifacts+'/mobile-blueprint.png',fullPage:true});
   }finally{await context.close();}
